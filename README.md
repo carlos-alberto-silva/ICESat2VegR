@@ -7,7 +7,7 @@
 ![Downloads](https://cranlogs.r-pkg.org/badges/grand-total/rICESat2Veg)
 [![Build Status](https://travis-ci.com/carlos-alberto-silva/rICESat2Veg.svg?token=Jqizwyc6gBxNafNccTdU&branch=master)](https://travis-ci.com/carlos-alberto-silva/rICESat2Veg)
 
-**rICESat2Veg: An R Package for NASA's Ice, Cloud, and Elevation Satellite (ICESat-2) Data Processing and Visualization for Terrestrial Applications.**
+**rICESat2Veg: An R Package For NASA's Ice, Cloud, and Elevation Satellite (ICESat-2) Data Processing and Visualization For Terrestrial Applications.**
 
 Authors: Carlos Alberto Silva and Caio Hamamura  
 
