@@ -40,5 +40,5 @@ Please report any issue regarding the rICESat2Veg package to Dr. Silva (c.silva@
 Silva,C.A; Hamamura,C.rICESat2Veg: An R Package for NASA's Ice, Cloud, and Elevation Satellite (ICESat-2) Data Processing and Visualization for Terrestrial Applications.version 0.0.1, accessed on November. 22 2023, available at: <https://CRAN.R-project.org/package=rICESat2Veg>
 
 # Disclaimer
-**rICESat2Veg package has not been developted by the GEDI team. It comes with no guarantee, expressed or implied, and the authors hold no responsibility for its use or reliability of its outputs.**
+**rICESat2Veg package comes with no guarantee, expressed or implied, and the authors hold no responsibility for its use or reliability of its outputs.**
 
