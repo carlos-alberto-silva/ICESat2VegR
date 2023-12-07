@@ -6,7 +6,7 @@
 #'
 #'@usage readATL08(ATL08path)
 #'
-#'@param ATL08path File path pointing to ICESat-2 ATL08 data. Data in HDF5 Hierarchical Data Format (.h5).
+#'@param atl08path File path pointing to ICESat-2 ATL08 data. Data in HDF5 Hierarchical Data Format (.h5).
 #'
 #'@return Returns an S4 object of class [`icesat2.atl08-class`] containing ICESat-2 ATL08 data.
 #'
@@ -20,16 +20,20 @@
 #'                   package="rICESat2Veg")
 #'
 #'# Unzipping ICESat-2 ATL08 data
-#'ATL08path <- unzip(ATL08_fp_zip,exdir = outdir)
+#'atl08path <- unzip(ATL08_fp_zip,exdir = outdir)
 #'
 #'# Reading ICESat-2 ATL08 data (h5 file)
-#'ATL08<-readATL08(ATL08path=ATL08path)
+#'atl08<-readATL08(atl08path=atl08path)
 #'
-#'close(ATL08)
+#'close(atl08)
 #'@import hdf5r
 #'@export
-readATL08 <-function(ATL08path) {
-  ATL08_h5 <- hdf5r::H5File$new(ATL08path, mode = 'r')
-  ATL08<- new("icesat2.atl08", h5 = ATL08_h5)
-  return(ATL08)
+readATL08 <-function(atl08path) {
+  if (!is.character(atl08path) | !tools::file_ext(atl08path) == "h5") {
+    stop("atl08path must be a path to a h5 file")
+  }
+
+  atl08_h5 <- hdf5r::H5File$new(atl08path, mode = 'r')
+  atl08<- new("icesat2.atl08", h5 = atl08_h5)
+  return(atl08)
 }

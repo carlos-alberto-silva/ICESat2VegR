@@ -26,9 +26,14 @@
 #'close(ATL03)
 #'@import hdf5r
 #'@export
-readATL03 <-function(ATL03path) {
-  ATL03_h5 <- hdf5r::H5File$new(ATL03path, mode = 'r')
-  ATL03<- new("icesat2.ATL03", h5 = ATL03_h5)
-  return(ATL03)
+readATL03 <-function(atl03path) {
+
+  if (!is.character(atl03path) | !tools::file_ext(atl03path) == "h5") {
+    stop("atl03path must be a path to a h5 file")
+  }
+
+  atl03_h5 <- hdf5r::H5File$new(atl03path, mode = 'r')
+  atl03<- new("icesat2.atl03", h5 = ATL03_h5)
+  return(atl03)
 }
 
