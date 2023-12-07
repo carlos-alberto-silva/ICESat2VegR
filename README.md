@@ -41,7 +41,7 @@ unzip(file.path(outdir,"examples.zip"))
 
 ```
 
-## Reading GEDI data
+## Reading ICESat-2 data
 ```r
 atl08_h5<-readATL08(ATL08path=atl08_path)
 
