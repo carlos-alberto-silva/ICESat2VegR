@@ -36,7 +36,7 @@ ATL08_canopy.var.map[["segment_cover"]]="segment_cover"
 #'@param atl08_h5 A ICESat-2 ATL08 object (output of [ATL08read()] function). An S4 object of class [rICESat2Veg::icesat2.atl08_dt].
 #'An S4 object of class [rICESat2Veg::icesat2.atl08_dt].
 #'@param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
-#'@canopy_attribute A character vector containing the list of metrics to be extracted. See the default columns in the description.
+#'@param canopy_attribute A character vector containing the list of metrics to be extracted. See the default columns in the description.
 #'
 #'@return Returns an S4 object of class [data.table::data.table]
 #'containing the ATL08-derived vegetation relative heights.
