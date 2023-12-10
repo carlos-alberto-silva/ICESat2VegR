@@ -49,6 +49,10 @@ clipATL08_terrain_box <- function(terrain_metrics, xmin, xmax, ymin, ymax) {
     terrain_metrics$longitude >= xmin &
     terrain_metrics$longitude <= xmax &
     terrain_metrics$latitude >= ymin &
+    terrain_metrics$latitude <= ymax &
+    terrain_metrics$longitude >= xmin &
+    terrain_metrics$longitude <= xmax &
+    terrain_metrics$latitude >= ymin &
     terrain_metrics$latitude <= ymax
 
   mask[!stats::complete.cases(mask)] <- FALSE

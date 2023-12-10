@@ -4,9 +4,9 @@
 #'Vegetation Along-Track Products (ATL08) as h5 file.
 #'
 #'
-#'@usage readATL08(ATL08path)
+#'@usage ATL08read(atl08_path)
 #'
-#'@param atl08path File path pointing to ICESat-2 ATL08 data. Data in HDF5 Hierarchical Data Format (.h5).
+#'@param atl08_path File path pointing to ICESat-2 ATL08 data. Data in HDF5 Hierarchical Data Format (.h5).
 #'
 #'@return Returns an S4 object of class [`icesat2.atl08-class`] containing ICESat-2 ATL08 data.
 #'
@@ -15,25 +15,25 @@
 #'@examples
 #'# Specifying the path to ICESat-2 ATL08 data (zip file)
 #'outdir = tempdir()
-#'ATL08_fp_zip <- system.file("extdata",
+#'atl08_fp_zip <- system.file("extdata",
 #'                   "ATL0802_A_2019108080338_O01964_T05337_02_001_01_sub.zip",
 #'                   package="rICESat2Veg")
 #'
 #'# Unzipping ICESat-2 ATL08 data
-#'atl08path <- unzip(ATL08_fp_zip,exdir = outdir)
+#'atl08path <- unzip(atl08_fp_zip,exdir = outdir)
 #'
 #'# Reading ICESat-2 ATL08 data (h5 file)
-#'atl08<-readATL08(atl08path=atl08path)
+#'atl08<-ATL08read(atl08_path=atl08_path)
 #'
 #'close(atl08)
 #'@import hdf5r
 #'@export
-readATL08 <-function(atl08path) {
-  if (!is.character(atl08path) | !tools::file_ext(atl08path) == "h5") {
-    stop("atl08path must be a path to a h5 file")
+readATL08 <-function(atl08_path) {
+  if (!is.character(atl08_path) | !tools::file_ext(atl08_path) == "h5") {
+    stop("atl08_path must be a path to a h5 file")
   }
 
-  atl08_h5 <- hdf5r::H5File$new(atl08path, mode = 'r')
+  atl08_h5 <- hdf5r::H5File$new(atl08_path, mode = 'r')
   atl08<- new("icesat2.atl08", h5 = atl08_h5)
   return(atl08)
 }

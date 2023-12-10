@@ -50,6 +50,10 @@ clipATL08_canopy_box <- function(canopy_metrics, xmin, xmax, ymin, ymax) {
     canopy_metrics$longitude >= xmin &
     canopy_metrics$longitude <= xmax &
     canopy_metrics$latitude >= ymin &
+    canopy_metrics$latitude <= ymax &
+    canopy_metrics$longitude >= xmin &
+    canopy_metrics$longitude <= xmax &
+    canopy_metrics$latitude >= ymin &
     canopy_metrics$latitude <= ymax
 
   mask[!stats::complete.cases(mask)] <- FALSE
