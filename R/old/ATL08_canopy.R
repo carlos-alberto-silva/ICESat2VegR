@@ -27,7 +27,7 @@ ATL08_canopy.var.map[["h_max_canopy"]]="h_max_canopy"
 ATL08_canopy.var.map[["segment_cover"]]="segment_cover"
 
 
-#'ATL08 Canopy Height Metrics
+#'ATL08-derived Canopy Height Metrics
 #'
 #'@description This function extracts canopy height metrics from ICESat-2 ATL08 data
 #'

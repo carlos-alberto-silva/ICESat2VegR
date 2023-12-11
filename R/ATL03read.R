@@ -33,7 +33,7 @@ ATL03read <-function(atl03_path) {
   }
 
   atl03_h5 <- hdf5r::H5File$new(atl03_path, mode = 'r')
-  atl03<- new("icesat2.atl03", h5 = atl03_h5)
+  atl03<- new("icesat2.atl03_h5", h5 = atl03_h5)
   return(atl03)
 }
 

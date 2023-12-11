@@ -23,7 +23,7 @@ ATL08_terrain.var.map[["terrain_slope"]]="terrain_slope"
 #'
 #'@description This function extracts terrain metrics from ICESat-2 ATL08 data
 #'
-#'@usage ATL08_terrain(atl08_h5, beam)
+#'@usage ATL08_terrain_attributes(atl08_h5, beam)
 #'
 #'@param atl08_h5 A ICESat-2 ATL08 object (output of [readATL08()] function). An S4 object of class "icesat2.atl08".
 #'An S4 object of class "icesat2.atl08".
@@ -51,12 +51,12 @@ ATL08_terrain.var.map[["terrain_slope"]]="terrain_slope"
 #atl08_h5<-readATL08(ATL08path=atl08_path)
 #'
 #'# Extracting ATL08-derived Terrain Metrics
-#'terrain_metrics<-ATL08_terrain(atl08_h5=atl08_h5)
+#'terrain_metrics<-ATL08_terrain_attributes(atl08_h5=atl08_h5)
 #'head(terrain_metrics)
 #'
 #'close(atl08_h5)
 #'@export
-ATL08_terrain <- function(atl08_h5,
+ATL08_terrain_attributes <- function(atl08_h5,
                        beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
                        terrain_attribute=c(
                         "h_te_best_fit",
@@ -78,8 +78,8 @@ ATL08_terrain <- function(atl08_h5,
                        ) {
 
   # Check file input
-  if (!class(atl08_h5)=="icesat2.atl08") {
-    stop("atl08_h5 must be an object of class 'icesat2.atl08' - output of [readATL08()] function ")
+  if (!class(atl08_h5)=="icesat2.atl08_h5") {
+    stop("atl08_h5 must be an object of class 'icesat2.atl08_h5' - output of [readATL08()] function ")
   }
 
   #h5
@@ -144,7 +144,7 @@ ATL08_terrain <- function(atl08_h5,
       terrain_dt = data.table::rbindlist(list(terrain.dt, m), fill = TRUE)
     }
    }
-
+  terrain_dt<- new("icesat2.atl08_dt", dt = terrain_dt)
   close(pb)
 
   return(terrain_dt)

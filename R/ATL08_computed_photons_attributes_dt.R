@@ -46,7 +46,7 @@ ATL08_photon.var.map[["delta_time"]]="delta_time"
 #'atl08_path <- unzip(atl08_zip,exdir = outdir)
 #'
 #'# Reading ATL08 data (h5 file)
-#atl08_h5<-readATL08(ATL08path=atl08_path)
+#atl08_h5<-ATL08read(ATL08_path=atl08_path)
 #'
 #'# Extracting ATL08 classified photons and heights
 #'ATL08_photons<-ATL08_photons(atl08_h5=atl08_h5)
@@ -59,8 +59,8 @@ ATL08_photons <- function(atl08_h5,
                        photon_attribute=c("ph_segment_id","classed_pc_indx","classed_pc_flag","ph_h", "d_flag", "delta_time")) {
 
   # Check file input
-  if (!class(atl08_h5)=="icesat2.atl08") {
-    stop("atl08_h5 must be an object of class 'icesat2.atl08' - output of [readATL08()] function ")
+  if (!class(atl08_h5)=="icesat2.atl08_h5") {
+    stop("atl08_h5 must be an object of class 'icesat2.atl08_h5' - output of [readATL08()] function ")
   }
 
   #h5

@@ -10,7 +10,7 @@
 #'An S4 object of class "icesat2.atl08".
 #'@param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
 #'
-#'@return Returns an S4 object of class [data.table::data.table]
+#'@return Returns an S4 object of class [rICESat2::icesat2.atl03atl08_dt]
 #'containing the ATL08 computed photons parameters.
 #'
 #'@details These are the photons parameters extracted by default:
@@ -22,7 +22,7 @@
 #'neither the geoid, ocean tide nor the dynamic atmospheric corrections (DAC) are applied to the ellipsoidal heights.
 #'\item \emph{quality_ph} Indicates the quality of the associated photon. 0=nominal, 1=possible_afterpulse, 2=possible_impulse_response_
 #'effect, 3=possible_tep. Use this flag in conjunction with signal_conf_ph to identify those photons that are likely noise or likely signal
-#'\item \emph{night_flag}  Flag indicating the data were acquired in night condictions: 0=day, 1=night. Night flag is set when solar elevation is below 0.0 degrees.
+#'\item \emph{night_flag}  Flag indicating the data were acquired in night conditions: 0=day, 1=night. Night flag is set when solar elevation is below 0.0 degrees.
 #'\item \emph{ph_segment_id}  The elevation of the sun position vector from the reference photon bounce point position in the local ENU frame.
 #'The angle is measured from the East-North plane and is positive Up. ATL03g provides this value in radians; it is converted to degrees for ATL03 output.
 #'\item \emph{ph_segment_id} Georeferenced	bin	number (20-m) associated	with	each photon
@@ -61,23 +61,24 @@
 #'# Reading ATL08 data (h5 file)
 #atl08_h5<-ATL08read(atl08_path=atl08_path)
 #'
-#'# Extracting ATL08 classified photons and heights
+#'# # Extracting ATL03 and ATL08 photons and heights
 #'atl03_08_dt<-ATL03_ATL08join(atl03_h5,atl08_h5)
 #'head(atl03_08_dt)
 #'
+#'close(atl03_h5)
 #'close(atl08_h5)
 #'@export
 ATL03_ATL08join <- function(atl03_h5,atl08_h5,
                        beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")) {
 
   # Check file input
-  if (!class(atl03_h5)=="icesat2.atl03") {
-    stop("atl03_h5 must be an object of class 'icesat2.atl08' - output of [readATL03()] function ")
+  if (!class(atl03_h5)=="icesat2.atl03_h5") {
+    stop("atl03_h5 must be an object of class 'icesat2.atl03_h5' - output of [readATL03()] function ")
   }
 
   # Check file input
-  if (!class(atl08_h5)=="icesat2.atl08") {
-    stop("atl08_h5 must be an object of class 'icesat2.atl08' - output of [readATL08()] function ")
+  if (!class(atl08_h5)=="icesat2.atl08_h5") {
+    stop("atl08_h5 must be an object of class 'icesat2.atl08_h5' - output of [readATL08()] function ")
   }
 
   #h5
@@ -103,9 +104,9 @@ ATL03_ATL08join <- function(atl03_h5,atl08_h5,
   i_s = 0
 
   for (i in beam) {
-      i_s = i_s + 1
+      i_s = i_s + 0.25
       utils::setTxtProgressBar(pb, i_s)
-
+      n_segments = atl03_h5v2[[paste0(i,"/geolocation/segment_length")]]$dims
 
       segment_ph_cnt = atl03_h5v2[[paste0(i,"/geolocation/segment_ph_cnt")]][]
 
@@ -143,6 +144,9 @@ ATL03_ATL08join <- function(atl03_h5,atl08_h5,
       data.table::setindex(dataTableATL03Segs, "segment_id")
       data.table::setindex(dataTableATL08Photons, "ph_segment_id")
 
+      i_s = i_s + 0.25
+      utils::setTxtProgressBar(pb, i_s)
+
       idx = data.table::merge.data.table(dataTableATL03Segs, dataTableATL08Photons, by.x = "segment_id", by.y = "ph_segment_id")[, ph_index_beg + classed_pc_indx-1]
 
       dataTableATL03Photons[idx, c("ph_segment_id","classed_pc_indx", "classed_pc_flag","d_flag","delta_time","ph_h") := list(
@@ -153,12 +157,20 @@ ATL03_ATL08join <- function(atl03_h5,atl08_h5,
                                       dataTableATL08Photons$delta_time,
                                       dataTableATL08Photons$ph_h)]
 
+      i_s = i_s + 0.25
+      utils::setTxtProgressBar(pb, i_s)
+
       dataTableATL03Photons$beam<-i
       dataTableATL03Photons$night_flag<-0
       dataTableATL03Photons$night_flag[dataTableATL03Photons$solar_elevation>0]<-1
 
       photon_dt = data.table::rbindlist(list(photon.dt, dataTableATL03Photons), fill = TRUE)
+
+      i_s = i_s + 0.25
+      utils::setTxtProgressBar(pb, i_s)
     }
+
+  photon_dt<- new("icesat2.atl03atl08_dt", dt = photon_dt)
 
   close(pb)
 
