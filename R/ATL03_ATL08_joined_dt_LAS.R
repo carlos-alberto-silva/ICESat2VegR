@@ -15,7 +15,7 @@ atl03_atl08_dt@dt<-na.omit(atl03_atl08_dt@dt)
 head(atl03_atl08_dt@dt)
 
 
-dt2<-atl03_atl08_dt@dt[,c("lon_ph","lat_ph","h_ph")]
+dt2<-atl03_atl08_dt@dt[,c("lon_ph","lat_ph","ph_h")]
 #class(dt2)<-"data.table"
 
 names(dt2)<-c("X","Y","Z")
@@ -43,7 +43,7 @@ las@header@PHB[["X scale factor"]] <- 0.01
 las@header@PHB[["Y scale factor"]] <- 0.01
 las@header@PHB[["Z scale factor"]] <- 0.01
 
-st_crs(las)<-"EPSG:32723"
+#st_crs(las)<-"EPSG:32723"
 
 st_crs(las)$Name
 
@@ -68,7 +68,7 @@ plot(las[1:1000,], color="Classification")
 #'
 #'@param atl08_path File path pointing to ICESat-2 ATL08 data. Data in HDF5 Hierarchical Data Format (.h5).
 #'
-#'@return Returns an S4 object of class ["icesat2.atl08_dt"] containing ICESat-2 ATL08 data.
+#'@return Returns an S4 object of class [`icesat2.atl08-class`] containing ICESat-2 ATL08 data.
 #'
 #'@seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
 #'
