@@ -2,11 +2,11 @@
 #'
 #'@description This function reads the ICESat-2 Global Geolocated Photons (ATL03) Product (ATL03) as h5 file.
 #'
-#'@usage readATL03(ATL03path)
+#'@usage ATL03read(atl03_path)
 #'
-#'@param ATL03path File path pointing to ICESat-2 ATL03 data. Data in HDF5 Hierarchical Data Format (.h5).
+#'@param atl03_path File path pointing to ICESat-2 ATL03 data. Data in HDF5 Hierarchical Data Format (.h5).
 #'
-#'@return Returns an S4 object of class [`icesat2.ATL03-class`] containing ICESat-2 ATL03 data.
+#'@return Returns an S4 object of class [`icesat2.atl03_dt`] containing ICESat-2 ATL03 data.
 #'
 #'@seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
 #'
@@ -18,16 +18,16 @@
 #'                   package="rICESat2Veg")
 #'
 #'# Unzipping ICESat-2 ATL03 data
-#'ATL03path <- unzip(ATL03_fp_zip,exdir = outdir)
+#'atl03_path <- unzip(ATL03_fp_zip,exdir = outdir)
 #'
 #'# Reading ICESat-2 ATL03 data (h5 file)
-#'ATL03<-readATL03(ATL03path=ATL03path)
+#'ATL03<-ATL03read(atl03_path=atl03_path)
 #'
 #'close(ATL03)
 #'@import hdf5r
 #'@export
-readATL03 <-function(ATL03path) {
-  ATL03_h5 <- hdf5r::H5File$new(ATL03path, mode = 'r')
+ATL03read <-function(atl03_path) {
+  ATL03_h5 <- hdf5r::H5File$new(atl03_path, mode = 'r')
   ATL03<- new("icesat2.ATL03", h5 = ATL03_h5)
   return(ATL03)
 }

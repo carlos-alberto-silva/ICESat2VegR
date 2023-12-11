@@ -27,7 +27,7 @@
 #atl08_h5<-ATL08read(ATL08_path=atl08_path)
 #'
 #'# Extracting ATL08-derived canopy Metrics
-#'atl08_canopy_dt<-ATL08_canopy_attributes(atl08_h5=atl08_h5)
+#'atl08_canopy_dt<-ATL08_canopy_attributes_dt(atl08_h5=atl08_h5)
 #'
 #' # Specifying the path to shapefile
 #' polygon_filepath <- system.file("extdata", "polygon.shp", package = "rICESat2Veg")

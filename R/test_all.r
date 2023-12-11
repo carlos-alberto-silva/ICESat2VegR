@@ -5,10 +5,10 @@ atl03_path<-"C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL03_202
 atl03_h5<-ATL03read(atl03_path=atl03_path)
 
 ## join
-atl03_atl08_dt<-ATL03_ATL08join(atl03_h5,atl08_h5, beam = "gt1l")
+atl03_atl08_dt<-ATL03_ATL08_join_dt(atl03_h5,atl08_h5, beam = "gt1l")
 
 # segment metrics
-RH100max <-ATL08_canopy_segStat(atl03_atl08_dt, func=mean(ph_h),
+RH100max <-ATL08_canopy_dt_segStat(atl03_atl08_dt, func=mean(ph_h),
                                 seg_length = 100,
                                 ph_class=c(2,3),
                                 beam=c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
@@ -25,14 +25,14 @@ mySetOfMetrics <- function(x) {
   return(metrics)
 }
 
-canopy_metrics <-ATL08_canopy_segStat(atl03_atl08_dt, func=mySetOfMetrics(ph_h),
+canopy_metrics <-ATL08_canopy_dt_segStat(atl03_atl08_dt, func=mySetOfMetrics(ph_h),
                                 seg_length = 30,
                                 ph_class=c(2,3),
                                 beam=c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
                                 quality_ph=0,
                                 night_flag=1)
 
-Elev_max <-ATL08_terrain_segStat(atl03_atl08_dt, func=mean(h_ph),
+Elev_max <-ATL08_terrain_dt_segStat(atl03_atl08_dt, func=mean(h_ph),
                                  seg_length = 100,
                                  ph_class=c(2,3),
                                  beam=c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
@@ -44,7 +44,7 @@ plot(Elev_max$latitude,Elev_max$mean)
 
 
 # extrac canopy attributes
-atl08_canopy_dt<-ATL08_canopy_attributes(atl08_h5=atl08_h5)
+atl08_canopy_dt<-ATL08_canopy_attributes_dt(atl08_h5=atl08_h5)
 atl08_terrain_dt<-ATL08_terrain_attributes(atl08_h5=atl08_h5)
 
 head(atl08_canopy_dt@dt)
@@ -64,7 +64,7 @@ ss<-ATL08_canopy_dt_gridStat(canopy_metrics, func=max(mean), res=0.5)
 ss<-ATL08_canopy_dt_gridStat(RH100max, func=max(mean), res=0.5)
 ss<-ATL08_canopy_dt_gridStat(RH100max, func=mySetOfMetrics(mean), res=0.5)
 
-ss<-ATL03ATL08joined_dt_gridStat(atl03_atl08_dt, func=mySetOfMetrics(ph_h), res=0.5)
+ss<-ATL03_ATL08_joined_dt_gridStat(atl03_atl08_dt, func=mySetOfMetrics(ph_h), res=0.5)
 
 plot(ss)
 head(atl03_atl08_dt@dt)

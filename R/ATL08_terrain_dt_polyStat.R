@@ -5,8 +5,8 @@
 #'
 #' @usage ATL08_terrain_dt_polyStat(atl08_terrain_dt, func, poly_id)
 #'
-#' @param atl08_terrain_dt  An S4 object of class "icesat2.atl08_dt" containing ATL08 terrain attributes
-#' (output of [ATL08_terrain_attribute_dt()] function).
+#' @param atl08_terrain_dt  An S4 object of class [rICESat2Veg::icesat2.atl08_dt] containing ATL08 terrain attributes
+#' (output of [rICESat2Veg::ATL08_terrain_attribute_dt()] function).
 #' @param func The function to be applied for computing the defined statistics
 #' @param poly_id Polygon id. If defined, statistics will be computed for each polygon
 #'
@@ -24,7 +24,7 @@
 #'atl08_path <- unzip(atl08_zip,exdir = outdir)
 #'
 #' # Reading ATL08 data (h5 file)
-#atl08_h5<-ATL08read(ATL08path=atl08_path)
+#atl08_h5<-ATL08read(atl08_path=atl08_path)
 #'
 #'# Extracting ATL08-derived terrain Metrics
 #'atl08_terrain_dt<-ATL08_terrain_attributes(atl08_h5=atl08_h5)

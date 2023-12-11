@@ -3,10 +3,10 @@
 #' @description This function computes a series of user defined descriptive statistics within
 #' each grid cell for ATL08 canopy attributes
 #'
-#' @usage ATL08_canopy_segStat(atl03_atl08_dt, func, res)
+#' @usage ATL08_canopy_dt_segStat(atl03_atl08_dt, func, res)
 #'
 #' @param ATL08_canopy_dt  An S4 object of class [rICESat2Veg::icesat2.atl08_dt] containing ATL08 data
-#' (output of [ATL08_canopy_attributes()] or [ATL08_canopy_segStat()] functions).
+#' (output of [ATL08_canopy_attributes_dt()] or [ATL08_canopy_dt_segStat()] functions).
 #' @param func The function to be applied for computing the defined statistics
 #' @param res Spatial resolution in decimal degrees for the output SpatRast raster layer. Default is 0.5.
 #'
@@ -28,7 +28,7 @@
 #atl08_h5<-ATL08read(atl08_path=atl08_path)
 #'
 #'# Extracting ATL03 and ATL08 photons and heights
-#'atl08_canopy_dt<-ATL08_canopy_attributes(atl08_h5)
+#'atl08_canopy_dt<-ATL08_canopy_attributes_dt(atl08_h5)
 #'head(atl08_canopy_dt)
 #'
 #'# Computing the top h_canopy at 30 m grid cell

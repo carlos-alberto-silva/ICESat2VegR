@@ -26,10 +26,10 @@
 #'atl08_path <- unzip(atl08_zip,exdir = outdir)
 #'
 #' # Reading ATL08 data (h5 file)
-#atl08_h5<-readATL08(ATL08path=atl08_path)
+#atl08_h5<-ATL08read(atl08_path=atl08_path)
 #'
 #'# Extracting ATL08-derived Canopy Metrics
-#'atl08_canopy_dt<-ATL08_canopy_attributes(atl08_h5=atl08_h5)
+#'atl08_canopy_dt<-ATL08_canopy_attributes_dt(atl08_h5=atl08_h5)
 #'
 #' # Specifying the path to shapefile
 #' polygon_filepath <- system.file("extdata", "polygon.shp", package = "rICESat2Veg")
@@ -110,7 +110,7 @@ ATL08_canopy_dt_clipGeometry <- function(atl08_canopy_dt, polygon, split_by = "i
 
     newFile<- new("icesat2.atl08_dt", dt = newFile)
 
-    # newFile<- new("gedi.level1b.dt", dt = level2adt2@dt[mask,])
+
     return(newFile)
   }
 }

@@ -373,7 +373,7 @@ ATL08_canopy_h5_gridStat = function(
       message(sprintf("Reading file %s (%d/%d)", basename(atl08_path), file_index, total_files), appendLF = T)
       atl08_canopy_dt = ATL08read(atl08_path)
 
-      vals = ATL08_canopy_attributes(atl08_canopy_dt, beam=beam, cols = cols[-c(1:2)])
+      vals = ATL08_canopy_attributes_dt(atl08_canopy_dt, beam=beam, cols = cols[-c(1:2)])
 
       ## Clip metrics by extent
       vals = ATL08_canopy_dt_clipBox(vals, ul_lon, lr_lon, lr_lat, ul_lat)

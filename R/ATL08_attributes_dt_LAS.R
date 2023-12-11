@@ -1,13 +1,17 @@
-
+tlas <- sf::st_transform(las, sf::st_crs(26918))
 
 require(lidR)
-atl08_path<-"C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL08_20220401221822_01501506_005_01.h5"
+
+atl08_path<-"Z:\\01_Projects\\04_NASA_ICESat2\\10_others\\rICESat2Veg\\inst\\exdata\\ATL08_20220401221822_01501506_005_01.h5"
+atl03_path<-"Z:\\01_Projects\\04_NASA_ICESat2\\10_others\\rICESat2Veg\\inst\\exdata\\ATL03_20220401221822_01501506_005_01.h5"
+
+#atl08_path<-"C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL08_20220401221822_01501506_005_01.h5"
 atl08_h5<-ATL08read(atl08_path=atl08_path)
-atl03_path<-"C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL03_20220401221822_01501506_005_01.h5"
+#atl03_path<-"C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL03_20220401221822_01501506_005_01.h5"
 atl03_h5<-ATL03read(atl03_path=atl03_path)
 
 ## join
-atl03_atl08_dt<-ATL03_ATL08join(atl03_h5,atl08_h5, beam = "gt1l")
+atl03_atl08_dt<-ATL03_ATL08_join_dt(atl03_h5,atl08_h5, beam = "gt1l")
 dt2<-dt[,c("lon_ph","lat_ph","h_ph")]
 class(dt2)<-"data.table"
 
@@ -43,7 +47,7 @@ plot(las)
 #'
 #'@param atl08_path File path pointing to ICESat-2 ATL08 data. Data in HDF5 Hierarchical Data Format (.h5).
 #'
-#'@return Returns an S4 object of class [`icesat2.atl08-class`] containing ICESat-2 ATL08 data.
+#'@return Returns an S4 object of class ["icesat2.atl08_dt"] containing ICESat-2 ATL08 data.
 #'
 #'@seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
 #'
@@ -55,7 +59,7 @@ plot(las)
 #'                   package="rICESat2Veg")
 #'
 #'# Unzipping ICESat-2 ATL08 data
-#'atl08path <- unzip(atl08_fp_zip,exdir = outdir)
+#'atl08_path <- unzip(atl08_fp_zip,exdir = outdir)
 #'
 #'# Reading ICESat-2 ATL08 data (h5 file)
 #'atl08<-ATL08read(atl08_path=atl08_path)
@@ -63,7 +67,7 @@ plot(las)
 #'close(atl08)
 #'@import hdf5r
 #'@export
-readATL08 <-function(atl08_path) {
+ATL08read <-function(atl08_path) {
   if (!is.character(atl08_path) | !tools::file_ext(atl08_path) == "h5") {
     stop("atl08_path must be a path to a h5 file")
   }

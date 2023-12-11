@@ -17,16 +17,14 @@ ATL08_terrain.var.map[["photon_rate_te"]]="photon_rate_te"
 ATL08_terrain.var.map[["subset_te_flag"]]="subset_te_flag"
 ATL08_terrain.var.map[["terrain_slope"]]="terrain_slope"
 
-
-
 #'ATL08 Terrain Metrics
 #'
 #'@description This function extracts terrain metrics from ICESat-2 ATL08 data
 #'
 #'@usage ATL08_terrain_attributes(atl08_h5, beam)
 #'
-#'@param atl08_h5 A ICESat-2 ATL08 object (output of [readATL08()] function). An S4 object of class "icesat2.atl08".
-#'An S4 object of class "icesat2.atl08".
+#'@param atl08_h5 A ICESat-2 ATL08 object (output of [ATL08read()] function). An S4 object of class [rICESat2Veg::icesat2.atl08_dt].
+#'An S4 object of class [rICESat2Veg::icesat2.atl08_dt].
 #'@param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
 #'@canopy_attribute A character vector containing the list of metrics to be extracted. See the default columns in the description.
 #'
@@ -48,7 +46,7 @@ ATL08_terrain.var.map[["terrain_slope"]]="terrain_slope"
 #'atl08_path <- unzip(atl08_zip,exdir = outdir)
 #'
 #'# Reading ATL08 data (h5 file)
-#atl08_h5<-readATL08(ATL08path=atl08_path)
+#atl08_h5<-ATL08read(atl08_path=atl08_path)
 #'
 #'# Extracting ATL08-derived Terrain Metrics
 #'terrain_metrics<-ATL08_terrain_attributes(atl08_h5=atl08_h5)
@@ -79,7 +77,7 @@ ATL08_terrain_attributes <- function(atl08_h5,
 
   # Check file input
   if (!class(atl08_h5)=="icesat2.atl08_h5") {
-    stop("atl08_h5 must be an object of class 'icesat2.atl08_h5' - output of [readATL08()] function ")
+    stop("atl08_h5 must be an object of class 'icesat2.atl08_h5' - output of [ATL08read()] function ")
   }
 
   #h5

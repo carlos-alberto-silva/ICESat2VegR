@@ -4,7 +4,7 @@
 #'
 #' @usage ATL08_terrain_dt_clipGeometry(atl08_terrain_dt, xmin, xmax, ymin, ymax)
 #'
-#' @param atl08_terrain_dt A atl08_terrain_dt object (output of [ATL08_terrain_attributes()] function).
+#' @param atl08_terrain_dt A atl08_terrain_dt object (output of [rICESat2Veg::ATL08_terrain_attributes_dt()] function).
 #' An S4 object of class [rICESat2Veg::icesat2.atl08_dt]
 #' @param polygon Polygon. An object of class [`terra::SpatVector`],
 #' which can be loaded as an ESRI shapefile using [terra::vect] function in the
@@ -26,7 +26,7 @@
 #'atl08_path <- unzip(atl08_zip,exdir = outdir)
 #'
 #' # Reading ATL08 data (h5 file)
-#atl08_h5<-ATL08read(ATL08path=atl08_path)
+#atl08_h5<-ATL08read(atl08_path=atl08_path)
 #'
 #'# Extracting ATL08-derived terrain Metrics
 #'atl08_terrain_dt<-ATL08_terrain_attributes(atl08_h5=atl08_h5)

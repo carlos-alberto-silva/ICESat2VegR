@@ -1,14 +1,14 @@
 atl08_path<-"C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL08_20220401221822_01501506_005_01.h5"
-atl08_h5<-readATL08(ATL08path="C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL08_20220826063041_09981605_005_01.h5")
+atl08_h5<-ATL08read(atl08_path="C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL08_20220826063041_09981605_005_01.h5")
 
-readATL03 <-function(ATL03path) {
-  ATL03_h5 <- hdf5r::H5File$new(ATL03path, mode = 'r')
+ATL03read <-function(atl03_path) {
+  ATL03_h5 <- hdf5r::H5File$new(atl03_path, mode = 'r')
   ATL03<- new("icesat2.ATL03", h5 = ATL03_h5)
   return(ATL03)
 }
 
 atl03_path<-"C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL03_20220401221822_01501506_005_01.h5"
-atl03_h5<-readATL03(ATL03path="C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL03_20220826063041_09981605_005_01.h5")
+atl03_h5<-ATL03read(atl03_path="C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL03_20220826063041_09981605_005_01.h5")
 
 names(atl03_h5@h5[["gt1r/heights"]])
 

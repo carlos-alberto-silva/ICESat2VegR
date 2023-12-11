@@ -5,8 +5,8 @@
 #'
 #'@usage getATL08(atl08_class)
 #'
-#'@param atl08_class A ICESat-2 ATL08 object (output of [readATL08()] function).
-#'An S4 object of class "icesat2.atl08".
+#'@param atl08_class A ICESat-2 ATL08 object (output of [ATL08read()] function).
+#'An S4 object of class [rICESat2Veg::icesat2.atl08_dt].
 #' @param beam Character vector indicating beams to process
 #' @param beam_strength Character vector indicating the strength of beams to process
 #'
@@ -49,7 +49,7 @@
 #'level2AM<-getLevel2AM(level2a)
 #'head(level2AM)
 #'
-#'close(level2a)
+#'close(atl08_h5)
 #'@export
 get_atl08 <- function(atl08_class,
                        beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),

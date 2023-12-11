@@ -5,7 +5,7 @@
 #' @usage ATL03_ATL08_joined_dt_clipBox(atl03_atl08_dt, xmin, xmax, ymin, ymax)
 #'
 #' @param atl03_atl08_dt  An S4 object of class [rICESat2Veg::icesat2.atl03atl08_dt] containing ATL03 and ATL08 data
-#' (output of [rICESat2Veg::ATL03_ATL08join()] function).
+#' (output of [rICESat2Veg::ATL03_ATL08_join_dt()] function).
 #' @param xmin Numeric. West longitude (x) coordinate of bounding rectangle, in decimal degrees.
 #' @param xmax Numeric. East longitude (x) coordinate of bounding rectangle, in decimal degrees.
 #' @param ymin Numeric. South latitude (y) coordinate of bounding rectangle, in decimal degrees.
@@ -40,8 +40,8 @@
 #atl08_h5<-ATL08read(atl08_path=atl08_path)
 #'
 #'# # Extracting ATL03 and ATL08 photons and heights
-#'atl03_08_dt<-ATL03_ATL08join(atl03_h5,atl08_h5)
-#'head(atl03_08_dt)
+#'atl03_atl08_dt<-ATL03_ATL08_join_dt(atl03_h5,atl08_h5)
+#'head(atl03_atl08_dt)
 #'
 #' # Bounding rectangle coordinates
 #' xmin <- -107.7
@@ -50,7 +50,7 @@
 #' ymax <- 42.75
 #'
 #' # Clipping ATL08-derived canopy metrics by boundary box extent
-#'atl03_08_dt_clip <- ATL03_ATL08_joined_dt_clipBox(atl03_08_dt, xmin, xmax, ymin, ymax)
+#'atl03_atl08_dt_clip <- ATL03_ATL08_joined_dt_clipBox(atl03_atl08_dt, xmin, xmax, ymin, ymax)
 #'
 #'close(atl03_h5)
 #'close(atl08_h5)

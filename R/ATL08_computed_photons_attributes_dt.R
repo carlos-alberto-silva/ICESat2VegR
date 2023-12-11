@@ -7,20 +7,20 @@ ATL08_photon.var.map[["ph_h"]]="ph_h"
 ATL08_photon.var.map[["d_flag"]]="d_flag"
 ATL08_photon.var.map[["delta_time"]]="delta_time"
 #'
-#'ATL08 computed photons parameters
+#'ATL08 computed photons attributes
 #'
-#'@description This function extracts computed photons parameters from ICESat-2 ATL08 data
+#'@description This function extracts computed photons attributes from ICESat-2 ATL08 data
 #'
-#'@usage ATL08_photons(atl08_h5, beam)
+#'@usage ATL08_photons_attributes_dt(atl08_h5, beam)
 #'
-#'@param atl08_h5 A ICESat-2 ATL08 object (output of [readATL08()] function).
-#'An S4 object of class "icesat2.atl08".
+#'@param atl08_h5 A ICESat-2 ATL08 object (output of [ATL08read()] function).
+#'An S4 object of class [rICESat2Veg::icesat2.atl08_dt].
 #'@param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
 #'
 #'@return Returns an S4 object of class [data.table::data.table]
-#'containing the ATL08 computed photons parameters.
+#'containing the ATL08 computed photons attributes.
 #'
-#'@details These are the photons parameters extracted by default:
+#'@details These are the photons attributes extracted by default:
 #'\itemize{
 #'\item \emph{ph_segment_id} Georeferenced	bin	number (20-m) associated	with	each photon
 #'\item \emph{classed_pc_indx} Indices of photons	tracking back	to ATL03	that	surface finding	software	identified and	used	within	the
@@ -49,18 +49,18 @@ ATL08_photon.var.map[["delta_time"]]="delta_time"
 #atl08_h5<-ATL08read(ATL08_path=atl08_path)
 #'
 #'# Extracting ATL08 classified photons and heights
-#'ATL08_photons<-ATL08_photons(atl08_h5=atl08_h5)
-#'head(ATL08_photons)
+#'atl08_photons<-ATL08_photons_attributes_dt(atl08_h5=atl08_h5)
+#'head(atl08_photons)
 #'
 #'close(atl08_h5)
 #'@export
-ATL08_photons <- function(atl08_h5,
+ATL08_photons_attributes_dt <- function(atl08_h5,
                        beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
                        photon_attribute=c("ph_segment_id","classed_pc_indx","classed_pc_flag","ph_h", "d_flag", "delta_time")) {
 
   # Check file input
   if (!class(atl08_h5)=="icesat2.atl08_h5") {
-    stop("atl08_h5 must be an object of class 'icesat2.atl08_h5' - output of [readATL08()] function ")
+    stop("atl08_h5 must be an object of class 'icesat2.atl08_h5' - output of [ATL08read()] function ")
   }
 
   #h5

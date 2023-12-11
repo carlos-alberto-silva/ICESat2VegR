@@ -6,7 +6,7 @@
 #' @usage ATL03ATL08_dt_gridStat(atl03_atl08_dt, func, res)
 #'
 #' @param atl03atl08_dt  An S4 object of class [rICESat2Veg::icesat2.atl03atl08_dt] containing ATL03 and ATL08 joined attributes
-#' (output of the [ATL03ATL08join()] function).
+#' (output of the [ATL03_ATL08_join_dt()] function).
 #' @param func The function to be applied for computing the defined statistics
 #' @param res Spatial resolution in decimal degrees for the output SpatRast raster layer. Default is 0.5.
 #' @param ph_class Character vector indicating photons to process based on the classification (1=ground, 2=canopy, 3=top canopy),
@@ -41,11 +41,11 @@
 #atl08_h5<-ATL08read(atl08_path=atl08_path)
 #'
 #'# # Extracting ATL03 and ATL08 photons and heights
-#'atl03_08_dt<-ATL03_ATL08join(atl03_h5,atl08_h5)
-#'head(atl03_08_dt)
+#'atl03_atl08_dt<-ATL03_ATL08_join_dt(atl03_h5,atl08_h5)
+#'head(atl03_atl08_dt)
 #'
 #'# Computing the mean ph_h at 30 m grid cell
-#'mean_ph_h <-ATL03ATL08joined_dt_gridStat(atl03atl08_dt, func=mean(ph_h), res=0.5)
+#'mean_ph_h <-ATL03_ATL08_joined_dt_gridStat(atl03atl08_dt, func=mean(ph_h), res=0.5)
 #'
 #'plot(top_terrain)
 #'
@@ -61,7 +61,7 @@
 #' }
 #'
 #' # Computing a series of ph_h at 30 m grid cellfrom customized function
-#'ph_h_metrics <-ATL03ATL08joined_dt_gridStat(atl03atl08_dt, func=mySetOfMetrics(ph_h),res=0.5)
+#'ph_h_metrics <-ATL03_ATL08_joined_dt_gridStat(atl03atl08_dt, func=mySetOfMetrics(ph_h),res=0.5)
 #'
 #'plot(ph_h_metrics)
 #'
@@ -69,7 +69,7 @@
 #'close(atl08_h5)
 #' @import data.table lazyeval
 #' @export
-ATL03ATL08joined_dt_gridStat <- function(atl03_atl08_dt,
+ATL03_ATL08_joined_dt_gridStat <- function(atl03_atl08_dt,
                                    func,
                                    res = 0.5,
                                    ph_class=c(2,3),

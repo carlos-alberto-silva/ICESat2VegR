@@ -6,7 +6,7 @@
 #'
 #'@param atl03_path File path pointing to ICESat-2 ATL03 data. Data in HDF5 Hierarchical Data Format (.h5).
 #'
-#'@return Returns an S4 object of class [`icesat2.ATL03-class`] containing ICESat-2 ATL03 data.
+#'@return Returns an S4 object of class [`icesat2.atl03_dt`] containing ICESat-2 ATL03 data.
 #'
 #'@seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
 #'
@@ -18,10 +18,10 @@
 #'                   package="rICESat2Veg")
 #'
 #'# Unzipping ICESat-2 ATL03 data
-#'ATL03path <- unzip(ATL03_fp_zip,exdir = outdir)
+#'atl03_path <- unzip(ATL03_fp_zip,exdir = outdir)
 #'
 #'# Reading ICESat-2 ATL03 data (h5 file)
-#'ATL03<-ATL03read(ATL03path=ATL03path)
+#'ATL03<-ATL03read(atl03_path=atl03_path)
 #'
 #'close(ATL03)
 #'@import hdf5r

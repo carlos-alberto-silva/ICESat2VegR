@@ -8,7 +8,7 @@
 #'
 #'@param atl08_path File path pointing to ICESat-2 ATL08 data. Data in HDF5 Hierarchical Data Format (.h5).
 #'
-#'@return Returns an S4 object of class [`icesat2.atl08-class`] containing ICESat-2 ATL08 data.
+#'@return Returns an S4 object of class ["icesat2.atl08_dt"] containing ICESat-2 ATL08 data.
 #'
 #'@seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
 #'
@@ -20,7 +20,7 @@
 #'                   package="rICESat2Veg")
 #'
 #'# Unzipping ICESat-2 ATL08 data
-#'atl08path <- unzip(atl08_fp_zip,exdir = outdir)
+#'atl08_path <- unzip(atl08_fp_zip,exdir = outdir)
 #'
 #'# Reading ICESat-2 ATL08 data (h5 file)
 #'atl08<-ATL08read(atl08_path=atl08_path)

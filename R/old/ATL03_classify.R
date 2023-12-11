@@ -7,20 +7,20 @@ ATL08_photon.var.map[["ph_h"]]="ph_h"
 ATL08_photon.var.map[["d_flag"]]="d_flag"
 ATL08_photon.var.map[["delta_time"]]="delta_time"
 #'
-#'ATL08 computed photons parameters
+#'ATL08 computed photons attributes
 #'
-#'@description This function extracts computed photons parameters from ICESat-2 ATL08 data
+#'@description This function extracts computed photons attributes from ICESat-2 ATL08 data
 #'
-#'@usage ATL08_photons(atl08_h5, beam)
+#'@usage ATL08_photons_attributes_dt(atl08_h5, beam)
 #'
-#'@param atl08_h5 A ICESat-2 ATL08 object (output of [readATL08()] function).
-#'An S4 object of class "icesat2.atl08".
+#'@param atl08_h5 A ICESat-2 ATL08 object (output of [ATL08read()] function).
+#'An S4 object of class [rICESat2Veg::icesat2.atl08_dt].
 #'@param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
 #'
 #'@return Returns an S4 object of class [data.table::data.table]
-#'containing the ATL08 computed photons parameters.
+#'containing the ATL08 computed photons attributes.
 #'
-#'@details These are the photons parameters extracted by default:
+#'@details These are the photons attributes extracted by default:
 #'\itemize{
 #'\item \emph{ph_segment_id} Georeferenced	bin	number (20-m) associated	with	each photon
 #'\item \emph{classed_pc_indx} Indices of photons	tracking back	to ATL03	that	surface finding	software	identified and	used	within	the
@@ -46,25 +46,25 @@ ATL08_photon.var.map[["delta_time"]]="delta_time"
 #'atl08_path <- unzip(atl08_zip,exdir = outdir)
 #'
 #'# Reading ATL08 data (h5 file)
-#atl08_h5<-readATL08(ATL08path=atl08_path)
+#atl08_h5<-ATL08read(atl08_path=atl08_path)
 #'
 #'# Extracting ATL08 classified photons and heights
-#'ATL08_photons<-ATL08_photons(atl08_h5=atl08_h5)
-#'head(ATL08_photons)
+#'ATL08_photons_attributes_dt<-ATL08_photons_attributes_dt(atl08_h5=atl08_h5)
+#'head(ATL08_photons_attributes_dt)
 #'
 #'close(atl08_h5)
 #'@export
-ATL08_photons <- function(atl03_h5,atl08_h5,
+ATL08_photons_attributes_dt <- function(atl03_h5,atl08_h5,
                        beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")) {
 
   # Check file input
   if (!class(atl03_h5)=="icesat2.atl03") {
-    stop("atl03_h5 must be an object of class 'icesat2.atl08' - output of [readATL03()] function ")
+    stop("atl03_h5 must be an object of class 'icesat2.atl08' - output of [ATL03read()] function ")
   }
 
   # Check file input
   if (!class(atl08_h5)=="icesat2.atl08") {
-    stop("atl08_h5 must be an object of class 'icesat2.atl08' - output of [readATL08()] function ")
+    stop("atl08_h5 must be an object of class 'icesat2.atl08' - output of [ATL08read()] function ")
   }
 
   #h5
@@ -142,15 +142,15 @@ summary(photon_dt)
 
 
 library(hdf5r)
-atl03path <- "Z:\\01_Projects\\04_NASA_ICESat2\\10_others\\rICESat2Veg\\inst\\exdata\\ATL03_20220401221822_01501506_005_01.h5"
-atl08path <- "Z:\\01_Projects\\04_NASA_ICESat2\\10_others\\rICESat2Veg\\inst\\exdata\\ATL08_20220401221822_01501506_005_01.h5"
+atl03_path <- "Z:\\01_Projects\\04_NASA_ICESat2\\10_others\\rICESat2Veg\\inst\\exdata\\ATL03_20220401221822_01501506_005_01.h5"
+atl08_path <- "Z:\\01_Projects\\04_NASA_ICESat2\\10_others\\rICESat2Veg\\inst\\exdata\\ATL08_20220401221822_01501506_005_01.h5"
 
-atl03_h5<-readATL03(atl03path=atl03path)
-atl02_h5<-readATL08(atl08path=atl08path)
+atl03_h5<-ATL03read(atl03_path=atl03_path)
+atl02_h5<-ATL08read(atl08_path=atl08_path)
 
 
-atl03 <- hdf5r::H5File$new(ATL03path, mode = "r")
-atl08 <- hdf5r::H5File$new(ATL08path, mode = "r")
+atl03 <- hdf5r::H5File$new(atl03_path, mode = "r")
+atl08 <- hdf5r::H5File$new(atl08_path, mode = "r")
 
 
 sum(atl03[["gt1r/geolocation/segment_ph_cnt"]][])

@@ -3,10 +3,10 @@
 #' @description This function computes a series of user defined descriptive statistics within
 #' each given grid cell for ATL08 terrain attributes
 #'
-#' @usage ATL08_terrain_segStat(atl03_atl08_dt, func, res)
+#' @usage ATL08_terrain_dt_segStat(atl03_atl08_dt, func, res)
 #'
 #' @param ATL08_terrain_dt  An S4 object of class [rICESat2Veg::icesat2.atl08_dt] containing ATL08 data
-#' (output of [ATL08_terrain_attributes()] or [ATL08_terrain_segStat()] functions).
+#' (output of [rICESat2Veg::ATL08_terrain_attributes_dt()] or [rICESat2Veg::ATL08_terrain_dt_segStat()] functions).
 #' @param func The function to be applied for computing the defined statistics
 #' @param res Spatial resolution in decimal degrees for the output SpatRast raster layer. Default is 0.5.
 #'

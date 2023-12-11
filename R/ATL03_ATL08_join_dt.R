@@ -1,19 +1,19 @@
-#'Join ATL03 and ATL08 photons parameters
+#'Join ATL03 and ATL08 photons attributes
 #'
-#'@description This function joins ATL03 and ATL08 computed photons parameters
+#'@description This function joins ATL03 and ATL08 computed photons attributes
 #'
-#'@usage ATL08_photons(atl08_h5, beam)
+#'@usage ATL03_ATL08_join_dt(atl08_h5, beam)
 #'
 #'@param atl03_h5 A ICESat-2 ATL03 object (output of [ATL03read()] function).
-#'An S4 object of class "icesat2.atl03".
+#'An S4 object of class [rICESat2Veg::icesat2.atl03_dt].
 #'@param atl08_h5 A ICESat-2 ATL08 object (output of [ATL08read()] function).
-#'An S4 object of class "icesat2.atl08".
+#'An S4 object of class [rICESat2Veg::icesat2.atl08_dt].
 #'@param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
 #'
 #'@return Returns an S4 object of class [rICESat2::icesat2.atl03atl08_dt]
-#'containing the ATL08 computed photons parameters.
+#'containing the ATL08 computed photons attributes.
 #'
-#'@details These are the photons parameters extracted by default:
+#'@details These are the photons attributes extracted by default:
 #'\itemize{
 #'\item \emph{lon_ph} Longitude of each received photon. Computed from the ECEF Cartesian coordinates of the bounce point.
 #'\item \emph{lat_ph} Latitude of each received photon. Computed from the ECEF Cartesian coordinates of the bounce point.
@@ -56,29 +56,29 @@
 #'atl08_path <- unzip(atl08_zip,exdir = outdir)
 #'
 #'# Reading ATL03 data (h5 file)
-#atl03_h5<-ATL08read(atl03_path=atl03_path)
+#atl03_h5<-ATL03read(atl03_path=atl03_path)
 #'
 #'# Reading ATL08 data (h5 file)
 #atl08_h5<-ATL08read(atl08_path=atl08_path)
 #'
 #'# # Extracting ATL03 and ATL08 photons and heights
-#'atl03_08_dt<-ATL03_ATL08join(atl03_h5,atl08_h5)
-#'head(atl03_08_dt)
+#'atl03_atl08_dt<-ATL03_ATL08_join_dt(atl03_h5,atl08_h5)
+#'head(atl03_atl08_dt)
 #'
 #'close(atl03_h5)
 #'close(atl08_h5)
 #'@export
-ATL03_ATL08join <- function(atl03_h5,atl08_h5,
+ATL03_ATL08_join_dt <- function(atl03_h5,atl08_h5,
                        beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")) {
 
   # Check file input
   if (!class(atl03_h5)=="icesat2.atl03_h5") {
-    stop("atl03_h5 must be an object of class 'icesat2.atl03_h5' - output of [readATL03()] function ")
+    stop("atl03_h5 must be an object of class 'icesat2.atl03_h5' - output of [ATL03read()] function ")
   }
 
   # Check file input
   if (!class(atl08_h5)=="icesat2.atl08_h5") {
-    stop("atl08_h5 must be an object of class 'icesat2.atl08_h5' - output of [readATL08()] function ")
+    stop("atl08_h5 must be an object of class 'icesat2.atl08_h5' - output of [ATL08read()] function ")
   }
 
   #h5

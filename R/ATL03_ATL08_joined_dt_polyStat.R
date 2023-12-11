@@ -5,8 +5,8 @@
 #'
 #' @usage ATL03_ATL08_joined_polyStat(atl03_atl08_dt, func, seg_length,ph_class,beam,quality_ph,night_flag)
 #'
-#' @param atl03_atl08_dt  An S4 object of class "icesat2.atl08_dt" containing ATL03 and ATL08 data
-#' (output of [ATL03_ATL08join()] function).
+#' @param atl03_atl08_dt  An S4 object of class [rICESat2Veg::icesat2.atl08_dt] containing ATL03 and ATL08 data
+#' (output of [ATL03_ATL08_join_dt()] function).
 #' @param func The function to be applied for computing the defined statistics
 #' @param poly_id Polygon id. If defined, statistics will be computed for each polygon
 #'
@@ -38,8 +38,8 @@
 #atl08_h5<-ATL08read(atl08_path=atl08_path)
 #'
 #'# Extracting ATL03 and ATL08 photons and heights
-#'atl03_08_dt<-ATL03_ATL08join(atl03_h5,atl08_h5)
-#'head(atl03_08_dt)
+#'atl03_atl08_dt<-ATL03_ATL08_join_dt(atl03_h5,atl08_h5)
+#'head(atl03_atl08_dt)
 #'
 #'# Specifying the path to shapefile
 #' polygon_filepath <- system.file("extdata", "polygon.shp", package = "rICESat2Veg")
@@ -48,7 +48,7 @@
 #'polygon <- terra::vect(polygon_filepath)
 #'
 #'# Clipping ATL08 terrain attributes by Geometry
-#' atl03_atl08_dt_clip <- ATL03_ATL08_joined_dt_clipGeometry(atl03_08_dt, polygon, split_by = "FID")
+#' atl03_atl08_dt_clip <- ATL03_ATL08_joined_dt_clipGeometry(atl03_atl08_dt, polygon, split_by = "FID")
 #'
 #'# Computing the maximum ph_h by polygon id
 #'max_ph_h <-ATL03_ATL08_joined_dt_polyStat(atl03_atl08_dt_clip, func=max(ph_h),poly_id="poly_id")

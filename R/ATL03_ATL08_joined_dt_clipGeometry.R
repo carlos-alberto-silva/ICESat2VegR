@@ -2,10 +2,10 @@
 #'
 #' @description This function clips joined ATL03 and ATL08 photon attributes table within a given geometry
 #'
-#' @usage ATL03ATL08joined_dt_clipGeometry(atl03_atl08_dt, polygon, split_by = "FID")
+#' @usage ATL03_ATL08_join_dted_dt_clipGeometry(atl03_atl08_dt, polygon, split_by = "FID")
 #'
 #' @param atl03_atl08_dt  An S4 object of class [rICESat2Veg::icesat2.atl03atl08_dt] containing ATL03 and ATL08 data
-#' (output of [rICESat2Veg::ATL03_ATL08join()] function).
+#' (output of [rICESat2Veg::ATL03_ATL08_join_dt()] function).
 #' @param polygon Polygon. An object of class [`terra::SpatVector`],
 #' which can be loaded as an ESRI shapefile using [terra::vect] function in the
 #' \emph{sf} package.
@@ -39,8 +39,8 @@
 #atl08_h5<-ATL08read(atl08_path=atl08_path)
 #'
 #'# # Extracting ATL03 and ATL08 photons and heights
-#'atl03_08_dt<-ATL03_ATL08_join(atl03_h5,atl08_h5)
-#'head(atl03_08_dt)
+#'atl03_atl08_dt<-ATL03_ATL08_join(atl03_h5,atl08_h5)
+#'head(atl03_atl08_dt)
 #'
 #' # Specifying the path to shapefile
 #' polygon_filepath <- system.file("extdata", "polygon.shp", package = "rICESat2Veg")
@@ -49,7 +49,7 @@
 #'polygon <- terra::vect(polygon_filepath)
 #'
 #' # Clipping ATL08 terrain attributes by Geometry
-#' atl03_atl08_dt_clip <- ATL03_ATL08_joined_dt_clipGeometry(atl03_08_dt, polygon, split_by = "FID")
+#' atl03_atl08_dt_clip <- ATL03_ATL08_joined_dt_clipGeometry(atl03_atl08_dt, polygon, split_by = "FID")
 #'
 #' hasLeaflet <- require(leaflet)
 #'

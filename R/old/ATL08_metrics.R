@@ -54,8 +54,8 @@ ATL08_terrain.var.map[["terrain_slope"]]="terrain_slope"
 #'
 #'@usage ATL08_metrics(atl08_h5, beam)
 #'
-#'@param atl08_h5 A ICESat-2 ATL08 object (output of [readATL08()] function).
-#'An S4 object of class "icesat2.atl08".
+#'@param atl08_h5 A ICESat-2 ATL08 object (output of [ATL08read()] function).
+#'An S4 object of class [rICESat2Veg::icesat2.atl08_dt].
 #'@param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
 #'
 #'@return Returns an S4 object of class [data.table::data.table]
@@ -76,7 +76,7 @@ ATL08_terrain.var.map[["terrain_slope"]]="terrain_slope"
 #'atl08_path <- unzip(atl08_zip,exdir = outdir)
 #'
 #'# Reading ATL08 data (h5 file)
-#atl08_h5<-readATL08(ATL08path=atl08_path)
+#atl08_h5<-ATL08read(atl08_path=atl08_path)
 #'
 #'# Extracting ATL08 Elevation and Canopy Height Metrics
 #'ATL08_metrics<-ATL08_metrics(atl08_h5=atl08_h5)
@@ -133,7 +133,7 @@ ATL08_metrics <- function(atl08_h5,
 
   # Check file input
   if (!class(atl08_h5)=="icesat2.atl08") {
-    stop("atl08_h5 must be an object of class 'icesat2.atl08' - output of [readATL08()] function ")
+    stop("atl08_h5 must be an object of class 'icesat2.atl08' - output of [ATL08read()] function ")
   }
 
   #h5
@@ -255,16 +255,16 @@ ATL08_metrics <- function(atl08_h5,
 
 
 atl08_path<-"C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL08_20220401221822_01501506_005_01.h5"
-atl08_h5<-readATL08(ATL08path="C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL08_20220826063041_09981605_005_01.h5")
+atl08_h5<-ATL08read(atl08_path="C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL08_20220826063041_09981605_005_01.h5")
 
-readATL03 <-function(ATL03path) {
-  ATL03_h5 <- hdf5r::H5File$new(ATL03path, mode = 'r')
+ATL03read <-function(atl03_path) {
+  ATL03_h5 <- hdf5r::H5File$new(atl03_path, mode = 'r')
   ATL03<- new("icesat2.ATL03", h5 = ATL03_h5)
   return(ATL03)
 }
 
 atl03_path<-"C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL03_20220401221822_01501506_005_01.h5"
-atl03_h5<-readATL03(ATL03path="C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL03_20220826063041_09981605_005_01.h5")
+atl03_h5<-ATL03read(atl03_path="C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL03_20220826063041_09981605_005_01.h5")
 
 names(atl03_h5@h5[["gt1r/heights"]])
 
@@ -376,8 +376,8 @@ groups_id<-grep("BEAM\\d{4}$",gsub("/","",
 #'
 #'@usage getATL08(atl08_class)
 #'
-#'@param atl08_class A ICESat-2 ATL08 object (output of [readATL08()] function).
-#'An S4 object of class "icesat2.atl08".
+#'@param atl08_class A ICESat-2 ATL08 object (output of [ATL08read()] function).
+#'An S4 object of class [rICESat2Veg::icesat2.atl08_dt].
 #' @param beam Character vector indicating beams to process
 #' @param beam_strength Character vector indicating the strength of beams to process
 #'
@@ -420,7 +420,7 @@ groups_id<-grep("BEAM\\d{4}$",gsub("/","",
 #'level2AM<-getLevel2AM(level2a)
 #'head(level2AM)
 #'
-#'close(level2a)
+#'close(atl08_h5)
 #'@export
 get_atl08 <- function(atl08_class,
                       beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
