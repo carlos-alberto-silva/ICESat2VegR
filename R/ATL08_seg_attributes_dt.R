@@ -158,14 +158,14 @@ ATL08_canopy_attributes_dt <- function(atl08_h5,
                 m[, eval(col) := atl08_h5v2_i[[metric_address]][]]
               }
           }
-          canopy_dt = data.table::rbindlist(list(canopy.dt, m), fill = TRUE)
+          canopy.dt = data.table::rbindlist(list(canopy.dt, m), fill = TRUE)
       }
 
 
       }
 
 
-  canopy_dt<- new("icesat2.atl08_dt", dt = canopy_dt)
+  canopy_dt<- new("icesat2.atl08_dt", dt = canopy.dt)
 
   close(pb)
 
