@@ -1,39 +1,127 @@
-#'Read ICESat-2 ATL08 data
+concept_ids <- list(
+  ATL03 = "ATL03",
+  ATL08 = "ATL08"
+)
+
+#' GEDI finder
 #'
-#'@description This function reads the ICESat-2 Land and
-#'Vegetation Along-Track Products (ATL08) as h5 file.
+#' @description This function finds the exact granule(s) that contain GEDI data
+#' for a given region of interest and date range
 #'
+#' @param short_name GEDI data level; Options: "GEDI01_B", "GEDI02_A",
+#' "GEDI02_B", "GEDI03", "GEDI04_A", "GEDI04_A", "GEDI04_B"
+#' @param ul_lat Numeric. Upper left (ul) corner coordinates, in lat
+#' (decimal degrees) for the bounding box of the area of interest.
+#' @param ul_lon Numeric. Upper left (ul) corner coordinates, in lon
+#' (decimal degrees) for the bounding box of the area of interest.
+#' @param lr_lat Numeric. Lower right (ul) corner coordinates, in lat
+#' (decimal degrees) for the bounding box of the area of interest.
+#' @param lr_lon Numeric. Lower right (ul) corner coordinates, in lon
+#' (decimal degrees) for the bounding box of the area of interest.
+#' @param version Character. The version of the GEDI product files to be
+#' returned. Default "002".
+#' @param daterange Vector. Date range. Specify your start and end dates
+#' using ISO 8601 \[YYYY\]-\[MM\]-\[DD\]T\[hh\]:\[mm\]:\[ss\]Z. Ex.:
+#' c("2019-07-01T00:00:00Z","2020-05-22T23:59:59Z"). If NULL (default),
+#' the date range filter will be not applied.
 #'
-#'@usage ATL08read(atl08_path)
+#' @return Return a vector object pointing out the path saving the downloaded
+#' GEDI data within the boundary box coordinates provided
 #'
-#'@param atl08_path File path pointing to ICESat-2 ATL08 data. Data in HDF5 Hierarchical Data Format (.h5).
+#' @seealso bbox: Defined by the upper left and lower right corner coordinates,
+#' in lat,lon ordering, for the bounding box of the area of interest
+#' (e.g. \[ul_lat,ul_lon,lr_lat,lr_lon\]).
 #'
-#'@return Returns an S4 object of class ["icesat2.atl08_dt"] containing ICESat-2 ATL08 data.
+#' This function relies on the existing CMR tool:
+#' \url{https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html}
 #'
-#'@seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
+#' @examples
+#' \donttest{
+#' # gedifinder is a web service provided by NASA
+#' # usually the request takes more than 5 seconds
 #'
-#'@examples
-#'# Specifying the path to ICESat-2 ATL08 data (zip file)
-#'outdir = tempdir()
-#'atl08_fp_zip <- system.file("extdata",
-#'                   "ATL0802_A_2019108080338_O01964_T05337_02_001_01_sub.zip",
-#'                   package="rICESat2Veg")
+#' # Specifying bounding box coordinates
+#' ul_lat <- 42.0
+#' ul_lon <- -100
+#' lr_lat <- 40.0
+#' lr_lon <- -96.0
 #'
-#'# Unzipping ICESat-2 ATL08 data
-#'atl08_path <- unzip(atl08_fp_zip,exdir = outdir)
+#' # Specifying the date range
+#' daterange <- c("2019-07-01", "2020-05-22")
 #'
-#'# Reading ICESat-2 ATL08 data (h5 file)
-#'atl08<-ATL08read(atl08_path=atl08_path)
-#'
-#'close(atl08)
-#'@import hdf5r
-#'@export
-ATL08read <-function(atl08_path) {
-  if (!is.character(atl08_path) | !tools::file_ext(atl08_path) == "h5") {
-    stop("atl08_path must be a path to a h5 file")
+#' # Extracting the path to GEDI data for the specified boundary box coordinates
+#' gedi02b_list <- gedifinder(
+#'   product = "GEDI02_B",
+#'   ul_lat,
+#'   ul_lon,
+#'   lr_lat,
+#'   lr_lon,
+#'   version = "006",
+#'   daterange = daterange
+#' )
+#' }
+#' @import jsonlite curl magrittr
+#' @export
+ICESat2_finder <- function(short_name,
+                           ul_lat,
+                           ul_lon,
+                           lr_lat,
+                           lr_lon,
+                           version = "006",
+                           daterange = NULL) {
+  `%>%` <- magrittr::`%>%`
+  page <- 1
+  bbox <- paste(ul_lon, lr_lat, lr_lon, ul_lat, sep = ",")
+
+  # short_name = "ATL08"
+
+  # Granules search url pattern
+  url_format <- paste0(
+    "https://cmr.earthdata.nasa.gov/search/granules.json?",
+    "pretty=false&page_size=2000&short_name=%s",
+    "&bounding_box=%s%%s"
+  )
+  request_url <- sprintf(
+    url_format,
+    short_name,
+    bbox
+  )
+
+  # Add temporal search if not null
+  temporal_filter <- ""
+  if (!is.null(daterange)) {
+    temporal_filter <- sprintf("&temporal=%s,%s", daterange[1], daterange[2])
+  }
+  request_url <- request_url %>% sprintf(temporal_filter)
+
+  granules_href <- c()
+  # Append fetched granules to granules_href
+  # recursively, for each page (max 2000 per page)
+  repeat {
+    response <- curl::curl_fetch_memory(paste0(
+      request_url,
+      "&pageNum=",
+      page
+    ))
+
+    result <- rawToChar(response$content) %>%
+      jsonlite::parse_json()
+
+    if (response$status_code != 200) {
+      stop(paste("\n", result$errors, collapse = "\n"))
+    }
+    granules <- result$feed$entry
+
+    if (length(granules) == 0) break
+
+    hrefs <- sapply(granules, function(x) x$links[[1]]$href)
+
+    granules_href <- c(
+      granules_href,
+      hrefs
+    )
+    page <- page + 1
   }
 
-  atl08_h5 <- hdf5r::H5File$new(atl08_path, mode = 'r')
-  atl08<- new("icesat2.atl08", h5 = atl08_h5)
-  return(atl08)
+  return(granules_href)
 }
