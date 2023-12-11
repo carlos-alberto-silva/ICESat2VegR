@@ -16,7 +16,7 @@ public:
 
   void CalculateStatistics()
   {
-    band->GetStatistics(false, true, NULL, NULL, NULL, NULL);
+    band->ComputeStatistics(false, NULL, NULL, NULL, NULL, NULL, NULL);
   }
 
   IntegerVector GetBlockXSize()
@@ -205,7 +205,7 @@ GDALDatasetR *create_dataset(
   GDALDataset *ds = tiffDriver->Create(output, width, height, nbands, (GDALDataType)datatype, charVec.data());
 
   if (ds == NULL)
-    Rcpp::stop("Could not create file!");
+    Rcpp::stop(CPLGetLastErrorMsg());
 
   double transform[6] = {lon_min, res[0], 0, lat_max, 0, res[1]};
   ds->SetGeoTransform(transform);

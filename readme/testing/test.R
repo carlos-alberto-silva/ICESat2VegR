@@ -3,7 +3,7 @@ library(rICESat2Veg)
 library(data.table)
 
 # Specifying the path to ATL08 file (zip file)
-outdir <- tempdir()
+outdir <- "C:/Users/caiohamamura/Desktop/saida"
 
 # atl08_zip <- system.file("extdata",
 #   "ATL08_20220401221822_01501506_005_01.h5",
@@ -14,10 +14,10 @@ outdir <- tempdir()
 # atl08_path <- unzip(atl08_zip, exdir = outdir)
 
 # Bounding rectangle coordinates
-ul_lat <- -13.72016
-ul_lon <- -44.14000
-lr_lat <- -13.74998
-lr_lon <- -44.11009
+ul_lat <- 59.50
+ul_lon <- -108.3
+lr_lat <- 26.99
+lr_lon <- -103.8
 
 res <- 100 # meters
 lat_to_met_factor <- 1 / 110540
@@ -47,7 +47,7 @@ finalizer <- list(
   range = "max-min"
 )
 
-atl08_path <- "inst/extdat/ATL08_20220401221822_01501506_005_01.h5"
+atl08_path <- c("../inst/extdat/")
 metrics <- c("h_canopy")
 out_root <- file.path(outdir, "output")
 ul_lat <- ul_lat
@@ -65,7 +65,7 @@ creation_options <- c(
 agg_function <- agg_function
 agg_join <- agg_join
 finalizer <- finalizer
-
+beam <- c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
 
 
 block_inds <-
@@ -89,7 +89,7 @@ projstring <- 'GEOGCS["WGS 84",
     UNIT["degree",0.01745329251994328,
         AUTHORITY["EPSG","9122"]],
     AUTHORITY["EPSG","4326"]]'
-atl08_list = atl08_path
+
 atl08_list <- sapply(atl08_path, function(search_path) {
   list.files(search_path,
     pattern = "ATL08_.*h5",
@@ -107,15 +107,15 @@ cols.coord <- c("latitude", "longitude")
 metricCounter <- 0
 nMetrics <- length(metrics)
 
-
+HIGHEST_TREE <- 200
 func <- lazyeval::f_interp(agg_function)
 call <- lazyeval::as_call(func)
 x <- 1
 stats <- eval(call)
 classes <- lapply(stats, class)
 stats <- names(stats)
-# metric = metrics[1]
-for (metric in metrics) {
+metric = metrics[1]
+# for (metric in metrics) {
   metricCounter <- metricCounter + 1
   message(sprintf("Metric %s (%d/%d)", metric, metricCounter, nMetrics), appendLF = T)
   cols <- c(cols.coord, metric)
@@ -123,7 +123,6 @@ for (metric in metrics) {
   rast_paths <- sprintf("%s_%s_%s.tif", out_root, metric, stats)
   rasts <- list()
 
-  # stat_ind = 1
   for (stat_ind in seq_along(stats)) {
     datatype <- GDALDataType$GDT_Float64
     nodata <- -9999.0
@@ -156,16 +155,17 @@ for (metric in metrics) {
   block_y_size <- bands[[1]]$GetBlockYSize()
 
   file_index <- 0
-  # atl08_path = atl08_list[1]
-  for (atl08_path in atl08_list) {
+  # atl08_file = atl08_list[1]
+  for (atl08_file in atl08_list) {
     file_index <- file_index + 1
     message(sprintf("Reading file %s (%d/%d)", basename(atl08_path), file_index, total_files), appendLF = T)
     atl08 <- ATL08_read(atl08_path)
     
     atl03 <- ATL03_read(gsub('ATL08','ATL03',atl08_path))
 
-    atl08_canopy_dt <- ATL03_ATL08_join_dt(atl03, atl08)
-    vals <- ATL08_canopy_attributes_dt(atl08_canopy_dt, beam = beam, canopy_attribute = cols[-c(1:2)])
+
+
+    vals <- ATL08_canopy_attributes_dt(atl08, beam = beam, canopy_attribute = c(metric))
 
     ## Clip metrics by extent
     vals <- ATL08_canopy_dt_clipBox(vals, ul_lon, lr_lon, lr_lat, ul_lat)
@@ -229,11 +229,12 @@ for (metric in metrics) {
     rm(list = ls(envir = thisEnv), envir = thisEnv)
     rm(thisEnv)
 
-    close(atl08_canopy_dt)
+    atl08@h5$close_all()
   }
   # Update statistics for bands
   lapply(bands, function(x) x$CalculateStatistics())
 
+  # x = names(finalizer)[1]
   finalize_rasts <- lapply(names(finalizer), function(x) {
     rast_name <- sprintf("%s_%s_%s.tif", out_root, metric, x)
     message(sprintf("Writing raster: %s", rast_name))
@@ -258,4 +259,3 @@ for (metric in metrics) {
   })
 
   lapply(rasts, function(x) x$Close())
-}
