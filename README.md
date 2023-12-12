@@ -29,6 +29,33 @@ install_github("https://github.com/carlos-alberto-silva/rICESat2Veg", dependenci
 library(rICESat2Veg)
 
 ```    
+## Downloading ICESat-2 data
+```r
+#######
+# Herein, we are using only a ICESat-2 sample dataset for this tutorial.
+#######
+# downloading zip file
+download.file("https://github.com/carlos-alberto-silva/rICESat2Veg/releases/download/datasets/examples.zip",destfile=file.path(outdir, "examples.zip"))
+
+# unzip file 
+unzip(file.path(outdir,"examples.zip"))
+
+```
+
+## Reading ICESat-2 data
+```r
+atl08_h5<-ATL08read(atl08_path=atl08_path)
+
+```
+## Extracting ATL08-derived Terrain Metrics
+```r
+terrain_metrics<-ATL08_terrain(atl08_h5=atl08_h5)
+```
+
+## Extracting ATL08-derived Canopy Metrics
+```r
+canopy_metrics<-ATL08_canopy(atl08_h5=atl08_h5)
+```
 
 # Acknowledgements
 We gratefully acknowledge funding from NASA’s ICESat-2 (ICESat-2, grant 22-ICESat2_22-0006), Carbon Monitoring System (CMS, grant 22-CMS22-0015) and Commercial Smallsat Data Scientific Analysis(CSDSA, grant 22-CSDSA22_2-0080). 
