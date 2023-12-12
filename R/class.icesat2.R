@@ -1,6 +1,5 @@
 #' @importFrom hdf5r H5File
 setRefClass("H5File")
-requireNamespace("data.table")
 
 #' Class for ICESat-2 ATL08
 #'
@@ -103,7 +102,6 @@ icesat2.atl08_dt <- setClass(
 
 #' @importFrom data.table data.table
 setRefClass("data.table")
-requireNamespace("data.table")
 
 #' Class for joined ATL03 and ATL08 attributes
 #'

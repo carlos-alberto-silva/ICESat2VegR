@@ -9,7 +9,6 @@ lazy_call <- function(func) {
 }
 
 lazy_apply_dt_call <- function(dt, call, group.by = "") {
-  requireNamespace("data.table")
   inner.env <- new.env()
   func.names.args <- all.names(call)
   fn.name <- func.names.args[1]

@@ -1,3 +1,5 @@
+.datatable.aware = TRUE
+
 .onUnload <- function(libpath) {
   library.dynam.unload("rICESat2Veg", libpath)
   invisible()

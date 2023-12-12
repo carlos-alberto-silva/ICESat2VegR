@@ -74,8 +74,7 @@ ATL08_canopy_dt_gridStat <- function(atl08_canopy_dt, func, res = 0.5) {
   }
 
 
-  requireNamespace("data.table")
-  cells <- NA
+    cells <- NA
 
   # Add data.table operator
   `:=` <- data.table::`:=`

@@ -74,8 +74,7 @@ ATL08_canopy_dt_polyStat <- function(atl08_canopy_dt, func, poly_id=NULL) {
     atl08_canopy_dt2<-atl08_canopy_dt@dt
   }
 
-  requireNamespace("data.table")
-
+  
   # Add data.table operator
   `:=` <- data.table::`:=`
 

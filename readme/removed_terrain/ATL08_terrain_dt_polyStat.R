@@ -74,8 +74,7 @@ ATL08_terrain_dt_polyStat <- function(atl08_terrain_dt, func, poly_id=NULL) {
     atl08_terrain_dt2<-atl08_terrain_dt@dt
   }
 
-  requireNamespace("data.table")
-
+  
   # Add data.table operator
   `:=` <- data.table::`:=`
 

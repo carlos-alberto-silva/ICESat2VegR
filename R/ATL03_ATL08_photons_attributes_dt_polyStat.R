@@ -86,8 +86,7 @@ ATL03_ATL08_joined_dt_polyStat <- function(atl03_atl08_dt, func, poly_id=NULL) {
     atl03_atl08_dt2<-atl03_atl08_dt@dt
   }
 
-  requireNamespace("data.table")
-
+  
   # Add data.table operator
   `:=` <- data.table::`:=`
 

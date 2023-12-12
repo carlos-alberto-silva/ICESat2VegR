@@ -99,8 +99,7 @@ ATL08_canopy_dt_segStat <- function(atl03_atl08_dt, func, seg_length = 30, ph_cl
 
   atl03_atl08_dt2$bin<-bin
 
-  requireNamespace("data.table")
-
+  
   # Add data.table operator
   `:=` <- data.table::`:=`
 

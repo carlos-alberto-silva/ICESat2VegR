@@ -85,6 +85,7 @@
 ATL08_terrain_dt_segStat <- function(atl03_atl08_dt, func, seg_length = 30, ph_class=c(2,3),
                                  beam=c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
                                  quality_ph=0,night_flag=1) {
+  atl03_atl08_dt <- atl03_atl08_dt@dt
 
   atl03_atl08_dt2<-atl03_atl08_dt[atl03_atl08_dt$classed_pc_flag %in% ph_class &
                                     atl03_atl08_dt$quality_ph %in% quality_ph &
@@ -95,8 +96,7 @@ ATL08_terrain_dt_segStat <- function(atl03_atl08_dt, func, seg_length = 30, ph_c
 
   atl03_atl08_dt2$bin<-bin
 
-  requireNamespace("data.table")
-
+  
   # Add data.table operator
   `:=` <- data.table::`:=`
 
