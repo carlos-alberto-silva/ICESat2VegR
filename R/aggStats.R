@@ -13,7 +13,7 @@ update_stats = function(agg, x) {
 }
 
 combine_stats = function(agg1, agg2) {
-  combined = data.table()
+  combined = data.table::data.table()
   combined$n = agg1$n + agg2$n
 
   delta = agg2$M1 - agg1$M1

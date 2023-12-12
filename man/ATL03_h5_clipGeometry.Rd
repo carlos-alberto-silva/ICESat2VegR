@@ -4,7 +4,7 @@
 \alias{ATL03_h5_clipGeometry}
 \title{Read ICESat-2 ATL08 data}
 \usage{
-ATL08read(atl08_path)
+ATL08_read(atl08_path)
 }
 \arguments{
 \item{atl08_path}{File path pointing to ICESat-2 ATL08 data. Data in HDF5 Hierarchical Data Format (.h5).}
@@ -28,7 +28,7 @@ atl08_fp_zip <- system.file("extdata",
 atl08_path <- unzip(atl08_fp_zip, exdir = outdir)
 
 # Reading ICESat-2 ATL08 data (h5 file)
-atl08 <- ATL08read(atl08_path = atl08_path)
+atl08 <- ATL08_read(atl08_path = atl08_path)
 
 close(atl08)
 }

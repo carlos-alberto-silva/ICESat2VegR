@@ -29,7 +29,7 @@
 #' close(atl08)
 #' @import hdf5r
 #' @export
-plot <- function(atl08_path) {
+ATL03_photons_plot <- function(atl08_path) {
   if (!is.character(atl08_path) | !tools::file_ext(atl08_path) == "h5") {
     stop("atl08_path must be a path to a h5 file")
   }

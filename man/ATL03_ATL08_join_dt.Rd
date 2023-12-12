@@ -7,10 +7,10 @@
 ATL03_ATL08_join_dt(atl08_h5, beam)
 }
 \arguments{
-\item{atl03_h5}{A ICESat-2 ATL03 object (output of [ATL03read()] function).
+\item{atl03_h5}{A ICESat-2 ATL03 object (output of [ATL03_read()] function).
 An S4 object of class [rICESat2Veg::icesat2.atl03_dt].}
 
-\item{atl08_h5}{A ICESat-2 ATL08 object (output of [ATL08read()] function).
+\item{atl08_h5}{A ICESat-2 ATL08 object (output of [ATL08_read()] function).
 An S4 object of class [rICESat2Veg::icesat2.atl08_dt].}
 
 \item{beam}{Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")}
@@ -47,27 +47,29 @@ creation of the	data products.
 \examples{
 
 # Specifying the path to ATL03 and ATL08 file (zip file)
-outdir = tempdir()
+outdir <- tempdir()
 atl03_zip <- system.file("extdata",
-                  "ATL03_20220401221822_01501506_005_01.zip",
-                  package="rICESat2Veg")
+  "ATL03_20220401221822_01501506_005_01.zip",
+  package = "rICESat2Veg"
+)
 
 atl08_zip <- system.file("extdata",
-                  "ATL08_20220401221822_01501506_005_01.zip",
-                  package="rICESat2Veg")
+  "ATL08_20220401221822_01501506_005_01.zip",
+  package = "rICESat2Veg"
+)
 
 # Unzipping ATL03 file
-atl03_path <- unzip(atl03_zip,exdir = outdir)
+atl03_path <- unzip(atl03_zip, exdir = outdir)
 
 # Unzipping ATL08 file
-atl08_path <- unzip(atl08_zip,exdir = outdir)
+atl08_path <- unzip(atl08_zip, exdir = outdir)
 
 # Reading ATL03 data (h5 file)
 
 # Reading ATL08 data (h5 file)
 
 # # Extracting ATL03 and ATL08 photons and heights
-atl03_atl08_dt<-ATL03_ATL08_join_dt(atl03_h5,atl08_h5)
+atl03_atl08_dt <- ATL03_ATL08_join_dt(atl03_h5, atl08_h5)
 head(atl03_atl08_dt)
 
 close(atl03_h5)

@@ -49,6 +49,9 @@ ATL08_canopy_h5_gridStat(
 \item{agg_join}{Function. A function to merge two different agg objects.}
 
 \item{finalizer}{List<name, formula>. A list with the final raster names and the formula which uses the base statistics.}
+
+\item{filter}{Formula character "x" based. You can use either the column names available in `metrics`
+for performing the filter and "x" to denote the target variable. e.g. "x < 200 && h_canopy_uncertainty < 0.5"}
 }
 \value{
 Nothing. It outputs multiple raster tif files to the out_root specified path.
@@ -219,7 +222,7 @@ ATL08_canopy_h5_gridStat(
   finalizer = finalizer
 )
 
-close(leveatl08_canopy_dt)
+close(atl08_h5)
 
 }
 \references{

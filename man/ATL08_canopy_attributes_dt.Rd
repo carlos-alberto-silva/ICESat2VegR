@@ -7,7 +7,7 @@
 ATL08_canopy_attributes_dt(atl08_h5, beam)
 }
 \arguments{
-\item{atl08_h5}{A ICESat-2 ATL08 object (output of [ATL08read()] function). An S4 object of class [rICESat2Veg::icesat2.atl08_dt].
+\item{atl08_h5}{A ICESat-2 ATL08 object (output of [ATL08_read()] function). An S4 object of class [rICESat2Veg::icesat2.atl08_dt].
 An S4 object of class [rICESat2Veg::icesat2.atl08_dt].}
 
 \item{beam}{Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")}
@@ -24,18 +24,19 @@ This function extracts canopy height metrics from ICESat-2 ATL08 data
 \examples{
 
 # Specifying the path to ATL08 file (zip file)
-outdir = tempdir()
+outdir <- tempdir()
 atl08_zip <- system.file("extdata",
-                  "ATL08_20220401221822_01501506_005_01.zip",
-                  package="rICESat2Veg")
+  "ATL08_20220401221822_01501506_005_01.zip",
+  package = "rICESat2Veg"
+)
 
 # Unzipping ATL08 file
-atl08_path <- unzip(atl08_zip,exdir = outdir)
+atl08_path <- unzip(atl08_zip, exdir = outdir)
 
 # Reading ATL08 data (h5 file)
 
 # Extracting ATL08-derived Canopy Metrics
-canopy_metrics<-ATL08_canopy_attributes_dt(atl08_h5=atl08_h5)
+canopy_metrics <- ATL08_canopy_attributes_dt(atl08_h5 = atl08_h5)
 head(canopy_metrics)
 
 close(atl08_h5)

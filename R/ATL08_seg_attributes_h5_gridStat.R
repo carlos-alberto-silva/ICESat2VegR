@@ -75,6 +75,8 @@ default_agg_join <- function(x1, x2) {
 #' @param agg_function Formula function-like. An aggregate function which should return a data.table with the aggregate statistics
 #' @param agg_join Function. A function to merge two different agg objects.
 #' @param finalizer List<name, formula>. A list with the final raster names and the formula which uses the base statistics.
+#' @param filter Formula character "x" based. You can use either the column names available in `metrics`
+#' for performing the filter and "x" to denote the target variable. e.g. "x < 200 && h_canopy_uncertainty < 0.5"
 #'
 #' @details
 #' This function will create seven different aggregate statistics
