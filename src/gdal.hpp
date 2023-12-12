@@ -191,7 +191,7 @@ GDALDatasetR *create_dataset(
   GDALDriverManager *driverMan = GetGDALDriverManager();
   GDALDriver *tiffDriver = driverMan->GetDriverByName("GTiff");
   if (tiffDriver == NULL)
-    Rcpp::stop("Could not retrieve the driver!");
+    Rcpp::stop(CPLGetLastErrorMsg());
 
   std::vector<char *> charVec{};
 
