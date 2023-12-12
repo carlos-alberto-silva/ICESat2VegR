@@ -243,10 +243,6 @@ icesat2.atl03_dt <- setClass(
   slots = list(dt = "data.table")
 )
 
-
-#' @importFrom data.table data.table
-setRefClass("data.table")
-
 #' Class for joined ATL03 and ATL08 attributes
 #'
 #' @slot data.table Object of class [`data.table`][data.table::data.table-class] from `data.table` package containing the
@@ -528,5 +524,3 @@ setMethod(
     }
   }
 )
-
-
