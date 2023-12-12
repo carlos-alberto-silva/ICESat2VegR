@@ -78,3 +78,36 @@ icesat2.atl03atl08_dt <- setClass(
   Class = "icesat2.atl03atl08_dt",
   slots = list(dt = "data.table")
 )
+
+
+h5closeall <- function(con, ...) {
+  try(con@h5$close_all(), silent = TRUE)
+}
+
+
+#' Safely closes the [`rICESat2Veg::icesat2.atl03_h5-class`]
+#'
+#' @description
+#' Closing files will avoid locking HDF5 ATL03 files.
+#'
+#' @param con An object of class `icesat2.atl03_h5`
+#' @param ... Inherited from base
+#'
+#' @export
+#' @rdname close
+#' @method close icesat2.atl03_h5
+setMethod("close", signature = c("icesat2.atl03_h5"), h5closeall)
+
+
+#' Safely closes the [`rICESat2Veg::icesat2.atl08_h5-class`]
+#'
+#' @description
+#' Closing files will avoid locking HDF5 ATL08 files.
+#'
+#' @param con An object of class `icesat2.atl08_h5`
+#' @param ... Inherited from base
+#' @method close icesat2.atl08_h5
+#' @rdname close
+setMethod("close", signature = c("icesat2.atl08_h5"), h5closeall)
+
+

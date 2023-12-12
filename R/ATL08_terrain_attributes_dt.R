@@ -21,12 +21,12 @@ ATL08_terrain.var.map[["terrain_slope"]]="terrain_slope"
 #'
 #'@description This function extracts terrain metrics from ICESat-2 ATL08 data
 #'
-#'@usage ATL08_terrain_attributes(atl08_h5, beam)
+#'@usage ATL08_terrain_attributes_dt(atl08_h5, beam)
 #'
 #'@param atl08_h5 A ICESat-2 ATL08 object (output of [ATL08read()] function). An S4 object of class [rICESat2Veg::icesat2.atl08_dt].
 #'An S4 object of class [rICESat2Veg::icesat2.atl08_dt].
 #'@param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
-#'@param canopy_attribute A character vector containing the list of metrics to be extracted. See the default columns in the description.
+#'@param terrain_attribute A character vector containing the list of metrics to be extracted. See the default columns in the description.
 #'
 #'@return Returns an S4 object of class [data.table::data.table]
 #'containing the ATL08-derived terrain metrics.
@@ -49,12 +49,12 @@ ATL08_terrain.var.map[["terrain_slope"]]="terrain_slope"
 #atl08_h5<-ATL08read(atl08_path=atl08_path)
 #'
 #'# Extracting ATL08-derived Terrain Metrics
-#'terrain_metrics<-ATL08_terrain_attributes(atl08_h5=atl08_h5)
+#'terrain_metrics<-ATL08_terrain_attributes_dt(atl08_h5=atl08_h5)
 #'head(terrain_metrics)
 #'
 #'close(atl08_h5)
 #'@export
-ATL08_terrain_attributes <- function(atl08_h5,
+ATL08_terrain_attributes_dt <- function(atl08_h5,
                        beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
                        terrain_attribute=c(
                         "h_te_best_fit",

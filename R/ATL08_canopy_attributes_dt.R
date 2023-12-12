@@ -114,7 +114,7 @@ ATL08_canopy_attributes_dt <- function(atl08_h5,
 
   i_s = 0
 
-  if (length(canopy_attribute) > 1) {
+  if (length(canopy_attribute) > 0) {
 
         for (i in beam) {
           i_s = i_s + 1
@@ -143,7 +143,9 @@ ATL08_canopy_attributes_dt <- function(atl08_h5,
                 next
               }
             }
+
             base_addr = gsub("^(.*)/.*", "\\1", metric_address)
+
             if (atl08_h5v2_i$exists(base_addr) && atl08_h5v2_i$exists(metric_address))
               if (metric_address %in% c("h_canopy_20m","canopy_h_metrics_abs","subset_can_flag","canopy_h_metrics")) {
                 m<-cbind(m,t(atl08_h5v2_i[[metric_address]][,]))

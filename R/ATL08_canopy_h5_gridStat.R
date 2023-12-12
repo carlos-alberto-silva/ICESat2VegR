@@ -246,7 +246,7 @@ default_agg_join <- function(x1, x2) {
 #'   finalizer = finalizer
 #' )
 #'
-#' close(leveatl08_canopy_dt)
+#' close(atl08_h5)
 #'
 #' @import e1071
 #' @import data.table
@@ -382,9 +382,11 @@ ATL08_canopy_h5_gridStat <- function(
     for (atl08_path in atl08_list) {
       file_index <- file_index + 1
       message(sprintf("Reading file %s (%d/%d)", basename(atl08_path), file_index, total_files), appendLF = T)
-      atl08_canopy_dt <- ATL03_ATL08_joined_dt_LAS(atl08_path)
 
-      vals <- ATL08_canopy_attributes_dt(atl08_canopy_dt, beam = beam, cols = cols[-c(1:2)])
+      #read H5
+      atl08_h5<-ATL08read(atl08_path=atl08_path)
+
+      vals <- ATL08_canopy_attributes_dt(atl08_h5, beam = beam, canopy_attribute = cols[-c(1:2)])
 
       ## Clip metrics by extent
       vals <- ATL08_canopy_dt_clipBox(vals, ul_lon, lr_lon, lr_lat, ul_lat)
@@ -448,7 +450,7 @@ ATL08_canopy_h5_gridStat <- function(
       rm(list = ls(envir = thisEnv), envir = thisEnv)
       rm(thisEnv)
 
-      close(atl08_canopy_dt)
+      close(atl08_h5)
     }
     # Update statistics for bands
     lapply(bands, function(x) x$CalculateStatistics())
