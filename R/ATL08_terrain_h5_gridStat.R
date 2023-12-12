@@ -364,7 +364,7 @@ ATL08_terrain_h5_gridStat = function(
       message(sprintf("Reading file %s (%d/%d)", basename(atl08_path), file_index, total_files), appendLF = T)
 
 
-      atl08_h5 = ATL08read(atl08_path)
+      atl08_h5 = ATL08_read(atl08_path)
 
       vals = ATL08_terrain_attributes_dt(atl08_h5, beam=beam, terrain_attribute = cols[-c(1:2)])
 

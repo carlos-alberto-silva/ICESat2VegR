@@ -24,7 +24,7 @@
 #'atl08_path <- unzip(atl08_zip,exdir = outdir)
 #'
 #' # Reading ATL08 data (h5 file)
-#atl08_h5<-ATL08read(ATL08_path=atl08_path)
+#atl08_h5<-ATL08_read(ATL08_path=atl08_path)
 #'
 #'# Extracting ATL08-derived canopy Metrics
 #'atl08_canopy_dt<-ATL08_canopy_attributes_dt(atl08_h5=atl08_h5)

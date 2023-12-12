@@ -160,9 +160,9 @@ for (metric in metrics) {
   for (atl08_path in atl08_list) {
     file_index <- file_index + 1
     message(sprintf("Reading file %s (%d/%d)", basename(atl08_path), file_index, total_files), appendLF = T)
-    atl08 <- ATL08read(atl08_path)
+    atl08 <- ATL08_read(atl08_path)
     
-    atl03 <- ATL03read(gsub('ATL08','ATL03',atl08_path))
+    atl03 <- ATL03_read(gsub('ATL08','ATL03',atl08_path))
 
     atl08_canopy_dt <- ATL03_ATL08_join_dt(atl03, atl08)
     vals <- ATL08_canopy_attributes_dt(atl08_canopy_dt, beam = beam, canopy_attribute = cols[-c(1:2)])

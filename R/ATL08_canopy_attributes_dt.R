@@ -33,7 +33,7 @@ ATL08_canopy.var.map[["segment_cover"]]="segment_cover"
 #'
 #'@usage ATL08_canopy_attributes_dt(atl08_h5, beam)
 #'
-#'@param atl08_h5 A ICESat-2 ATL08 object (output of [ATL08read()] function). An S4 object of class [rICESat2Veg::icesat2.atl08_dt].
+#'@param atl08_h5 A ICESat-2 ATL08 object (output of [ATL08_read()] function). An S4 object of class [rICESat2Veg::icesat2.atl08_dt].
 #'An S4 object of class [rICESat2Veg::icesat2.atl08_dt].
 #'@param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
 #'@param canopy_attribute A character vector containing the list of metrics to be extracted. See the default columns in the description.
@@ -56,7 +56,7 @@ ATL08_canopy.var.map[["segment_cover"]]="segment_cover"
 #'atl08_path <- unzip(atl08_zip,exdir = outdir)
 #'
 #'# Reading ATL08 data (h5 file)
-#atl08_h5<-ATL08read(atl08_path=atl08_path)
+#atl08_h5<-ATL08_read(atl08_path=atl08_path)
 #'
 #'# Extracting ATL08-derived Canopy Metrics
 #'canopy_metrics<-ATL08_canopy_attributes_dt(atl08_h5=atl08_h5)
@@ -96,7 +96,7 @@ ATL08_canopy_attributes_dt <- function(atl08_h5,
 
   # Check file input
   if (!class(atl08_h5)=="icesat2.atl08_h5") {
-    stop("atl08_h5 must be an object of class 'icesat2.atl08_h5' - output of [ATL08read()] function ")
+    stop("atl08_h5 must be an object of class 'icesat2.atl08_h5' - output of [ATL08_read()] function ")
   }
 
   #h5

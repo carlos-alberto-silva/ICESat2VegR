@@ -27,7 +27,7 @@
 #'atl08_path <- unzip(atl08_zip,exdir = outdir)
 #'
 #'# Reading ATL08 data (h5 file)
-#atl08_h5<-ATL08read(atl08_path=atl08_path)
+#atl08_h5<-ATL08_read(atl08_path=atl08_path)
 #'
 #'# Extracting ATL08-derived terrain Metrics
 #'atl08_terrain_dt<-ATL08_terrain_attributes(atl08_h5=atl08_h5)

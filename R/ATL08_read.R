@@ -4,7 +4,7 @@
 #'Vegetation Along-Track Products (ATL08) as h5 file.
 #'
 #'
-#'@usage ATL08read(atl08_path)
+#'@usage ATL08_read(atl08_path)
 #'
 #'@param atl08_path File path pointing to ICESat-2 ATL08 data. Data in HDF5 Hierarchical Data Format (.h5).
 #'
@@ -23,12 +23,12 @@
 #'atl08_path <- unzip(atl08_fp_zip,exdir = outdir)
 #'
 #'# Reading ICESat-2 ATL08 data (h5 file)
-#'atl08<-ATL08read(atl08_path=atl08_path)
+#'atl08<-ATL08_read(atl08_path=atl08_path)
 #'
 #'close(atl08)
 #'@import hdf5r
 #'@export
-ATL08read <-function(atl08_path) {
+ATL08_read <-function(atl08_path) {
   if (!is.character(atl08_path) | !tools::file_ext(atl08_path) == "h5") {
     stop("atl08_path must be a path to a h5 file")
   }

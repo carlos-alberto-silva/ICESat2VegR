@@ -33,10 +33,10 @@
 #'atl08_path <- unzip(atl08_zip,exdir = outdir)
 #'
 #'# Reading ATL03 data (h5 file)
-#atl03_h5<-ATL08read(atl03_path=atl03_path)
+#atl03_h5<-ATL08_read(atl03_path=atl03_path)
 #'
 #'# Reading ATL08 data (h5 file)
-#atl08_h5<-ATL08read(atl08_path=atl08_path)
+#atl08_h5<-ATL08_read(atl08_path=atl08_path)
 #'
 #'# # Extracting ATL03 and ATL08 photons and heights
 #'atl03_atl08_dt<-ATL03_ATL08_join(atl03_h5,atl08_h5)

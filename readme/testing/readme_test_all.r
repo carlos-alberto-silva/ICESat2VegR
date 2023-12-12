@@ -1,16 +1,16 @@
 
 #atl08_path<-"C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL08_20220401221822_01501506_005_01.h5"
-#atl08_h5<-ATL08read(atl08_path=atl08_path)
+#atl08_h5<-ATL08_read(atl08_path=atl08_path)
 #atl03_path<-"C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL03_20220401221822_01501506_005_01.h5"
-#atl03_h5<-ATL03read(atl03_path=atl03_path)
+#atl03_h5<-ATL03_read(atl03_path=atl03_path)
 
 atl08_path<-"Z:\\01_Projects\\04_NASA_ICESat2\\10_others\\rICESat2Veg\\inst\\exdata\\ATL08_20220401221822_01501506_005_01.h5"
 atl03_path<-"Z:\\01_Projects\\04_NASA_ICESat2\\10_others\\rICESat2Veg\\inst\\exdata\\ATL03_20220401221822_01501506_005_01.h5"
 
 #atl08_path<-"C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL08_20220401221822_01501506_005_01.h5"
-atl08_h5<-ATL08read(atl08_path=atl08_path)
+atl08_h5<-ATL08_read(atl08_path=atl08_path)
 #atl03_path<-"C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL03_20220401221822_01501506_005_01.h5"
-atl03_h5<-ATL03read(atl03_path=atl03_path)
+atl03_h5<-ATL03_read(atl03_path=atl03_path)
 
 
 ## join

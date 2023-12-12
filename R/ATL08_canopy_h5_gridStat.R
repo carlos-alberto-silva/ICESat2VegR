@@ -384,7 +384,7 @@ ATL08_canopy_h5_gridStat <- function(
       message(sprintf("Reading file %s (%d/%d)", basename(atl08_path), file_index, total_files), appendLF = T)
 
       #read H5
-      atl08_h5<-ATL08read(atl08_path=atl08_path)
+      atl08_h5<-ATL08_read(atl08_path=atl08_path)
 
       vals <- ATL08_canopy_attributes_dt(atl08_h5, beam = beam, canopy_attribute = cols[-c(1:2)])
 
