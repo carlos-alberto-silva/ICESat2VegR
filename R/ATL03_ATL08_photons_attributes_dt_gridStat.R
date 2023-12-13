@@ -114,14 +114,12 @@ ATL03_ATL08_joined_dt_gridStat <- function(atl03_atl08_dt,
     atl03_atl08_dt2 <- atl03_atl08_dt@dt
   }
 
-
   atl03_atl08_dt2 <- atl03_atl08_dt2[
     atl03_atl08_dt2$classed_pc_flag %in% ph_class &
       atl03_atl08_dt2$quality_ph %in% quality_ph &
       atl03_atl08_dt2$beam %in% beam &
       atl03_atl08_dt2$night_flag %in% night_flag,
   ]
-
 
   if (!nrow(atl03_atl08_dt2) > 1) {
     stop(paste("atl03_atl08_dt is invalid. It contain only", nrow(atl03_atl08_dt2), "observations"))
