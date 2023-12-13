@@ -3,10 +3,10 @@
 #' @description Computes a series of statistics from ATL08 classified canopy photons
 #' within a given segment length
 #'
-#' @usage ATL08_canopy_dt_segStat(atl03_atl08_dt, func, seg_length,ph_class,beam,quality_ph,night_flag)
+#' @usage ATL08_seg_attributes_dt_gridStat(atl03_atl08_dt, func, seg_length,ph_class,beam,quality_ph,night_flag)
 #'
 #' @param atl03_atl08_dt  An S4 object of class "icesat2.atl03atl08_dt" containing ATL03 and ATL08 data
-#' (output of [ATL03_ATL08_join_dt()] function).
+#' (output of [ATL03_ATL08_photons_attributes_dt_join()] function).
 #' @param func The function to be applied for computing the defined statistics
 #' @param seg_length Segment length. Default is 30 m
 #' @param ph_class Character vector indicating photons to process based on the classification (1=ground, 2=canopy, 3=top canopy),
@@ -44,11 +44,11 @@
 #atl08_h5<-ATL08_read(atl08_path=atl08_path)
 #'
 #'# Extracting ATL03 and ATL08 photons and heights
-#'atl03_atl08_dt<-ATL03_ATL08_join_dt(atl03_h5,atl08_h5)
+#'atl03_atl08_dt<-ATL03_ATL08_photons_attributes_dt_join(atl03_h5,atl08_h5)
 #'head(atl03_atl08_dt)
 #'
 #'# Computing the top canopy height at 30 m segments
-#'top_canopy <-ATL08_canopy_dt_segStat(atl03_atl08_dt, func=max(ph_h),
+#'top_canopy <-ATL08_seg_attributes_dt_gridStat(atl03_atl08_dt, func=max(ph_h),
 #'                                seg_length = 30,
 #'                                ph_class=c(2,3),
 #'                                beam=c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
@@ -69,7 +69,7 @@
 #' }
 #'
 #' # Computing a series of canopy statistics from customized function
-#'canopy_metrics <-ATL08_canopy_dt_segStat(atl03_atl08_dt, func=mySetOfMetrics(ph_h),
+#'canopy_metrics <-ATL08_seg_attributes_dt_gridStat(atl03_atl08_dt, func=mySetOfMetrics(ph_h),
 #'                                seg_length = 30,
 #'                                ph_class=c(2,3),
 #'                                beam=c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
@@ -82,7 +82,7 @@
 #'close(atl08_h5)
 #' @import data.table lazyeval
 #' @export
-ATL08_canopy_dt_segStat <- function(atl03_atl08_dt, func, seg_length = 30, ph_class=c(2,3),
+ATL08_seg_attributes_dt_gridStat <- function(atl03_atl08_dt, func, seg_length = 30, ph_class=c(2,3),
                                  beam=c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
                                  quality_ph=0,night_flag=1) {
 

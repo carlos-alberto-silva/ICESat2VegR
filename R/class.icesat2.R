@@ -187,7 +187,7 @@ setMethod("close", signature = c("icesat2.atl08_h5"), h5closeall)
 #atl08_h5<-ATL08_read(atl08_path=atl08_path)
 #'
 #'# Extracting ATL03 and ATL08 photons and heights
-#'atl03_atl08_dt<-ATL03_ATL08_join_dt(atl03_h5,atl08_h5)
+#'atl03_atl08_dt<-ATL03_ATL08_photons_attributes_dt_join(atl03_h5,atl08_h5)
 #'
 #'rICESat2Veg::plot(atl03_atl08_dt=atl03_atl08_dt,attribute="ph_h",
 #'                 colors = c("gray", "#bd8421", "forestgreen", "green"),
@@ -200,8 +200,8 @@ setMethod("close", signature = c("icesat2.atl08_h5"), h5closeall)
 #' @rdname plot
 setMethod(
   f = "plot",
-  signature("icesat2.atl03atl08_dt", y = "missing", ),
-  definition = function(x, attribute, colors, ...) {
+  signature("icesat2.atl03atl08_dt", y = "missing"),
+  definition = function(x, y, colors, ...) {
     if (!is(x, "icesat2.atl03atl08_dt")) {
       print("Invalid input file. It should be an object of class 'icesat2.atl03atl08_dt' ")
     } else {
@@ -209,11 +209,11 @@ setMethod(
 
       #colors <- c("gray", "#bd8421", "forestgreen", "green")
       colorMap <- colors[x$classed_pc_flag + 1]
-      x<-x$dist_along
-      y<-x[,attribute]
+      x0<-x$dist_along
+      y0<-x[,y]
 
         suppressWarnings({
-          plot(x=x, y=y, col = colorMap,...)
+          plot(x=x0, y=y0, col = colorMap,...)
           legend("topleft", legend=c("Noise","Terrain", "Vegetation", "Top canopy"), pch=16, col=colors, bty="n")
         })
 

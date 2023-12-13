@@ -2,7 +2,7 @@
 #'
 #' @description This function clips ATL08 Canopy Height Metrics within a given geometry
 #'
-#' @usage ATL08_canopy_dt_clipGeometry(atl08_canopy_dt, xmin, xmax, ymin, ymax)
+#' @usage ATL08_seg_attributes_dt_clipGeometry(atl08_canopy_dt, xmin, xmax, ymin, ymax)
 #'
 #' @param atl08_canopy_dt A atl08_canopy_dt object (output of [ATL08_canopy()] function).
 #' An S4 object of class "gedi.level2a".
@@ -29,7 +29,7 @@
 #atl08_h5<-ATL08_read(atl08_path=atl08_path)
 #'
 #'# Extracting ATL08-derived Canopy Metrics
-#'atl08_canopy_dt<-ATL08_canopy_attributes_dt(atl08_h5=atl08_h5)
+#'atl08_canopy_dt<-ATL08_seg_attributes_dt(atl08_h5=atl08_h5)
 #'
 #' # Specifying the path to shapefile
 #' polygon_filepath <- system.file("extdata", "polygon.shp", package = "rICESat2Veg")
@@ -38,7 +38,7 @@
 #' polygon <- terra::vect(polygon_filepath)
 #'
 #' # Clipping ATL08 Canopy Height Metrics by Geometry
-#' atl08_canopy_dt_clip <- ATL08_canopy_dt_clipGeometry(atl08_canopy_dt, polygon, split_by = "FID")
+#' atl08_canopy_dt_clip <- ATL08_seg_attributes_dt_clipGeometry(atl08_canopy_dt, polygon, split_by = "FID")
 #'
 #' hasLeaflet <- require(leaflet)
 #'
@@ -59,7 +59,7 @@
 #' }
 #' close(atl08_h5)
 #' @export
-ATL08_canopy_dt_clipGeometry <- function(atl08_canopy_dt, polygon, split_by = "id") {
+ATL08_seg_attributes_dt_clipGeometry <- function(atl08_canopy_dt, polygon, split_by = "id") {
 
 
   if (!class(atl08_canopy_dt)[1]=="icesat2.atl08_dt"){
@@ -67,7 +67,7 @@ ATL08_canopy_dt_clipGeometry <- function(atl08_canopy_dt, polygon, split_by = "i
   }
   exshp <- terra::ext(polygon)
 
-  atl08_canopy_dtdt <- ATL08_canopy_dt_clipBox(
+  atl08_canopy_dtdt <- ATL08_seg_attributes_dt_gridStat(
     atl08_canopy_dt,
     xmin = exshp$xmin,
     xmax = exshp$xmax,

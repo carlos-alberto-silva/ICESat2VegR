@@ -3,10 +3,10 @@
 #' @description Computes a series of statistics ATL03 and ATL08 joined photons attributes within
 #' area defined by a polygon
 #'
-#' @usage ATL03_ATL08_joined_polyStat(atl03_atl08_dt, func, seg_length,ph_class,beam,quality_ph,night_flag)
+#' @usage ATL03_ATL08_photons_attributes_dt_polyStat(atl03_atl08_dt, func, seg_length,ph_class,beam,quality_ph,night_flag)
 #'
 #' @param atl03_atl08_dt  An S4 object of class [rICESat2Veg::icesat2.atl08_dt] containing ATL03 and ATL08 data
-#' (output of [ATL03_ATL08_join_dt()] function).
+#' (output of [ATL03_ATL08_photons_attributes_dt_join()] function).
 #' @param func The function to be applied for computing the defined statistics
 #' @param poly_id Polygon id. If defined, statistics will be computed for each polygon
 #'
@@ -38,7 +38,7 @@
 #atl08_h5<-ATL08_read(atl08_path=atl08_path)
 #'
 #'# Extracting ATL03 and ATL08 photons and heights
-#'atl03_atl08_dt<-ATL03_ATL08_join_dt(atl03_h5,atl08_h5)
+#'atl03_atl08_dt<-ATL03_ATL08_photons_attributes_dt_join(atl03_h5,atl08_h5)
 #'head(atl03_atl08_dt)
 #'
 #'# Specifying the path to shapefile

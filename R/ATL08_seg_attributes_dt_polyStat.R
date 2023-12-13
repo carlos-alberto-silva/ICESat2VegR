@@ -3,7 +3,7 @@
 #' @description Computes a series of statistics ATL03 and ATL08 joined photons attributes within
 #' area defined by a polygon
 #'
-#' @usage ATL08_canopy_dt_polyStat(atl08_terrain_dt, func, poly_id)
+#' @usage ATL08_seg_attributes_dt_polyStat(atl08_terrain_dt, func, poly_id)
 #'
 #' @param atl08_canopy_dt  An S4 object of class "icesat2.ATL08_canopy_dt" containing ATL08 canopy attributes
 #' (output of [ATL08_canopy_attribute_dt()] function).
@@ -27,7 +27,7 @@
 #atl08_h5<-ATL08_read(ATL08_path=atl08_path)
 #'
 #'# Extracting ATL08-derived canopy Metrics
-#'atl08_canopy_dt<-ATL08_canopy_attributes_dt(atl08_h5=atl08_h5)
+#'atl08_canopy_dt<-ATL08_seg_attributes_dt(atl08_h5=atl08_h5)
 #'
 #' # Specifying the path to shapefile
 #' polygon_filepath <- system.file("extdata", "polygon.shp", package = "rICESat2Veg")
@@ -36,10 +36,10 @@
 #'polygon <- terra::vect(polygon_filepath)
 #'
 #' # Clipping ATL08 canopy attributes by Geometry
-#' atl08_canopy_dt_clip <- ATL08_canopy_dt_clipGeometry(atl08_canopy_dt, polygon, split_by = "FID")
+#' atl08_canopy_dt_clip <- ATL08_seg_attributes_dt_clipGeometry(atl08_canopy_dt, polygon, split_by = "FID")
 #'
 #'# Computing the max h_canopy by polygon id
-#'max_h_canopy <-ATL08_canopy_dt_polyStat(atl08_canopy_dt_clip, func=max(h_canopy),poly_id="poly_id")
+#'max_h_canopy <-ATL08_seg_attributes_dt_polyStat(atl08_canopy_dt_clip, func=max(h_canopy),poly_id="poly_id")
 #'head(max_h_canopy)
 #'
 #'# Define your own function
@@ -54,14 +54,14 @@
 #' }
 #'
 #' # Computing a series of canopy statistics from customized function
-#'h_canopy_metrics <-ATL08_canopy_dt_polyStat(ATL08_canopy_dt, func=mySetOfMetrics(h_canopy),poly_id="poly_id")
+#'h_canopy_metrics <-ATL08_seg_attributes_dt_polyStat(ATL08_canopy_dt, func=mySetOfMetrics(h_canopy),poly_id="poly_id")
 #'head(h_canopy_metrics)
 #'
 #'close(atl03_h5)
 #'close(atl08_h5)
 #' @import data.table lazyeval
 #' @export
-ATL08_canopy_dt_polyStat <- function(atl08_canopy_dt, func, poly_id=NULL) {
+ATL08_seg_attributes_dt_polyStat <- function(atl08_canopy_dt, func, poly_id=NULL) {
 
   if (!class(atl08_canopy_dt)[1]=="icesat2.ATL08_canopy_dt"){
     stop("atl08_canopy_dt needs to be an object of class 'icesat2.ATL08_canopy_dt' ")

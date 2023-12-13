@@ -2,10 +2,10 @@
 #'
 #' @description This function clips joined ATL03 and ATL08 photon attributes table within a given geometry
 #'
-#' @usage ATL03_ATL08_join_dted_dt_clipGeometry(atl03_atl08_dt, polygon, split_by = "FID")
+#' @usage ATL03_ATL08_photons_attributes_dt_clipGeometry(atl03_atl08_dt, polygon, split_by = "FID")
 #'
 #' @param atl03_atl08_dt  An S4 object of class [rICESat2Veg::icesat2.atl03atl08_dt] containing ATL03 and ATL08 data
-#' (output of [rICESat2Veg::ATL03_ATL08_join_dt()] function).
+#' (output of [rICESat2Veg::ATL03_ATL08_photons_attributes_dt_join()] function).
 #' @param polygon Polygon. An object of class [`terra::SpatVector`],
 #' which can be loaded as an ESRI shapefile using [terra::vect] function in the
 #' \emph{sf} package.
@@ -81,7 +81,7 @@ ATL03_ATL08_joined_dt_clipGeometry <- function(atl03_atl08_dt, polygon, split_by
 
   exshp <- terra::ext(polygon)
 
-  atl03_atl08_dt <- ATL03_ATL08_joined_dt_clipBox(
+  atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_clipBox(
     atl03_atl08_dt,
     xmin = exshp$xmin,
     xmax = exshp$xmax,

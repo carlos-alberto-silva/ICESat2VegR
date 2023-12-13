@@ -3,10 +3,10 @@
 #' @description This function computes a series of user defined descriptive statistics within
 #' each given grid cell for ATL03 and ATL08 joined photon attributes
 #'
-#' @usage ATL03ATL08_dt_gridStat(atl03_atl08_dt, func, res)
+#' @usage ATL03_ATL08_photons_attributes_dt_gridStat(atl03_atl08_dt, func, res)
 #'
 #' @param atl03atl08_dt  An S4 object of class [rICESat2Veg::icesat2.atl03atl08_dt] containing ATL03 and ATL08 joined attributes
-#' (output of the [ATL03_ATL08_join_dt()] function).
+#' (output of the [ATL03_ATL08_photons_attributes_dt_join()] function).
 #' @param func The function to be applied for computing the defined statistics
 #' @param res Spatial resolution in decimal degrees for the output SpatRast raster layer. Default is 0.5.
 #' @param ph_class Character vector indicating photons to process based on the classification (1=ground, 2=canopy, 3=top canopy),
@@ -56,10 +56,10 @@
 #' atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 #'
 #' # # Extracting ATL03 and ATL08 photons and heights
-#' atl03_atl08_dt <- ATL03_ATL08_join_dt(atl03_h5, atl08_h5)
+#' atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
 #' head(atl03_atl08_dt)
 #' # # Extracting ATL03 and ATL08 photons and heights
-#' atl03_atl08_dt <- ATL03_ATL08_join_dt(atl03_h5, atl08_h5)
+#' atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
 #' head(atl03_atl08_dt)
 #'
 #' # Computing the mean ph_h at 30 m grid cell

@@ -31,7 +31,7 @@ ATL08_canopy.var.map[["segment_cover"]] <- "segment_cover"
 #'
 #' @description This function extracts canopy height metrics from ICESat-2 ATL08 data
 #'
-#' @usage ATL08_canopy_attributes_dt(atl08_h5, beam)
+#' @usage ATL08_seg_attributes_dt(atl08_h5, beam)
 #'
 #' @param atl08_h5 A ICESat-2 ATL08 object (output of [ATL08_read()] function). An S4 object of class [rICESat2Veg::icesat2.atl08_dt].
 #' An S4 object of class [rICESat2Veg::icesat2.atl08_dt].
@@ -60,12 +60,12 @@ ATL08_canopy.var.map[["segment_cover"]] <- "segment_cover"
 # atl08_h5<-ATL08_read(atl08_path=atl08_path)
 #'
 #' # Extracting ATL08-derived Canopy Metrics
-#' canopy_metrics <- ATL08_canopy_attributes_dt(atl08_h5 = atl08_h5)
+#' canopy_metrics <- ATL08_seg_attributes_dt(atl08_h5 = atl08_h5)
 #' head(canopy_metrics)
 #'
 #' close(atl08_h5)
 #' @export
-ATL08_canopy_attributes_dt <- function(atl08_h5,
+ATL08_seg_attributes_dt <- function(atl08_h5,
                                        beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
                                        canopy_attribute = c(
                                          "h_canopy",

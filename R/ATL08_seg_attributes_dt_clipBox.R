@@ -2,9 +2,9 @@
 #'
 #' @description This function clips ATL08 Canopy Height Metrics within a given bounding coordinates
 #'
-#' @usage ATL08_canopy_dt_clipBox(atl08_canopy_dt, xmin, xmax, ymin, ymax)
+#' @usage ATL08_seg_attributes_dt_gridStat(atl08_canopy_dt, xmin, xmax, ymin, ymax)
 #'
-#' @param atl08_canopy_dt A atl08_canopy_dt object (output of [ATL08_canopy_attributes_dt()] function).
+#' @param atl08_canopy_dt A atl08_canopy_dt object (output of [ATL08_seg_attributes_dt()] function).
 #' An S4 object of class [rICESat2Veg::icesat2.atl08_dt]
 #' @param xmin Numeric. West longitude (x) coordinate of bounding rectangle, in decimal degrees.
 #' @param xmax Numeric. East longitude (x) coordinate of bounding rectangle, in decimal degrees.
@@ -30,7 +30,7 @@
 #atl08_h5<-ATL08_read(atl08_path=atl08_path)
 #'
 #'# Extracting ATL08-derived Canopy Metrics
-#'atl08_canopy_dt<-ATL08_canopy_attributes_dt(atl08_h5=atl08_h5)
+#'atl08_canopy_dt<-ATL08_seg_attributes_dt(atl08_h5=atl08_h5)
 #'
 #' # Bounding rectangle coordinates
 #' xmin <- -107.7
@@ -39,12 +39,12 @@
 #' ymax <- 42.75
 #'
 #' # Clipping ATL08-derived canopy metrics by boundary box extent
-#'atl08_canopy_dt_clip <- ATL08_canopy_dt_clipBox(atl08_canopy_dt, xmin, xmax, ymin, ymax)
+#'atl08_canopy_dt_clip <- ATL08_seg_attributes_dt_gridStat(atl08_canopy_dt, xmin, xmax, ymin, ymax)
 #'
 #'close(atl08_h5)
 #'@import hdf5r stats
 #'@export
-ATL08_canopy_dt_clipBox <- function(atl08_canopy_dt, xmin, xmax, ymin, ymax) {
+ATL08_seg_attributes_dt_gridStat <- function(atl08_canopy_dt, xmin, xmax, ymin, ymax) {
 
   if (!class(atl08_canopy_dt)[1]=="icesat2.atl08_dt"){
     stop("atl08_canopy_dt needs to be an object of class 'icesat2.atl08_dt' ")

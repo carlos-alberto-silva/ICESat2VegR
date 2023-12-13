@@ -2,7 +2,7 @@
 #'
 #' @description This function joins ATL03 and ATL08 computed photons attributes
 #'
-#' @usage ATL03_ATL08_join_dt(atl08_h5, beam)
+#' @usage ATL03_ATL08_photons_attributes_dt_join(atl08_h5, beam)
 #'
 #' @param atl03_h5 A ICESat-2 ATL03 object (output of [ATL03_read()] function).
 #' An S4 object of class [rICESat2Veg::icesat2.atl03_dt].
@@ -64,13 +64,13 @@
 # atl08_h5<-ATL08_read(atl08_path=atl08_path)
 #'
 #' # # Extracting ATL03 and ATL08 photons and heights
-#' atl03_atl08_dt <- ATL03_ATL08_join_dt(atl03_h5, atl08_h5)
+#' atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
 #' head(atl03_atl08_dt)
 #'
 #' close(atl03_h5)
 #' close(atl08_h5)
 #' @export
-ATL03_ATL08_join_dt <- function(atl03_h5, atl08_h5,
+ATL03_ATL08_photons_attributes_dt_join <- function(atl03_h5, atl08_h5,
                                 beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")) {
   # Check file input
   if (!class(atl03_h5) == "icesat2.atl03_h5") {
