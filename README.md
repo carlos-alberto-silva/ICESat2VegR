@@ -1,5 +1,4 @@
 ![](https://github.com/carlos-alberto-silva/rICESat2Veg/blob/master/readme/cover.png)<br/>
-
 [![R-CMD-check](https://github.com/carlos-alberto-silva/rICESat2Veg/actions/workflows/r.yml/badge.svg?branch=master)](https://github.com/carlos-alberto-silva/rICESat2Veg/actions/workflows/r.yml)
 [![CRAN](https://www.r-pkg.org/badges/version/rICESat2Veg)](https://cran.r-project.org/package=rICESat2Veg)
 ![Github](https://img.shields.io/badge/Github-0.1.12-green.svg)
@@ -7,7 +6,7 @@
 ![Downloads](https://cranlogs.r-pkg.org/badges/grand-total/rICESat2Veg)
 [![Build Status](https://travis-ci.com/carlos-alberto-silva/rICESat2Veg.svg?token=Jqizwyc6gBxNafNccTdU&branch=master)](https://travis-ci.com/carlos-alberto-silva/rICESat2Veg)
 
-**rICESat2Veg: An R Package for NASA's Ice, Cloud, and Elevation Satellite (ICESat-2) Data Processing and Visualization for Terrestrial Applications.**
+**rICESat2Veg: An R Package for NASA's Ice, Cloud, and Elevation Satellite (ICESat-2) Data Processing and Visualization for Land and Vegetation Applications.**
 
 Authors: Carlos Alberto Silva and Caio Hamamura  
 
@@ -22,8 +21,7 @@ install.packages("rICESat2Veg")
 
 # The development version:
 #install.packages("remotes")
-library(remotes)
-install_github("https://github.com/carlos-alberto-silva/rICESat2Veg", dependencies = TRUE)
+remotes::install_github("https://github.com/carlos-alberto-silva/rICESat2Veg", dependencies = TRUE)
 
 # loading rGEDI package
 library(rICESat2Veg)
