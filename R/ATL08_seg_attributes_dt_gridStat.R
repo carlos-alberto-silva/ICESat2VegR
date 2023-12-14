@@ -32,7 +32,7 @@
 #'head(atl08_canopy_dt)
 #'
 #'# Computing the top h_canopy at 30 m grid cell
-#'top_h_canopy <-ATL08_canopy_dt_gridStat(atl08_canopy_dt, func=max(h_canopy), res=0.5)
+#'top_h_canopy <-ATL08_seg_attributes_dt_gridStat(atl08_canopy_dt, func=max(h_canopy), res=0.5)
 #'
 #'plot(top_canopy)
 #'
@@ -48,7 +48,7 @@
 #' }
 #'
 #' # Computing a series of h_canopy statistics at 30 m grid cellfrom customized function
-#'h_canopy_metrics <-ATL08_canopy_dt_gridStat(atl08_canopy_dt, func=mySetOfMetrics(h_canopy),res=0.5)
+#'h_canopy_metrics <-ATL08_seg_attributes_dt_gridStat(atl08_canopy_dt, func=mySetOfMetrics(h_canopy),res=0.5)
 #'
 #'plot(h_canopy_metrics)
 #'
@@ -56,7 +56,7 @@
 #'close(atl08_h5)
 #' @import data.table lazyeval
 #' @export
-ATL08_canopy_dt_gridStat <- function(atl08_canopy_dt, func, res = 0.5) {
+ATL08_seg_attributes_dt_gridStat <- function(atl08_canopy_dt, func, res = 0.5) {
 
   if (!class(atl08_canopy_dt)[1]=="icesat2.atl08_dt"){
     stop("ATL08_canopy_dt needs to be an object of class 'icesat2.atl08_dt' ")

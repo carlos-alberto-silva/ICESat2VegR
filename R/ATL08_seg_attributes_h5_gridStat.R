@@ -253,7 +253,7 @@ default_agg_join <- function(x1, x2) {
 #' @import e1071
 #' @import data.table
 #' @export
-ATL08_canopy_h5_gridStat <- function(
+ATL08_seg_attributes_h5_gridStat <- function(
     atl08_path,
     metrics = c(
       "h_canopy",

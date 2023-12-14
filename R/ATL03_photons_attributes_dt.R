@@ -1,0 +1,102 @@
+#'ATL03 computed photons attributes
+#'
+#'@description This function extracts computed photons attributes from ICESat-2 ATL03 data
+#'
+#'@usage ATL03_photons_attributes_dt(ATL03_h5, beam)
+#'
+#'@param ATL03_h5 A ICESat-2 ATL03 object (output of [ATL03_read()] function).
+#'An S4 object of class [rICESat2Veg::icesat2.ATL03_dt].
+#'@param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
+#'
+#'@return Returns an S4 object of class [data.table::data.table]
+#'containing the ATL03 computed photons attributes.
+#'
+#'@details These are the photons attributes extracted:
+#'\itemize{
+#' \item \emph{lon_ph} Longitude of each received photon. Computed from the ECEF Cartesian coordinates of the bounce point.
+#' \item \emph{lat_ph} Latitude of each received photon. Computed from the ECEF Cartesian coordinates of the bounce point.
+#' \item \emph{lat_ph} Latitude of each received photon. Computed from the ECEF Cartesian coordinates of the bounce point.
+#' Height of each received photon, relative to the WGS-84 ellipsoid including the geophysical corrections noted in section 6.0. Please note that
+#' neither the geoid, ocean tide nor the dynamic atmospheric corrections (DAC) are applied to the ellipsoidal heights.
+#' \item \emph{quality_ph} Indicates the quality of the associated photon. 0=nominal, 1=possible_afterpulse, 2=possible_impulse_response_
+#' effect, 3=possible_tep. Use this flag in conjunction with signal_conf_ph to identify those photons that are likely noise or likely signal
+#' \item \emph{night_flag}  Flag indicating the data were acquired in night conditions: 0=day, 1=night. Night flag is set when solar elevation is below 0.0 degrees.
+#'}
+#'
+#'@seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
+#'
+#'@examples
+#'
+#'# Specifying the path to ATL03 file (zip file)
+#'outdir = tempdir()
+#'atl03_zip <- system.file("extdata",
+#'                   "ATL03_20220401221822_01501506_005_01.zip",
+#'                   package="rICESat2Veg")
+#'
+#'# Unzipping ATL03 file
+#'atl03_path <- unzip(atl03_zip,exdir = outdir)
+#'
+#'# Reading ATL03 data (h5 file)
+#atl03_h5<-ATL03_read(atl03_path=atl03_path)
+#'
+#'# Extracting ATL03 classified photons and heights
+#'atl03_photons_dt<-ATL03_photons_attributes_dt(atl03_h5=atl03_h5)
+#'head(ATL03_photons_dt)
+#'
+#'close(ATL03_h5)
+#'@export
+ATL03_photons_attributes_dt <- function(atl03_h5,
+                                        beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")) {
+
+  # Check file input
+  if (!class(atl03_h5)=="icesat2.atl03_h5") {
+    stop("atl03_h5 must be an object of class 'icesat2.atl03_h5' - output of [ATL03_read()] function ")
+  }
+
+  #h5
+  atl03_h5v2<-atl03_h5@h5
+
+  # Check beams to select
+  groups_id<-hdf5r::list.groups(atl03_h5v2, recursive = F)
+
+  check_beams<-groups_id %in% beam
+  beam<-groups_id[check_beams]
+
+  photon.dt <- data.table::data.table()
+
+  pb <- utils::txtProgressBar(min = 0, max = length(beam), style = 3)
+
+  i_s = 0
+
+    for (i in beam) {
+      i_s = i_s + 1
+
+
+      n_segments <- atl03_h5[[paste0(i, "/geolocation/segment_length")]]$dims
+      segment_ph_cnt <- atl03_h5[[paste0(i, "/geolocation/segment_ph_cnt")]][]
+      segment_length <- c(0, cumsum(atl03_h5[[paste0(i, "/geolocation/segment_length")]][1:(n_segments - 1)]))
+      segment_lengths <- rep(segment_length, segment_ph_cnt)
+
+      segment_solar_elevation <- atl03_h5[[paste0(i, "/geolocation/solar_elevation")]][]
+      ph_solar_elev <- rep(segment_solar_elevation, segment_ph_cnt)
+
+      dataTableATL03Photons <- data.table::data.table(cbind(
+        lon_ph = atl03_h5[[paste0(i, "/heights/lon_ph")]][],
+        lat_ph = atl03_h5[[paste0(i, "/heights/lat_ph")]][],
+        h_ph = atl03_h5[[paste0(i, "/heights/h_ph")]][],
+        quality_ph = atl03_h5[[paste0(i, "/heights/quality_ph")]][],
+        solar_elevation = ph_solar_elev,
+        dist_ph_along = atl03_h5[[paste0(i, "/heights/dist_ph_along")]][] + segment_lengths
+      ))
+
+       photon_dt = data.table::rbindlist(list(photon.dt, dataTableATL03Photons), fill = TRUE)
+       utils::setTxtProgressBar(pb, i_s)
+    }
+
+  photon_dt<- new("icesat2.atl03_dt", dt = photon_dt)
+
+  close(pb)
+
+  return(photon_dt)
+}
+

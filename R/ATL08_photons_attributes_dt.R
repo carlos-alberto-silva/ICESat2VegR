@@ -82,7 +82,7 @@ ATL08_photons_attributes_dt <- function(atl08_h5,
 
     for (i in beam) {
       i_s = i_s + 1
-      utils::setTxtProgressBar(pb, i_s)
+
       atl08_h5v2_i<-atl08_h5v2[[paste0(i,"/signal_photons")]]
 
       m = data.table::data.table()
@@ -112,9 +112,13 @@ ATL08_photons_attributes_dt <- function(atl08_h5,
           m$beam<-i
 
       }
+
       photon_dt = data.table::rbindlist(list(photon.dt, m), fill = TRUE)
+      utils::setTxtProgressBar(pb, i_s)
     }
   }
+
+  photon_dt<- new("icesat2.atl08_dt", dt = photon_dt)
 
   close(pb)
 

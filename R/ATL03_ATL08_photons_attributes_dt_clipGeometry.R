@@ -49,7 +49,7 @@
 #'polygon <- terra::vect(polygon_filepath)
 #'
 #' # Clipping ATL08 terrain attributes by Geometry
-#' atl03_atl08_dt_clip <- ATL03_ATL08_joined_dt_clipGeometry(atl03_atl08_dt, polygon, split_by = "FID")
+#' atl03_atl08_dt_clip <- ATL03_ATL08_photons_attributes_dt_clipGeometry(atl03_atl08_dt, polygon, split_by = "FID")
 #'
 #' hasLeaflet <- require(leaflet)
 #'
@@ -72,7 +72,7 @@
 #'close(atl03_h5)
 #'close(atl08_h5)
 #' @export
-ATL03_ATL08_joined_dt_clipGeometry <- function(atl03_atl08_dt, polygon, split_by = "id") {
+ATL03_ATL08_photons_attributes_dt_clipGeometry <- function(atl03_atl08_dt, polygon, split_by = "id") {
 
   if (!class(atl03_atl08_dt)[1]=="icesat2.atl03atl08_dt"){
     stop("atl03_atl08_dt needs to be an object of class 'icesat2.at03atl08_dt' ")

@@ -28,7 +28,7 @@
 #'close(atl08)
 #'@import hdf5r
 #'@export
-readATL08 <-function(atl08_path) {
+ATL08_read <-function(atl08_path) {
   if (!is.character(atl08_path) | !tools::file_ext(atl08_path) == "h5") {
     stop("atl08_path must be a path to a h5 file")
   }

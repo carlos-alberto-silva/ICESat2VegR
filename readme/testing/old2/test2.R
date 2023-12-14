@@ -83,16 +83,16 @@ polygon0$geometry
 require(hdf5r)
 
 atl08_path<-"Z:\\01_Projects\\04_NASA_ICESat2\\10_others\\rICESat2Veg\\inst\\exdata\\ATL08_20220401221822_01501506_005_01.h5"
-atl08_h5<-readATL08(ATL08path=atl08_path)
+atl08_h5<-ATL08_read(ATL08path=atl08_path)
 
-readATL03 <-function(ATL03path) {
+ATL03_read <-function(ATL03path) {
   ATL03_h5 <- hdf5r::H5File$new(ATL03path, mode = 'r')
   ATL03<- new("icesat2.ATL03", h5 = ATL03_h5)
   return(ATL03)
 }
 
 atl03_path<-"C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL03_20220401221822_01501506_005_01.h5"
-atl03_h5<-readATL03(ATL03path="C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL03_20220826063041_09981605_005_01.h5")
+atl03_h5<-ATL03_read(ATL03path="C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL03_20220826063041_09981605_005_01.h5")
 
 names(atl03_h5@h5[["gt1r/heights"]])
 
@@ -204,7 +204,7 @@ groups_id<-grep("BEAM\\d{4}$",gsub("/","",
 #'
 #'@usage getATL08(atl08_class)
 #'
-#'@param atl08_class A ICESat-2 ATL08 object (output of [readATL08()] function).
+#'@param atl08_class A ICESat-2 ATL08 object (output of [ATL08_read()] function).
 #'An S4 object of class "icesat2.atl08".
 #' @param beam Character vector indicating beams to process
 #' @param beam_strength Character vector indicating the strength of beams to process

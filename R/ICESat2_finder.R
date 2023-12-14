@@ -3,13 +3,12 @@ concept_ids <- list(
   ATL08 = "ATL08"
 )
 
-#' GEDI finder
+#' ICESat-2 ATLAS finder
 #'
-#' @description This function finds the exact granule(s) that contain GEDI data
+#' @description This function finds the exact granule(s) that contain ICESat-2 ATLAS data
 #' for a given region of interest and date range
 #'
-#' @param short_name GEDI data level; Options: "GEDI01_B", "GEDI02_A",
-#' "GEDI02_B", "GEDI03", "GEDI04_A", "GEDI04_A", "GEDI04_B"
+#' @param short_name ICESat-2 ATLAS data level; Options: "ATL03", "ATL08",
 #' @param ul_lat Numeric. Upper left (ul) corner coordinates, in lat
 #' (decimal degrees) for the bounding box of the area of interest.
 #' @param ul_lon Numeric. Upper left (ul) corner coordinates, in lon
@@ -18,7 +17,7 @@ concept_ids <- list(
 #' (decimal degrees) for the bounding box of the area of interest.
 #' @param lr_lon Numeric. Lower right (ul) corner coordinates, in lon
 #' (decimal degrees) for the bounding box of the area of interest.
-#' @param version Character. The version of the GEDI product files to be
+#' @param version Character. The version of the ICESat-2 ATLAS product files to be
 #' returned. Default "002".
 #' @param daterange Vector. Date range. Specify your start and end dates
 #' using ISO 8601 \[YYYY\]-\[MM\]-\[DD\]T\[hh\]:\[mm\]:\[ss\]Z. Ex.:
@@ -26,7 +25,7 @@ concept_ids <- list(
 #' the date range filter will be not applied.
 #'
 #' @return Return a vector object pointing out the path saving the downloaded
-#' GEDI data within the boundary box coordinates provided
+#' ICESat-2 ATLAS data within the boundary box coordinates provided
 #'
 #' @seealso bbox: Defined by the upper left and lower right corner coordinates,
 #' in lat,lon ordering, for the bounding box of the area of interest
@@ -37,7 +36,7 @@ concept_ids <- list(
 #'
 #' @examples
 #' \donttest{
-#' # gedifinder is a web service provided by NASA
+#' # ICESat-2 ATLASfinder is a web service provided by NASA
 #' # usually the request takes more than 5 seconds
 #'
 #' # Specifying bounding box coordinates
@@ -49,9 +48,9 @@ concept_ids <- list(
 #' # Specifying the date range
 #' daterange <- c("2019-07-01", "2020-05-22")
 #'
-#' # Extracting the path to GEDI data for the specified boundary box coordinates
-#' gedi02b_list <- gedifinder(
-#'   product = "GEDI02_B",
+#' # Extracting the path to ICESat-2 ATLAS data for the specified boundary box coordinates
+#' ICESat-2 ATLAS02b_list <- ICESat-2 ATLASfinder(
+#'   product = "ICESat-2 ATLAS02_B",
 #'   ul_lat,
 #'   ul_lon,
 #'   lr_lat,

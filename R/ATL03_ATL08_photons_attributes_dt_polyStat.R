@@ -51,7 +51,7 @@
 #' atl03_atl08_dt_clip <- ATL03_ATL08_joined_dt_clipGeometry(atl03_atl08_dt, polygon, split_by = "FID")
 #'
 #'# Computing the maximum ph_h by polygon id
-#'max_ph_h <-ATL03_ATL08_joined_dt_polyStat(atl03_atl08_dt_clip, func=max(ph_h),poly_id="poly_id")
+#'max_ph_h <-ATL03_ATL08_photons_attributes_dt_polyStat(atl03_atl08_dt_clip, func=max(ph_h),poly_id="poly_id")
 #'head(max_ph_h)
 #'
 #'# Define your own function
@@ -66,14 +66,14 @@
 #' }
 #'
 #' # Computing a series of ph_h statistics from customized function
-#'ph_h_metrics <-ATL03_ATL08_joined_dt_polyStat(atl03_atl08_dt, func=mySetOfMetrics(ph_h),poly_id="poly_id")
+#'ph_h_metrics <-ATL03_ATL08_photons_attributes_dt_polyStat(atl03_atl08_dt, func=mySetOfMetrics(ph_h),poly_id="poly_id")
 #'head(ph_h_metrics)
 #'
 #'close(atl03_h5)
 #'close(atl08_h5)
 #' @import data.table lazyeval
 #' @export
-ATL03_ATL08_joined_dt_polyStat <- function(atl03_atl08_dt, func, poly_id=NULL) {
+ATL03_ATL08_photons_attributes_dt_polyStat <- function(atl03_atl08_dt, func, poly_id=NULL) {
 
   if (!class(atl03_atl08_dt)[1]=="icesat2.atl03atl08_dt"){
     stop("atl03_atl08_dt needs to be an object of class 'icesat2.atl03atl08_dt' ")
@@ -86,7 +86,7 @@ ATL03_ATL08_joined_dt_polyStat <- function(atl03_atl08_dt, func, poly_id=NULL) {
     atl03_atl08_dt2<-atl03_atl08_dt@dt
   }
 
-  
+
   # Add data.table operator
   `:=` <- data.table::`:=`
 

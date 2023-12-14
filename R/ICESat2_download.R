@@ -1,4 +1,4 @@
-gediDownloadFile <- function(url, outdir, overwrite, buffer_size, netrc, timeout) {
+icesat2DownloadFile <- function(url, outdir, overwrite, buffer_size, netrc, timeout) {
   filename <- file.path(outdir, basename(url)) # Keep original filename
   if ((!overwrite) && file.exists(filename)) {
     message("Skipping this file, already downloaded!")

@@ -41,6 +41,59 @@ icesat2.atl08_h5 <- setClass(
 }
 
 
+#' Head for ATL03 photons
+#'
+#' @param atl03 An object of class `icesat2.atl03_dt`
+#'
+#' @export
+`head.icesat2.atl03_dt` <- function(x) {
+  head(x@dt)
+}
+
+#' Head for ATL08 photons
+#'
+#' @param atl08 An object of class `icesat2.atl08_dt`
+#' @export
+`head.icesat2.atl08_dt` <- function(x) {
+  head(x@dt)
+}
+
+
+#' Summary for ATL03 photons
+#'
+#' @param atl03 An object of class `icesat2.atl03_dt`
+#'
+#' @export
+`summary.icesat2.atl03_dt` <- function(x) {
+  summary(x@dt)
+}
+
+#' Summary for ATL08 photons
+#'
+#' @param atl08 An object of class `icesat2.atl08_dt`
+#' @export
+`summary.icesat2.atl08_dt` <- function(x) {
+  summary(x@dt)
+}
+
+#' Number of rows for ATL03 photons
+#'
+#' @param atl03 An object of class `icesat2.atl03_dt`
+#'
+#' @export
+`nrow.icesat2.atl03_dt` <- function(x) {
+  print(head(x@dt))
+  nrow(x@dt)
+}
+
+#' Number of rows for  ATL08 photons
+#'
+#' @param atl08 An object of class `icesat2.atl08_dt`
+#' @export
+`nrow.icesat2.atl08_dt` <- function(x) {
+  nrow(x@dt)
+}
+
 getBeams_validation <- function(h5) {
   if (inherits(h5, what = c("icesat2.atl03_h5", "icesat2.atl08_h5")) == FALSE) {
     stop("This is not an icesat2.atl03_h5 neither icesat2.atl08_h5")
@@ -51,7 +104,7 @@ getBeams_validation <- function(h5) {
 #'
 #' @param h5 An object of class [`icesat2.atl03_h5-class`] or [`icesat2.atl08_h5-class`]
 #' @param ... Other parameters to dispatch to the hdf5 library
-#' 
+#'
 #' @export
 getBeams <- function(h5, ...) {
   getBeams_validation(h5)
@@ -91,7 +144,7 @@ setRefClass("data.table")
 
 #'
 #' @seealso [`data.table`][data.table::data.table-class] in the `data.table` package and
-#' \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
+#' \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
 #'
 #' @import methods
 #' @export
@@ -103,10 +156,30 @@ icesat2.atl08_dt <- setClass(
 #' @importFrom data.table data.table
 setRefClass("data.table")
 
+#' Class for ATL03 attributes
+#'
+#' @slot data.table Object of class [`data.table`][data.table::data.table-class] from `data.table` package containing the
+#' Extracted ICESat-2 ATL03 attributes
+
+#'
+#' @seealso [`data.table`][data.table::data.table-class] in the `data.table` package and
+#' \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
+#'
+#' @import methods
+#' @export
+icesat2.atl03_dt <- setClass(
+  Class = "icesat2.atl03_dt",
+  slots = list(dt = "data.table")
+)
+
+
+#' @importFrom data.table data.table
+setRefClass("data.table")
+
 #' Class for joined ATL03 and ATL08 attributes
 #'
 #' @slot data.table Object of class [`data.table`][data.table::data.table-class] from `data.table` package containing the
-#' Joined ICESat-2 ATL03 ATL08 attributes
+#' Joined ICESat-2 ATL03 and ATL08 attributes
 
 #'
 #' @seealso [`data.table`][data.table::data.table-class] in the `data.table` package and
@@ -206,10 +279,9 @@ setMethod(
       print("Invalid input file. It should be an object of class 'icesat2.atl03atl08_dt' ")
     } else {
 
-
       #colors <- c("gray", "#bd8421", "forestgreen", "green")
       colorMap <- colors[x$classed_pc_flag + 1]
-      x0<-x$dist_along
+      x0<-x$dist_ph_along
       y0<-x[,y]
 
         suppressWarnings({
@@ -220,3 +292,131 @@ setMethod(
     }
   }
 )
+
+
+#' Plot ATL08 photons
+#'
+#' @description This function plots photons along track
+#'
+#' @param x An object of class [`rICESat2Veg::icesat2.atl08_dt-class`]
+#'@param beam Character vector indicating only one beam to process ("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r").
+#'Default is "gt1r"
+#' @param colors A vector containing colors for plotting noise, terrain, vegetation and top canopy photons
+#' (e.g. c("gray", "#bd8421", "forestgreen", "green")
+#' @param ... will be passed to the main plot
+#'
+#' @return No return value
+#'
+#' @examples
+#'# Specifying the path to atl08 and ATL08 file (zip file)
+#'outdir = tempdir()
+#'atl08_zip <- system.file("extdata",
+#'                   "atl08_20220401221822_01501506_005_01.zip",
+#'                   package="rICESat2Veg")
+#'
+#'atl08_zip <- system.file("extdata",
+#'                   "ATL08_20220401221822_01501506_005_01.zip",
+#'                   package="rICESat2Veg")
+#'
+#'# Unzipping atl08 file
+#'atl08_path <- unzip(atl08_zip,exdir = outdir)
+#'
+#'# Reading atl08 data (h5 file)
+#atl08_h5<-atl08_read(atl08_path=atl08_path)
+#'
+#'# Extracting atl08 and ATL08 photons and heights
+#'atl08_photons_dt<-atl08_seg_attributes_dt(atl08_h5=atl08_h5)
+#'
+#'rICESat2Veg::plot(atl08_photons_dt=atl08_photons_dt,
+#'                 beam="gt1r",
+#'                 colors = c("gray", "#bd8421", "forestgreen", "green"),
+#'                 pch = 16, cex = 0.5)
+#'
+#'close(atl08_h5)
+#'close(atl08_h5)
+#' @export
+#' @method plot icesat2.atl08_dt
+#' @rdname plot
+setMethod(
+  f = "plot",
+  signature("icesat2.atl08_dt", y = "missing"),
+  definition = function(x, y, beam,colors, ...) {
+    if (!is(x, "icesat2.atl08_dt")) {
+      print("Invalid input file. It should be an object of class 'icesat2.atl08_dt' ")
+    } else {
+
+      #colors <- c("gray", "#bd8421", "forestgreen", "green")
+      x<-x[x$beam==beam,]
+
+      suppressWarnings({
+        plot(x=x$delta_time, y=x$ph_h, col = colors[x$classed_pc_flag + 1],xlab="Delta Time", ylab="ph_h",...)
+        legend("topleft", legend=c("Noise","Terrain", "Vegetation", "Top canopy"), pch=16, col=colors, bty="n")
+      })
+
+    }
+  }
+)
+
+
+
+#' Plot atl03 photons
+#'
+#' @description This function plots photons along track
+#'
+#' @param x An object of class [`rICESat2Veg::icesat2.atl03_dt-class`]
+#' @param beam Character vector indicating only one beam to process ("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r").
+#'Default is "gt1r"
+#' @param col  Color for plotting the photons. Default is "gray"
+#' @param ... will be passed to the main plot
+#'
+#' @return No return value
+#'
+#' @examples
+#'# Specifying the path to atl03 and atl03 file (zip file)
+#'outdir = tempdir()
+#'atl03_zip <- system.file("extdata",
+#'                   "atl03_20220401221822_01501506_005_01.zip",
+#'                   package="rICESat2Veg")
+#'
+#'atl03_zip <- system.file("extdata",
+#'                   "atl03_20220401221822_01501506_005_01.zip",
+#'                   package="rICESat2Veg")
+#'
+#'# Unzipping atl03 file
+#'atl03_path <- unzip(atl03_zip,exdir = outdir)
+#'
+#'# Reading atl03 data (h5 file)
+#atl03_h5<-atl03_read(atl03_path=atl03_path)
+#'
+#'# Extracting atl03 and atl03 photons and heights
+#'atl03_photons_dt<-atl03_seg_attributes_dt(atl03_h5=atl03_h5)
+#'
+#'rICESat2Veg::plot(atl03_photons_dt
+#'                 col = "gray",
+#'                 pch = 16,
+#'                 cex = 0.5)
+#'
+#'close(atl03_h5)
+#'close(atl03_h5)
+#' @export
+#' @method plot icesat2.atl03_dt
+#' @rdname plot
+setMethod(
+  f = "plot",
+  signature("icesat2.atl03_dt", y = "missing"),
+  definition = function(x, y, col,...) {
+    if (!is(x, "icesat2.atl03_dt")) {
+      print("Invalid input file. It should be an object of class 'icesat2.atl03_dt' ")
+    } else {
+
+      x<-x[x$beam==beam,]
+      suppressWarnings({
+        plot(x=x$dist_along, y=x$h_ph, col = col,xlab="Distance along-track (m)", ylab="h_ph (m)",...)
+        legend("topleft", legend=c("Noise","Terrain", "Vegetation", "Top canopy"), pch=16, col=colors, bty="n")
+      })
+
+    }
+  }
+)
+
+
