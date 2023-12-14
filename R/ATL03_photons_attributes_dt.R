@@ -1,15 +1,15 @@
-#'ATL03 computed photons attributes
+#'ATL03 photons attributes
 #'
-#'@description This function extracts computed photons attributes from ICESat-2 ATL03 data
+#'@description This function extracts photons attributes from ICESat-2 ATL03 data
 #'
 #'@usage ATL03_photons_attributes_dt(ATL03_h5, beam)
 #'
 #'@param ATL03_h5 A ICESat-2 ATL03 object (output of [ATL03_read()] function).
-#'An S4 object of class [rICESat2Veg::icesat2.ATL03_dt].
+#'An S4 object of class [rICESat2Veg::icesat2.atl03_dt].
 #'@param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
 #'
 #'@return Returns an S4 object of class [data.table::data.table]
-#'containing the ATL03 computed photons attributes.
+#'containing the ATL03 photons attributes.
 #'
 #'@details These are the photons attributes extracted:
 #'\itemize{
@@ -39,7 +39,7 @@
 #'# Reading ATL03 data (h5 file)
 #atl03_h5<-ATL03_read(atl03_path=atl03_path)
 #'
-#'# Extracting ATL03 classified photons and heights
+#'# Extracting ATL03 photons attributes
 #'atl03_photons_dt<-ATL03_photons_attributes_dt(atl03_h5=atl03_h5)
 #'head(ATL03_photons_dt)
 #'

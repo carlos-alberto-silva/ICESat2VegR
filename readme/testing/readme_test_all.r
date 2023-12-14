@@ -1,79 +1,80 @@
 library(rICESat2Veg)
-# atl08_path<-"C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL08_20220401221822_01501506_005_01.h5"
-# atl08_h5<-ATL08_read(atl08_path=atl08_path)
-# atl03_path<-"C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL03_20220401221822_01501506_005_01.h5"
-# atl03_h5<-ATL03_read(atl03_path=atl03_path)
-#atl08_path<-"C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL08_20220401221822_01501506_005_01.h5"
-#atl03_path<-"C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL03_20220401221822_01501506_005_01.h5"
+atl08_path<-"C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL08_20220401221822_01501506_005_01.h5"
+atl03_path<-"C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL03_20220401221822_01501506_005_01.h5"
 
-atl08_path<-"Z:\\01_Projects\\04_NASA_ICESat2\\10_others\\rICESat2Veg\\inst\\exdata\\ATL08_20220401221822_01501506_005_01.h5"
-atl03_path<-"Z:\\01_Projects\\04_NASA_ICESat2\\10_others\\rICESat2Veg\\inst\\exdata\\ATL03_20220401221822_01501506_005_01.h5"
+# atl08_path<-"Y:\\01_Projects\\04_NASA_ICESat2\\10_others\\rICESat2Veg\\inst\\exdata\\ATL08_20220401221822_01501506_005_01.h5"
+# atl03_path<-"Y:\\01_Projects\\04_NASA_ICESat2\\10_others\\rICESat2Veg\\inst\\exdata\\ATL03_20220401221822_01501506_005_01.h5"
 
 # atl08_path<-"..\\inst\\exdata\\ATL08_20220401221822_01501506_005_01.h5"
 # atl03_path<-"..\\inst\\exdata\\ATL03_20220401221822_01501506_005_01.h5"
 
 
-# Read ATL03 and ATL08 files
-atl08_h5<-ATL08_read(atl08_path=atl08_path)
+## Read ATL03 and ATL08 files
+```r
 atl03_h5<-ATL03_read(atl03_path=atl03_path)
+atl08_h5<-ATL08_read(atl08_path=atl08_path)
+```
 
 ## Extracting ATL03 and ATL08 photon attributes
+```r
 atl03_photons_dt<-ATL03_photons_attributes_dt(atl03_h5=atl03_h5, beam="gt1l")
 head(atl03_photons_dt)
 
 atl08_photons_dt<-ATL08_photons_attributes_dt(atl08_h5=atl08_h5, beam="gt1l")
 head(atl08_photons_dt)
+```
 
-## Clipping ATL03 photons attributes by bounding box
+## Clipping ATL03 photons attributes
 
-#' # Bounding rectangle coordinates
+```r
+# Clipping by  bounding box
+
+# Define the bounding box
 xmin <- -107.7
 xmax <- -106.5
 ymin <- 32.75
 ymax <- 42.75
 
+# Clip
 atl03_photons_dt_clip <- ATL03_photons_attributes_dt_clipBox(atl03_photons_dt, xmin, xmax, ymin, ymax)
-
-class(atl03_photons_dt)
-nrow(atl03_photons_dt) # number of observations before clipping
-nrow(atl03_photons_dt_clip) # number of observations after clipping
 head(atl03_photons_dt_clip) # print the first six observations
+```
 
+## Clipping by geometry
 
-## Clipping ATL03 photons attributes by geometry
-
-# Specifying the path to shapefile
-polygon_filepath <- system.file("extdata", "polygon.shp", package = "rICESat2Veg")
+# Specify the path to shapefile
+#polygon_filepath <- system.file("extdata", "polygon.shp", package = "rICESat2Veg")
 polygon_filepath <- "C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\polygon.shp"
 
-#Reading shapefile as sf object
+# Read shapefile
 polygon <- terra::vect(polygon_filepath)
 
-atl03_photons_dt_clip <- ATL03_photons_attributes_dt_clipGeometry(atl03_photons_dt, polygon, split_by = "FID")
-head(atl03_photons_dt_clip)
+# Clip
+atl03_photons_dt_clipg <- ATL03_photons_attributes_dt_clipGeometry(atl03_photons_dt, polygon, split_by = "FID")
+head(atl03_photons_dt_clipg) # print the first six observations
+```
 
-atl03_photons_dt_clip <- ATL03_photons_attributes_dt_clipBox(atl03_photons_dt, xmin, xmax, ymin, ymax)
+## Merging ATL03 and ATL08 photon attributes
+```r
+atl03_atl08_dt<-ATL03_ATL08_photons_attributes_dt_join(atl03_h5,atl08_h5, beam = "gt1l")
+head(atl03_atl08_dt)
+```
+windows()
+## Plotting photon cloud
+```r
+# plot by "ph_h"
+plot(atl03_atl08_dt, y="ph_h",colors, beam = "gt1l")
 
-class(atl03_photons_dt)
-nrow(atl03_photons_dt) # number of observations before clipping
-nrow(atl03_photons_dt_clip) # number of observations after clipping
-head(atl03_photons_dt_clip) # print the first six observations
+# plot by "h_ph"
+plot(atl03_atl08_dt, y="h_ph",colors, beam = "gt1l")
+```
 
-
-
-
-atl08_photons_dt_clip <- ATL08_seg_attributes_dt_clipBox(atl08_photons_dt, xmin, xmax, ymin, ymax)
-nrow(atl08_photons_dt) # number of observations before clipping
-nrow(atl08_photons_dt_clip@dt) # number of observations after clipping
-head(atl08_photons_dt_clip) # print the first six observations
-
-
-## join
-atl03_atl08_dt<-ATL03_ATL08_join_dt(atl03_h5,atl08_h5, beam = "gt1l")
+## Extract ATL08-derived terrain and canopy attributes
+summary(atl03_atl08_dt)
 
 # segment metrics
 RH100max <-ATL03_ATL08_joined_dt_gridStat(atl03_atl08_dt, func=mean(ph_h),
-                                          res = 0.5,
+                                res = 0.5,
                                 ph_class=c(2,3),
                                 beam=c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
                                 quality_ph=0,

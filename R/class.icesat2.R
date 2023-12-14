@@ -94,6 +94,33 @@ icesat2.atl08_h5 <- setClass(
   nrow(x@dt)
 }
 
+
+#' Summary for merged ATL03 ATL08 photons
+#'
+#' @param atl03_atl08_dt An object of class `icesat2.atl03atl08_dt`
+#' @export
+`summary.icesat2.atl03atl08_dt` <- function(x) {
+  summary(x@dt)
+}
+
+#' Number of rows for merged ATL03 ATL08 photons
+#'
+#' @param atl03_atl08_dt An object of class `icesat2.atl03atl08_dt`
+#'
+#' @export
+`nrow.icesat2.atl08atl03_dt` <- function(x) {
+  print(head(x@dt))
+  nrow(x@dt)
+}
+
+#' Head for ATL08 photons
+#'
+#' @param atl03_atl08_dt An object of class `icesat2.atl03atl08_dt`
+#' @export
+`head.icesat2.atl03atl08_dt` <- function(x) {
+  head(x@dt)
+}
+
 getBeams_validation <- function(h5) {
   if (inherits(h5, what = c("icesat2.atl03_h5", "icesat2.atl08_h5")) == FALSE) {
     stop("This is not an icesat2.atl03_h5 neither icesat2.atl08_h5")
@@ -229,7 +256,9 @@ setMethod("close", signature = c("icesat2.atl08_h5"), h5closeall)
 #' @description This function plots photons along track
 #'
 #' @param x An object of class [`rICESat2Veg::icesat2.atl03atl08_dt-class`]
-#' @param attribute photon attribute to be plot (ph_h or h_ph)
+#' @param y photon attribute to be plot (ph_h or h_ph)
+#'@param beam Character vector indicating only one beam to process ("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r").
+#'Default is "gt1r"
 #' @param colors A vector containing colors for plotting noise, terrain, vegetation and top canopy photons
 #' (e.g. c("gray", "#bd8421", "forestgreen", "green")
 #' @param ... will be passed to the main plot
@@ -274,18 +303,35 @@ setMethod("close", signature = c("icesat2.atl08_h5"), h5closeall)
 setMethod(
   f = "plot",
   signature("icesat2.atl03atl08_dt", y = "missing"),
-  definition = function(x, y, colors, ...) {
+  definition = function(x, y, beam="gt1l",
+                        colors=c("gray", "#bd8421", "forestgreen", "green"),
+                        xlim=NULL,
+                        ylim=NULL,...) {
     if (!is(x, "icesat2.atl03atl08_dt")) {
       print("Invalid input file. It should be an object of class 'icesat2.atl03atl08_dt' ")
     } else {
 
       #colors <- c("gray", "#bd8421", "forestgreen", "green")
-      colorMap <- colors[x$classed_pc_flag + 1]
-      x0<-x$dist_ph_along
-      y0<-x[,y]
+      xdt<-x@dt[x@dt$beam==beam,c("dist_ph_along",y,"classed_pc_flag"), with = FALSE]
 
-        suppressWarnings({
-          plot(x=x0, y=y0, col = colorMap,...)
+      if (is.null(xlim)){xlim=range(xdt$dist_ph_along)}
+      if (is.null(ylim)){ylim=range(xdt[,get(y)])}
+
+      mask<-xdt$dist_ph_along >= xlim[1] &
+        xdt$dist_ph_along <= xlim[2] &
+        xdt[,2] >= ylim[1] &
+        xdt[,2] <= ylim[2]
+
+      mask[!stats::complete.cases(mask)] <- FALSE
+      mask <- (seq_along(xdt$dist_ph_along))[mask]
+      newFile <- xdt[mask, ]
+
+      colorMap <- colors[newFile$classed_pc_flag + 1]
+
+      suppressWarnings({
+          plot(x=newFile$dist_ph_along,
+               y=newFile[,get(y)],
+               col = colorMap,xlim=xlim, ylim=ylim,...)
           legend("topleft", legend=c("Noise","Terrain", "Vegetation", "Top canopy"), pch=16, col=colors, bty="n")
         })
 
@@ -340,16 +386,35 @@ setMethod(
 setMethod(
   f = "plot",
   signature("icesat2.atl08_dt", y = "missing"),
-  definition = function(x, y, beam,colors, ...) {
+  definition = function(x, y, beam="gt1l",
+                        colors=c("gray", "#bd8421", "forestgreen", "green"),
+                        xlim=NULL,
+                        ylim=NULL,...) {
     if (!is(x, "icesat2.atl08_dt")) {
-      print("Invalid input file. It should be an object of class 'icesat2.atl08_dt' ")
+      print("Invalid input file. It should be an object of class 'icesat2.atl03atl08_dt' ")
     } else {
 
       #colors <- c("gray", "#bd8421", "forestgreen", "green")
-      x<-x[x$beam==beam,]
+      xdt<-x@dt[x@dt$beam==beam,c("dist_ph_along",y,"classed_pc_flag"), with = FALSE]
+
+      if (is.null(xlim)){xlim=range(xdt$dist_ph_along)}
+      if (is.null(ylim)){ylim=range(xdt[,get(y)])}
+
+      mask<-xdt$dist_ph_along >= xlim[1] &
+        xdt$dist_ph_along <= xlim[2] &
+        xdt[,2] >= ylim[1] &
+        xdt[,2] <= ylim[2]
+
+      mask[!stats::complete.cases(mask)] <- FALSE
+      mask <- (seq_along(xdt$dist_ph_along))[mask]
+      newFile <- xdt[mask, ]
+
+      colorMap <- colors[newFile$classed_pc_flag + 1]
 
       suppressWarnings({
-        plot(x=x$delta_time, y=x$ph_h, col = colors[x$classed_pc_flag + 1],xlab="Delta Time", ylab="ph_h",...)
+        plot(x=newFile$dist_ph_along,
+             y=newFile[,get(y)],
+             col = colorMap,xlim=xlim, ylim=ylim,...)
         legend("topleft", legend=c("Noise","Terrain", "Vegetation", "Top canopy"), pch=16, col=colors, bty="n")
       })
 
