@@ -11,8 +11,9 @@ Class for joined ATL03 and ATL08 attributes
 \section{Slots}{
 
 \describe{
-\item{\code{data.table}}{Object of class [`data.table`][data.table::data.table-class] from `data.table` package containing the
-Joined ICESat-2 ATL03 ATL08 attributes}
+\item{\code{data.table}}{Object of class [`data.table`][data.table::data.table-class]
+from `data.table` package containing the
+Joined ICESat-2 ATL03 and ATL08 attributes}
 }}
 
 \seealso{

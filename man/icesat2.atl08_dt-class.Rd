@@ -11,11 +11,12 @@ Class for ATL08 attributes
 \section{Slots}{
 
 \describe{
-\item{\code{data.table}}{Object of class [`data.table`][data.table::data.table-class] from `data.table` package containing the
+\item{\code{data.table}}{Object of class [`data.table`][data.table::data.table-class]
+from `data.table` package containing the
 Extracted ICESat-2 ATL08 attributes}
 }}
 
 \seealso{
 [`data.table`][data.table::data.table-class] in the `data.table` package and
-\url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
+\url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
 }

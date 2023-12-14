@@ -4,10 +4,10 @@
 \alias{[[.icesat2.atl03_h5}
 \title{Dispatches the `[[` function to h5}
 \usage{
-\method{[[}{icesat2.atl03_h5}(atl03, path)
+\method{[[}{icesat2.atl03_h5}(x, path)
 }
 \arguments{
-\item{atl03}{An object of class `icesat2.atl03_h5`}
+\item{x}{An object of class `icesat2.atl03_h5`}
 
 \item{path}{The path for the dataset which to open}
 }
