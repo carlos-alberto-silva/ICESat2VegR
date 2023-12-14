@@ -40,20 +40,65 @@ unzip(file.path(outdir,"examples.zip"))
 
 ```
 
-## Reading ICESat-2 data
+## Read ATL03 and ATL08 files
 ```r
-atl08_h5<-ATL08read(atl08_path=atl08_path)
-
-```
-## Extracting ATL08-derived Terrain Metrics
-```r
-terrain_metrics<-ATL08_terrain(atl08_h5=atl08_h5)
+atl03_h5<-ATL03_read(atl03_path=atl03_path)
+atl08_h5<-ATL08_read(atl08_path=atl08_path)
 ```
 
-## Extracting ATL08-derived Canopy Metrics
+## Extracting ATL03 and ATL08 photon attributes
 ```r
-canopy_metrics<-ATL08_canopy(atl08_h5=atl08_h5)
+atl03_photons_dt<-ATL03_photons_attributes_dt(atl03_h5=atl03_h5, beam="gt1l")
+head(atl03_photons_dt)
+
+atl08_photons_dt<-ATL08_photons_attributes_dt(atl08_h5=atl08_h5, beam="gt1l")
+head(atl08_photons_dt)
 ```
+
+## Clipping ATL03 photons attributes
+
+```r
+# Clipping by  bounding box
+
+# Define the bounding box
+xmin <- -107.7
+xmax <- -106.5
+ymin <- 32.75
+ymax <- 42.75
+
+# Clip
+atl03_photons_dt_clip <- ATL03_photons_attributes_dt_clipBox(atl03_photons_dt, xmin, xmax, ymin, ymax)
+head(atl03_photons_dt_clip) # print the first six observations
+```
+
+## Clipping by geometry
+```r
+# Specify the path to shapefile
+polygon_filepath <- system.file("extdata", "polygon.shp", package = "rICESat2Veg")
+
+# Read shapefile
+polygon <- terra::vect(polygon_filepath)
+
+# Clip
+atl03_photons_dt_clipg <- ATL03_photons_attributes_dt_clipGeometry(atl03_photons_dt, polygon, split_by = "FID")
+head(atl03_photons_dt_clipg) # print the first six observations
+```
+
+## Merging ATL03 and ATL08 photon attributes
+```r
+atl03_atl08_dt<-ATL03_ATL08_photons_attributes_dt_join(atl03_h5,atl08_h5, beam = "gt1l")
+head(atl03_atl08_dt)
+```
+
+## Plotting ATL08 and ATL08 photon cloud
+```r
+# plot by "ph_h"
+plot(atl03_atl08_dt, y="ph_h",colors, beam = "gt1l")
+
+# plot by "h_ph"
+plot(atl03_atl08_dt, y="h_ph",colors, beam = "gt1l")
+```
+
 
 # Acknowledgements
 We gratefully acknowledge funding from NASA’s ICESat-2 (ICESat-2, grant 22-ICESat2_22-0006), Carbon Monitoring System (CMS, grant 22-CMS22-0015) and Commercial Smallsat Data Scientific Analysis(CSDSA, grant 22-CSDSA22_2-0080). 
