@@ -61,7 +61,7 @@ We gratefully acknowledge funding from NASA’s ICESat-2 (ICESat-2, grant 22-ICE
 # Reporting Issues 
 Please report any issue regarding the rICESat2Veg package to Dr. Silva (c.silva@ufl.edu)
 
-# Citing rGEDI
+# Citing rICESat2Veg
 Silva,C.A; Hamamura,C.rICESat2Veg: An R Package for NASA's Ice, Cloud, and Elevation Satellite (ICESat-2) Data Processing and Visualization for Terrestrial Applications.version 0.0.1, accessed on November. 22 2023, available at: <https://CRAN.R-project.org/package=rICESat2Veg>
 
 # Disclaimer
