@@ -1,16 +1,16 @@
-#' Statistics of ATL08 canopy attributes at grid level
+#' Statistics of ATL08 Terrain and Canopy Attributes at grid level
 #'
 #' @description This function computes a series of user defined descriptive statistics within
-#' each grid cell for ATL08 canopy attributes
+#' each grid cell for ATL08 Terrain and Canopy Attributes
 #'
-#' @usage ATL08_seg_attributes_dt_gridStat(atl03_atl08_dt, func, res)
+#' @usage ATL08_seg_attributes_dt_gridStat(atl08_seg_att_dt, func, res)
 #'
-#' @param ATL08_canopy_dt  An S4 object of class [rICESat2Veg::icesat2.atl08_dt] containing ATL08 data
-#' (output of [ATL08_seg_attributes_dt()] or [ATL08_seg_attributes_dt_gridStat()] functions).
+#' @param atl08_seg_att_dt  An S4 object of class [rICESat2Veg::icesat2.atl08_dt] containing ATL08 data
+#' (output of [ATL08_seg_attributes_dt()] functions).
 #' @param func The function to be applied for computing the defined statistics
 #' @param res Spatial resolution in decimal degrees for the output SpatRast raster layer. Default is 0.5.
 #'
-#' @return Return a SpatRast raster layer(s) of selected ATL08 canopy attribute(s)
+#' @return Return a SpatRast raster layer(s) of selected ATL08 terrain and canopy attribute(s)
 #'
 #' @examples
 #'
@@ -27,14 +27,14 @@
 #'# Reading ATL08 data (h5 file)
 #atl08_h5<-ATL08_read(atl08_path=atl08_path)
 #'
-#'# Extracting ATL03 and ATL08 photons and heights
-#'atl08_canopy_dt<-ATL08_seg_attributes_dt(atl08_h5)
-#'head(atl08_canopy_dt)
+#'# Extracting ATL08 terrain and canopy attributes
+#'atl08_seg_att_dt<-ATL08_seg_attributes_dt(atl08_h5)
+#'head(atl08_seg_att_dt)
 #'
-#'# Computing the top h_canopy at 30 m grid cell
-#'top_h_canopy <-ATL08_seg_attributes_dt_gridStat(atl08_canopy_dt, func=max(h_canopy), res=0.5)
+#'# Computing the top h_canopy at 0.05 degree grid cell
+#'max_h_canopy <-ATL08_seg_attributes_dt_gridStat(atl08_seg_att_dt, func=max(h_canopy), res=0.5)
 #'
-#'plot(top_canopy)
+#'plot(max_h_canopy, xlim=c(-107.5,-106.5),ylim=c(38,39))
 #'
 #'# Define your own function
 #' mySetOfMetrics <- function(x) {
@@ -47,30 +47,30 @@
 #'   return(metrics)
 #' }
 #'
-#' # Computing a series of h_canopy statistics at 30 m grid cellfrom customized function
-#'h_canopy_metrics <-ATL08_seg_attributes_dt_gridStat(atl08_canopy_dt, func=mySetOfMetrics(h_canopy),res=0.5)
+#' # Computing a series of h_canopy statistics at 0.05 degree grid cell from customized function
+#'h_canopy_metrics <-ATL08_seg_attributes_dt_gridStat(atl08_seg_att_dt, func=mySetOfMetrics(h_canopy),res=0.05)
 #'
-#'plot(h_canopy_metrics)
+#'plot(h_canopy_metrics, xlim=c(-107.5,-106.5),ylim=c(38,39))
 #'
 #'close(atl03_h5)
 #'close(atl08_h5)
 #' @import data.table lazyeval
 #' @export
-ATL08_seg_attributes_dt_gridStat <- function(atl08_canopy_dt, func, res = 0.5) {
+ATL08_seg_attributes_dt_gridStat <- function(atl08_seg_att_dt, func, res = 0.5) {
 
-  if (!class(atl08_canopy_dt)[1]=="icesat2.atl08_dt"){
-    stop("ATL08_canopy_dt needs to be an object of class 'icesat2.atl08_dt' ")
+  if (!class(atl08_seg_att_dt)[1]=="icesat2.atl08_dt"){
+    stop("atl08_seg_att_dt needs to be an object of class 'icesat2.atl08_dt' ")
   }
 
-  if (any(is.na(atl08_canopy_dt@dt))) {
-    atl08_canopy_dt2<-na.omit(atl08_canopy_dt@dt)
+  if (any(is.na(atl08_seg_att_dt@dt))) {
+    atl08_seg_att_dt2<-na.omit(atl08_seg_att_dt@dt)
   } else {
 
-    atl08_canopy_dt2<-atl08_canopy_dt@dt
+    atl08_seg_att_dt2<-atl08_seg_att_dt@dt
   }
 
-  if (!nrow(atl08_canopy_dt2)>1){
-    stop(paste("ATL08_canopy_dt is invalid. It contain only", nrow(atl08_canopy_dt2),"observations"))
+  if (!nrow(atl08_seg_att_dt2)>1){
+    stop(paste("atl08_seg_att_dt is invalid. It contain only", nrow(atl08_seg_att_dt2),"observations"))
   }
 
 
@@ -82,14 +82,14 @@ ATL08_seg_attributes_dt_gridStat <- function(atl08_canopy_dt, func, res = 0.5) {
   call <- lazy_call(func)
 
   vect <- terra::vect(
-    atl08_canopy_dt2,
+    atl08_seg_att_dt2,
     geom = c("longitude", "latitude"),
     crs = "epsg:4326"
   )
   layout <- terra::rast(terra::ext(vect), resolution = res, vals = NA, crs = "epsg:4326")
 
-  atl08_canopy_dt2[, cells := terra::cells(layout, vect)[, 2]]
-  metrics <- lazy_apply_dt_call(atl08_canopy_dt2, call, group.by = "by = cells")
+  atl08_seg_att_dt2[, cells := terra::cells(layout, vect)[, 2]]
+  metrics <- lazy_apply_dt_call(atl08_seg_att_dt2, call, group.by = "by = cells")
 
   if (any(is.na(metrics))) {
   metrics<-na.omit(metrics)
@@ -106,9 +106,12 @@ ATL08_seg_attributes_dt_gridStat <- function(atl08_canopy_dt, func, res = 0.5) {
     )
 
 
+
   for (metric in 1:n_metrics) {
-    output[[metric]][metrics$cells] <- metrics[[metric]]
+    output[[metric]][metrics$cells] <- metrics[[metric+1]]
   }
+
+  names(output)<-paste0(paste0(call)[2],"_",names(metrics)[-1])
 
   return(output)
 }

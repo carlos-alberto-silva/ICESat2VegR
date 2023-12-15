@@ -83,8 +83,11 @@ ATL03_ATL08_photons_attributes_dt_join <- function(atl03_h5, atl08_h5,
   }
 
   # Check beams to select
-  groups_id_atl03 <- getBeams(atl03_h5, recursive = FALSE)
-  groups_id_atl08 <- getBeams(atl08_h5, recursive = FALSE)
+  groups_id_atl03 <- grep("gt[1-3][lr]", atl08_h5@h5$ls()$name, value = TRUE)
+  groups_id_atl08 <- grep("gt[1-3][lr]", atl08_h5@h5$ls()$name, value = TRUE)
+  #
+  # groups_id_atl03 <- getBeams(atl03_h5, recursive = FALSE)
+  # groups_id_atl08 <- getBeams(atl08_h5, recursive = FALSE)
 
   check_beams_atl03 <- groups_id_atl03 %in% beam
   check_beams_atl08 <- groups_id_atl08 %in% beam
@@ -98,7 +101,11 @@ ATL03_ATL08_photons_attributes_dt_join <- function(atl03_h5, atl08_h5,
 
   pb <- utils::txtProgressBar(min = 0, max = length(beam), style = 3)
 
+
   i_s <- 0
+
+  atl03_h5<-atl03_h5@h5
+  atl08_h5<-atl08_h5@h5
 
   for (i in beam) {
     i_s <- i_s + 0.25

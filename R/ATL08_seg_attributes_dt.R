@@ -25,26 +25,25 @@ ATL08.var.map[["h_canopy_uncertainty"]] <- "/land_segments/canopy/h_canopy_uncer
 ATL08.var.map[["canopy_openness"]] <- "/land_segments/canopy/canopy_openness"
 ATL08.var.map[["h_max_canopy"]] <- "/land_segments/canopy/h_max_canopy"
 ATL08.var.map[["segment_cover"]] <- "/land_segments/canopy/segment_cover"
-ATL08.var.map[["h_te_best_fit"]]="/land_segments/terrainh_te_best_fit"
-ATL08.var.map[["h_te_best_fit_20m"]]="/land_segments/terrainh_te_best_fit_20m"
-ATL08.var.map[["h_te_interp"]]="/land_segments/terrainh_te_interp"
-ATL08.var.map[["h_te_max"]]="/land_segments/terrainh_te_max"
-ATL08.var.map[["h_te_mean"]]="/land_segments/terrainh_te_mean"
-ATL08.var.map[["h_te_median"]]="/land_segments/terrainh_te_median"
-ATL08.var.map[["h_te_mode"]]="/land_segments/terrainh_te_mode"
-ATL08.var.map[["h_te_rh25"]]="/land_segments/terrainh_te_rh25"
-ATL08.var.map[["h_te_skew"]]="/land_segments/terrainh_te_skew"
-ATL08.var.map[["h_te_std"]]="/land_segments/terrainh_te_std"
-ATL08.var.map[["h_canopy"]]="/land_segments/terrainh_canopy"
-ATL08.var.map[["h_te_uncertainty"]]="/land_segments/terrainh_te_uncertainty"
-ATL08.var.map[["n_te_photons"]]="/land_segments/terrainn_te_photons"
-ATL08.var.map[["photon_rate_te"]]="/land_segments/terrainphoton_rate_te"
-ATL08.var.map[["subset_te_flag"]]="/land_segments/terrainsubset_te_flag"
-ATL08.var.map[["terrain_slope"]]="/land_segments/terrainterrain_slope"
+ATL08.var.map[["h_te_best_fit"]]="/land_segments/terrain/h_te_best_fit"
+ATL08.var.map[["h_te_best_fit_20m"]]="/land_segments/terrain/h_te_best_fit_20m"
+ATL08.var.map[["h_te_interp"]]="/land_segments/terrain/h_te_interp"
+ATL08.var.map[["h_te_max"]]="/land_segments/terrain/h_te_max"
+ATL08.var.map[["h_te_mean"]]="/land_segments/terrain/h_te_mean"
+ATL08.var.map[["h_te_median"]]="/land_segments/terrain/h_te_median"
+ATL08.var.map[["h_te_mode"]]="/land_segments/terrain/h_te_mode"
+ATL08.var.map[["h_te_rh25"]]="/land_segments/terrain/h_te_rh25"
+ATL08.var.map[["h_te_skew"]]="/land_segments/terrain/h_te_skew"
+ATL08.var.map[["h_te_std"]]="/land_segments/terrain/h_te_std"
+ATL08.var.map[["h_te_uncertainty"]]="/land_segments/terrain/h_te_uncertainty"
+ATL08.var.map[["n_te_photons"]]="/land_segments/terrain/n_te_photons"
+ATL08.var.map[["photon_rate_te"]]="/land_segments/terrain/photon_rate_te"
+ATL08.var.map[["subset_te_flag"]]="/land_segments/terrain/subset_te_flag"
+ATL08.var.map[["terrain_slope"]]="/land_segments/terrain/terrain_slope"
 
 #' ATL08 Terrain and Canopy Attributes
 #'
-#' @description This function extracts terrain and canopy attributes from ICESat-2 ATL08 data
+#' @description This function extracts terrain and canopy attributes by segments from ICESat-2 ATL08 data
 #'
 #' @usage ATL08_seg_attributes_dt(atl08_h5, beam)
 #'
@@ -52,10 +51,56 @@ ATL08.var.map[["terrain_slope"]]="/land_segments/terrainterrain_slope"
 #' An S4 object of class [rICESat2Veg::icesat2.atl08_dt].
 #' @param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
 #' @param attribute A character vector containing the list of terrain and canopy attributes to be extracted.
-#' See the default columns in the description.
-#'
+#' Default is attribute = c("h_canopy","canopy_h_metrics","canopy_openness","h_te_mean","h_te_median","terrain_slope")
 #' @return Returns an S4 object of class [rICESat2Veg::icesat2.atl08_dt]
-#' containing the ATL08-derived vegetation relative heights.
+#' containing the ATL08-derived terrain and canopy attributes by segments.
+#'
+#' @details ATL08 canopy attributes:
+#' \itemize{
+#' \item \emph{"h_canopy"}
+#' \item \emph{"canopy_rh_conf"}
+#' \item \emph{"h_median_canopy_abs"}
+#' \item \emph{"h_min_canopy"}
+#' \item \emph{"h_mean_canopy_abs"}
+#' \item \emph{"h_median_canopy"}
+#' \item \emph{"h_canopy_abs"}
+#' \item \emph{"toc_roughness"}
+#' \item \emph{"h_min_canopy_abs"}
+#' \item \emph{"h_dif_canopy"}
+#' \item \emph{"h_canopy_quad"}
+#' \item \emph{"h_canopy_20m"}
+#' \item \emph{"n_ca_photons"}
+#' \item \emph{"photon_rate_can"}
+#' \item \emph{"centroid_height"}
+#' \item \emph{"canopy_h_metrics_abs"}
+#' \item \emph{"h_mean_canopy"}
+#' \item \emph{"subset_can_flag"}
+#' \item \emph{"canopy_h_metrics"}
+#' \item \emph{"n_toc_photons"}
+#' \item \emph{"h_max_canopy_abs"}
+#' \item \emph{"h_canopy_uncertainty"}
+#' \item \emph{"canopy_openness"}
+#' \item \emph{"h_max_canopy"}
+#' \item \emph{"segment_cover"}
+#'}
+#' @details ATL08 terrain attributes:
+#' \itemize{
+#' \item \emph{"h_te_best_fit"}
+#' \item \emph{"h_te_best_fit_20m"}
+#' \item \emph{"h_te_interp"}
+#' \item \emph{"h_te_max"}
+#' \item \emph{"h_te_mean"}
+#' \item \emph{"h_te_median"}
+#' \item \emph{"h_te_mode"}
+#' \item \emph{"h_te_rh25"}
+#' \item \emph{"h_te_skew"}
+#' \item \emph{"h_te_std"}
+#' \item \emph{"h_te_uncertainty"}
+#' \item \emph{"n_te_photons"}
+#' \item \emph{"photon_rate_te"}
+#' \item \emph{"subset_te_flag"}
+#' \item \emph{"terrain_slope"}
+#'}
 #'
 #' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
 #'
@@ -75,9 +120,9 @@ ATL08.var.map[["terrain_slope"]]="/land_segments/terrainterrain_slope"
 #' # Reading ATL08 data (h5 file)
 # atl08_h5<-ATL08_read(atl08_path=atl08_path)
 #'
-#' # Extracting ATL08-derived Canopy Metrics
-#' canopy_metrics <- ATL08_seg_attributes_dt(atl08_h5 = atl08_h5)
-#' head(canopy_metrics)
+#' # Extracting ATL08-derived terrain and canopy attributes
+#' atl08_seg_att_dt <- ATL08_seg_attributes_dt(atl08_h5 = atl08_h5)
+#' head(atl08_seg_att_dt)
 #'
 #' close(atl08_h5)
 #' @export
@@ -85,45 +130,8 @@ ATL08_seg_attributes_dt <- function(atl08_h5,
                                        beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
                                        attribute = c(
                                          "h_canopy",
-                                         "canopy_rh_conf",
-                                         "h_median_canopy_abs",
-                                         "h_min_canopy",
-                                         "h_mean_canopy_abs",
-                                         "h_median_canopy",
-                                         "h_canopy_abs",
-                                         "toc_roughness",
-                                         "h_min_canopy_abs",
-                                         "h_dif_canopy",
-                                         "h_canopy_quad",
-                                         "h_canopy_20m",
-                                         "n_ca_photons",
-                                         "photon_rate_can",
-                                         "centroid_height",
-                                         "canopy_h_metrics_abs",
-                                         "h_mean_canopy",
-                                         "subset_can_flag",
-                                         "canopy_h_metrics",
-                                         "n_toc_photons",
-                                         "h_max_canopy_abs",
-                                         "h_canopy_uncertainty",
                                          "canopy_openness",
-                                         "h_max_canopy",
-                                         "segment_cover",
-                                         "h_te_best_fit",
-                                         "h_te_best_fit_20m",
-                                         "h_te_interp",
-                                         "h_te_max",
                                          "h_te_mean",
-                                         "h_te_median",
-                                         "h_te_min",
-                                         "h_te_mode",
-                                         "h_te_rh25",
-                                         "h_te_skew",
-                                         "h_te_std",
-                                         "h_te_uncertainty",
-                                         "n_te_photons",
-                                         "photon_rate_te",
-                                         "subset_te_flag",
                                          "terrain_slope"
                                        )) {
   # Check file input
@@ -131,34 +139,39 @@ ATL08_seg_attributes_dt <- function(atl08_h5,
     stop("atl08_h5 must be an object of class 'icesat2.atl08_h5' - output of [ATL08_read()] function ")
   }
 
+
   # Check beams to select
-  groups_id <- getBeams(atl08_h5, recursive = F)
+  groups <- atl08_h5@h5$ls()$name
+  groups_id <- grep("gt[1-3][lr]", groups, value = TRUE)
 
   check_beams <- groups_id %in% beam
   beam <- groups_id[check_beams]
 
-  canopy.dt <- data.table::data.table()
+  attribute.dt <- data.table::data.table()
 
   pb <- utils::txtProgressBar(min = 0, max = length(beam), style = 3)
 
   i_s <- 0
 
-  if (length(canopy_attribute) > 0) {
+  if (length(attribute) > 0) {
     for (i in beam) {
       i_s <- i_s + 1
       utils::setTxtProgressBar(pb, i_s)
-      atl08_canopy_h5 <- atl08_h5[[paste0(i, "/land_segments/canopy")]]
       lat_i <- atl08_h5[[paste0(i, "/land_segments/latitude")]][]
       lon_i <- atl08_h5[[paste0(i, "/land_segments/longitude")]][]
 
       m <- data.table::data.table(latitude = lat_i, longitude = lon_i, beam = i)
 
-      for (col in canopy_attribute) {
+      for (col in attribute) {
         # print(col)
+
         metric_address <- ATL08.var.map[[col]]
+        base_addr <- gsub("^(.*)/.*", "\\1", paste0(i,metric_address))
+        full_addr <- paste0(i,metric_address)
+
 
         if (is.null(metric_address)) {
-          if (atl08_canopy_h5$exists(col)) {
+          if (atl08_h5@h5$exists(full_addr)) {
             metric_address <- col
           } else {
             if (i.s == 1) {
@@ -174,11 +187,11 @@ ATL08_seg_attributes_dt <- function(atl08_h5,
           }
         }
 
-        base_addr <- gsub("^(.*)/.*", "\\1", metric_address)
-
-        if (atl08_canopy_h5$exists(base_addr) && atl08_canopy_h5$exists(metric_address)) {
-          if (metric_address %in% c("h_canopy_20m", "canopy_h_metrics_abs", "subset_can_flag", "canopy_h_metrics")) {
-            m <- cbind(m, t(atl08_canopy_h5[[metric_address]][, ]))
+        #base_addr <- gsub("^(.*)/.*", "\\1", metric_address)
+        #atl08_h5$exists(base_addr) &&
+        if (atl08_h5@h5$exists(full_addr)) {
+          if (col %in% c("h_canopy_20m", "canopy_h_metrics_abs", "subset_can_flag", "canopy_h_metrics")) {
+            m <- cbind(m, t(atl08_h5[[full_addr]][, ]))
 
             if (col == "h_canopy_20m") {
               colnames(m)[(ncol(m) - 4):ncol(m)] <- paste0("h_canopy_20m_geo_", 1:5)
@@ -193,18 +206,17 @@ ATL08_seg_attributes_dt <- function(atl08_h5,
               colnames(m)[(ncol(m) - 17):ncol(m)] <- paste0("RH", seq(10, 95, 5))
             }
           } else {
-            m[, eval(col) := atl08_canopy_h5[[metric_address]][]]
+            m[, eval(col) := atl08_h5[[full_addr]][]]
           }
         }
       }
-      canopy.dt <- data.table::rbindlist(list(canopy.dt, m), fill = TRUE)
+      attribute.dt <- data.table::rbindlist(list(attribute.dt, m), fill = TRUE)
     }
   }
 
-
-  canopy_dt <- new("icesat2.atl08_dt", dt = canopy.dt)
+  attribute_dt <- new("icesat2.atl08_dt", dt = na.omit(attribute.dt))
 
   close(pb)
 
-  return(canopy_dt)
+  return(attribute_dt)
 }

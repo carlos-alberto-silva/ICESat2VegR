@@ -1,9 +1,9 @@
-#' Statistics of ATL08 classified canopy photons at the segment level
+#' Statistics of ATL03 and ATL08 labeled photons at the segment level
 #'
-#' @description Computes a series of statistics from ATL08 classified canopy photons
+#' @description Computes a series of statistics from ATL03 and ATL08 labeled photons
 #' within a given segment length
 #'
-#' @usage ATL08_seg_attributes_dt_gridStat(atl03_atl08_dt, func, seg_length,ph_class,beam,quality_ph,night_flag)
+#' @usage ATL03_ATL08_compute_seg_attributes_dt_segStat(atl03_atl08_dt, func, seg_length,ph_class,beam,quality_ph,night_flag)
 #'
 #' @param atl03_atl08_dt  An S4 object of class "icesat2.atl03atl08_dt" containing ATL03 and ATL08 data
 #' (output of [ATL03_ATL08_photons_attributes_dt_join()] function).
@@ -17,7 +17,7 @@
 #' @param night_flag Flag indicating the data were acquired in night conditions: 0=day, 1=night. Default is 1
 #'
 #' @return Returns an S4 object of class [rICESat2Veg::icesat2.atl08_dt]
-#' Containing Statistics of ATL08 classified canopy photons
+#' Containing Statistics of ATL03 and ATL08 labeled photons
 #'
 #' @examples
 #'
@@ -43,19 +43,19 @@
 #'# Reading ATL08 data (h5 file)
 #atl08_h5<-ATL08_read(atl08_path=atl08_path)
 #'
-#'# Extracting ATL03 and ATL08 photons and heights
+#'# Extracting ATL03 and ATL08 labeled photons
 #'atl03_atl08_dt<-ATL03_ATL08_photons_attributes_dt_join(atl03_h5,atl08_h5)
 #'head(atl03_atl08_dt)
 #'
-#'# Computing the top canopy height at 30 m segments
-#'top_canopy <-ATL08_seg_attributes_dt_gridStat(atl03_atl08_dt, func=max(ph_h),
+#'# Computing the max canopy height at 30 m segments
+#'max_canopy <-ATL03_ATL08_compute_seg_attributes_dt_segStat(atl03_atl08_dt, func=max(ph_h),
 #'                                seg_length = 30,
 #'                                ph_class=c(2,3),
 #'                                beam=c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
 #'                                quality_ph=0,
 #'                                night_flag=1)
 #'
-#'head(top_canopy)
+#'head(max_canopy)
 #'
 #'# Define your own function
 #' mySetOfMetrics <- function(x) {
@@ -64,13 +64,14 @@
 #'     max = max(x), # Max of x
 #'     mean = mean(x), # Mean of x
 #'     sd = sd(x) # Sd of x
+#'     h_canopy = quantile(x,0.98)
 #'   )
 #'   return(metrics)
 #' }
 #'
-#' # Computing a series of canopy statistics from customized function
-#'canopy_metrics <-ATL08_seg_attributes_dt_gridStat(atl03_atl08_dt, func=mySetOfMetrics(ph_h),
-#'                                seg_length = 30,
+#' # Computing a series of canopy height statistics from customized function
+#'canopy_metrics <-ATL03_ATL08_compute_seg_attributes_dt_segStat(atl03_atl08_dt, func=mySetOfMetrics(ph_h),
+#'                                seg_length = 30, # 30 m
 #'                                ph_class=c(2,3),
 #'                                beam=c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
 #'                                quality_ph=0,
@@ -82,9 +83,13 @@
 #'close(atl08_h5)
 #' @import data.table lazyeval
 #' @export
-ATL08_seg_attributes_dt_gridStat <- function(atl03_atl08_dt, func, seg_length = 30, ph_class=c(2,3),
+ATL03_ATL08_compute_seg_attributes_dt_segStat <- function(atl03_atl08_dt,
+                                                          func,
+                                                          seg_length = 30,
+                                                          ph_class=c(2,3),
                                  beam=c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
-                                 quality_ph=0,night_flag=1) {
+                                 quality_ph=0,
+                                 night_flag=1) {
 
   if (!class(atl03_atl08_dt)[1]=="icesat2.atl03atl08_dt"){
     stop("atl03_atl08_dt needs to be an object of class 'icesat2.atl03atl08_dt' ")
@@ -95,11 +100,11 @@ ATL08_seg_attributes_dt_gridStat <- function(atl03_atl08_dt, func, seg_length = 
                                        atl03_atl08_dt@dt$beam %in% beam &
                                        atl03_atl08_dt@dt$night_flag %in% night_flag,]
 
-  bin<-cut(atl03_atl08_dt2$dist_ph_along, breaks=seq(0,max(atl03_atl08_dt2$dist_ph_along),seg_length),labels = FALSE)
+  segment<-cut(atl03_atl08_dt2$dist_ph_along, breaks=seq(0,max(atl03_atl08_dt2$dist_ph_along),seg_length),labels = FALSE)
 
-  atl03_atl08_dt2$bin<-bin
+  atl03_atl08_dt2$segment<-segment
 
-  
+
   # Add data.table operator
   `:=` <- data.table::`:=`
 
@@ -107,22 +112,27 @@ ATL08_seg_attributes_dt_gridStat <- function(atl03_atl08_dt, func, seg_length = 
 
   call2 <- lazy_call(seg_position(lon_ph,lat_ph))
 
-  if (is.null(bin)) {
+  if (is.null(segment)) {
     metrics <- lazy_apply_dt_call(dt = atl03_atl08_dt2, call = call)
     metrics <- as.data.table(metrics)
     if (ncol(metrics) < 2) {
       colnames(metrics) <- paste0(call)[1]
     }
+
   } else {
-    metrics <- lazy_apply_dt_call(dt = atl03_atl08_dt2, call = call, group.by = "by = bin")
-    latlon <- lazy_apply_dt_call(dt = atl03_atl08_dt2, call = call2, group.by = "by = bin")
+    metrics <- lazy_apply_dt_call(dt = atl03_atl08_dt2, call = call, group.by = "by = segment")
+    latlon <- lazy_apply_dt_call(dt = atl03_atl08_dt2, call = call2, group.by = "by = segment")
 
     metrics$latitude<-latlon$V1
     metrics$longitude<-latlon$V2
 
-    if (ncol(metrics) < 5) {
+    if (ncol(metrics) == 4) {
       colnames(metrics)[2] <- paste0(call)[1]
     }
+
+    metrics$dist_along<-metrics$segment*seg_length - seg_length/2
+    metrics<-metrics[-nrow(metrics),]
+    colnames(metrics)[2:c(ncol(metrics)-3)]<-paste0(names(metrics)[2:c(ncol(metrics)-3)],"_",paste0(call)[2])
   }
 
   metrics<- new("icesat2.atl08_dt", dt = metrics)

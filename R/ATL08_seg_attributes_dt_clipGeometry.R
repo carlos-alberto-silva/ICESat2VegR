@@ -1,11 +1,11 @@
-#' Clip ATL08 Canopy Height Metrics by Geometry
+#' Clip ATL08 Terrain and Canopy Attributes by Geometry
 #'
-#' @description This function clips ATL08 Canopy Height Metrics within a given geometry
+#' @description This function clips ATL08 Terrain and Canopy Attributes within a given geometry
 #'
-#' @usage ATL08_seg_attributes_dt_clipGeometry(atl08_canopy_dt, xmin, xmax, ymin, ymax)
+#' @usage ATL08_seg_attributes_dt_clipGeometry(atl08_seg_att_dt, xmin, xmax, ymin, ymax)
 #'
-#' @param atl08_canopy_dt A atl08_canopy_dt object (output of [ATL08_canopy()] function).
-#' An S4 object of class "gedi.level2a".
+#' @param atl08_seg_att_dt A atl08_seg_att_dt object (output of [rICESat2Veg::ATL08_seg_attribute_dt()] function).
+#' An S4 object of class [rICESat2Veg::icesat2.atl08_dt]
 #' @param polygon Polygon. An object of class [`terra::SpatVector`],
 #' which can be loaded as an ESRI shapefile using [terra::vect] function in the
 #' \emph{sf} package.
@@ -13,7 +13,7 @@
 #' the polygon id from table of attribute defined by the user
 #'
 #' @return Returns an S4 object of class [rICESat2Veg::icesat2.atl08_dt]
-#' containing the clipped ATL08 Canopy Height Metrics.
+#' containing the clipped ATL08 Terrain and Canopy Attributes.
 #'
 #' @examples
 #' # Specifying the path to ATL08 file (zip file)
@@ -29,7 +29,7 @@
 #atl08_h5<-ATL08_read(atl08_path=atl08_path)
 #'
 #'# Extracting ATL08-derived Canopy Metrics
-#'atl08_canopy_dt<-ATL08_seg_attributes_dt(atl08_h5=atl08_h5)
+#'atl08_seg_att_dt<-ATL08_seg_attributes_dt(atl08_h5=atl08_h5)
 #'
 #' # Specifying the path to shapefile
 #' polygon_filepath <- system.file("extdata", "polygon.shp", package = "rICESat2Veg")
@@ -37,15 +37,15 @@
 #' # Reading shapefile as sf object
 #' polygon <- terra::vect(polygon_filepath)
 #'
-#' # Clipping ATL08 Canopy Height Metrics by Geometry
-#' atl08_canopy_dt_clip <- ATL08_seg_attributes_dt_clipGeometry(atl08_canopy_dt, polygon, split_by = "FID")
+#' # Clipping ATL08 Terrain and Canopy Attributes by Geometry
+#' atl08_seg_att_dt_clip <- ATL08_seg_attributes_dt_clipGeometry(atl08_seg_att_dt, polygon, split_by = "FID")
 #'
 #' hasLeaflet <- require(leaflet)
 #'
 #' if (hasLeaflet) {
 #'   leaflet() %>%
-#'     addCircleMarkers(atl08_canopy_dt_clip$longitude,
-#'       atl08_canopy_dt_clip$latitude,
+#'     addCircleMarkers(atl08_seg_att_dt_clip$longitude,
+#'       atl08_seg_att_dt_clip$latitude,
 #'       radius = 1,
 #'       opacity = 1,
 #'       color = "red"
@@ -59,36 +59,37 @@
 #' }
 #' close(atl08_h5)
 #' @export
-ATL08_seg_attributes_dt_clipGeometry <- function(atl08_canopy_dt, polygon, split_by = "id") {
+ATL08_seg_attributes_dt_clipGeometry <- function(atl08_seg_att_dt, polygon, split_by = "id") {
 
 
-  if (!class(atl08_canopy_dt)[1]=="icesat2.atl08_dt"){
-    stop("ATL08_canopy_dt needs to be an object of class 'icesat2.atl08_dt' ")
+  if (!class(atl08_seg_att_dt)[1]=="icesat2.atl08_dt"){
+    stop("atl08_seg_att_dt needs to be an object of class 'icesat2.atl08_dt' ")
   }
   exshp <- terra::ext(polygon)
 
-  atl08_canopy_dtdt <- ATL08_seg_attributes_dt_gridStat(
-    atl08_canopy_dt,
+  atl08_seg_att_dtdt <- ATL08_seg_attributes_dt_clipBox(
+    atl08_seg_att_dt,
     xmin = exshp$xmin,
     xmax = exshp$xmax,
     ymin = exshp$ymin,
     ymax = exshp$ymax
   )
 
-  if (any(is.na(atl08_canopy_dtdt@dt))) {
-    atl08_canopy_dtdt<-na.omit(atl08_canopy_dtdt@dt)
+  if (any(is.na(atl08_seg_att_dtdt))) {
+    atl08_seg_att_dtdt<-na.omit(atl08_seg_att_dtdt@dt)
   } else {
-    atl08_canopy_dtdt<-atl08_canopy_dtdt@dt
+
+    atl08_seg_att_dtdt<-atl08_seg_att_dtdt@dt
   }
 
-  atl08_canopy_dtdt$nid<-1:nrow(atl08_canopy_dtdt)
+  atl08_seg_att_dtdt$nid<-1:nrow(atl08_seg_att_dtdt)
 
-  if (nrow(atl08_canopy_dtdt) == 0) {
+  if (nrow(atl08_seg_att_dtdt) == 0) {
     print("The polygon does not overlap the ATL08 data")
   } else {
 
     points <- terra::vect(
-      atl08_canopy_dtdt,
+      atl08_seg_att_dtdt,
       geom = c("longitude", "latitude"),
       crs = terra::crs(polygon)
     )
@@ -98,14 +99,14 @@ ATL08_seg_attributes_dt_clipGeometry <- function(atl08_canopy_dt, polygon, split
 
     if (!is.null(split_by)) {
       if (any(names(polygon) == split_by)) {
-        newFile <- atl08_canopy_dtdt[pts$nid, ]
+        newFile <- atl08_seg_att_dtdt[pts$nid, ]
         newFile$poly_id<-pts[[split_by]]
       } else {
         stop(paste("The", split_by, "is not included in the attribute table.
                        Please check the names in the attribute table"))
       }
     } else {
-      newFile <- atl08_canopy_dtdt[pts$nid, ]
+      newFile <- atl08_seg_att_dtdt[pts$nid, ]
     }
 
     newFile<- new("icesat2.atl08_dt", dt = newFile)

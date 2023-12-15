@@ -1,11 +1,11 @@
-#' Statistics of ATL03 and ATL08 joined photon attributes
+#' Statistics of ATL03 and ATL08 photon attributes
 #'
 #' @description This function computes a series of user defined descriptive statistics within
-#' each given grid cell for ATL03 and ATL08 joined photon attributes
+#' each given grid cell for ATL03 and ATL08 photon attributes
 #'
 #' @usage ATL03_ATL08_photons_attributes_dt_gridStat(atl03_atl08_dt, func, res)
 #'
-#' @param atl03atl08_dt  An S4 object of class [rICESat2Veg::icesat2.atl03atl08_dt] containing ATL03 and ATL08 joined attributes
+#' @param atl03_atl08_dt  An S4 object of class [rICESat2Veg::icesat2.atl03_atl08_dt] containing ATL03 and ATL08  attributes
 #' (output of the [ATL03_ATL08_photons_attributes_dt_join()] function).
 #' @param func The function to be applied for computing the defined statistics
 #' @param res Spatial resolution in decimal degrees for the output SpatRast raster layer. Default is 0.5.
@@ -16,7 +16,7 @@
 #' effect, 3=possible_tep. Default is 0
 #' @param night_flag Flag indicating the data were acquired in night conditions: 0=day, 1=night. Default is 1
 #'
-#' @return Return a SpatRast raster layer(s) of selected ATL03 and ATL08 joined photon attribute(s)
+#' @return Return a SpatRast raster layer(s) of selected ATL03 and ATL08 photon attribute(s)
 #'
 #' @examples
 #' outdir <- tempdir()
@@ -46,10 +46,10 @@
 #' atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
 #' head(atl03_atl08_dt)
 #'
-#' # Computing the mean ph_h at 30 m grid cell
-#' mean_ph_h <- ATL03_ATL08_photons_attributes_dt_gridStat(atl03atl08_dt, func = mean(ph_h), res = 0.5)
+#' # Computing the mean of ph_h attribute at 0.05 degree grid cell
+#' mean_ph_h <- ATL03_ATL08_photons_attributes_dt_gridStat(atl03_atl08_dt, func = mean(ph_h), res = 0.005)
 #'
-#' plot(mean_ph_h)
+#' plot(mean_ph_h, xlim=c(-107.5,-106.5),ylim=c(38,39))
 #'
 #' # Define your own function
 #' mySetOfMetrics <- function(x) {
@@ -62,10 +62,10 @@
 #'   return(metrics)
 #' }
 #'
-#' # Computing a series of ph_h at 30 m grid cellfrom customized function
-#' ph_h_metrics <- ATL03_ATL08_photons_attributes_dt_gridStat(atl03atl08_dt, func = mySetOfMetrics(ph_h), res = 0.5)
+#' # Computing a series of ph_h stats at 0.05 degree grid cell from customized function
+#' ph_h_metrics <- ATL03_ATL08_photons_attributes_dt_gridStat(atl03_atl08_dt, func = mySetOfMetrics(ph_h), res = 0.005)
 #'
-#' plot(ph_h_metrics)
+#' plot(ph_h_metrics, xlim=c(-107.5,-106.5),ylim=c(38,39))
 #'
 #' close(atl03_h5)
 #' close(atl08_h5)
@@ -79,7 +79,7 @@ ATL03_ATL08_photons_attributes_dt_gridStat <- function(atl03_atl08_dt,
                                            quality_ph = 0,
                                            night_flag = 1) {
   if (!class(atl03_atl08_dt)[1] == "icesat2.atl03atl08_dt") {
-    stop("atl03atl08_dt needs to be an object of class 'icesat2.atl03atl08_dt' ")
+    stop("atl03_atl08_dt needs to be an object of class 'icesat2.atl03atl08_dt' ")
   }
 
   if (any(is.na(atl03_atl08_dt@dt))) {
@@ -132,8 +132,9 @@ ATL03_ATL08_photons_attributes_dt_gridStat <- function(atl03_atl08_dt,
 
 
   for (metric in 1:n_metrics) {
-    output[[metric]][metrics$cells] <- metrics[[metric]]
+    output[[metric]][metrics$cells] <- metrics[[metric+1]]
   }
 
+  names(output)<-paste0(paste0(call)[2],"_",names(metrics)[-1])
   return(output)
 }

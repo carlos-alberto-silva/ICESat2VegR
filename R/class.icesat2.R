@@ -21,23 +21,67 @@ icesat2.atl08_h5 <- setClass(
 #' Dispatches the `[[` function to h5
 #'
 #'
-#' @param atl03 An object of class `icesat2.atl03_h5`
+#' @param x An object of class `icesat2.atl03_h5`
 #' @param path The path for the dataset which to open
 #'
 #' @export
-`[[.icesat2.atl03_h5` <- function(atl03, path) {
-  atl03@h5[[path]]
+`[[.icesat2.atl03_h5` <- function(x, path) {
+  x@h5[[path]]
 }
 
 #' Dispatches the `[[` function to h5
 #'
 #'
-#' @param atl08 An object of class `icesat2.atl08_h5`
+#' @param x An object of class `icesat2.atl08_h5`
 #' @param path The path for the dataset which to open
 #'
 #' @export
-`[[.icesat2.atl08_h5` <- function(atl08, path) {
-  atl08@h5[[path]]
+`[[.icesat2.atl08_h5` <- function(x, path) {
+  x@h5[[path]]
+}
+
+#' Dispatches the `[[` function to dt
+#'
+#'
+#' @param x An object of class `icesat2.atl03atl08_dt`
+#' @param path The path for the dataset which to open
+#'
+#' @export
+`[[.icesat2.atl03atl08_dt` <- function(x, path) {
+  x@dt[[path]]
+}
+
+#' Dispatches the `@dt` function to dt
+#'
+#'
+#' @param x An object of class `icesat2.atl03_dt`
+#' @param path The path for the dataset which to open
+#'
+#' @export
+`$.icesat2.atl03_dt` <- function(x, path) {
+  x@dt[,get(path)]
+}
+
+#' Dispatches the `@dt` function to dt
+#'
+#'
+#' @param x An object of class `icesat2.atl08_dt`
+#' @param path The path for the dataset which to open
+#'
+#' @export
+`$.icesat2.atl08_dt` <- function(x, path) {
+  x@dt[,get(path)]
+}
+
+#' Dispatches the `@dt` function to dt
+#'
+#'
+#' @param x An object of class `icesat2.atl03atl08_dt`
+#' @param path The path for the dataset which to open
+#'
+#' @export
+`$.icesat2.atl03atl08_dt` <- function(x, path) {
+  x@dt[,get(path)]
 }
 
 
@@ -133,10 +177,10 @@ getBeams_validation <- function(h5) {
 #' @param ... Other parameters to dispatch to the hdf5 library
 #'
 #' @export
-getBeams <- function(h5, ...) {
-  getBeams_validation(h5)
+getBeams <- function(x, ...) {
+  getBeams_validation(x)
 
-  groups <- h5@h5$ls()$name
+  groups <- x@h5$ls()$name
   grep("gt[1-3][lr]", groups, value = TRUE)
 }
 
@@ -315,7 +359,7 @@ setMethod(
       xdt<-x@dt[x@dt$beam==beam,c("dist_ph_along",y,"classed_pc_flag"), with = FALSE]
 
       if (is.null(xlim)){xlim=range(xdt$dist_ph_along)}
-      if (is.null(ylim)){ylim=range(xdt[,get(y)])}
+      if (is.null(ylim)){ylim=range(xdt[,get(y)], na.rm=T)}
 
       mask<-xdt$dist_ph_along >= xlim[1] &
         xdt$dist_ph_along <= xlim[2] &
@@ -328,11 +372,12 @@ setMethod(
 
       colorMap <- colors[newFile$classed_pc_flag + 1]
 
+
       suppressWarnings({
           plot(x=newFile$dist_ph_along,
                y=newFile[,get(y)],
-               col = colorMap,xlim=xlim, ylim=ylim,...)
-          legend("topleft", legend=c("Noise","Terrain", "Vegetation", "Top canopy"), pch=16, col=colors, bty="n")
+               col = colorMap,xlim=xlim, ylim=ylim, xlab="Distance along-track (m)", ylab=paste(y,"(m)"),...)
+          legend("topleft", legend=c("ATL03 unclassified","ATL03 Terrain", "ATL03 Vegetation", "ATL03 Top canopy"), pch=16, col=colors, bty="n")
         })
 
     }
@@ -476,7 +521,7 @@ setMethod(
 
       x<-x[x$beam==beam,]
       suppressWarnings({
-        plot(x=x$dist_along, y=x$h_ph, col = col,xlab="Distance along-track (m)", ylab="h_ph (m)",...)
+        plot(x=x$dist_along, y=x$h_ph, col = col,xlab="Distance along-track (m)", ylab="Elevation (m)",...)
         legend("topleft", legend=c("Noise","Terrain", "Vegetation", "Top canopy"), pch=16, col=colors, bty="n")
       })
 

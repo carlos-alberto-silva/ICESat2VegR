@@ -1,6 +1,6 @@
-#' Clip Joined ATL03 and ATL08 by Bounding Box
+#' Clip joined ATL03 and ATL08 photons by Bounding Box
 #'
-#' @description This function clips joined ATL03 and ATL08 photon attributes table within a given Bounding Box
+#' @description This function clips joined ATL03 and ATL08 photon attributes within a given Bounding Box
 #'
 #' @usage ATL03_ATL08_photons_attributes_dt_clipBox(atl03_atl08_dt, xmin, xmax, ymin, ymax)
 #'
@@ -11,9 +11,10 @@
 #' @param ymin Numeric. South latitude (y) coordinate of bounding rectangle, in decimal degrees.
 #' @param ymax Numeric. North latitude (y) coordinate of bounding rectangle, in decimal degrees.
 #'
-#' @return Returns an S4 object of class [rICESat2Veg::icesat2.atl08_dt]
-#' containing the ATL08 Canopy Height Metrics.
+#' @return Returns an S4 object of class [rICESat2Veg::icesat2.atl03atl08_dt]
+#' containing a subset of the ATL03 and ATL08 photon attributes.
 #'
+#'@seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
 #'@seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
 #'
 #' @examples
@@ -39,7 +40,7 @@
 #'# Reading ATL08 data (h5 file)
 #atl08_h5<-ATL08_read(atl08_path=atl08_path)
 #'
-#'# # Extracting ATL03 and ATL08 photons and heights
+#'# Joining ATL03 and ATL08 photons and heights
 #'atl03_atl08_dt<-ATL03_ATL08_photons_attributes_dt_join(atl03_h5,atl08_h5)
 #'head(atl03_atl08_dt)
 #'
@@ -51,6 +52,7 @@
 #'
 #' # Clipping ATL08-derived canopy metrics by boundary box extent
 #'atl03_atl08_dt_clip <- ATL03_ATL08_photons_attributes_dt_clipBox(atl03_atl08_dt, xmin, xmax, ymin, ymax)
+#'head(atl03_atl08_dt_clip)
 #'
 #'close(atl03_h5)
 #'close(atl08_h5)
@@ -81,7 +83,7 @@ ATL03_ATL08_photons_attributes_dt_clipBox <- function(atl03_atl08_dt, xmin, xmax
   mask <- (seq_along(atl03_atl08_dt$lat_ph))[mask]
   newFile <- atl03_atl08_dt[mask, ]
 
-  newFile<- new("icesat2.atl08_dt", dt = newFile)
+  newFile<- new("icesat2.atl03atl08_dt", dt = newFile)
 
   # newFile<- new("gedi.level1b.dt", dt = level1bdt[mask,])
   return(newFile)

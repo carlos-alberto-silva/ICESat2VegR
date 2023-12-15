@@ -1,6 +1,6 @@
 #' Clip Joined ATL03 and ATL08 by Geometry
 #'
-#' @description This function clips joined ATL03 and ATL08 photon attributes table within a given geometry
+#' @description This function clips joined ATL03 and ATL08 photon attributes within a given geometry
 #'
 #' @usage ATL03_ATL08_photons_attributes_dt_clipGeometry(atl03_atl08_dt, polygon, split_by = "FID")
 #'
@@ -38,7 +38,7 @@
 #'# Reading ATL08 data (h5 file)
 #atl08_h5<-ATL08_read(atl08_path=atl08_path)
 #'
-#'# # Extracting ATL03 and ATL08 photons and heights
+#'# Joining ATL03 and ATL08 photons attributes
 #'atl03_atl08_dt<-ATL03_ATL08_join(atl03_h5,atl08_h5)
 #'head(atl03_atl08_dt)
 #'
@@ -50,24 +50,7 @@
 #'
 #' # Clipping ATL08 terrain attributes by Geometry
 #' atl03_atl08_dt_clip <- ATL03_ATL08_photons_attributes_dt_clipGeometry(atl03_atl08_dt, polygon, split_by = "FID")
-#'
-#' hasLeaflet <- require(leaflet)
-#'
-#' if (hasLeaflet) {
-#'   leaflet() %>%
-#'     addCircleMarkers(atl03_atl08_dt_clip$longitude,
-#'       atl03_atl08_dt_clip$latitude,
-#'       radius = 1,
-#'       opacity = 1,
-#'       color = "red"
-#'     ) %>%
-#'     addScaleBar(options = list(imperial = FALSE)) %>%
-#'     addPolygons(
-#'       data = polygon, weight = 1, col = "white",
-#'       opacity = 1, fillOpacity = 0
-#'     ) %>%
-#'     addProviderTiles(providers$Esri.WorldImagery)
-#' }
+#' head(atl03_atl08_dt_clip)
 #'
 #'close(atl03_h5)
 #'close(atl08_h5)
@@ -77,7 +60,6 @@ ATL03_ATL08_photons_attributes_dt_clipGeometry <- function(atl03_atl08_dt, polyg
   if (!class(atl03_atl08_dt)[1]=="icesat2.atl03atl08_dt"){
     stop("atl03_atl08_dt needs to be an object of class 'icesat2.at03atl08_dt' ")
   }
-
 
   exshp <- terra::ext(polygon)
 
