@@ -445,18 +445,10 @@ grid()
 points(max_ph_h_seg_30m$dist_along,max_ph_h_seg_30m$max_ph_h, col="red", pch=16)
 points(max_ph_h_seg_100m$dist_along,max_ph_h_seg_100m$max_ph_h, col="blue", pch=16)
 legend("topleft",legend=c("ATL03 unclassified","ATL03 ground","ATL03 Canopy","ATL03 Top canopy","Max ph_h at 30m","Max ph_h at 100m"), col=c(colors,"red","blue"), pch=16, bty="n")
+```
+![](https://github.com/carlos-alberto-silva/rICESat2Veg/blob/master/readme/profile_metrics.png)
 
-# Define your own function
- mySetOfMetrics <- function(x) {
-   metrics <- list(
-     min = min(x), # Min of x
-     max = max(x), # Max of x
-     mean = mean(x), # Mean of x
-     sd = sd(x) # Sd of x
-     h_canopy = quantile(x,0.98)
-   )
-   return(metrics)
-}
+```r
 
 # Computing a series of ph_h statistics from customized function
  ph_h_metrics <-ATL03_ATL08_compute_seg_attributes_dt_segStat(atl03_atl08_dt, func=mySetOfMetrics(ph_h),
@@ -505,5 +497,5 @@ Please report any issue regarding the rICESat2Veg package to Dr. Silva (c.silva@
 Silva,C.A; Hamamura,C.rICESat2Veg: An R Package for NASA's Ice, Cloud, and Elevation Satellite (ICESat-2) Data Processing and Visualization for Terrestrial Applications.version 0.0.1, accessed on November. 22 2023, available at: <https://CRAN.R-project.org/package=rICESat2Veg>
 
 # Disclaimer
-**rICESat2Veg package has not been developted by the GEDI team. It comes with no guarantee, expressed or implied, and the authors hold no responsibility for its use or reliability of its outputs.**
+**rICESat2Veg package comes with no guarantee, expressed or implied, and the authors hold no responsibility for its use or reliability of its outputs.**
 
