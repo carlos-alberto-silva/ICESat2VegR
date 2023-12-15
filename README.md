@@ -332,11 +332,7 @@ mySetOfMetrics <- function(x) {
   )
   return(metrics)
 }
-```
 
-<img align="right" src="https://github.com/carlos-alberto-silva/rICESat2Veg/blob/master/readme/h_ph_map_all.png"  width="300">
-
-```r
 # Computing a series of h_canopy statistics at 0.05 degree grid cell from customized function
 h_ph_metrics <-ATL03_ATL08_photons_attributes_dt_gridStat(atl03_atl08_dt, func=mySetOfMetrics(h_ph),res=0.05)
 plot(h_ph_metrics,
@@ -346,7 +342,7 @@ plot(h_ph_metrics,
      xlab="Langitude (degree)",
      ylab="Latitude (degree)")
 ```
-
+  
 
 ## Clipping ATL03 and joined ATL03 and ATL08 photons attributes
 
@@ -363,6 +359,12 @@ head(atl03_photons_dt_clip) # print the first six observations
 ## 4: -106.5 42.07273 2262.953          0        33.26932       1946648
 ## 5: -106.5 42.07271 2280.661          0        33.26932       1946649
 ## 6: -106.5 42.07270 2271.058          0        33.26932       1946652
+
+```
+
+<img align="right" src="https://github.com/carlos-alberto-silva/rICESat2Veg/blob/master/readme/h_ph_map_all.png"  width="300">
+
+```r
 
 # AT03 and ATL08 photons
 atl03_atl08_photons_dt_clip <- ATL03_ATL08_photons_attributes_dt_clipBox(atl03_atl08_dt, xmin, xmax, ymin, ymax)
