@@ -290,6 +290,8 @@ head(atl03_atl08_dt)
 ## 5:               1      1  134086701 -0.16015625 gt1l          1
 ## 6:               1      1  134086701  0.03042603 gt1l          1
 
+```
+```r
 ## Plotting photon cloud
 # plot by "ph_h"
 plot(atl03_atl08_dt, y="ph_h",colors, beam = "gt1l",
@@ -308,6 +310,10 @@ plot(atl03_atl08_dt, y="h_ph",colors, beam = "gt1l",
 ```r
 # Computing the mean of h_ph attribute at 0.05 degree grid cell
 mean_h_ph <- ATL03_ATL08_photons_attributes_dt_gridStat(atl03_atl08_dt, func = mean(h_ph), res = 0.05)
+```
+<img align="right" src="https://github.com/carlos-alberto-silva/rICESat2Veg/blob/master/readme/h_ph_map.png"  width="300">
+
+```r
 plot(mean_h_ph,
      xlim=c(-107.2,-106.8),
      ylim=c(38,39),
@@ -315,10 +321,7 @@ plot(mean_h_ph,
      col=viridis::inferno(8),
      xlab="Langitude (degree)",
      ylab="Latitude (degree)")
-```
-<img align="right" src="https://github.com/carlos-alberto-silva/rICESat2Veg/blob/master/readme/h_ph_map.png"  width="300">
 
-```r
 # Define your own function
 mySetOfMetrics <- function(x) {
   metrics <- list(
@@ -329,7 +332,11 @@ mySetOfMetrics <- function(x) {
   )
   return(metrics)
 }
+```
 
+<img align="right" src="https://github.com/carlos-alberto-silva/rICESat2Veg/blob/master/readme/h_ph_map_all.png"  width="300">
+
+```r
 # Computing a series of h_canopy statistics at 0.05 degree grid cell from customized function
 h_ph_metrics <-ATL03_ATL08_photons_attributes_dt_gridStat(atl03_atl08_dt, func=mySetOfMetrics(h_ph),res=0.05)
 plot(h_ph_metrics,
@@ -339,7 +346,7 @@ plot(h_ph_metrics,
      xlab="Langitude (degree)",
      ylab="Latitude (degree)")
 ```
-<img align="right" src="https://github.com/carlos-alberto-silva/rICESat2Veg/blob/master/readme/h_ph_map_all.png"  width="300">
+
 
 ## Clipping ATL03 and joined ATL03 and ATL08 photons attributes
 
