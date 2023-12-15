@@ -156,7 +156,7 @@ i_s = 0
 
 if (length(canopy_attribute) > 1) { glist="canopy"}
 if (length(terrain_attribute) > 1) { glist="terrain"}
-if (length(canopy_attribute) > 1 & length(terrain_attribute) > 1) { glist=c("terrain","canopy")}
+if (length(canopy_attribute) > 1 && length(terrain_attribute) > 1) { glist=c("terrain","canopy")}
 
 
 
@@ -189,7 +189,7 @@ gedilevel2b<-readLevel2B(level2Bpath = file.path(outdir,"GEDI02_B_2019108080338_
 
 level2a<-gedilevel2a@h5
 groups_id<-grep("BEAM\\d{4}$",gsub("/","",
-                                   hdf5r::list.groups(level2a, recursive = F)), value = T)
+                                   hdf5r::list.groups(level2a, recursive = F)), value = TRUE)
 
 
 
@@ -255,7 +255,7 @@ get_atl08 <- function(atl08_class,
                       beam_strength = c("weak", "strong")) {
 
   # Check file input
-  if (!is.character(atl08_h5) | !tools::file_ext(atl08_h5) == "h5") {
+  if (!is.character(atl08_h5) || !tools::file_ext(atl08_h5) == "h5") {
     stop("atl08_h5 must be a path to a h5 file")
   }
 
@@ -311,11 +311,9 @@ get_atl08 <- function(atl08_class,
   }
 
   # Retrieve RGT, region and cycle
-  suppressWarnings(rgt <- as.integer(rhdf5::h5read(file = atl08_h5, name = "orbit_info/rgt")))
   suppressWarnings(cycle <- as.integer(rhdf5::h5read(file = atl08_h5, name = "orbit_info/cycle_number")))
   suppressWarnings(region <- as.integer(rhdf5::h5read(file = atl08_h5, name = "ancillary_data/start_region")))
 
-  out <- list() #Initiate list to return
   n=
     for ( n in beam) {
 
@@ -500,7 +498,7 @@ get_atl08 <- function(atl08_class,
 getLevel2AM<-function(level2a){
   level2a<-level2a@h5
   groups_id<-grep("BEAM\\d{4}$",gsub("/","",
-                                     hdf5r::list.groups(level2a, recursive = F)), value = T)
+                                     hdf5r::list.groups(level2a, recursive = F)), value = TRUE)
   rh.dt<-data.table::data.table()
   pb <- utils::txtProgressBar(min = 0, max = length(groups_id), style = 3)
   i.s=0

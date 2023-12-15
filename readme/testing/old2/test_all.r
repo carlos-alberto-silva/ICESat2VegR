@@ -153,10 +153,10 @@ head(atl03_atl08_df)
 
 ~data.table(
     n = length(x),
-    M1 = mean(x,na.rm = T),
-    M2 = e1071::moment(x, order = 2, center = TRUE, na.rm = T) * length(x),
-    M3 = e1071::moment(x, order = 3, center = TRUE, na.rm = T) * length(x),
-    M4 = e1071::moment(x, order = 4, center = TRUE, na.rm = T) * length(x),
+    M1 = mean(x,na.rm = TRUE),
+    M2 = e1071::moment(x, order = 2, center = TRUE, na.rm = TRUE) * length(x),
+    M3 = e1071::moment(x, order = 3, center = TRUE, na.rm = TRUE) * length(x),
+    M4 = e1071::moment(x, order = 4, center = TRUE, na.rm = TRUE) * length(x),
     min = min(x, na.rm=T),
     max = max(x, na.rm=T)
   )

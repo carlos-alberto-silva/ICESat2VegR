@@ -14,12 +14,12 @@ default_finalizer <- list(
 
 default_agg_function <- ~ data.table::data.table(
   n = length(x),
-  M1 = mean(x, na.rm = T),
-  M2 = e1071::moment(x, order = 2, center = TRUE, na.rm = T) * length(x),
-  M3 = e1071::moment(x, order = 3, center = TRUE, na.rm = T) * length(x),
-  M4 = e1071::moment(x, order = 4, center = TRUE, na.rm = T) * length(x),
-  min = min(x, na.rm = T),
-  max = max(x, na.rm = T)
+  M1 = mean(x, na.rm = TRUE),
+  M2 = e1071::moment(x, order = 2, center = TRUE, na.rm = TRUE) * length(x),
+  M3 = e1071::moment(x, order = 3, center = TRUE, na.rm = TRUE) * length(x),
+  M4 = e1071::moment(x, order = 4, center = TRUE, na.rm = TRUE) * length(x),
+  min = min(x, na.rm = TRUE),
+  max = max(x, na.rm = TRUE)
 )
 
 default_agg_join <- function(x1, x2) {
@@ -83,7 +83,7 @@ default_agg_join <- function(x1, x2) {
 #' (n, m1, m2, m3, m4, min, max). m1 to m4 are the central moments.
 #' One can calculate mean, standard deviation, skewness and kurtosis
 #' with the following formulas according to Terriberry (2007) and
-#' \insertCite{Joanes1998;textual}{rICESat2}:
+#' \insertCite{Joanes1998;textual}{rICESat2Veg}:
 #'
 #' \deqn{ \bar{x} = m_1 }{mean = m1}
 #'
@@ -104,10 +104,10 @@ default_agg_join <- function(x1, x2) {
 #' ```{r, eval=FALSE}
 #' ~data.table(
 #'     n = length(x),
-#'     M1 = mean(x,na.rm = T),
-#'     M2 = e1071::moment(x, order = 2, center = TRUE, na.rm = T) * length(x),
-#'     M3 = e1071::moment(x, order = 3, center = TRUE, na.rm = T) * length(x),
-#'     M4 = e1071::moment(x, order = 4, center = TRUE, na.rm = T) * length(x),
+#'     M1 = mean(x,na.rm = TRUE),
+#'     M2 = e1071::moment(x, order = 2, center = TRUE, na.rm = TRUE) * length(x),
+#'     M3 = e1071::moment(x, order = 3, center = TRUE, na.rm = TRUE) * length(x),
+#'     M4 = e1071::moment(x, order = 4, center = TRUE, na.rm = TRUE) * length(x),
 #'     min = min(x, na.rm=T),
 #'     max = max(x, na.rm=T)
 #'   )
@@ -250,8 +250,7 @@ default_agg_join <- function(x1, x2) {
 #'
 #' close(atl08_h5)
 #'
-#' @import e1071
-#' @import data.table
+#' @import e1071 data.table gdalBindings
 #' @export
 ATL08_seg_attributes_h5_gridStat <- function(
     atl08_path,
@@ -341,7 +340,7 @@ ATL08_seg_attributes_h5_gridStat <- function(
   # metric = metrics[1]
   for (metric in metrics) {
     metricCounter <- metricCounter + 1
-    message(sprintf("Metric %s (%d/%d)", metric, metricCounter, nMetrics), appendLF = T)
+    message(sprintf("Metric %s (%d/%d)", metric, metricCounter, nMetrics), appendLF = TRUE)
     cols <- c(cols.coord, metric)
 
     rast_paths <- sprintf("%s_%s_%s.tif", out_root, metric, stats)
@@ -349,10 +348,10 @@ ATL08_seg_attributes_h5_gridStat <- function(
 
     # stat_ind = 1
     for (stat_ind in seq_along(stats)) {
-      datatype <- GDALDataType$GDT_Float64
+      datatype <- gdalBindings::GDALDataType$GDT_Float64
       nodata <- -9999.0
       if (classes[[stat_ind]] == "integer") {
-        datatype <- GDALDataType$GDT_Int32
+        datatype <- gdalBindings::GDALDataType$GDT_Int32
         nodata <- 0
       }
       rasts[[stats[[stat_ind]]]] <- createDataset(
@@ -371,9 +370,6 @@ ATL08_seg_attributes_h5_gridStat <- function(
     }
 
 
-    xsize <- rasts[[1]]$GetRasterXSize()
-    ysize <- rasts[[1]]$GetRasterYSize()
-
     bands <- lapply(rasts, function(x) x[[1]])
 
     block_x_size <- bands[[1]]$GetBlockXSize()
@@ -383,10 +379,10 @@ ATL08_seg_attributes_h5_gridStat <- function(
     # atl08_path = atl08_list[1]
     for (atl08_path in atl08_list) {
       file_index <- file_index + 1
-      message(sprintf("Reading file %s (%d/%d)", basename(atl08_path), file_index, total_files), appendLF = T)
+      message(sprintf("Reading file %s (%d/%d)", basename(atl08_path), file_index, total_files), appendLF = TRUE)
 
-      #read H5
-      atl08_h5<-ATL08_read(atl08_path=atl08_path)
+      # read H5
+      atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 
       vals <- ATL08_seg_attributes_dt(atl08_h5, beam = beam, canopy_attribute = cols[-c(1:2)])
 
@@ -457,7 +453,7 @@ ATL08_seg_attributes_h5_gridStat <- function(
     # Update statistics for bands
     lapply(bands, function(x) x$CalculateStatistics())
 
-    finalize_rasts <- lapply(names(finalizer), function(x) {
+    invisible(lapply(names(finalizer), function(x) {
       rast_name <- sprintf("%s_%s_%s.tif", out_root, metric, x)
       message(sprintf("Writing raster: %s", rast_name))
       rast <- createDataset(
@@ -478,7 +474,7 @@ ATL08_seg_attributes_h5_gridStat <- function(
       formula <- finalizer[[x]]
       formulaCalculate(formula, bands, band)
       rast$Close()
-    })
+    }))
 
     lapply(rasts, function(x) x$Close())
   }

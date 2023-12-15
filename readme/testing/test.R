@@ -47,7 +47,7 @@ finalizer <- list(
   range = "max-min"
 )
 
-atl08_path <- c("../inst/extdat/")
+atl08_path <- c("../inst/exdata/")
 metrics <- c("h_canopy")
 out_root <- file.path(outdir, "output")
 ul_lat <- ul_lat
@@ -65,6 +65,28 @@ creation_options <- c(
 agg_function <- agg_function
 agg_join <- agg_join
 finalizer <- finalizer
+
+ATL08_canopy_h5_gridStat(
+  atl08_path = atl08_path,
+  metrics = c("h_canopy"),
+  out_root = file.path(outdir, "output"),
+  ul_lat = ul_lat,
+  ul_lon = ul_lon,
+  lr_lat = lr_lat,
+  lr_lon = lr_lon,
+  res = c(xres, -yres),
+  creation_options = c(
+    "COMPRESS=DEFLATE",
+    "BIGTIFF=IF_SAFER",
+    "TILED=YES",
+    "BLOCKXSIZE=512",
+    "BLOCKYSIZE=512"
+  ),
+  agg_function = agg_function,
+  agg_join = agg_join,
+  finalizer = finalizer
+)
+
 beam <- c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
 
 
@@ -117,7 +139,7 @@ stats <- names(stats)
 metric = metrics[1]
 # for (metric in metrics) {
   metricCounter <- metricCounter + 1
-  message(sprintf("Metric %s (%d/%d)", metric, metricCounter, nMetrics), appendLF = T)
+  message(sprintf("Metric %s (%d/%d)", metric, metricCounter, nMetrics), appendLF = TRUE)
   cols <- c(cols.coord, metric)
 
   rast_paths <- sprintf("%s_%s_%s.tif", out_root, metric, stats)
@@ -158,7 +180,7 @@ metric = metrics[1]
   # atl08_file = atl08_list[1]
   for (atl08_file in atl08_list) {
     file_index <- file_index + 1
-    message(sprintf("Reading file %s (%d/%d)", basename(atl08_path), file_index, total_files), appendLF = T)
+    message(sprintf("Reading file %s (%d/%d)", basename(atl08_path), file_index, total_files), appendLF = TRUE)
     atl08 <- ATL08_read(atl08_path)
     
     atl03 <- ATL03_read(gsub('ATL08','ATL03',atl08_path))

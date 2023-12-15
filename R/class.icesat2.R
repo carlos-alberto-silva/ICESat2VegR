@@ -1,3 +1,4 @@
+.datatable.aware = TRUE
 #' @importFrom hdf5r H5File
 setRefClass("H5File")
 

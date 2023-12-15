@@ -18,7 +18,7 @@ icesat2DownloadFile <- function(url, outdir, overwrite, buffer_size, netrc, time
   curl::handle_setopt(h, netrc = as.integer(1), netrc_file = netrc, resume_from = resume_from, connecttimeout = timeout, followlocation = TRUE)
 
   tryCatch({
-    fileHandle <- file(resume, open = "ab", raw = T)
+    fileHandle <- file(resume, open = "ab", raw = TRUE)
     message("Connecting...")
     conn <- tryCatch(curl::curl(url, handle = h, open = "rb"), error = function(e) {
       tryCatch(curl::curl(url, handle = h, open = "rb"), error = function(e) {
@@ -28,7 +28,7 @@ icesat2DownloadFile <- function(url, outdir, overwrite, buffer_size, netrc, time
 
     message("Connected successfully, downloading...")
     headers <- rawToChar(curl::handle_data(h)$headers)
-    total_size <- as.numeric(gsub("[^\u00e7]*Content-Length: ([0-9]+)[^\u00e7]*", "\\1", x = headers, perl = T))
+    total_size <- as.numeric(gsub("[^\u00e7]*Content-Length: ([0-9]+)[^\u00e7]*", "\\1", x = headers, perl = TRUE))
     while (TRUE) {
       message(
         sprintf(
@@ -44,7 +44,7 @@ icesat2DownloadFile <- function(url, outdir, overwrite, buffer_size, netrc, time
       if (size == 0) {
         break
       }
-      writeBin(data, fileHandle, useBytes = T)
+      writeBin(data, fileHandle, useBytes = TRUE)
       resume_from <- resume_from + size
     }
     message(sprintf(

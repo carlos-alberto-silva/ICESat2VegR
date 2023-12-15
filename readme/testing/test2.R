@@ -189,7 +189,7 @@ gedilevel2b<-readLevel2B(level2Bpath = file.path(outdir,"GEDI02_B_2019108080338_
 
 level2a<-gedilevel2a@h5
 groups_id<-grep("BEAM\\d{4}$",gsub("/","",
-                                   hdf5r::list.groups(level2a, recursive = F)), value = T)
+                                   hdf5r::list.groups(level2a, recursive = F)), value = TRUE)
 
 
 
@@ -500,7 +500,7 @@ get_atl08 <- function(atl08_class,
 getLevel2AM<-function(level2a){
   level2a<-level2a@h5
   groups_id<-grep("BEAM\\d{4}$",gsub("/","",
-                                     hdf5r::list.groups(level2a, recursive = F)), value = T)
+                                     hdf5r::list.groups(level2a, recursive = F)), value = TRUE)
   rh.dt<-data.table::data.table()
   pb <- utils::txtProgressBar(min = 0, max = length(groups_id), style = 3)
   i.s=0
