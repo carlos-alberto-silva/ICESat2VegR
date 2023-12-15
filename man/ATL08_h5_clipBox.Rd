@@ -2,25 +2,33 @@
 % Please edit documentation in R/ATL08_h5_clipBox.R
 \name{ATL08_h5_clipBox}
 \alias{ATL08_h5_clipBox}
-\title{Read ICESat-2 ATL08 data}
+\title{Clips ICESat-2 ATL08 data}
 \usage{
-ATL08_read(atl08_path)
+ATL08_h5_clipBox(atl08, atl03, output, bbox)
 }
 \arguments{
-\item{atl08_path}{File path pointing to ICESat-2 ATL08 data. Data in HDF5 Hierarchical Data Format (.h5).}
+\item{atl08}{\code{\linkS4class{icesat2.atl08_h5}} object, obtained through \code{\link[=ATL08_read]{ATL08_read()}}
+for clipping}
+
+\item{output}{character. Path to the output h5 file.}
+
+\item{bbox}{\code{\linkS4class{numeric}} or \code{\link[terra:SpatExtent-class]{terra::SpatExtent}} for clipping, the
+order of the bbox is the default from NASA's ICESat-2 CMS searching:
+\link{ul_lat, ul_lon, lr_lat, lr_lon}.}
 }
 \value{
-Returns an S4 object of class \link{"icesat2.atl08_dt"} containing ICESat-2 ATL08 data.
+Returns the clipped S4 object of class \code{\linkS4class{icesat2.atl08_h5}}
 }
 \description{
-This function reads the ICESat-2 Land and
-Vegetation Along-Track Products (ATL08) as h5 file.
+This function clips the ATl08 HDF5 file. This function
+will only clip the beam groups within hdf5, it won't change metadata
+or ancillary data.
 }
 \examples{
 # Specifying the path to ICESat-2 ATL08 data (zip file)
 outdir <- tempdir()
 atl08_fp_zip <- system.file("extdata",
-  "ATL0802_A_2019108080338_O01964_T05337_02_001_01_sub.zip",
+  "ATL0802_A_2019103030338_O01964_T05337_02_001_01_sub.zip",
   package = "rICESat2Veg"
 )
 
@@ -31,7 +39,4 @@ atl08_path <- unzip(atl08_fp_zip, exdir = outdir)
 atl08 <- ATL08_read(atl08_path = atl08_path)
 
 close(atl08)
-}
-\seealso{
-\url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
 }
