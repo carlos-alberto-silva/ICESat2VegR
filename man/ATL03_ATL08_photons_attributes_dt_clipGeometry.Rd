@@ -8,18 +8,18 @@
 ATL03_ATL08_photons_attributes_dt_clipGeometry(atl03_atl08_dt, polygon, split_by = "FID")
 }
 \arguments{
-\item{atl03_atl08_dt}{An S4 object of class [rICESat2Veg::icesat2.atl03atl08_dt] containing ATL03 and ATL08 data
-(output of [rICESat2Veg::ATL03_ATL08_photons_attributes_dt_join()] function).}
+\item{atl03_atl08_dt}{An S4 object of class \link{icesat2.atl03atl08_dt} containing ATL03 and ATL08 data
+(output of \code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}} function).}
 
-\item{polygon}{Polygon. An object of class [`terra::SpatVector`],
-which can be loaded as an ESRI shapefile using [terra::vect] function in the
+\item{polygon}{Polygon. An object of class \code{\link[terra:SpatVector-class]{terra::SpatVector}},
+which can be loaded as an ESRI shapefile using \link[terra:vect]{terra::vect} function in the
 \emph{sf} package.}
 
 \item{split_by}{Polygon id. If defined, GEDI data will be clipped by each polygon using
 the polygon id from table of attribute defined by the user}
 }
 \value{
-Returns an S4 object of class [rICESat2Veg::icesat2.atl03atl08_dt]
+Returns an S4 object of class \link{icesat2.atl03atl08_dt}
 containing the clipped ATL08 Terrain attributes.
 }
 \description{

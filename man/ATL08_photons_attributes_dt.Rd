@@ -7,13 +7,13 @@
 ATL08_photons_attributes_dt(atl08_h5, beam)
 }
 \arguments{
-\item{atl08_h5}{A ICESat-2 ATL08 object (output of [ATL08_read()] function).
-An S4 object of class [rICESat2Veg::icesat2.atl08_dt].}
+\item{atl08_h5}{A ICESat-2 ATL08 object (output of \code{\link[=ATL08_read]{ATL08_read()}} function).
+An S4 object of class \link{icesat2.atl08_dt}.}
 
 \item{beam}{Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")}
 }
 \value{
-Returns an S4 object of class [data.table::data.table]
+Returns an S4 object of class \link[data.table:data.table]{data.table::data.table}
 containing the ATL08 computed photons attributes.
 }
 \description{

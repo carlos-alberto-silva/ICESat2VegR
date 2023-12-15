@@ -9,7 +9,7 @@ getBeams(h5, ...)
 \arguments{
 \item{h5}{An object of class [`icesat2.atl03_h5-class`] or [`icesat2.atl08_h5-class`]}
 
-\item{...}{Other parameters to dispatch to the hdf5 library}
+\item{x}{An object of class \code{\linkS4class{icesat2.atl03_h5}} or \code{\linkS4class{icesat2.atl08_h5}}}
 }
 \description{
 Get Beams for icesat h5 classes

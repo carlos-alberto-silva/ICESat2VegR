@@ -29,7 +29,7 @@
 \S4method{plot}{icesat2.atl03_dt,missing}(x, y, col, ...)
 }
 \arguments{
-\item{x}{An object of class [`rICESat2Veg::icesat2.atl03_dt-class`]}
+\item{x}{An object of class \code{\linkS4class{icesat2.atl03_dt}}}
 
 \item{y}{photon attribute to be plot (ph_h or h_ph)}
 

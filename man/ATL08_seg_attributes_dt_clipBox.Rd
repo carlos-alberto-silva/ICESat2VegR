@@ -7,8 +7,8 @@
 ATL08_seg_attributes_dt_gridStat(atl08_seg_att_dt, xmin, xmax, ymin, ymax)
 }
 \arguments{
-\item{atl08_seg_att_dt}{A atl08_seg_att_dt object (output of [rICESat2Veg::ATL08_seg_attributes_dt()] function).
-An S4 object of class [rICESat2Veg::icesat2.atl08_dt]}
+\item{atl08_seg_att_dt}{A atl08_seg_att_dt object (output of \code{\link[=ATL08_seg_attributes_dt]{ATL08_seg_attributes_dt()}} function).
+An S4 object of class \link{icesat2.atl08_dt}}
 
 \item{xmin}{Numeric. West longitude (x) coordinate of bounding rectangle, in decimal degrees.}
 
@@ -19,7 +19,7 @@ An S4 object of class [rICESat2Veg::icesat2.atl08_dt]}
 \item{ymax}{Numeric. North latitude (y) coordinate of bounding rectangle, in decimal degrees.}
 }
 \value{
-Returns an S4 object of class [rICESat2Veg::icesat2.atl08_dt]
+Returns an S4 object of class \link{icesat2.atl08_dt}
 containing the clipped ATL08 terrain and canopy attributes.
 }
 \description{

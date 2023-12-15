@@ -7,7 +7,7 @@
 \method{summary}{icesat2.atl08_dt}(x)
 }
 \arguments{
-\item{atl08}{An object of class `icesat2.atl08_dt`}
+\item{atl08}{An object of class \code{icesat2.atl08_dt}}
 }
 \description{
 Summary for ATL08 photons

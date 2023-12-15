@@ -7,8 +7,8 @@
 ATL03_photons_attributes_dt_clipGeometry(atl03_photons_dt, xmin, xmax, ymin, ymax)
 }
 \arguments{
-\item{atl03_photons_dt}{A atl03_photons_dt object (output of [atl03_photons_attributes_dt()] function).
-An S4 object of class [rICESat2Veg::icesat2.atl03_dt]}
+\item{atl03_photons_dt}{A atl03_photons_dt object (output of \code{\link[=atl03_photons_attributes_dt]{atl03_photons_attributes_dt()}} function).
+An S4 object of class \link{icesat2.atl03_dt}}
 
 \item{xmin}{Numeric. West longitude (x) coordinate of bounding rectangle, in decimal degrees.}
 
@@ -19,7 +19,7 @@ An S4 object of class [rICESat2Veg::icesat2.atl03_dt]}
 \item{ymax}{Numeric. North latitude (y) coordinate of bounding rectangle, in decimal degrees.}
 }
 \value{
-Returns an S4 object of class [rICESat2Veg::icesat2.atl03_dt]
+Returns an S4 object of class \link{icesat2.atl03_dt}
 containing the ATL03 photons attributes.
 }
 \description{

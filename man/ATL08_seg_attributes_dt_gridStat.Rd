@@ -7,8 +7,8 @@
 ATL08_seg_attributes_dt_gridStat(atl08_seg_att_dt, func, res)
 }
 \arguments{
-\item{atl08_seg_att_dt}{An S4 object of class [rICESat2Veg::icesat2.atl08_dt] containing ATL08 data
-(output of [ATL08_seg_attributes_dt()] functions).}
+\item{atl08_seg_att_dt}{An S4 object of class \link{icesat2.atl08_dt} containing ATL08 data
+(output of \code{\link[=ATL08_seg_attributes_dt]{ATL08_seg_attributes_dt()}} functions).}
 
 \item{func}{The function to be applied for computing the defined statistics}
 

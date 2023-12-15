@@ -11,11 +11,11 @@ Class for ICESat-2 ATL08
 \section{Slots}{
 
 \describe{
-\item{\code{h5}}{Object of class [`H5File`][hdf5r::H5File-class] from `hdf5r` package containing the
+\item{\code{h5}}{Object of class \code{\link[hdf5r:H5File-class]{H5File}} from \code{hdf5r} package containing the
 ICESat-2 Land and Vegetation Along-Track Products (ATL08)}
 }}
 
 \seealso{
-[`H5File`][hdf5r::H5File-class] in the `hdf5r` package and
+\code{\link[hdf5r:H5File-class]{H5File}} in the \code{hdf5r} package and
 \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
 }

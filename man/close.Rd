@@ -3,14 +3,14 @@
 \name{close,icesat2.atl03_h5-method}
 \alias{close,icesat2.atl03_h5-method}
 \alias{close,icesat2.atl08_h5-method}
-\title{Safely closes the [`rICESat2Veg::icesat2.atl03_h5-class`]}
+\title{Safely closes the \code{\linkS4class{icesat2.atl03_h5}}}
 \usage{
 \S4method{close}{icesat2.atl03_h5}(con, ...)
 
 \S4method{close}{icesat2.atl08_h5}(con, ...)
 }
 \arguments{
-\item{con}{An object of class `icesat2.atl08_h5`}
+\item{con}{An object of class \code{icesat2.atl08_h5}}
 
 \item{...}{Inherited from base}
 }

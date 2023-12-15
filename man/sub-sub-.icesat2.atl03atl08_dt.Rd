@@ -2,15 +2,15 @@
 % Please edit documentation in R/class.icesat2.R
 \name{[[.icesat2.atl03atl08_dt}
 \alias{[[.icesat2.atl03atl08_dt}
-\title{Dispatches the `[[` function to dt}
+\title{Dispatches the \code{[[} function to dt}
 \usage{
 \method{[[}{icesat2.atl03atl08_dt}(x, path)
 }
 \arguments{
-\item{x}{An object of class `icesat2.atl03atl08_dt`}
+\item{x}{An object of class \code{icesat2.atl03atl08_dt}}
 
 \item{path}{The path for the dataset which to open}
 }
 \description{
-Dispatches the `[[` function to dt
+Dispatches the \code{[[} function to dt
 }

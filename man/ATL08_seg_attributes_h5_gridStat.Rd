@@ -30,7 +30,7 @@ ATL08_seg_attributes_h5_gridStat(
 
 \item{metrics}{CharacterVector. A vector of canopy attributes available from ATL08 product (e.g. "h_canopy")}
 
-\item{out_root}{Character. The root name for the raster output files, the pattern is {out_root}_{metric}_{count/m1/m2/m3/m4}.tif. This should include the full path for the file.}
+\item{out_root}{Character. The root name for the raster output files, the pattern is {out_root}\emph{{metric}}{count/m1/m2/m3/m4}.tif. This should include the full path for the file.}
 
 \item{ul_lat}{Numeric. Upper left latitude for the bounding box}
 
@@ -50,7 +50,7 @@ ATL08_seg_attributes_h5_gridStat(
 
 \item{finalizer}{List<name, formula>. A list with the final raster names and the formula which uses the base statistics.}
 
-\item{filter}{Formula character "x" based. You can use either the column names available in `metrics`
+\item{filter}{Formula character "x" based. You can use either the column names available in \code{metrics}
 for performing the filter and "x" to denote the target variable. e.g. "x < 200 && h_canopy_uncertainty < 0.5"}
 }
 \value{
@@ -64,7 +64,7 @@ This function will create seven different aggregate statistics
 (n, m1, m2, m3, m4, min, max). m1 to m4 are the central moments.
 One can calculate mean, standard deviation, skewness and kurtosis
 with the following formulas according to Terriberry (2007) and
-\insertCite{Joanes1998;textual}{rICESat2}:
+\insertCite{Joanes1998;textual}{rICESat2Veg}:
 
 \deqn{ \bar{x} = m_1 }{mean = m1}
 
@@ -78,29 +78,27 @@ with the following formulas according to Terriberry (2007) and
 
 \deqn{ kurtosis = \frac{n - 1}{(n - 2)(n - 3)}[(n + 1)g_2 + 6] }{kurtosis = ((n - 1) / ((n - 2) * (n - 3))) * ((n + 1) * g2 + 6)}
 
-The `agg_function` is a formula which return a data.table with the
+The \code{agg_function} is a formula which return a data.table with the
 aggregate function to perform over the data.
 The default is:
 
-```{r, eval=FALSE}
-~data.table(
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{~data.table(
     n = length(x),
-    M1 = mean(x,na.rm = T),
-    M2 = e1071::moment(x, order = 2, center = TRUE, na.rm = T) * length(x),
-    M3 = e1071::moment(x, order = 3, center = TRUE, na.rm = T) * length(x),
-    M4 = e1071::moment(x, order = 4, center = TRUE, na.rm = T) * length(x),
+    M1 = mean(x,na.rm = TRUE),
+    M2 = e1071::moment(x, order = 2, center = TRUE, na.rm = TRUE) * length(x),
+    M3 = e1071::moment(x, order = 3, center = TRUE, na.rm = TRUE) * length(x),
+    M4 = e1071::moment(x, order = 4, center = TRUE, na.rm = TRUE) * length(x),
     min = min(x, na.rm=T),
     max = max(x, na.rm=T)
   )
-```
+}\if{html}{\out{</div>}}
 
-The `agg_join` is a function to merge two data.table aggregates
-from the `agg_function`. Since the h5 files will be aggregated
+The \code{agg_join} is a function to merge two data.table aggregates
+from the \code{agg_function}. Since the h5 files will be aggregated
 one by one, the statistics from the different h5 files should
 have a function to merge them. The default function is:
 
-```{r, eval=FALSE}
-function(x1, x2) {
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{function(x1, x2) \{
     combined = data.table()
     x1$n[is.na(x1$n)] = 0
     x1$M1[is.na(x1$M1)] = 0
@@ -134,22 +132,21 @@ function(x1, x2) {
     combined$min = pmin(x1$min, x2$min, na.rm=F)
     combined$max = pmax(x1$max, x2$max, na.rm=F)
     return(combined)
-}
-```
+\}
+}\if{html}{\out{</div>}}
 
-The `finalizer` is a list of formulas to generate the final
+The \code{finalizer} is a list of formulas to generate the final
 rasters based on the intermediate statistics from the previous
-functions. The default `finalizer` will calculate the `sd`,
-`skewness` and `kurtosis` based on the `M2`, `M3`, `M4` and `n`
+functions. The default \code{finalizer} will calculate the \code{sd},
+\code{skewness} and \code{kurtosis} based on the \code{M2}, \code{M3}, \code{M4} and \code{n}
 values. It is defined as:
 
-```{r, eval=FALSE}
-list(
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{list(
   sd = ~sqrt(M2/(n - 1)),
   skew = ~sqrt((n * (n - 1))) * ((sqrt(n) * M3) / (M2^1.5)) / (n - 2),
   kur = ~((n - 1) / ((n - 2) * (n - 3))) * ((n + 1) * ((n * M4) / (M2^2) - 3.0) + 6)
 )
-```
+}\if{html}{\out{</div>}}
 }
 \examples{
 # Specifying the path to GEDI leveatl08_canopy_dt data (zip file)

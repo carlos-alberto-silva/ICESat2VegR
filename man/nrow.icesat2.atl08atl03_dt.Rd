@@ -7,7 +7,7 @@
 nrow.icesat2.atl08atl03_dt(x)
 }
 \arguments{
-\item{atl03_atl08_dt}{An object of class `icesat2.atl03atl08_dt`}
+\item{atl03_atl08_dt}{An object of class \code{icesat2.atl03atl08_dt}}
 }
 \description{
 Number of rows for merged ATL03 ATL08 photons

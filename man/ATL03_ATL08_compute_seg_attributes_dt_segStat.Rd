@@ -8,7 +8,7 @@ ATL03_ATL08_compute_seg_attributes_dt_segStat(atl03_atl08_dt, func, seg_length,p
 }
 \arguments{
 \item{atl03_atl08_dt}{An S4 object of class "icesat2.atl03atl08_dt" containing ATL03 and ATL08 data
-(output of [ATL03_ATL08_photons_attributes_dt_join()] function).}
+(output of \code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}} function).}
 
 \item{func}{The function to be applied for computing the defined statistics}
 
@@ -25,7 +25,7 @@ effect, 3=possible_tep. Default is 0}
 \item{night_flag}{Flag indicating the data were acquired in night conditions: 0=day, 1=night. Default is 1}
 }
 \value{
-Returns an S4 object of class [rICESat2Veg::icesat2.atl08_dt]
+Returns an S4 object of class \link{icesat2.atl08_dt}
 Containing Statistics of ATL03 and ATL08 labeled photons
 }
 \description{

@@ -10,7 +10,7 @@ ATL03_read(atl03_path)
 \item{atl03_path}{File path pointing to ICESat-2 ATL03 data. Data in HDF5 Hierarchical Data Format (.h5).}
 }
 \value{
-Returns an S4 object of class [`icesat2.atl03_dt`] containing ICESat-2 ATL03 data.
+Returns an S4 object of class \code{\link{icesat2.atl03_dt}} containing ICESat-2 ATL03 data.
 }
 \description{
 This function reads the ICESat-2 Global Geolocated Photons (ATL03) Product (ATL03) as h5 file.

@@ -7,7 +7,7 @@
 \method{head}{icesat2.atl03atl08_dt}(x)
 }
 \arguments{
-\item{atl03_atl08_dt}{An object of class `icesat2.atl03atl08_dt`}
+\item{atl03_atl08_dt}{An object of class \code{icesat2.atl03atl08_dt}}
 }
 \description{
 Head for ATL08 photons

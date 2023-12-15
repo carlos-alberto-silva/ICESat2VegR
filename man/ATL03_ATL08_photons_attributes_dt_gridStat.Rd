@@ -7,8 +7,8 @@
 ATL03_ATL08_photons_attributes_dt_gridStat(atl03_atl08_dt, func, res)
 }
 \arguments{
-\item{atl03_atl08_dt}{An S4 object of class [rICESat2Veg::icesat2.atl03_atl08_dt] containing ATL03 and ATL08  attributes
-(output of the [ATL03_ATL08_photons_attributes_dt_join()] function).}
+\item{atl03_atl08_dt}{An S4 object of class \link{icesat2.atl03_atl08_dt} containing ATL03 and ATL08  attributes
+(output of the \code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}} function).}
 
 \item{func}{The function to be applied for computing the defined statistics}
 

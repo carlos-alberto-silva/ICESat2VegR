@@ -7,15 +7,15 @@
 ATL03_ATL08_photons_attributes_dt_polyStat(atl03_atl08_dt, func, seg_length,ph_class,beam,quality_ph,night_flag)
 }
 \arguments{
-\item{atl03_atl08_dt}{An S4 object of class [rICESat2Veg::icesat2.atl08_dt] containing ATL03 and ATL08 data
-(output of [ATL03_ATL08_photons_attributes_dt_join()] function).}
+\item{atl03_atl08_dt}{An S4 object of class \link{icesat2.atl08_dt} containing ATL03 and ATL08 data
+(output of \code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}} function).}
 
 \item{func}{The function to be applied for computing the defined statistics}
 
 \item{poly_id}{Polygon id. If defined, statistics will be computed for each polygon}
 }
 \value{
-Returns an S4 object of class [rICESat2Veg::icesat2.atl08_dt]
+Returns an S4 object of class \link{icesat2.atl08_dt}
 Containing Statistics of ATL08 classified canopy photons
 }
 \description{

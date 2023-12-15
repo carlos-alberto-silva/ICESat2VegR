@@ -7,7 +7,7 @@
 nrow.icesat2.atl03_dt(x)
 }
 \arguments{
-\item{atl03}{An object of class `icesat2.atl03_dt`}
+\item{atl03}{An object of class \code{icesat2.atl03_dt}}
 }
 \description{
 Number of rows for ATL03 photons

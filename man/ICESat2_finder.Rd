@@ -33,7 +33,7 @@ ICESat2_finder(
 returned. Default "002".}
 
 \item{daterange}{Vector. Date range. Specify your start and end dates
-using ISO 8601 \[YYYY\]-\[MM\]-\[DD\]T\[hh\]:\[mm\]:\[ss\]Z. Ex.:
+using ISO 8601 [YYYY]-[MM]-[DD]T[hh]:[mm]:[ss]Z. Ex.:
 c("2019-07-01T00:00:00Z","2020-05-22T23:59:59Z"). If NULL (default),
 the date range filter will be not applied.}
 }
@@ -74,7 +74,7 @@ ICESat-2 ATLAS02b_list <- ICESat-2 ATLASfinder(
 \seealso{
 bbox: Defined by the upper left and lower right corner coordinates,
 in lat,lon ordering, for the bounding box of the area of interest
-(e.g. \[ul_lat,ul_lon,lr_lat,lr_lon\]).
+(e.g. [ul_lat,ul_lon,lr_lat,lr_lon]).
 
 This function relies on the existing CMR tool:
 \url{https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html}

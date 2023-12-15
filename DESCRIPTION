@@ -8,10 +8,53 @@ Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
 License: What license is it under?
 Imports:
+    gdalBindings,
     hdf5r,
-    Rcpp
-LinkingTo:Rcpp
-NeedCompilation: yes
+    Rdpack
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.3
+Roxygen: list(markdown = TRUE)
+RdMacros: Rdpack
+Collate: 
+    'ATL03_ATL08_compute_attributes_dt_segStat.R'
+    'ATL03_ATL08_photons_attributes_dt_LAS.R'
+    'ATL03_ATL08_photons_attributes_dt_clipBox.R'
+    'ATL03_ATL08_photons_attributes_dt_clipGeometry.R'
+    'ATL03_ATL08_photons_attributes_dt_gridStat.R'
+    'ATL03_ATL08_photons_attributes_dt_join.R'
+    'ATL03_ATL08_photons_attributes_dt_polyStat.R'
+    'ATL03_ATL08_photons_fitground_dt_seg.R'
+    'class.icesat2.R'
+    'ATL03_h5_clipBox.R'
+    'ATL03_h5_clipGeometry.R'
+    'ATL03_photons_attributes_dt.R'
+    'ATL03_photons_attributes_dt_LAS.R'
+    'ATL03_photons_attributes_dt_clipBox.R'
+    'ATL03_photons_attributes_dt_clipGeometry.R'
+    'ATL03_photons_dt_classify.R'
+    'ATL03_photons_dt_height_normalize.R'
+    'ATL03_photons_fitground_dt_seg.R'
+    'ATL03_photons_plot.R'
+    'ATL03_photons_simulator.R'
+    'ATL03_read.R'
+    'ATL08_cover_dt_segStat.R'
+    'ATL08_h5_clipBox.R'
+    'ATL08_h5_clipGeometry.R'
+    'ATL08_photons_attributes_dt.R'
+    'ATL08_photons_attributes_dt_LAS.R'
+    'ATL08_read.R'
+    'ATL08_seg_attributes_dt.R'
+    'ATL08_seg_attributes_dt_clipBox.R'
+    'ATL08_seg_attributes_dt_clipGeometry.R'
+    'ATL08_seg_attributes_dt_gridStat.R'
+    'ATL08_seg_attributes_dt_polyStat.R'
+    'ATL08_seg_attributes_h5_gridStat.R'
+    'ATL08_segment_create.R'
+    'ICESat2_download.R'
+    'ICESat2_finder.R'
+    'RGT_extract.R'
+    'argParse.R'
+    'clip (box, geometry, h5 and dt).R'
+    'lazy_applier.R'
+    'zzz.R'

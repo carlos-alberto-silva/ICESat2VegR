@@ -7,18 +7,18 @@
 ATL08_seg_attributes_dt_clipGeometry(atl08_seg_att_dt, xmin, xmax, ymin, ymax)
 }
 \arguments{
-\item{atl08_seg_att_dt}{A atl08_seg_att_dt object (output of [rICESat2Veg::ATL08_seg_attribute_dt()] function).
-An S4 object of class [rICESat2Veg::icesat2.atl08_dt]}
+\item{atl08_seg_att_dt}{A atl08_seg_att_dt object (output of \code{\link[=ATL08_seg_attribute_dt]{ATL08_seg_attribute_dt()}} function).
+An S4 object of class \link{icesat2.atl08_dt}}
 
-\item{polygon}{Polygon. An object of class [`terra::SpatVector`],
-which can be loaded as an ESRI shapefile using [terra::vect] function in the
+\item{polygon}{Polygon. An object of class \code{\link[terra:SpatVector-class]{terra::SpatVector}},
+which can be loaded as an ESRI shapefile using \link[terra:vect]{terra::vect} function in the
 \emph{sf} package.}
 
 \item{split_by}{Polygon id. If defined, ATL08 data will be clipped by each polygon using
 the polygon id from table of attribute defined by the user}
 }
 \value{
-Returns an S4 object of class [rICESat2Veg::icesat2.atl08_dt]
+Returns an S4 object of class \link{icesat2.atl08_dt}
 containing the clipped ATL08 Terrain and Canopy Attributes.
 }
 \description{

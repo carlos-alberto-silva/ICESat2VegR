@@ -7,15 +7,15 @@
 ATL08_seg_attributes_dt_polyStat(atl08_seg_att_dt, func, poly_id)
 }
 \arguments{
-\item{atl08_seg_att_dt}{An S4 object of class [rICESat2Veg::icesat2.atl08_dt] containing
-ATL08 terrain and canopy attributes (output of [rICESat2Veg::ATL08_canopy_attribute_dt()] function).}
+\item{atl08_seg_att_dt}{An S4 object of class \link{icesat2.atl08_dt} containing
+ATL08 terrain and canopy attributes (output of \code{\link[=ATL08_canopy_attribute_dt]{ATL08_canopy_attribute_dt()}} function).}
 
 \item{func}{The function to be applied for computing the defined statistics}
 
 \item{poly_id}{Polygon id. If defined, statistics will be computed for each polygon}
 }
 \value{
-Returns an S4 object of class [rICESat2Veg::icesat2.atl08_dt]
+Returns an S4 object of class \link{icesat2.atl08_dt}
 Containing Statistics of ATL08 terrain and canopy attributes
 }
 \description{

@@ -2,15 +2,15 @@
 % Please edit documentation in R/class.icesat2.R
 \name{$.icesat2.atl03_dt}
 \alias{$.icesat2.atl03_dt}
-\title{Dispatches the `@dt` function to dt}
+\title{Dispatches the \verb{@dt} function to dt}
 \usage{
 \method{$}{icesat2.atl03_dt}(x, path)
 }
 \arguments{
-\item{x}{An object of class `icesat2.atl03_dt`}
+\item{x}{An object of class \code{icesat2.atl03_dt}}
 
 \item{path}{The path for the dataset which to open}
 }
 \description{
-Dispatches the `@dt` function to dt
+Dispatches the \verb{@dt} function to dt
 }
