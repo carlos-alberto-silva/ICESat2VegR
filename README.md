@@ -96,7 +96,7 @@ par(mfrow=c(1,2))
 hist(atl08_seg_att_dt$h_canopy, col="green", xlab="height (m)", main="h_canopy")
 hist(atl08_seg_att_dt$h_te_mean, col="#bd8421", xlab="Elevation (m)", main="h_te_mean")
 ```
-![](https://github.com/carlos-alberto-silva/rICESat2Veg/tree/master/readme/hist_ATL08.png)
+![](https://github.com/carlos-alberto-silva/rICESat2Veg/blob/master/readme/hist_ATL08.png)
 
 ```r
 # Plotting ATL08 attribute on a map by segment coordinates
@@ -145,7 +145,7 @@ h_te_mean.map<-leaflet() %>%
   addLegend(pal = h_te_mean.pal,values = h_te_mean_bins,title ="h_te_mean (m)")
 sync(h_canopy.map, h_te_mean.map)
 ```
-![](https://github.com/carlos-alberto-silva/rICESat2Veg/tree/master/readme/ATL08_segments.png)
+![](https://github.com/carlos-alberto-silva/rICESat2Veg/blob/master/readme/ATL08_segments.png)
 
 ## Clipping ATL08 Terrain and Canopy Attributes
 
@@ -232,7 +232,7 @@ m2<-leaflet() %>%
   addLegend(pal = pal, values = atl08_seg_att_dt_clipg$poly_id,title ="Poly IDs" )
 sync(m1, m2)
 ```
-![](https://github.com/carlos-alberto-silva/rICESat2Veg/tree/master/readme/Fig_clipping_ATL08.png)
+![](https://github.com/carlos-alberto-silva/rICESat2Veg/blob/master/readme/Fig_clipping_ATL08.png)
 
 ## Gridding AT08 Terrain and Canopy Attributes
 ```r
@@ -243,7 +243,7 @@ plot(max_h_canopy, xlim=c(-107.2,-106.8),ylim=c(38,39), col=viridis::inferno(8),
      xlab="Langitude (degree)",
      ylab="Latitude (degree)")
 ```
-<img align="right" src="https://github.com/carlos-alberto-silva/rGEDI/blob/master/readme/grid_h_canopy.png"  width="300">
+<img align="right" src="https://github.com/carlos-alberto-silva/rICESat2Veg/blob/master/readme/grid_h_canopy.png"  width="300">
 
 ```r
 # Define your own function
@@ -267,7 +267,7 @@ plot(h_canopy_metrics,
      xlab="Langitude (degree)",
      ylab="Latitude (degree)")
 ```
-<img align="right" src="https://github.com/carlos-alberto-silva/rGEDI/blob/master/readme/grid_h_canopy2.png"  width="300">
+<img align="right" src="https://github.com/carlos-alberto-silva/rICESat2Veg/blob/master/readme/grid_h_canopy2.png"  width="300">
 
 
 ## Join ATL03 and ATL08 photon attributes tables
@@ -295,14 +295,14 @@ head(atl03_atl08_dt)
 plot(atl03_atl08_dt, y="ph_h",colors, beam = "gt1l",
      ylim=c(0,7), xlim=c(2400,3800), pch=16)
 ```
-![](https://github.com/carlos-alberto-silva/rICESat2Veg/tree/master/readme/cloud_height.png)
+![](https://github.com/carlos-alberto-silva/rICESat2Veg/blob/master/readme/cloud_height.png)
 
 ```r
 # plot by "h_ph"
 plot(atl03_atl08_dt, y="h_ph",colors, beam = "gt1l",
      ylim=c(300,355),xlim=c(2400,3800), pch=16)
 ```
-![](https://github.com/carlos-alberto-silva/rICESat2Veg/tree/master/readme/cloud_height2.png)
+![](https://github.com/carlos-alberto-silva/rICESat2Veg/blob/master/readme/cloud_height2.png)
 
 ## Gridding ATL03 and AT08 Photons Attributes
 ```r
@@ -316,7 +316,7 @@ plot(mean_h_ph,
      xlab="Langitude (degree)",
      ylab="Latitude (degree)")
 ```
-<img align="right" src="https://github.com/carlos-alberto-silva/rGEDI/blob/master/readme/h_ph_map.png"  width="300">
+<img align="right" src="https://github.com/carlos-alberto-silva/rICESat2Veg/blob/master/readme/h_ph_map.png"  width="300">
 
 ```r
 # Define your own function
@@ -339,7 +339,7 @@ plot(h_ph_metrics,
      xlab="Langitude (degree)",
      ylab="Latitude (degree)")
 ```
-<img align="right" src="https://github.com/carlos-alberto-silva/rGEDI/blob/master/readme/h_ph_map_all.png"  width="300">
+<img align="right" src="https://github.com/carlos-alberto-silva/rICESat2Veg/blob/master/readme/h_ph_map_all.png"  width="300">
 
 ## Clipping ATL03 and joined ATL03 and ATL08 photons attributes
 
