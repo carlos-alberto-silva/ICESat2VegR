@@ -14,7 +14,7 @@ ATL08_read(atl08_path)
 \value{
 Returns an S4 object of class \code{\linkS4class{icesat2.atl08}} containing ICESat-2 ATL08 data.
 
-Returns an S4 object of class \link{"icesat2.atl08_dt"} containing ICESat-2 ATL08 data.
+Returns an S4 object of class \link{"icesat2.atl08_h5"} containing ICESat-2 ATL08 data.
 }
 \description{
 This function reads the ICESat-2 Land and

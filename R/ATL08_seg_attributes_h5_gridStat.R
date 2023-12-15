@@ -384,10 +384,10 @@ ATL08_seg_attributes_h5_gridStat <- function(
       # read H5
       atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 
-      vals <- ATL08_seg_attributes_dt(atl08_h5, beam = beam, canopy_attribute = cols[-c(1:2)])
+      vals <- ATL08_seg_attributes_dt(atl08_h5, beam = beam, attribute = cols[-c(1:2)])
 
       ## Clip metrics by extent
-      vals <- ATL08_seg_attributes_dt_gridStat(vals, ul_lon, lr_lon, lr_lat, ul_lat)
+      vals <- ATL08_seg_attributes_dt_gridStat(vals)
 
       # vals = ATL08_seg_attributes_dt_clipGeometry(vals, polygon=polygon, split_by=NULL)
 

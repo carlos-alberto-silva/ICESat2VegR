@@ -56,5 +56,6 @@ Collate:
     'RGT_extract.R'
     'argParse.R'
     'clip (box, geometry, h5 and dt).R'
+    'clipTools.R'
     'lazy_applier.R'
     'zzz.R'

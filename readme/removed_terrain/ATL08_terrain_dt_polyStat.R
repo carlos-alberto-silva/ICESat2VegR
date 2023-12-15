@@ -94,6 +94,5 @@ ATL08_terrain_dt_polyStat <- function(atl08_terrain_dt, func, poly_id=NULL) {
     }
   }
 
-  #metrics<- new("icesat2.atl08_dt", dt = metrics)
   return(metrics)
 }

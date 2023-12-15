@@ -2,7 +2,7 @@
 % Please edit documentation in R/class.icesat2.R
 \name{plot,icesat2.atl03atl08_dt,missing-method}
 \alias{plot,icesat2.atl03atl08_dt,missing-method}
-\alias{plot,icesat2.atl08_dt,missing-method}
+\alias{plot.icesat2.atl08_dt}
 \alias{plot,icesat2.atl03_dt,missing-method}
 \title{Plot photons from ATL03 and ATL08 joined products}
 \usage{
@@ -16,7 +16,7 @@
   ...
 )
 
-\S4method{plot}{icesat2.atl08_dt,missing}(
+\method{plot}{icesat2.atl08_dt}(
   x,
   y,
   beam = "gt1l",

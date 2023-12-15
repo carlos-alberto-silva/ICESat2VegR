@@ -27,18 +27,19 @@ This function clips ATL08 Terrain and Canopy Attributes within a given bounding 
 }
 \examples{
 # Specifying the path to ATL08 file (zip file)
-outdir = tempdir()
+outdir <- tempdir()
 atl08_zip <- system.file("extdata",
-                  "ATL08_20220401221822_01501506_005_01.zip",
-                  package="rICESat2Veg")
+  "ATL08_20220401221822_01501506_005_01.zip",
+  package = "rICESat2Veg"
+)
 
 # Unzipping ATL08 file
-atl08_path <- unzip(atl08_zip,exdir = outdir)
+atl08_path <- unzip(atl08_zip, exdir = outdir)
 
 # Reading ATL08 data (h5 file)
 
 # Extracting ATL08-derived Canopy Metrics
-atl08_seg_att_dt<-ATL08_seg_attributes_dt(atl08_h5=atl08_h5)
+atl08_seg_att_dt <- ATL08_seg_attributes_dt(atl08_h5 = atl08_h5)
 
 # Bounding rectangle coordinates
 xmin <- -107.7

@@ -106,6 +106,5 @@ ATL03_ATL08_photons_attributes_dt_polyStat <- function(atl03_atl08_dt, func, pol
     }
   }
 
-  #metrics<- new("icesat2.atl08_dt", dt = metrics)
   return(metrics)
 }

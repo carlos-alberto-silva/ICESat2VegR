@@ -25,21 +25,21 @@ ATL08.var.map[["h_canopy_uncertainty"]] <- "/land_segments/canopy/h_canopy_uncer
 ATL08.var.map[["canopy_openness"]] <- "/land_segments/canopy/canopy_openness"
 ATL08.var.map[["h_max_canopy"]] <- "/land_segments/canopy/h_max_canopy"
 ATL08.var.map[["segment_cover"]] <- "/land_segments/canopy/segment_cover"
-ATL08.var.map[["h_te_best_fit"]]="/land_segments/terrain/h_te_best_fit"
-ATL08.var.map[["h_te_best_fit_20m"]]="/land_segments/terrain/h_te_best_fit_20m"
-ATL08.var.map[["h_te_interp"]]="/land_segments/terrain/h_te_interp"
-ATL08.var.map[["h_te_max"]]="/land_segments/terrain/h_te_max"
-ATL08.var.map[["h_te_mean"]]="/land_segments/terrain/h_te_mean"
-ATL08.var.map[["h_te_median"]]="/land_segments/terrain/h_te_median"
-ATL08.var.map[["h_te_mode"]]="/land_segments/terrain/h_te_mode"
-ATL08.var.map[["h_te_rh25"]]="/land_segments/terrain/h_te_rh25"
-ATL08.var.map[["h_te_skew"]]="/land_segments/terrain/h_te_skew"
-ATL08.var.map[["h_te_std"]]="/land_segments/terrain/h_te_std"
-ATL08.var.map[["h_te_uncertainty"]]="/land_segments/terrain/h_te_uncertainty"
-ATL08.var.map[["n_te_photons"]]="/land_segments/terrain/n_te_photons"
-ATL08.var.map[["photon_rate_te"]]="/land_segments/terrain/photon_rate_te"
-ATL08.var.map[["subset_te_flag"]]="/land_segments/terrain/subset_te_flag"
-ATL08.var.map[["terrain_slope"]]="/land_segments/terrain/terrain_slope"
+ATL08.var.map[["h_te_best_fit"]] <- "/land_segments/terrain/h_te_best_fit"
+ATL08.var.map[["h_te_best_fit_20m"]] <- "/land_segments/terrain/h_te_best_fit_20m"
+ATL08.var.map[["h_te_interp"]] <- "/land_segments/terrain/h_te_interp"
+ATL08.var.map[["h_te_max"]] <- "/land_segments/terrain/h_te_max"
+ATL08.var.map[["h_te_mean"]] <- "/land_segments/terrain/h_te_mean"
+ATL08.var.map[["h_te_median"]] <- "/land_segments/terrain/h_te_median"
+ATL08.var.map[["h_te_mode"]] <- "/land_segments/terrain/h_te_mode"
+ATL08.var.map[["h_te_rh25"]] <- "/land_segments/terrain/h_te_rh25"
+ATL08.var.map[["h_te_skew"]] <- "/land_segments/terrain/h_te_skew"
+ATL08.var.map[["h_te_std"]] <- "/land_segments/terrain/h_te_std"
+ATL08.var.map[["h_te_uncertainty"]] <- "/land_segments/terrain/h_te_uncertainty"
+ATL08.var.map[["n_te_photons"]] <- "/land_segments/terrain/n_te_photons"
+ATL08.var.map[["photon_rate_te"]] <- "/land_segments/terrain/photon_rate_te"
+ATL08.var.map[["subset_te_flag"]] <- "/land_segments/terrain/subset_te_flag"
+ATL08.var.map[["terrain_slope"]] <- "/land_segments/terrain/terrain_slope"
 
 #' ATL08 Terrain and Canopy Attributes
 #'
@@ -47,7 +47,7 @@ ATL08.var.map[["terrain_slope"]]="/land_segments/terrain/terrain_slope"
 #'
 #' @usage ATL08_seg_attributes_dt(atl08_h5, beam)
 #'
-#' @param atl08_h5 A ICESat-2 ATL08 object (output of [ATL08_read()] function). An S4 object of class [rICESat2Veg::icesat2.atl08_dt].
+#' @param atl08_h5 A ICESat-2 ATL08 object (output of [ATL08_read()] function).
 #' An S4 object of class [rICESat2Veg::icesat2.atl08_dt].
 #' @param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
 #' @param attribute A character vector containing the list of terrain and canopy attributes to be extracted.
@@ -82,7 +82,7 @@ ATL08.var.map[["terrain_slope"]]="/land_segments/terrain/terrain_slope"
 #' \item \emph{"canopy_openness"}
 #' \item \emph{"h_max_canopy"}
 #' \item \emph{"segment_cover"}
-#'}
+#' }
 #' @details ATL08 terrain attributes:
 #' \itemize{
 #' \item \emph{"h_te_best_fit"}
@@ -100,7 +100,7 @@ ATL08.var.map[["terrain_slope"]]="/land_segments/terrain/terrain_slope"
 #' \item \emph{"photon_rate_te"}
 #' \item \emph{"subset_te_flag"}
 #' \item \emph{"terrain_slope"}
-#'}
+#' }
 #'
 #' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
 #'
@@ -127,13 +127,13 @@ ATL08.var.map[["terrain_slope"]]="/land_segments/terrain/terrain_slope"
 #' close(atl08_h5)
 #' @export
 ATL08_seg_attributes_dt <- function(atl08_h5,
-                                       beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
-                                       attribute = c(
-                                         "h_canopy",
-                                         "canopy_openness",
-                                         "h_te_mean",
-                                         "terrain_slope"
-                                       )) {
+                                    beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
+                                    attribute = c(
+                                      "h_canopy",
+                                      "canopy_openness",
+                                      "h_te_mean",
+                                      "terrain_slope"
+                                    )) {
   # Check file input
   if (!class(atl08_h5) == "icesat2.atl08_h5") {
     stop("atl08_h5 must be an object of class 'icesat2.atl08_h5' - output of [ATL08_read()] function ")
@@ -166,8 +166,8 @@ ATL08_seg_attributes_dt <- function(atl08_h5,
         # print(col)
 
         metric_address <- ATL08.var.map[[col]]
-        base_addr <- gsub("^(.*)/.*", "\\1", paste0(i,metric_address))
-        full_addr <- paste0(i,metric_address)
+        base_addr <- gsub("^(.*)/.*", "\\1", paste0(i, metric_address))
+        full_addr <- paste0(i, metric_address)
 
 
         if (is.null(metric_address)) {
@@ -187,8 +187,8 @@ ATL08_seg_attributes_dt <- function(atl08_h5,
           }
         }
 
-        #base_addr <- gsub("^(.*)/.*", "\\1", metric_address)
-        #atl08_h5$exists(base_addr) &&
+        # base_addr <- gsub("^(.*)/.*", "\\1", metric_address)
+        # atl08_h5$exists(base_addr) &&
         if (atl08_h5@h5$exists(full_addr)) {
           if (col %in% c("h_canopy_20m", "canopy_h_metrics_abs", "subset_can_flag", "canopy_h_metrics")) {
             m <- cbind(m, t(atl08_h5[[full_addr]][, ]))
@@ -214,9 +214,8 @@ ATL08_seg_attributes_dt <- function(atl08_h5,
     }
   }
 
-  attribute_dt <- new("icesat2.atl08_dt", dt = na.omit(attribute.dt))
-
   close(pb)
 
-  return(attribute_dt)
+  setattr(attribute.dt, "class", c("icesat2.atl08_dt", "data.table", "data.frame"))
+  return(attribute.dt)
 }

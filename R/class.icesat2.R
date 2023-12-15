@@ -88,17 +88,6 @@ icesat2.atl08_h5 <- setClass(
 #' Dispatches the `@dt` function to dt
 #'
 #'
-#' @param x An object of class `icesat2.atl08_dt`
-#' @param path The path for the dataset which to open
-#'
-#' @export
-`$.icesat2.atl08_dt` <- function(x, path) {
-  x@dt[,get(path)]
-}
-
-#' Dispatches the `@dt` function to dt
-#'
-#'
 #' @param x An object of class `icesat2.atl03atl08_dt`
 #' @param path The path for the dataset which to open
 #'
@@ -117,14 +106,6 @@ icesat2.atl08_h5 <- setClass(
   head(x@dt)
 }
 
-#' Head for ATL08 photons
-#'
-#' @param atl08 An object of class `icesat2.atl08_dt`
-#' @export
-`head.icesat2.atl08_dt` <- function(x) {
-  head(x@dt)
-}
-
 
 #' Summary for ATL03 photons
 #'
@@ -132,14 +113,6 @@ icesat2.atl08_h5 <- setClass(
 #'
 #' @export
 `summary.icesat2.atl03_dt` <- function(x) {
-  summary(x@dt)
-}
-
-#' Summary for ATL08 photons
-#'
-#' @param atl08 An object of class `icesat2.atl08_dt`
-#' @export
-`summary.icesat2.atl08_dt` <- function(x) {
   summary(x@dt)
 }
 
@@ -152,15 +125,6 @@ icesat2.atl08_h5 <- setClass(
   print(head(x@dt))
   nrow(x@dt)
 }
-
-#' Number of rows for  ATL08 photons
-#'
-#' @param atl08 An object of class `icesat2.atl08_dt`
-#' @export
-`nrow.icesat2.atl08_dt` <- function(x) {
-  nrow(x@dt)
-}
-
 
 #' Summary for merged ATL03 ATL08 photons
 #'
@@ -215,23 +179,12 @@ setRefClass("data.table")
 
 #' Class for ATL08 attributes
 #'
-#' @slot data.table Object of class [`data.table`][data.table::data.table-class]
-#' from `data.table` package containing the
-#' Extracted ICESat-2 ATL08 attributes
-
-#'
 #' @seealso [`data.table`][data.table::data.table-class] in the `data.table` package and
 #' \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
 #'
 #' @import methods
-#' @export
-icesat2.atl08_dt <- setClass(
-  Class = "icesat2.atl08_dt",
-  slots = list(dt = "data.table")
-)
-
-#' @importFrom data.table data.table
-setRefClass("data.table")
+#' @exportClass icesat2.atl08_dt
+setRefClass("icesat2.atl08_dt")
 
 #' Class for ATL03 attributes
 #'
@@ -430,10 +383,7 @@ setMethod(
 #' @export
 #' @method plot icesat2.atl08_dt
 #' @rdname plot
-setMethod(
-  f = "plot",
-  signature("icesat2.atl08_dt", y = "missing"),
-  definition = function(x, y, beam="gt1l",
+plot.icesat2.atl08_dt <- function(x, y, beam="gt1l",
                         colors=c("gray", "#bd8421", "forestgreen", "green"),
                         xlim=NULL,
                         ylim=NULL,...) {
@@ -467,7 +417,6 @@ setMethod(
 
     }
   }
-)
 
 
 

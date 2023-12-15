@@ -135,6 +135,6 @@ ATL03_ATL08_compute_seg_attributes_dt_segStat <- function(atl03_atl08_dt,
     colnames(metrics)[2:c(ncol(metrics)-3)]<-paste0(names(metrics)[2:c(ncol(metrics)-3)],"_",paste0(call)[2])
   }
 
-  metrics<- new("icesat2.atl08_dt", dt = metrics)
+  setattr(metrics, "class", c("icesat2.atl08_dt", "data.table", "data.frame"))
   return(metrics)
 }

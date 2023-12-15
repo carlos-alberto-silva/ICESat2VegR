@@ -24,25 +24,26 @@ each grid cell for ATL08 Terrain and Canopy Attributes
 \examples{
 
 # Specifying the path to ATL08 file (zip file)
-outdir = tempdir()
+outdir <- tempdir()
 
 atl08_zip <- system.file("extdata",
-                  "ATL08_20220401221822_01501506_005_01.zip",
-                  package="rICESat2Veg")
+  "ATL08_20220401221822_01501506_005_01.zip",
+  package = "rICESat2Veg"
+)
 
 # Unzipping ATL08 file
-atl08_path <- unzip(atl08_zip,exdir = outdir)
+atl08_path <- unzip(atl08_zip, exdir = outdir)
 
 # Reading ATL08 data (h5 file)
 
 # Extracting ATL08 terrain and canopy attributes
-atl08_seg_att_dt<-ATL08_seg_attributes_dt(atl08_h5)
+atl08_seg_att_dt <- ATL08_seg_attributes_dt(atl08_h5)
 head(atl08_seg_att_dt)
 
 # Computing the top h_canopy at 0.05 degree grid cell
-max_h_canopy <-ATL08_seg_attributes_dt_gridStat(atl08_seg_att_dt, func=max(h_canopy), res=0.5)
+max_h_canopy <- ATL08_seg_attributes_dt_gridStat(atl08_seg_att_dt, func = max(h_canopy), res = 0.5)
 
-plot(max_h_canopy, xlim=c(-107.5,-106.5),ylim=c(38,39))
+plot(max_h_canopy, xlim = c(-107.5, -106.5), ylim = c(38, 39))
 
 # Define your own function
 mySetOfMetrics <- function(x) {
@@ -56,9 +57,9 @@ mySetOfMetrics <- function(x) {
 }
 
 # Computing a series of h_canopy statistics at 0.05 degree grid cell from customized function
-h_canopy_metrics <-ATL08_seg_attributes_dt_gridStat(atl08_seg_att_dt, func=mySetOfMetrics(h_canopy),res=0.05)
+h_canopy_metrics <- ATL08_seg_attributes_dt_gridStat(atl08_seg_att_dt, func = mySetOfMetrics(h_canopy), res = 0.05)
 
-plot(h_canopy_metrics, xlim=c(-107.5,-106.5),ylim=c(38,39))
+plot(h_canopy_metrics, xlim = c(-107.5, -106.5), ylim = c(38, 39))
 
 close(atl03_h5)
 close(atl08_h5)

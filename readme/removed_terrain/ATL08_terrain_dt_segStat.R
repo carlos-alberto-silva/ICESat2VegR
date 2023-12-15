@@ -122,6 +122,6 @@ ATL08_terrain_dt_segStat <- function(atl03_atl08_dt, func, seg_length = 30, ph_c
     }
   }
 
-  metrics<- new("icesat2.atl08_dt", dt = metrics)
+  setattr(metrics, "class", c("icesat2.atl08_dt", "data.table", "data.frame"))
   return(metrics)
 }

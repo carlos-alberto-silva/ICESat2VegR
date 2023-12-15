@@ -118,7 +118,7 @@ ATL08_photons_attributes_dt <- function(atl08_h5,
     }
   }
 
-  photon_dt<- new("icesat2.atl08_dt", dt = photon_dt)
+  setattr(photon_dt, "class", c("icesat2.atl08_dt", "data.table", "data.frame"))
 
   close(pb)
 
