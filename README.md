@@ -346,6 +346,10 @@ plot(h_ph_metrics,
 
 ## Clipping ATL03 and joined ATL03 and ATL08 photons attributes
 
+
+<img align="right" src="https://github.com/carlos-alberto-silva/rICESat2Veg/blob/master/readme/h_ph_map_all.png"  width="300">
+
+
 ```r
 # Clipping by  bounding box
 
@@ -360,11 +364,6 @@ head(atl03_photons_dt_clip) # print the first six observations
 ## 5: -106.5 42.07271 2280.661          0        33.26932       1946649
 ## 6: -106.5 42.07270 2271.058          0        33.26932       1946652
 
-```
-
-<img align="right" src="https://github.com/carlos-alberto-silva/rICESat2Veg/blob/master/readme/h_ph_map_all.png"  width="300">
-
-```r
 
 # AT03 and ATL08 photons
 atl03_atl08_photons_dt_clip <- ATL03_ATL08_photons_attributes_dt_clipBox(atl03_atl08_dt, xmin, xmax, ymin, ymax)
