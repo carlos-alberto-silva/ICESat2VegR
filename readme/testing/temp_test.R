@@ -1,9 +1,6 @@
 library(rICESat2Veg)
 
-atl03_path <- "../inst/exdata/ATL03_20220401221822_01501506_005_01.h5"
 atl08_path <- "../inst/exdata/ATL08_20220401221822_01501506_005_01.h5"
-
-atl03 <- ATL03_read(atl03_path)
 atl08 <- ATL08_read(atl08_path)
 
 
@@ -12,15 +9,13 @@ ul_lon <- -106.3
 lr_lat <- 26.99
 lr_lon <- -105.8
 
-output <- file.path("C:/Users/caiohamamura/Desktop/saida/", "output2.h5")
+output <- file.path("C:/Users/caiohamamura/Desktop/saida/", "output4.h5")
 
 bbox <- terra::ext(c(ul_lon, lr_lon, lr_lat, ul_lat))
 
-ATL03_h5_clipBox(atl03, output, bbox)
+ATL08_h5_clipBox(atl08, output, bbox)
 
-
-
-ATL08_photons_mask <- function(joined_dt, bbox) {
+ATL08_photons_mask <- function(beam, bbox) {
   lon_ph <- lat_ph <- NA
 
   mask <- joined_dt[
@@ -149,28 +144,33 @@ for (beamName in beams) {
   # Get the beam to update
   updateBeam <- newFile[[beamName]]
 
-  # Get the masks
-  joined_data <- ATL03_ATL08_photons_attributes_dt_join(atl03, atl08, beam = beamName)
-  joined_dt <- joined_data@dt[!is.na(ph_segment_id)]
-  photonsMask <- ATL08_photons_mask(joined_dt, bbox)
 
-  photons_per_segment <- joined_dt[, .N, by = .(ph_segment_id)]
-  segmentsMask <- photons_per_segment$ph_segment_id
+  # Get land segments mask
+  land_segments_dt <- data.table::data.table(
+    latitude = beam[["land_segments/latitude"]][],
+    longitude = beam[["land_segments/longitude"]][]
+  )
+
+  landSegmentsMask <- land_segments_dt[, .(latitude, longitude, .I)][
+    longitude >= bbox$xmin &
+      longitude <= bbox$xmax &
+      latitude >= bbox$ymin &
+      latitude <= bbox$ymax, I
+  ]
+
+  # Get photons for the masked land segments
+  ph_ndx_beg <- beam[["land_segments/ph_ndx_beg"]][landSegmentsMask]
+  n_seg_ph <- beam[["land_segments/n_seg_ph"]][landSegmentsMask]
+
+  # Create mask for photons
+  photonsMask <- unlist(Vectorize(seq.default, vectorize.args = c("from", "to"))(from = ph_ndx_beg, to = ph_ndx_beg + n_seg_ph))
 
   # Get sizes of clipping datasets
-
-  photonsSize <- nrow(joined_dt)
+  photonsSize <- beam[["signal_photons/ph_h"]]$dims
   segmentsSize <- beam[["land_segments/segment_watermask"]]$dims
 
   # Get all datasets
   datasets_dt <- data.table::as.data.table(beam$ls(recursive = TRUE))[obj_type == 5]
-
-  seg_dt <- ATL08_seg_attributes_dt(atl08, beam = beamName, attribute = c("n_toc_photons"))
-  segmentsMask <- seg_dt[, .(latitude, longitude, .I)][
-    longitude >= bbox$xmin &
-    longitude <= bbox$xmax &
-    latitude >= bbox$ymin &
-    latitude <= bbox$ymax, I]
 
   # Get all types of clipping photons/segment/no cut
   photonsCut <- datasets_dt[dataset.dims == photonsSize]$name
@@ -197,6 +197,7 @@ for (beamName in beams) {
   clipByMask(beam, updateBeam, segmentsCut, segmentsMask, pb)
   clipByMask2D(beam, updateBeam, segmentsCut2D, segmentsMask, pb)
   clipByMask(beam, updateBeam, photonsCut, photonsMask, pb)
+  updateBeam[["land_segments/ph_ndx_beg"]][] = c(1, cumsum(updateBeam[["land_segments/n_seg_ph"]][])[-1])
 
   close(pb)
 }

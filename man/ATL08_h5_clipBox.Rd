@@ -4,7 +4,7 @@
 \alias{ATL08_h5_clipBox}
 \title{Clips ICESat-2 ATL08 data}
 \usage{
-ATL08_h5_clipBox(atl08, atl03, output, bbox)
+ATL08_h5_clipBox(atl08, output, bbox)
 }
 \arguments{
 \item{atl08}{\code{\linkS4class{icesat2.atl08_h5}} object, obtained through \code{\link[=ATL08_read]{ATL08_read()}}
