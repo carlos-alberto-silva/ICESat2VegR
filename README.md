@@ -87,8 +87,6 @@ head(atl08_seg_att_dt)
 ## 6: 59.48635 -103.7565 gt1r 6.686523       1.4989151  340.1538   -0.05887743
 
 
-summary(atl08_seg_att_dt)
-
 # plotting histograms
 atl08_seg_att_dt@dt$h_canopy[atl08_seg_att_dt@dt$h_canopy>80]<-NA # set NA to values > 80 m
 atl08_seg_att_dt@dt$h_te_mean[atl08_seg_att_dt@dt$h_te_mean>5000]<-NA # set NA to values > 5000 m
