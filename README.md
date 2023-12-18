@@ -10,7 +10,10 @@
 
 Authors: Carlos Alberto Silva and Caio Hamamura  
 
-The rICESat2Veg package provides functions for downloading, processing, visualizing and exporting ICESat-2 ATL03 and ATL08 data in R environment.
+The rICESat2Veg package provides functions for downloading, reading, visualizing, processing and exporting 
+NASA's ICESat-2 ATL03 (Global Geolocated Photon Data) and ATL08 (Land and Vegetation Height) 
+products for Land and Vegetation Applications in R environment.
+
 
 # Getting Started
 

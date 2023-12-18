@@ -1,12 +1,15 @@
 Package: rICESat2Veg
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Title: NASA's Ice, Cloud, and Elevation Satellite (ICESat-2) Data analysis 
+Version: 0.0.1
+Authors@R: c(
+    person("Carlos Alberto", "Silva", email = "c.silva@ufl.edu", role = c("aut", "cph", "cre")),
+    person("Caio", "Hamamura", email = "caiohamamura@gmail.com", role = c("aut", "cph")))
+Maintainer: Carlos Alberto silva <c.silva@ufl.edu>
+Description: Set of tools for downloading, reading, visualizing, processing and exporting 
+NASA's ICESat-2 ATL03 (Global Geolocated Photon Data) and ATL08 (Land and Vegetation Height) 
+products for Land and Vegetation Applications. 
+License: GPL-3
 Imports:
     gdalBindings,
     hdf5r,
