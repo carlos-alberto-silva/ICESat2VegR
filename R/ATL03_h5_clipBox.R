@@ -9,25 +9,32 @@
 #'
 #' @return Returns the clipped S4 object of class [`icesat2.atl03_h5-class`]
 #'
-#' @description This function clips the ATl03 HDF5 file. This function
-#' will only clip the beam groups within hdf5, it won't change metadata
-#' or ancillary data.
+#' @description This function clips ATL03 HDF5 file within beam groups, but keeps metada and ancillary data the same.
 #'
 #' @examples
-#' # Specifying the path to ICESat-2 ATL03 data (zip file)
-#' outdir <- tempdir()
-#' atl03_fp_zip <- system.file("extdata",
-#'   "ATL0302_A_2019103030338_O01964_T05337_02_001_01_sub.zip",
-#'   package = "rICESat2Veg"
-#' )
+##'# Specifying the path to ATL03 file (zip file)
+#'outdir = tempdir()
+#'atl03_zip <- system.file("extdata",
+#'                   "atl03_20220401221822_01501506_005_01.zip",
+#'                   package="rICESat2Veg")
 #'
-#' # Unzipping ICESat-2 ATL03 data
-#' atl03_path <- unzip(atl03_fp_zip, exdir = outdir)
+#'# Unzipping ATL03 file
+#'atl03_path <- unzip(atl03_zip,exdir = outdir)
 #'
-#' # Reading ICESat-2 ATL03 data (h5 file)
-#' atl03 <- ATL03_read(atl03_path = atl03_path)
+#'# Reading ATL03 data (h5 file)
+#atl03_h5<-atl03_read(atl03_path=atl03_path)
 #'
-#' close(atl03)
+#'
+#' # Bounding rectangle coordinates
+#' xmin <- -107.7
+#' xmax <- -106.5
+#' ymin <- 32.75
+#' ymax <- 42.75
+#'
+#' # Clipping ATL03 photons  by boundary box extent
+#'atl03_photons_dt_clip <- ATL03_h5_clipBox(atl03_h5, outdir, xmin, xmax, ymin, ymax)
+#'
+#'close(atl03_h5)
 #' @import hdf5r
 #' @export
 setGeneric(
@@ -88,7 +95,7 @@ ATL03_photons_per_segment <- function(beam, photonsMask) {
 
 
 
-clipBoxATL03 <- function(atl03, output, bbox) {
+ATL03_h5_clipBox <- function(atl03, output, bbox) {
   dataset.rank <- dataset.dims <- obj_type <- name <- NA
 
   # Create a new HDF5 file
