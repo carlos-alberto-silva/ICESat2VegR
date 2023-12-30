@@ -10,10 +10,13 @@ concept_ids <- list(
 #   ATL08_v006 = "C2565090645-NSIDC_ECS"
 # )
 
-#' ICESat-2 ATLAS finder
+#' ICESat-2 ATL03 and ATL08 data finder
 #'
 #' @description This function finds the exact granule(s) that contain ICESat-2 ATLAS data
 #' for a given region of interest and date range
+#'
+#' @usage ICESat2data_finder <- function(short_name,ul_lat, ul_lon, lr_lat,
+#'                                       lr_lon, version, daterange)
 #'
 #' @param short_name ICESat-2 ATLAS data level; Options: "ATL03", "ATL08",
 #' @param ul_lat Numeric. Upper left (ul) corner coordinates, in lat
@@ -25,7 +28,7 @@ concept_ids <- list(
 #' @param lr_lon Numeric. Lower right (ul) corner coordinates, in lon
 #' (decimal degrees) for the bounding box of the area of interest.
 #' @param version Character. The version of the ICESat-2 ATLAS product files to be
-#' returned. Default "002".
+#' returned (only V005 or V006). Default "006".
 #' @param daterange Vector. Date range. Specify your start and end dates
 #' using ISO 8601 \[YYYY\]-\[MM\]-\[DD\]T\[hh\]:\[mm\]:\[ss\]Z. Ex.:
 #' c("2019-07-01T00:00:00Z","2020-05-22T23:59:59Z"). If NULL (default),
@@ -43,7 +46,7 @@ concept_ids <- list(
 #'
 #' @examples
 #' \donttest{
-#' # ICESat-2 ATLASfinder is a web service provided by NASA
+#' # ICESat-2 data finder is a web service provided by NASA
 #' # usually the request takes more than 5 seconds
 #'
 #' # Specifying bounding box coordinates

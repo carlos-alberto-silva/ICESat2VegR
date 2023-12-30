@@ -1,11 +1,11 @@
-#'Download ICESat-2 data
+#'Download ICESat-2  data
 #'
-#'@description Download ICEsat-2 data from LP DAAC Data Pool. Users will need to enter their
+#'@description Download ICESat-2 ATL03 and ALT08 data from LP DAAC Data Pool. Users will need to enter their
 #'Earth Explore login Information for downloading the data.
 #'
 #' @usage ICESat2data_download(filepath, outdir, overwrite, buffer_size, timeout)
 #'
-#'@param filepath Vector object; path to the ICESat-2 data (output of [rICESat2Veg::ICESat2_finder()])
+#'@param filepath Vector object; path to ATL03 or ALT08 data, or both (output of [rICESat2Veg::ICESat2_finder()])
 #'@param outdir Vector object, output directory for downloading GEDI data, default [tempdir()]
 #'@param overwrite logical; overwrite file if they already exists in destination, default FALSE
 #'@param buffer_size integer; the size of download chunk in KB to hold in memory before writing to file, default 512.
@@ -41,7 +41,7 @@
 #'@export
 ICESat2data_download<-function(filepath, outdir = NULL, overwrite = FALSE, buffer_size = 512, timeout=10){
   if (is.null(outdir)) {
-    outdir == tempdir()
+    outdir = tempdir()
   }
   stopifnotMessage(
     "outdir is not a valid path" = checkParentDir(outdir),
@@ -55,8 +55,11 @@ ICESat2data_download<-function(filepath, outdir = NULL, overwrite = FALSE, buffe
   n_files = length(files)
 
   # Download all files in filepath vector
+  #i=1
   for (i in 1:n_files) {
     url = files[i]
+
+    if (is.na(url)) next
     message("------------------------------")
     message(sprintf("Downloading file %d/%d: %s", i, n_files, basename(url)))
     message("------------------------------")
