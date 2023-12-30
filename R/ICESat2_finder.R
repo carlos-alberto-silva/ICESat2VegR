@@ -3,6 +3,13 @@ concept_ids <- list(
   ATL08 = "ATL08"
 )
 
+# concept_ids <- list(
+#   ATL03_v005 = "C2153572325-NSIDC_CPRD",
+#   ATL03_v006 = "C2596864127-NSIDC_CPRD",
+#   ATL08_v005 = "C2153574670-NSIDC_CPRD",
+#   ATL08_v006 = "C2565090645-NSIDC_ECS"
+# )
+
 #' ICESat-2 ATLAS finder
 #'
 #' @description This function finds the exact granule(s) that contain ICESat-2 ATLAS data
@@ -49,7 +56,7 @@ concept_ids <- list(
 #' daterange <- c("2019-07-01", "2020-05-22")
 #'
 #' # Extracting the path to ICESat-2 ATLAS data for the specified boundary box coordinates
-#' ICESat-2 ATLAS02b_list <- ICESat-2 ATLASfinder(
+#' ICESat-2 ATLAS02b_list <- ICESat2data_finder(
 #'   product = "ICESat-2 ATLAS02_B",
 #'   ul_lat,
 #'   ul_lon,
@@ -61,7 +68,7 @@ concept_ids <- list(
 #' }
 #' @import jsonlite curl magrittr
 #' @export
-ICESat2_finder <- function(short_name,
+ICESat2data_finder <- function(short_name,
                            ul_lat,
                            ul_lon,
                            lr_lat,
