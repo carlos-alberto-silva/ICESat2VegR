@@ -3,7 +3,7 @@
 #'@description Download ICESat-2 ATL03 and ALT08 data from LP DAAC Data Pool. Users will need to enter their
 #'Earth Explore login Information for downloading the data.
 #'
-#' @usage ICESat2data_download(filepath, outdir, overwrite, buffer_size, timeout)
+#'@usage ICESat2data_download(filepath, outdir, overwrite, buffer_size, timeout)
 #'
 #'@param filepath Vector object; path to ATL03 or ALT08 data, or both (output of [rICESat2Veg::ICESat2_finder()])
 #'@param outdir Vector object, output directory for downloading GEDI data, default [tempdir()]

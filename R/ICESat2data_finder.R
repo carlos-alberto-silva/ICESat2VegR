@@ -15,8 +15,7 @@ concept_ids <- list(
 #' @description This function finds the exact granule(s) that contain ICESat-2 ATLAS data
 #' for a given region of interest and date range
 #'
-#' @usage ICESat2data_finder <- function(short_name,ul_lat, ul_lon, lr_lat,
-#'                                       lr_lon, version, daterange)
+#' @usage ICESat2data_finder(short_name,ul_lat, ul_lon, lr_lat,lr_lon, version, daterange)
 #'
 #' @param short_name ICESat-2 ATLAS data level; Options: "ATL03", "ATL08",
 #' @param ul_lat Numeric. Upper left (ul) corner coordinates, in lat
