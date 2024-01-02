@@ -83,18 +83,12 @@ ICESat2_datafinder <- function(short_name,
   collections_json <- response$content %>% rawToChar() %>% jsonlite::parse_json()
   collections_ids <- sapply(collections_json$feed$entry, function(x) x$id)
 
-  # concept_ids <- list(
-  #   ATL03_v005 = "C2153572325-NSIDC_CPRD",
-  #   ATL03_v006 = "C2596864127-NSIDC_CPRD",
-  #   ATL08_v005 = "C2153574670-NSIDC_CPRD",
-  #   ATL08_v006 = "C2565090645-NSIDC_ECS"
-  # )
-
   # Granules search url pattern
   url_format <- paste0(
     "https://cmr.earthdata.nasa.gov/search/granules.json?",
     "pretty=false&page_size=%s&short_name=%s",
-    "&bounding_box=%s&version=%s%%s")
+    "&bounding_box=%s&version=%s%%s"
+  )
 
   # Format request URL
   request_url <- sprintf(
