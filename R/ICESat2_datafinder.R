@@ -1,8 +1,9 @@
 PAGE_SIZE <- 2000
 
-#' ICESat-2 ATL03 and ATL08 data finder
+#' ICESat-2 ATLAS data finder
 #'
-#' @description This function finds the exact granule(s) that contain ICESat-2 ATLAS data
+#' @description This function finds the exact granule(s) that contain ICESat-2
+#' Advanced Topographic Laser Altimeter System (ATLAS) data
 #' for a given region of interest and date range
 #'
 #' @param short_name ICESat-2 ATLAS data level short_name; Options: "ATL03", "ATL08",
@@ -47,7 +48,7 @@ PAGE_SIZE <- 2000
 #' daterange <- c("2019-07-01", "2020-05-22")
 #'
 #' # Extracting the path to ICESat-2 ATLAS data for the specified boundary box coordinates
-#' ICESat-2 ATLAS02b_list <- ICESat2data_finder(
+#' atl08_list <- ICESat2data_finder(
 #'   short_name = "ATL08",
 #'   ul_lat,
 #'   ul_lon,
@@ -118,7 +119,7 @@ ICESat2_datafinder <- function(short_name,
   granules_href <- sapply(collections_ids, function(x) fetchAllGranules(request_url, x))
   # Append fetched granules to granules_href
   # recursively, for each page (max 2000 per page)
- 
+
   return(granules_href)
 }
 
