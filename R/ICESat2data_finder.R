@@ -3,12 +3,12 @@ concept_ids <- list(
   ATL08 = "ATL08"
 )
 
-# concept_ids <- list(
-#   ATL03_v005 = "C2153572325-NSIDC_CPRD",
-#   ATL03_v006 = "C2596864127-NSIDC_CPRD",
-#   ATL08_v005 = "C2153574670-NSIDC_CPRD",
-#   ATL08_v006 = "C2565090645-NSIDC_ECS"
-# )
+concept_ids <- list(
+  ATL03_v005 = "C2153572325-NSIDC_CPRD",
+  ATL03_v006 = "C2596864127-NSIDC_CPRD",
+  ATL08_v005 = "C2153574670-NSIDC_CPRD",
+  ATL08_v006 = "C2565090645-NSIDC_ECS"
+)
 
 #' ICESat-2 ATL03 and ATL08 data finder
 #'
@@ -83,16 +83,34 @@ ICESat2data_finder <- function(short_name,
 
   # short_name = "ATL08"
 
+  concept_ids <- list(
+    ATL03_v005 = "C2153572325-NSIDC_CPRD",
+    ATL03_v006 = "C2596864127-NSIDC_CPRD",
+    ATL08_v005 = "C2153574670-NSIDC_CPRD",
+    ATL08_v006 = "C2565090645-NSIDC_ECS"
+  )
+
+  #https://search.earthdata.nasa.gov/projects?p=!C2153574670-NSIDC_CPRD&pg[1][v]=t&pg[1][gsk]=-start_date&pg[1][m]=download&pg[1][cd]=f&tl=1704055568!3!!&lat=24.77409302208258&long=-86.361328125&zoom=5
+
   # Granules search url pattern
   url_format <- paste0(
-    "https://cmr.earthdata.nasa.gov/search/granules.json?",
-    "pretty=false&page_size=2000&short_name=%s",
-    "&bounding_box=%s%%s"
+
+    "https://n5eil02u.ecs.nsidc.org/egi/request?",
+
+    #"https://cmr.earthdata.nasa.gov/search/granules.json?",
+
+    "&short_name=%s",
+    #"p=!&concept_id=%s",
+    #"pretty=false&page_size=2000&short_name=%s&concept_id=%s",
+    "&bounding_box=%s%%s",
+    "&version=%s"   # concept_ids[paste0(short_name, "_v", version)])
   )
   request_url <- sprintf(
     url_format,
     short_name,
-    bbox
+    #concept_ids[paste0(short_name, "_v", version)],
+    bbox,
+    version
   )
 
   # Add temporal search if not null
