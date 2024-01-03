@@ -83,14 +83,12 @@ ICESat2_datafinder <- function(short_name,
   collections_json <- response$content %>% rawToChar() %>% jsonlite::parse_json()
   collections_ids <- sapply(collections_json$feed$entry, function(x) x$id)
 
-  concept_ids <- list(
-    ATL03_v005 = "C2153572325-NSIDC_CPRD",
-    ATL03_v006 = "C2596864127-NSIDC_CPRD",
-    ATL08_v005 = "C2153574670-NSIDC_CPRD",
-    ATL08_v006 = "C2565090645-NSIDC_ECS"
-  )
-
-  #https://search.earthdata.nasa.gov/projects?p=!C2153574670-NSIDC_CPRD&pg[1][v]=t&pg[1][gsk]=-start_date&pg[1][m]=download&pg[1][cd]=f&tl=1704055568!3!!&lat=24.77409302208258&long=-86.361328125&zoom=5
+  # concept_ids <- list(
+  #   ATL03_v005 = "C2153572325-NSIDC_CPRD",
+  #   ATL03_v006 = "C2596864127-NSIDC_CPRD",
+  #   ATL08_v005 = "C2153574670-NSIDC_CPRD",
+  #   ATL08_v006 = "C2565090645-NSIDC_ECS"
+  # )
 
   # Granules search url pattern
   url_format <- paste0(
