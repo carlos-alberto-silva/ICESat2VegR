@@ -76,7 +76,7 @@ ss<-ATL08_canopy_dt_gridStat(RH100max, func=mySetOfMetrics(mean), res=0.5)
 ss<-ATL03_ATL08_joined_dt_gridStat(atl03_atl08_dt, func=mySetOfMetrics(ph_h), res=0.5)
 
 plot(ss)
-head(atl03_atl08_dt@dt)
+head(atl03_atl08_dt)
 
 
 # Clipping ATL08 Canopy Height Metrics by Geometry
@@ -100,10 +100,10 @@ head(atl03_atl08_clip@dt)
 
 head(atl03_atl08_clip)
 
-plot(atl03_atl08_dt@dt$lon_ph,atl03_atl08_dt@dt$lat_ph)
+plot(atl03_atl08_dt$lon_ph,atl03_atl08_dt$lat_ph)
 plot(polygon, add=T)
 
-head(atl03_atl08_dt@dt)
+head(atl03_atl08_dt)
 
 plot(ss)
 

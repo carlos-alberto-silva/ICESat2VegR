@@ -174,9 +174,7 @@ ATL03_ATL08_photons_attributes_dt_join <- function(atl03_h5, atl08_h5,
     utils::setTxtProgressBar(pb, i_s)
   }
 
-  photon_dt <- new("icesat2.atl03atl08_dt", dt = photon_dt)
-
+  setattr(photon_dt, "class", c("icesat2.atl03atl08_dt", "data.table", "data.frame"))
   close(pb)
-
   return(photon_dt)
 }

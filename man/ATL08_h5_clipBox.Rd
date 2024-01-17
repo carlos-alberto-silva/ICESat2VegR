@@ -44,7 +44,7 @@ ymin <- 32.75
 ymax <- 42.75
 
 # Clipping ATL08 terrain and canopy attributes by boundary box
-atl08_seg_att_dt_clip <- ATL08_h5_clipBox(atl08_h5,outdir, xmin, xmax, ymin, ymax)
+atl08_seg_att_dt_clip <- ATL08_h5_clipBox(atl08_h5, outdir, xmin, xmax, ymin, ymax)
 
 close(atl08_h5)
 }

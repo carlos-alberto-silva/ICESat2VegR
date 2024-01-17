@@ -3,18 +3,10 @@
 \docType{class}
 \name{icesat2.atl03atl08_dt-class}
 \alias{icesat2.atl03atl08_dt-class}
-\alias{icesat2.atl03atl08_dt}
 \title{Class for joined ATL03 and ATL08 attributes}
 \description{
 Class for joined ATL03 and ATL08 attributes
 }
-\section{Slots}{
-
-\describe{
-\item{\code{data.table}}{Object of class \code{\link[data.table:data.table-class]{data.table}}
-from \code{data.table} package containing the
-Joined ICESat-2 ATL03 and ATL08 attributes}
-}}
 
 \seealso{
 \code{\link[data.table:data.table-class]{data.table}} in the \code{data.table} package and

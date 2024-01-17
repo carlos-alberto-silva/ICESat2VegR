@@ -166,9 +166,9 @@ unzip(atl08_zip, exdir = outdir)
 
 # Bounding rectangle coordinates
 ul_lat <- -13.72016
-ul_lon <- -44.14000
-lr_lat <- -13.74998
-lr_lon <- -44.11009
+ul_lon <- -100
+lr_lat <- 54
+lr_lon <- -975
 
 res <- 100 # meters
 lat_to_met_factor <- 1 / 110540

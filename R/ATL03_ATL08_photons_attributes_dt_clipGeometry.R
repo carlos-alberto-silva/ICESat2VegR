@@ -71,10 +71,10 @@ ATL03_ATL08_photons_attributes_dt_clipGeometry <- function(atl03_atl08_dt, polyg
     ymax = exshp$ymax
   )
 
-  if (any(is.na(atl03_atl08_dt@dt))) {
-    atl03_atl08_dt<-na.omit(atl03_atl08_dt@dt)
+  if (any(is.na(atl03_atl08_dt))) {
+    atl03_atl08_dt<-na.omit(atl03_atl08_dt)
   } else {
-    atl03_atl08_dt<-atl03_atl08_dt@dt
+    atl03_atl08_dt<-atl03_atl08_dt
   }
 
   atl03_atl08_dt$nid<-1:nrow(atl03_atl08_dt)

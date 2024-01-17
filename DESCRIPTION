@@ -1,6 +1,6 @@
 Package: ICESat2VegR
 Type: Package
-Title: NASA's Ice, Cloud, and Elevation Satellite (ICESat-2) Data analysis 
+Title: rICESat2Veg: An R Package for NASA's Ice, Cloud, and Elevation Satellite (ICESat-2) Data Processing and Visualization for Land and Vegetation Applications.
 Version: 0.0.1
 Authors@R: c(
     person("Carlos Alberto", "Silva", email = "c.silva@ufl.edu", role = c("aut", "cph", "cre")),
@@ -26,8 +26,9 @@ Collate:
     'ATL03_ATL08_photons_attributes_dt_join.R'
     'ATL03_ATL08_photons_attributes_dt_polyStat.R'
     'ATL03_ATL08_photons_fitground_dt_seg.R'
+    'clipTools.R'
     'class.icesat2.R'
-    'ATL03_h5_clipBox.R'
+    'ATL03_h5_clip.R'
     'ATL03_h5_clipGeometry.R'
     'ATL03_photons_attributes_dt.R'
     'ATL03_photons_attributes_dt_LAS.R'
@@ -41,7 +42,6 @@ Collate:
     'ATL03_read.R'
     'ATL08_cover_dt_segStat.R'
     'ATL08_h5_clipBox.R'
-    'ATL08_h5_clipGeometry.R'
     'ATL08_photons_attributes_dt.R'
     'ATL08_photons_attributes_dt_LAS.R'
     'ATL08_read.R'
@@ -52,11 +52,10 @@ Collate:
     'ATL08_seg_attributes_dt_polyStat.R'
     'ATL08_seg_attributes_h5_gridStat.R'
     'ATL08_segment_create.R'
-    'ICESat2_datafinder.R'
-    'ICESat2_download.R'
+    'ATLAS_dataDownload.R'
+    'ATLAS_dataFinder.R'
     'RGT_extract.R'
     'argParse.R'
     'clip (box, geometry, h5 and dt).R'
-    'clipTools.R'
     'lazy_applier.R'
     'zzz.R'

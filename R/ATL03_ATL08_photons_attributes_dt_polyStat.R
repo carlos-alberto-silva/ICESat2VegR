@@ -79,11 +79,11 @@ ATL03_ATL08_photons_attributes_dt_polyStat <- function(atl03_atl08_dt, func, pol
     stop("atl03_atl08_dt needs to be an object of class 'icesat2.atl03atl08_dt' ")
   }
 
-  if (any(is.na(atl03_atl08_dt@dt))) {
-    atl03_atl08_dt2<-na.omit(atl03_atl08_dt@dt)
+  if (any(is.na(atl03_atl08_dt))) {
+    atl03_atl08_dt2<-na.omit(atl03_atl08_dt)
   } else {
 
-    atl03_atl08_dt2<-atl03_atl08_dt@dt
+    atl03_atl08_dt2<-atl03_atl08_dt
   }
 
 
@@ -93,13 +93,13 @@ ATL03_ATL08_photons_attributes_dt_polyStat <- function(atl03_atl08_dt, func, pol
   call <- lazy_call(func)
 
   if (is.null(poly_id)) {
-    metrics <- lazy_apply_dt_call(dt = atl03_atl08_dt@dt, call = call)
+    metrics <- lazy_apply_dt_call(dt = atl03_atl08_dt, call = call)
     metrics <- as.data.table(metrics)
     if (ncol(metrics) < 2) {
       colnames(metrics) <- paste0(call)[1]
     }
   } else {
-    metrics <- lazy_apply_dt_call(dt = atl03_atl08_dt@dt, call = call, group.by = paste0("by = ", poly_id))
+    metrics <- lazy_apply_dt_call(dt = atl03_atl08_dt, call = call, group.by = paste0("by = ", poly_id))
 
     if (ncol(metrics) < 3) {
       colnames(metrics)[2] <- paste0(call)[1]

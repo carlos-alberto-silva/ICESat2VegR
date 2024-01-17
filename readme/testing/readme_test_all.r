@@ -512,7 +512,7 @@ ss<-ATL03_ATL08_joined_dt_gridStat(atl03_atl08_dt, func=mySetOfMetrics(ph_h), re
 windows()
 terra::plot(ss)
 dev.off()
-head(atl03_atl08_dt@dt)
+head(atl03_atl08_dt)
 
 
 # Clipping ATL08 Canopy Height Metrics by Geometry
@@ -537,10 +537,10 @@ head(atl03_atl08_clip@dt)
 
 head(atl03_atl08_clip)
 
-plot(atl03_atl08_dt@dt$lon_ph,atl03_atl08_dt@dt$lat_ph)
+plot(atl03_atl08_dt$lon_ph,atl03_atl08_dt$lat_ph)
 plot(polygon, add=T)
 
-head(atl03_atl08_dt@dt)
+head(atl03_atl08_dt)
 
 plot(ss)
 

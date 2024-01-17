@@ -11,15 +11,15 @@ atl03_h5<-ATL03_read(atl03_path=atl03_path)
 ## join
 atl03_atl08_dt<-ATL03_ATL08_join_dt(atl03_h5,atl08_h5, beam = "gt1l")
 
-atl03_atl08_dt@dt<-na.omit(atl03_atl08_dt@dt)
-head(atl03_atl08_dt@dt)
+atl03_atl08_dt<-na.omit(atl03_atl08_dt)
+head(atl03_atl08_dt)
 
 
-dt2<-atl03_atl08_dt@dt[,c("lon_ph","lat_ph","ph_h")]
+dt2<-atl03_atl08_dt[,c("lon_ph","lat_ph","ph_h")]
 #class(dt2)<-"data.table"
 
 names(dt2)<-c("X","Y","Z")
-dt2$Classification <-atl03_atl08_dt@dt$classed_pc_flag
+dt2$Classification <-atl03_atl08_dt$classed_pc_flag
 
 require(terra)
 v <- vect(dt2, c("X", "Y"), crs="+proj=longlat")

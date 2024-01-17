@@ -61,17 +61,6 @@ icesat2.atl08_h5 <- setClass(
   x@h5[[path]]
 }
 
-#' Dispatches the `[[` function to dt
-#'
-#'
-#' @param x An object of class `icesat2.atl03atl08_dt`
-#' @param path The path for the dataset which to open
-#'
-#' @export
-`[[.icesat2.atl03atl08_dt` <- function(x, path) {
-  x@dt[[path]]
-}
-
 #' Dispatches the `@dt` function to dt
 #'
 #'
@@ -82,18 +71,6 @@ icesat2.atl08_h5 <- setClass(
 `$.icesat2.atl03_dt` <- function(x, path) {
   x@dt[,get(path)]
 }
-
-#' Dispatches the `@dt` function to dt
-#'
-#'
-#' @param x An object of class `icesat2.atl03atl08_dt`
-#' @param path The path for the dataset which to open
-#'
-#' @export
-`$.icesat2.atl03atl08_dt` <- function(x, path) {
-  x@dt[,get(path)]
-}
-
 
 #' Head for ATL03 photons
 #'
@@ -124,32 +101,6 @@ icesat2.atl08_h5 <- setClass(
   nrow(x@dt)
 }
 
-#' Summary for merged ATL03 ATL08 photons
-#'
-#' @param atl03_atl08_dt An object of class `icesat2.atl03atl08_dt`
-#' @export
-`summary.icesat2.atl03atl08_dt` <- function(x) {
-  summary(x@dt)
-}
-
-#' Number of rows for merged ATL03 ATL08 photons
-#'
-#' @param atl03_atl08_dt An object of class `icesat2.atl03atl08_dt`
-#'
-#' @export
-`nrow.icesat2.atl08atl03_dt` <- function(x) {
-  print(head(x@dt))
-  nrow(x@dt)
-}
-
-#' Head for ATL08 photons
-#'
-#' @param atl03_atl08_dt An object of class `icesat2.atl03atl08_dt`
-#' @export
-`head.icesat2.atl03atl08_dt` <- function(x) {
-  head(x@dt)
-}
-
 
 #' Get Beams for icesat h5 classes
 #'
@@ -172,9 +123,6 @@ setMethod(
 )
 
 
-#' @importFrom data.table data.table
-setRefClass("data.table")
-
 #' Class for ATL08 attributes
 #'
 #' @seealso [`data.table`][data.table::data.table-class] in the `data.table` package and
@@ -194,6 +142,7 @@ setRefClass("icesat2.atl08_dt")
 #' \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
 #'
 #' @import methods
+#' @importClassesFrom data.table data.table
 #' @export
 icesat2.atl03_dt <- setClass(
   Class = "icesat2.atl03_dt",
@@ -202,19 +151,12 @@ icesat2.atl03_dt <- setClass(
 
 #' Class for joined ATL03 and ATL08 attributes
 #'
-#' @slot data.table Object of class [`data.table`][data.table::data.table-class]
-#' from `data.table` package containing the
-#' Joined ICESat-2 ATL03 and ATL08 attributes
-#'
 #' @seealso [`data.table`][data.table::data.table-class] in the `data.table` package and
 #' \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
 #'
 #' @import methods
 #' @export
-icesat2.atl03atl08_dt <- setClass(
-  Class = "icesat2.atl03atl08_dt",
-  slots = list(dt = "data.table")
-)
+setRefClass("icesat2.atl03atl08_dt")
 
 
 h5closeall <- function(con, ...) {
@@ -299,25 +241,28 @@ setMethod("close", signature = c("icesat2.atl08_h5"), h5closeall)
 #' @rdname plot
 setMethod(
   f = "plot",
-  signature("icesat2.atl03atl08_dt", y = "missing"),
-  definition = function(x, y, beam="gt1l",
-                        colors=c("gray", "#bd8421", "forestgreen", "green"),
-                        xlim=NULL,
-                        ylim=NULL,...) {
-    if (!is(x, "icesat2.atl03atl08_dt")) {
+  signature("icesat2.atl03atl08_dt", y = "character"),
+  definition = function(x, y = "h_ph", beam = "gt1l",
+                        colors = c("gray", "#bd8421", "forestgreen", "green"),
+                        xlim = NULL,
+                        ylim = NULL, ...) {
+    if (!inherits(x, "icesat2.atl03atl08_dt")) {
       print("Invalid input file. It should be an object of class 'icesat2.atl03atl08_dt' ")
     } else {
+      # colors <- c("gray", "#bd8421", "forestgreen", "green")
+      xdt <- x[x$beam == beam, c("dist_ph_along", y, "classed_pc_flag"), with = FALSE]
 
-      #colors <- c("gray", "#bd8421", "forestgreen", "green")
-      xdt<-x@dt[x@dt$beam==beam,c("dist_ph_along",y,"classed_pc_flag"), with = FALSE]
+      if (is.null(xlim)) {
+        xlim <- range(xdt$dist_ph_along)
+      }
+      if (is.null(ylim)) {
+        ylim <- range(xdt[, get(y)], na.rm = TRUE)
+      }
 
-      if (is.null(xlim)){xlim=range(xdt$dist_ph_along)}
-      if (is.null(ylim)){ylim=range(xdt[,get(y)], na.rm=T)}
-
-      mask<-xdt$dist_ph_along >= xlim[1] &
+      mask <- xdt$dist_ph_along >= xlim[1] &
         xdt$dist_ph_along <= xlim[2] &
-        xdt[,2] >= ylim[1] &
-        xdt[,2] <= ylim[2]
+        xdt[, 2] >= ylim[1] &
+        xdt[, 2] <= ylim[2]
 
       mask[!stats::complete.cases(mask)] <- FALSE
       mask <- (seq_along(xdt$dist_ph_along))[mask]
@@ -327,15 +272,24 @@ setMethod(
 
 
       suppressWarnings({
-          plot(x=newFile$dist_ph_along,
-               y=newFile[,get(y)],
-               col = colorMap,xlim=xlim, ylim=ylim, xlab="Distance along-track (m)", ylab=paste(y,"(m)"),...)
-          legend("topleft", legend=c("ATL03 unclassified","ATL03 Terrain", "ATL03 Vegetation", "ATL03 Top canopy"), pch=16, col=colors, bty="n")
-        })
-
+        plot(
+          x = newFile$dist_ph_along,
+          y = newFile[, get(y)],
+          col = colorMap, xlim = xlim, ylim = ylim, xlab = "Distance along-track (m)", ylab = paste(y, "(m)"), ...
+        )
+        legend("topleft",
+          legend = c(
+            "ATL03 unclassified",
+            "ATL03 Terrain",
+            "ATL03 Vegetation",
+            "ATL03 Top canopy"
+          ), pch = 16, col = colors, bty = "n"
+        )
+      })
     }
   }
 )
+
 
 
 #' Plot ATL08 photons
@@ -390,7 +344,7 @@ plot.icesat2.atl08_dt <- function(x, y, beam="gt1l",
     } else {
 
       #colors <- c("gray", "#bd8421", "forestgreen", "green")
-      xdt<-x@dt[x@dt$beam==beam,c("dist_ph_along",y,"classed_pc_flag"), with = FALSE]
+      xdt<-x[x$beam==beam,c("dist_ph_along",y,"classed_pc_flag"), with = FALSE]
 
       if (is.null(xlim)){xlim=range(xdt$dist_ph_along)}
       if (is.null(ylim)){ylim=range(xdt[,get(y)])}

@@ -95,10 +95,10 @@ ATL03_ATL08_compute_seg_attributes_dt_segStat <- function(atl03_atl08_dt,
     stop("atl03_atl08_dt needs to be an object of class 'icesat2.atl03atl08_dt' ")
   }
 
-  atl03_atl08_dt2<-atl03_atl08_dt@dt[atl03_atl08_dt@dt$classed_pc_flag %in% ph_class &
-                                       atl03_atl08_dt@dt$quality_ph %in% quality_ph &
-                                       atl03_atl08_dt@dt$beam %in% beam &
-                                       atl03_atl08_dt@dt$night_flag %in% night_flag,]
+  atl03_atl08_dt2<-atl03_atl08_dt[atl03_atl08_dt$classed_pc_flag %in% ph_class &
+                                       atl03_atl08_dt$quality_ph %in% quality_ph &
+                                       atl03_atl08_dt$beam %in% beam &
+                                       atl03_atl08_dt$night_flag %in% night_flag,]
 
   segment<-cut(atl03_atl08_dt2$dist_ph_along, breaks=seq(0,max(atl03_atl08_dt2$dist_ph_along),seg_length),labels = FALSE)
 

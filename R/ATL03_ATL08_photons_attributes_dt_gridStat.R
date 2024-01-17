@@ -82,10 +82,10 @@ ATL03_ATL08_photons_attributes_dt_gridStat <- function(atl03_atl08_dt,
     stop("atl03_atl08_dt needs to be an object of class 'icesat2.atl03atl08_dt' ")
   }
 
-  if (any(is.na(atl03_atl08_dt@dt))) {
-    atl03_atl08_dt2 <- na.omit(atl03_atl08_dt@dt)
+  if (any(is.na(atl03_atl08_dt))) {
+    atl03_atl08_dt2 <- na.omit(atl03_atl08_dt)
   } else {
-    atl03_atl08_dt2 <- atl03_atl08_dt@dt
+    atl03_atl08_dt2 <- atl03_atl08_dt
   }
 
   atl03_atl08_dt2 <- atl03_atl08_dt2[
