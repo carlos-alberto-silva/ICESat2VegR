@@ -59,56 +59,67 @@ This function plots photons along track
 }
 \examples{
 # Specifying the path to ATL03 and ATL08 file (zip file)
-outdir = tempdir()
+outdir <- tempdir()
 atl03_zip <- system.file("extdata",
-                  "ATL03_20220401221822_01501506_005_01.zip",
-                  package="rICESat2Veg")
+  "ATL03_20220401221822_01501506_005_01.zip",
+  package = "rICESat2Veg"
+)
 
 atl08_zip <- system.file("extdata",
-                  "ATL08_20220401221822_01501506_005_01.zip",
-                  package="rICESat2Veg")
+  "ATL08_20220401221822_01501506_005_01.zip",
+  package = "rICESat2Veg"
+)
 
 # Unzipping ATL03 file
-atl03_path <- unzip(atl03_zip,exdir = outdir)
+atl03_path <- unzip(atl03_zip, exdir = outdir)
 
 # Unzipping ATL08 file
-atl08_path <- unzip(atl08_zip,exdir = outdir)
+atl08_path <- unzip(atl08_zip, exdir = outdir)
 
 # Reading ATL03 data (h5 file)
+atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 
 # Reading ATL08 data (h5 file)
+atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 
 # Extracting ATL03 and ATL08 photons and heights
-atl03_atl08_dt<-ATL03_ATL08_photons_attributes_dt_join(atl03_h5,atl08_h5)
+atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
 
-rICESat2Veg::plot(atl03_atl08_dt=atl03_atl08_dt,attribute="ph_h",
-                colors = c("gray", "#bd8421", "forestgreen", "green"),
-                pch = 16, cex = 0.5)
+rICESat2Veg::plot(
+  atl03_atl08_dt = atl03_atl08_dt, attribute = "ph_h",
+  colors = c("gray", "#bd8421", "forestgreen", "green"),
+  pch = 16, cex = 0.5
+)
 
 close(atl03_h5)
 close(atl08_h5)
 # Specifying the path to atl08 and ATL08 file (zip file)
-outdir = tempdir()
+outdir <- tempdir()
 atl08_zip <- system.file("extdata",
-                  "atl08_20220401221822_01501506_005_01.zip",
-                  package="rICESat2Veg")
+  "atl08_20220401221822_01501506_005_01.zip",
+  package = "rICESat2Veg"
+)
 
 atl08_zip <- system.file("extdata",
-                  "ATL08_20220401221822_01501506_005_01.zip",
-                  package="rICESat2Veg")
+  "ATL08_20220401221822_01501506_005_01.zip",
+  package = "rICESat2Veg"
+)
 
 # Unzipping atl08 file
-atl08_path <- unzip(atl08_zip,exdir = outdir)
+atl08_path <- unzip(atl08_zip, exdir = outdir)
 
 # Reading atl08 data (h5 file)
+atl08_h5 <- atl08_read(atl08_path=atl08_path)
 
 # Extracting atl08 and ATL08 photons and heights
-atl08_photons_dt<-atl08_seg_attributes_dt(atl08_h5=atl08_h5)
+atl08_photons_dt <- atl08_seg_attributes_dt(atl08_h5 = atl08_h5)
 
-rICESat2Veg::plot(atl08_photons_dt=atl08_photons_dt,
-                beam="gt1r",
-                colors = c("gray", "#bd8421", "forestgreen", "green"),
-                pch = 16, cex = 0.5)
+rICESat2Veg::plot(
+  atl08_photons_dt = atl08_photons_dt,
+  beam = "gt1r",
+  colors = c("gray", "#bd8421", "forestgreen", "green"),
+  pch = 16, cex = 0.5
+)
 
 close(atl08_h5)
 close(atl08_h5)
@@ -126,6 +137,7 @@ atl03_zip <- system.file("extdata",
 atl03_path <- unzip(atl03_zip,exdir = outdir)
 
 # Reading atl03 data (h5 file)
+atl03_h5<-atl03_read(atl03_path=atl03_path)
 
 # Extracting atl03 and atl03 photons and heights
 atl03_photons_dt<-atl03_seg_attributes_dt(atl03_h5=atl03_h5)
@@ -135,6 +147,5 @@ rICESat2Veg::plot(atl03_photons_dt
                 pch = 16,
                 cex = 0.5)
 
-close(atl03_h5)
 close(atl03_h5)
 }

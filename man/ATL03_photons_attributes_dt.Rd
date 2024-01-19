@@ -22,31 +22,39 @@ This function extracts photons attributes from ICESat-2 ATL03 data
 \details{
 These are the photons attributes extracted:
 \itemize{
-\item \emph{lon_ph} Longitude of each received photon. Computed from the ECEF Cartesian coordinates of the bounce point.
-\item \emph{lat_ph} Latitude of each received photon. Computed from the ECEF Cartesian coordinates of the bounce point.
-\item \emph{lat_ph} Latitude of each received photon. Computed from the ECEF Cartesian coordinates of the bounce point.
-Height of each received photon, relative to the WGS-84 ellipsoid including the geophysical corrections noted in section 6.0. Please note that
+\item \emph{lon_ph} Longitude of each received photon.
+Computed from the ECEF Cartesian coordinates of the bounce point.
+\item \emph{lat_ph} Latitude of each received photon.
+Computed from the ECEF Cartesian coordinates of the bounce point.
+\item \emph{lat_ph} Latitude of each received photon.
+Computed from the ECEF Cartesian coordinates of the bounce point.
+Height of each received photon, relative to the WGS-84 ellipsoid including
+the geophysical corrections noted in section 6.0. Please note that
 neither the geoid, ocean tide nor the dynamic atmospheric corrections (DAC) are applied to the ellipsoidal heights.
-\item \emph{quality_ph} Indicates the quality of the associated photon. 0=nominal, 1=possible_afterpulse, 2=possible_impulse_response_
-effect, 3=possible_tep. Use this flag in conjunction with signal_conf_ph to identify those photons that are likely noise or likely signal
-\item \emph{night_flag}  Flag indicating the data were acquired in night conditions: 0=day, 1=night. Night flag is set when solar elevation is below 0.0 degrees.
+\item \emph{quality_ph} Indicates the quality of the associated photon.
+0=nominal, 1=possible_afterpulse, 2=possible_impulse_response_
+effect, 3=possible_tep. Use this flag in conjunction with signal_conf_ph
+to identify those photons that are likely noise or likely signal
+\item \emph{night_flag}  Flag indicating the data were acquired in night
+conditions: 0=day, 1=night. Night flag is set when solar elevation is below 0.0 degrees.
 }
 }
 \examples{
 
 # Specifying the path to ATL03 file (zip file)
-outdir = tempdir()
+outdir <- tempdir()
 atl03_zip <- system.file("extdata",
-                  "ATL03_20220401221822_01501506_005_01.zip",
-                  package="rICESat2Veg")
+  "ATL03_20220401221822_01501506_005_01.zip",
+  package = "rICESat2Veg"
+)
 
 # Unzipping ATL03 file
-atl03_path <- unzip(atl03_zip,exdir = outdir)
+atl03_path <- unzip(atl03_zip, exdir = outdir)
 
 # Reading ATL03 data (h5 file)
 
 # Extracting ATL03 photons attributes
-atl03_photons_dt<-ATL03_photons_attributes_dt(atl03_h5=atl03_h5)
+atl03_photons_dt <- ATL03_photons_attributes_dt(atl03_h5 = atl03_h5)
 head(ATL03_photons_dt)
 
 close(ATL03_h5)

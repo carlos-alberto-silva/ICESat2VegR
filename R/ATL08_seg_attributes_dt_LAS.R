@@ -1,10 +1,9 @@
-#' Converts ATL03/ATL08 classified photon cloud to LAS
+#' Converts ATL08 segments to LAS
 #'
-#' @param atl03_atl08_dt  An S4 object of class [rICESat2Veg::icesat2.atl08_dt] containing ATL03 and ATL08 data
+#' @param atl08_dt  An S4 object of class [rICESat2Veg::icesat2.atl08_dt] containing ATL03 and ATL08 data
 #' (output of [ATL03_ATL08_photons_attributes_dt_join()] function).
 #' @param output character. The output path of for the LAS(Z) file(s)
 #' The function will create one LAS file per UTM Zone in WGS84 datum.
-#' @param normalized logical, default TRUE. Whether the output should be normalized LAS or raw altitude.
 #'
 #' @return Nothing, it just saves outputs as LAS file in disk
 #'
@@ -12,50 +11,37 @@
 #'
 #' # Specifying the path to ATL03 and ATL08 file (zip file)
 #' outdir <- tempdir()
-#' atl03_zip <- system.file("extdata",
-#'   "ATL03_20220401221822_01501506_005_01.zip",
-#'   package = "rICESat2Veg"
-#' )
 #'
 #' atl08_zip <- system.file("extdata",
 #'   "ATL08_20220401221822_01501506_005_01.zip",
 #'   package = "rICESat2Veg"
 #' )
 #'
-#' # Unzipping ATL03 file
-#' atl03_path <- unzip(atl03_zip, exdir = outdir)
-#'
 #' # Unzipping ATL08 file
 #' atl08_path <- unzip(atl08_zip, exdir = outdir)
 #'
-#' # Reading ATL03 data (h5 file)
-# atl03_h5 <- ATL03_read(atl03_path = atl03_path)
-#'
 #' # Reading ATL08 data (h5 file)
-# atl08_h5 <- ATL08_read(atl08_path = atl08_path)
+#' atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 #'
 #' # # Extracting ATL03 and ATL08 photons and heights
-#' atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
+#' atl08_dt <- ATL08_seg_attributes_dt(atl08_h5)
 #'
-#' ATL03_ATL08_photons_attributes_dt_LAS(
-#'   atl03_atl08_dt,
-#'   file.path(outdir, "output.laz"),
-#'   normalized = TRUE
+#' ATL08_seg_attributes_dt_LAS(
+#'   atl08_dt,
+#'   file.path(outdir, "output.laz")
 #' )
 #'
-#' close(atl03_h5)
 #' close(atl08_h5)
 #' @include utmTools.R
 #' @importFrom data.table as.data.table
 #' @export
-ATL03_ATL08_photons_attributes_dt_LAS <- function(atl03_atl08_dt, output, normalized = TRUE) {
-  lon_ph <- lat_ph <- classed_pc_flag <- mask <- NA
+ATL03_seg_attributes_dt_LAS <- function(atl08_dt, output) {
+  longitude <- latitude <- h_canopy <- classed_pc_flag <- mask <- NA
 
-  dt <- data.table::as.data.table(atl03_atl08_dt[, list(
-    X = lon_ph,
-    Y = lat_ph,
-    Z = get(c("h_ph", "ph_h")[normalized + 1]),
-    Classification = as.integer(classed_pc_flag + 1)
+  dt <- data.table::as.data.table(atl08_dt[, list(
+    X = longitude,
+    Y = latitude,
+    Z = h_canopy
   )])
 
   maskZones <- latLongToUtmMask(dt$Y, dt$X)

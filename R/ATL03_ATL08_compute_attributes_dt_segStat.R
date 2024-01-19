@@ -83,26 +83,26 @@
 #'close(atl08_h5)
 #' @import data.table lazyeval
 #' @export
-ATL03_ATL08_compute_seg_attributes_dt_segStat <- function(atl03_atl08_dt,
-                                                          func,
-                                                          seg_length = 30,
-                                                          ph_class=c(2,3),
-                                 beam=c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
-                                 quality_ph=0,
-                                 night_flag=1) {
-
-  if (!class(atl03_atl08_dt)[1]=="icesat2.atl03atl08_dt"){
+ATL03_ATL08_compute_seg_attributes_dt_segStat <- function(
+    atl03_atl08_dt,
+    func,
+    seg_length = 30,
+    ph_class = c(2, 3),
+    beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
+    quality_ph = 0,
+    night_flag = 1) {
+  if (!class(atl03_atl08_dt)[1] == "icesat2.atl03atl08_dt") {
     stop("atl03_atl08_dt needs to be an object of class 'icesat2.atl03atl08_dt' ")
   }
 
-  atl03_atl08_dt2<-atl03_atl08_dt[atl03_atl08_dt$classed_pc_flag %in% ph_class &
-                                       atl03_atl08_dt$quality_ph %in% quality_ph &
-                                       atl03_atl08_dt$beam %in% beam &
-                                       atl03_atl08_dt$night_flag %in% night_flag,]
+  atl03_atl08_dt2 <- atl03_atl08_dt[atl03_atl08_dt$classed_pc_flag %in% ph_class &
+    atl03_atl08_dt$quality_ph %in% quality_ph &
+    atl03_atl08_dt$beam %in% beam &
+    atl03_atl08_dt$night_flag %in% night_flag, ]
 
-  segment<-cut(atl03_atl08_dt2$dist_ph_along, breaks=seq(0,max(atl03_atl08_dt2$dist_ph_along),seg_length),labels = FALSE)
+  segment <- cut(atl03_atl08_dt2$dist_ph_along, breaks = seq(0, max(atl03_atl08_dt2$dist_ph_along), seg_length), labels = FALSE)
 
-  atl03_atl08_dt2$segment<-segment
+  atl03_atl08_dt2$segment <- segment
 
 
   # Add data.table operator
@@ -110,7 +110,7 @@ ATL03_ATL08_compute_seg_attributes_dt_segStat <- function(atl03_atl08_dt,
 
   call <- lazy_call(func)
 
-  call2 <- lazy_call(seg_position(lon_ph,lat_ph))
+  call2 <- lazy_call(seg_position(lon_ph, lat_ph))
 
   if (is.null(segment)) {
     metrics <- lazy_apply_dt_call(dt = atl03_atl08_dt2, call = call)
@@ -118,21 +118,20 @@ ATL03_ATL08_compute_seg_attributes_dt_segStat <- function(atl03_atl08_dt,
     if (ncol(metrics) < 2) {
       colnames(metrics) <- paste0(call)[1]
     }
-
   } else {
     metrics <- lazy_apply_dt_call(dt = atl03_atl08_dt2, call = call, group.by = "by = segment")
     latlon <- lazy_apply_dt_call(dt = atl03_atl08_dt2, call = call2, group.by = "by = segment")
 
-    metrics$latitude<-latlon$V1
-    metrics$longitude<-latlon$V2
+    metrics$latitude <- latlon$V1
+    metrics$longitude <- latlon$V2
 
     if (ncol(metrics) == 4) {
       colnames(metrics)[2] <- paste0(call)[1]
     }
 
-    metrics$dist_along<-metrics$segment*seg_length - seg_length/2
-    metrics<-metrics[-nrow(metrics),]
-    colnames(metrics)[2:c(ncol(metrics)-3)]<-paste0(names(metrics)[2:c(ncol(metrics)-3)],"_",paste0(call)[2])
+    metrics$dist_along <- metrics$segment * seg_length - seg_length / 2
+    metrics <- metrics[-nrow(metrics), ]
+    colnames(metrics)[2:c(ncol(metrics) - 3)] <- paste0(names(metrics)[2:c(ncol(metrics) - 3)], "_", paste0(call)[2])
   }
 
   setattr(metrics, "class", c("icesat2.atl08_dt", "data.table", "data.frame"))
