@@ -29,11 +29,5 @@
 #'@import hdf5r
 #'@export
 ATL08_read <-function(atl08_path) {
-  if (!is.character(atl08_path) | !tools::file_ext(atl08_path) == "h5") {
-    stop("atl08_path must be a path to a h5 file")
-  }
 
-  atl08_h5 <- hdf5r::H5File$new(atl08_path, mode = 'r')
-  atl08<- new("icesat2.atl08", h5 = atl08_h5)
-  return(atl08)
 }

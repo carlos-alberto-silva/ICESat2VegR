@@ -27,18 +27,19 @@ This function clips ATL03 photons attributes within a given bounding coordinates
 }
 \examples{
 # Specifying the path to ATL03 file (zip file)
-outdir = tempdir()
+outdir <- tempdir()
 atl03_zip <- system.file("extdata",
-                  "atl03_20220401221822_01501506_005_01.zip",
-                  package="rICESat2Veg")
+  "atl03_20220401221822_01501506_005_01.zip",
+  package = "rICESat2Veg"
+)
 
 # Unzipping ATL03 file
-atl03_path <- unzip(atl03_zip,exdir = outdir)
+atl03_path <- unzip(atl03_zip, exdir = outdir)
 
 # Reading ATL03 data (h5 file)
 
 # Extracting ATL03 photons attributes
-atl03_photons_dt<-ATL03_photons_attributes_dt(atl03_h5=atl03_h5)
+atl03_photons_dt <- ATL03_photons_attributes_dt(atl03_h5 = atl03_h5)
 
 # Bounding rectangle coordinates
 xmin <- -107.7

@@ -100,6 +100,8 @@ setRefClass("icesat2.atl08_dt")
 #' @export
 setRefClass("icesat2.atl03_dt")
 
+setRefClass("icesat2.atl03_seg_dt")
+
 #' Class for joined ATL03 and ATL08 attributes
 #'
 #' @seealso [`data.table`][data.table::data.table-class] in the `data.table` package and

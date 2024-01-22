@@ -1,4 +1,6 @@
-#' Read ICESat-2 ATL08 data
+setRefClass("atl03_atl08_seg_dt")
+
+#' Compute segments id for a given segment length
 #'
 #' @description This function reads the ICESat-2 Land and
 #' Vegetation Along-Track Products (ATL08) as h5 file.
@@ -8,7 +10,7 @@
 #'
 #' @param atl08_path File path pointing to ICESat-2 ATL08 data. Data in HDF5 Hierarchical Data Format (.h5).
 #'
-#' @return Returns an S4 object of class ["icesat2.atl08_dt"] containing ICESat-2 ATL08 data.
+#' @return Returns an S4 object of class ["icesat2.atl08_h5"] containing ICESat-2 ATL08 data.
 #'
 #' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
 #'
@@ -17,7 +19,7 @@
 #' outdir <- tempdir()
 #' atl08_fp_zip <- system.file("extdata",
 #'   "ATL0802_A_2019108080338_O01964_T05337_02_001_01_sub.zip",
-#'   package = "ICESat2VegR"
+#'   package = "rICESat2Veg"
 #' )
 #'
 #' # Unzipping ICESat-2 ATL08 data
@@ -29,6 +31,8 @@
 #' close(atl08)
 #' @import hdf5r
 #' @export
-ATL03_photons_plot <- function(atl08_path) {
-
+ATL03_ATL08_segment_create <- function(atl03_atl08_dt, segment_length = 30) {
+  dt <- atl03_atl08_dt[, .SD, by = list(segment_id = floor(dist_ph_along / segment_length) + 1)]
+  data.table::setattr(dt, "class", c("atl03_atl08_seg_dt", "data.table", "data.frame"))
+  dt
 }
