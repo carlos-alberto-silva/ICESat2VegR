@@ -16,9 +16,8 @@ dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5, beam = c("gt1r"
 
 segment_length <- 30
 
-ATL03_ATL08_segment_create <- function(atl03_atl08_dt, segment_length = 30) {
-  atl03_atl08_dt[,.SD, by = list(segment_id = floor(dist_ph_along / segment_length) + 1)]
-}
+ATL03_ATL08_segment_create(dt, segment_length = 30, output = "../segments.gpkg")
+
 # ## join
 # atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5, beam = "gt1l")
 # # atl08_dt <- ATL08_seg_attributes_dt(atl08_h5, beam = "gt1l")

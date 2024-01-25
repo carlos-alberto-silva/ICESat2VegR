@@ -8,7 +8,7 @@
 #' @param output Character vector. The output vector file. The GDAL vector format
 #' will be inferred by the file extension using [`terra::writeVector()`]
 #' @param overwrite logical input to control if the output vector file should be overwritten.
-#' Default TRUE.
+#' Default FALSE.
 #'
 #' @return Returns the lines vector representing the ground track
 #'
@@ -43,7 +43,7 @@
 #' @importFrom data.table data.table rbindlist
 #' @importFrom terra writeVector
 #' @export
-ATL03_rgt_extract <- function(atl03_h5, output, overwrite = TRUE) {
+ATL03_rgt_extract <- function(atl03_h5, output, overwrite = FALSE) {
   beams <- getBeams(atl03_h5)
 
   all_pts <- list()

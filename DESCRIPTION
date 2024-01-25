@@ -43,6 +43,7 @@ Collate:
     'ATL03_photons_plot.R'
     'ATL03_photons_simulator.R'
     'ATL03_read.R'
+    'ATL03_rgt_extract.R'
     'ATL03_seg_attributes_dt.R'
     'ATL08_h5_clipBox.R'
     'ATL08_photons_attributes_dt.R'
@@ -59,5 +60,4 @@ Collate:
     'argParse.R'
     'clip (box, geometry, h5 and dt).R'
     'lazy_applier.R'
-    'rgt_extract.R'
     'zzz.R'

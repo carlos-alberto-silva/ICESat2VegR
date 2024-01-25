@@ -7,10 +7,18 @@
 ATL08_read(atl08_path)
 }
 \arguments{
-\item{atl08_path}{File path pointing to ICESat-2 ATL08 data. Data in HDF5 Hierarchical Data Format (.h5).}
+\item{atl03_atl08_dt}{\code{\linkS4class{icesat2.atl03_atl08_dt}}. The output of the \code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}}.}
+
+\item{segment_length}{\code{\linkS4class{numeric}}. The desired segment length to split the photons.}
+
+\item{output}{Character vector. The output vector file. The GDAL vector format
+will be inferred by the file extension using \code{\link[terra:writeVector]{terra::writeVector()}}}
+
+\item{overwrite}{logical input to control if the output vector file should be overwritten.
+Default FALSE.}
 }
 \value{
-Returns an S4 object of class \link{"icesat2.atl08_h5"} containing ICESat-2 ATL08 data.
+Returns an S4 object of class \link{"icesat2.atl03_atl08_dt-class"} containing ICESat-2 ATL08 data.
 }
 \description{
 This function reads the ICESat-2 Land and
