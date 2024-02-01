@@ -4,7 +4,12 @@
 \alias{ATL03_rgt_extract}
 \title{Extract reference ground track from ATL03 segments}
 \usage{
-ATL03_rgt_extract(atl03_h5, output, overwrite = FALSE)
+ATL03_rgt_extract(
+  atl03_h5,
+  output,
+  beam = c("gt1r", "gt2r", "gt1l", "gt3l", "gt2l", "gt3r"),
+  overwrite = FALSE
+)
 }
 \arguments{
 \item{output}{Character vector. The output vector file. The GDAL vector format

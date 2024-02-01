@@ -10,8 +10,8 @@ setRefClass("icesat2.atl03_atl08_seg_dt")
 #'
 #' @param atl03_atl08_dt [`icesat2.atl03_atl08_dt-class`]. The output of the [`ATL03_ATL08_photons_attributes_dt_join()`].
 #' @param segment_length [`numeric-class`]. The desired segment length to split the photons.
-#' @param centroid character. Method used to calculate the segment centroid, either "photons" or "segment",
-#' see details.
+#' @param centroid character. Method used to calculate the segment centroid, either "mean" or "midpoint",
+#' see details. Default 'mean'.
 #' @param output Character vector. The output vector file. The GDAL vector format
 #' will be inferred by the file extension using [`terra::writeVector()`]
 #' @param overwrite logical input to control if the output vector file should be overwritten.
@@ -19,11 +19,10 @@ setRefClass("icesat2.atl03_atl08_seg_dt")
 #'
 #' @details
 #' The centroid will be computed using either the photons centroid or the approximate segment centroid.
-#' - Photons centroid: calculated using the average coordinates from all photons within the segment.
-#' - Approximate segment centroid: after calculating the centroid from the photons we will use the average
-#' photon distance from the beginning of the segment to derive the actual position of the calculated centroid
-#' and then adjust it accordingly using the neighbor centroids as nodes for calculating the direction of the
-#' offset.
+#' - "mean": calculated using the average coordinates from all photons within the segment.
+#' This approach will better represent the mean statistics location.
+#' - "mid-point": the minimum and maximum coordinates will be averaged to calculate a midpoint within
+#' the segment. This will give a better representation of the segment true mid-point
 #'
 #' @return Returns an S4 object of class ["icesat2.atl03_atl08_dt-class"] containing ICESat-2 ATL08 data.
 #'
@@ -46,39 +45,65 @@ setRefClass("icesat2.atl03_atl08_seg_dt")
 #' close(atl08)
 #' @import hdf5r
 #' @export
-ATL03_ATL08_segment_create <- function(atl03_atl08_dt, segment_length, real_centroid = TRUE, output = NA, overwrite = FALSE) {
+ATL03_ATL08_segment_create <- function(atl03_atl08_dt, segment_length, centroid = "mean", output = NA, overwrite = FALSE) {
   stopifnot(
     "Object atl03_atl08_dt is not from the icesat2.atl03atl08_dt class" =
       inherits(atl03_atl08_dt, "icesat2.atl03atl08_dt")
   )
 
   .SD <- data.table::.SD
-  .N <- data.table::.N
+  `:=` <- data.table::`:=`
 
-  lat_ph <- lon_ph <- dist_ph_along <- NA
-  dt2 <- atl03_atl08_dt[, .SD, by = list(segment_id = floor(dist_ph_along / segment_length) + 1), .SDcols = names(atl03_atl08_dt)]
+  lat_ph <- lon_ph <- dist_ph_along <-
+    centroid_x <- centroid_y <- segment_id <- NA
 
-  centroid <- dt2[
+  dt <- atl03_atl08_dt[
     ,
-    list(
-      y = mean(lat_ph),
-      x = mean(lon_ph)
-    ),
-    by = segment_id
+    .SD,
+    by = list(segment_id = floor(dist_ph_along / segment_length) + 1), .SDcols = names(atl03_atl08_dt)
   ]
+
+  if (centroid == "mean") {
+    dt[
+      ,
+      c(
+        "centroid_x",
+        "centroid_y"
+      ) := list(
+        mean(lon_ph),
+        mean(lat_ph)
+      ),
+      by = segment_id
+    ]
+  } else if (centroid == "midpoint") {
+    dt[
+      ,
+      c(
+        "centroid_x",
+        "centroid_y"
+      ) := list(
+        x = mean(range(lon_ph)),
+        y = mean(range(lat_ph))
+      ),
+      by = segment_id
+    ]
+  } else {
+    stop("The centroid extraction method '%s', was not found!\nUse either 'mean' or 'midpoint'.")
+  }
+
 
   if (is.na(output) == FALSE) {
     centroid <- as.matrix(
-      centroid[, list(object_id = segment_id, x, y)]
+      dt[, list(object_id = segment_id, x = centroid_x, y = centroid_y)]
     )
 
     v <- terra::vect(
-      lines,
+      centroid,
       type = "points",
       crs = "epsg:4326"
     )
 
-    terra::writeVector(v, output, overwrite = T)
+    terra::writeVector(v, output, overwrite = TRUE)
   }
 
   data.table::setattr(dt, "class", c("icesat2.atl03_atl08_seg_dt", "data.table", "data.frame"))

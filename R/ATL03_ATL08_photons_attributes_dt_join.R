@@ -152,7 +152,8 @@ ATL03_ATL08_photons_attributes_dt_join <- function(atl03_h5, atl08_h5,
       classed_pc_flag = atl08_h5[[paste0(i, "/signal_photons/classed_pc_flag")]][],
       ph_h = atl08_h5[[paste0(i, "/signal_photons/ph_h")]][],
       d_flag = atl08_h5[[paste0(i, "/signal_photons/d_flag")]][],
-      delta_time = atl08_h5[[paste0(i, "/signal_photons/delta_time")]][]
+      delta_time = atl08_h5[[paste0(i, "/signal_photons/delta_time")]][],
+      dem_h = atl08_h5[[paste0(i, "/signal_photons/delta_time")]][]
     )
 
     data.table::setindex(dataTableATL03Segs, "ph_segment_id")

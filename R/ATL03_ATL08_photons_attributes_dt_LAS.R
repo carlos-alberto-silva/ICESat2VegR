@@ -51,6 +51,8 @@
 ATL03_ATL08_photons_attributes_dt_LAS <- function(atl03_atl08_dt, output, normalized = TRUE) {
   lon_ph <- lat_ph <- classed_pc_flag <- mask <- NA
 
+  atl03_atl08_dt <- na.omit(atl03_atl08_dt)
+
   dt <- data.table::as.data.table(atl03_atl08_dt[, list(
     X = lon_ph,
     Y = lat_ph,
@@ -74,8 +76,8 @@ ATL03_ATL08_photons_attributes_dt_LAS <- function(atl03_atl08_dt, output, normal
 
     header <- suppressWarnings(lidR::LASheader(dtLocal))
     lidR::epsg(header) <- epsgCode
-    header@PHB[["X scale factor"]] <- 0.01
-    header@PHB[["Y scale factor"]] <- 0.01
+    header@PHB[["X scale factor"]] <- 0.000001
+    header@PHB[["Y scale factor"]] <- 0.000001
     header@PHB[["Z scale factor"]] <- 0.01
     las <- suppressWarnings(lidR::LAS(dtLocal, header))
 

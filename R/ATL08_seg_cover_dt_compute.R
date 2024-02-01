@@ -3,7 +3,7 @@
 #' @description Computes a series of statistics from ATL03 and ATL08 labeled photons
 #' within a given segment length.
 #'
-#' @param atl03_atl08_seg_dt  An S4 object of class [`icesat2.atl03_atl08_seg_dt-class`] containing ATL03 and ATL08 data
+#' @param atl03_atl08_dt  An S4 object of class "icesat2.atl03atl08_dt" containing ATL03 and ATL08 data
 #' (output of [ATL03_ATL08_photons_attributes_dt_join()] function).
 #' @param func The function to be applied for computing the defined statistics
 #' @param seg_length Segment length. Default is 30 m
@@ -17,7 +17,7 @@
 #' effect, 3=possible_tep. Default is 0
 #' @param night_flag Flag indicating the data were acquired in night conditions: 0=day, 1=night. Default is 1
 #'
-#' @return Returns an S4 object of class [`ICESat2VegR::icesat2.atl08_dt-class`]
+#' @return Returns an S4 object of class [`rICESat2Veg::icesat2.atl08_dt-class`]
 #' Containing Statistics of ATL03 and ATL08 labeled photons
 #'
 #' @examples
@@ -25,11 +25,11 @@
 #' outdir = tempdir()
 #' atl03_zip <- system.file("extdata",
 #'                   "ATL03_20220401221822_01501506_005_01.zip",
-#'                   package="ICESat2VegR")
+#'                   package="rICESat2Veg")
 #'
 #' atl08_zip <- system.file("extdata",
 #'                   "ATL08_20220401221822_01501506_005_01.zip",
-#'                   package="ICESat2VegR")
+#'                   package="rICESat2Veg")
 #'
 #' # Unzipping ATL03 file
 #' atl03_path <- unzip(atl03_zip,exdir = outdir)
@@ -83,42 +83,56 @@
 #' close(atl08_h5)
 #' @import data.table lazyeval
 #' @export
-ATL03_ATL08_compute_seg_attributes_dt_segStat <- function(
+ATL03_ATL08_seg_cover_dt_compute <- function(
     atl03_atl08_seg_dt,
     func,
     ph_class = c(2, 3),
     beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
     quality_ph = 0,
     night_flag = 1) {
-  quality_ph <-
-    night_flag <-
-    classed_pc_flag <- NA
+  lon_ph <- lat_ph <- NA
 
   if (!class(atl03_atl08_seg_dt)[1] == "icesat2.atl03atl08_dt") {
     stop("atl03_atl08_dt needs to be an object of class 'icesat2.atl03atl08_dt' ")
   }
 
-  selected_beams <- beam
-  selected_night_flag <- night_flag
-  selected_quality_ph <- quality_ph
-  atl03_atl08_dt2 <- atl03_atl08_seg_dt[
-    classed_pc_flag %in% ph_class &
-      quality_ph %in% selected_quality_ph &
-      beam %in% selected_beams &
-      night_flag %in% selected_night_flag,
-  ]
+  atl03_atl08_dt2 <- atl03_atl08_seg_dt[atl03_atl08_seg_dt$classed_pc_flag %in% ph_class &
+    atl03_atl08_seg_dt$quality_ph %in% quality_ph &
+    atl03_atl08_seg_dt$beam %in% beam &
+    atl03_atl08_seg_dt$night_flag %in% night_flag, ]
+
+  segment <- cut(atl03_atl08_dt2$dist_ph_along, breaks = seq(0, max(atl03_atl08_dt2$dist_ph_along), seg_length), labels = FALSE)
+
+  atl03_atl08_dt2$segment <- segment
+
 
   # Add data.table operator
   call <- lazy_call(func)
 
-  metrics <- lazy_apply_dt_call(dt = atl03_atl08_dt2, call = call, group.by = "by = segment_id")
+  call2 <- lazy_call(seg_position(lon_ph, lat_ph))
 
-  if (ncol(metrics) == 4) {
-    colnames(metrics)[2] <- paste0(call)[1]
+  if (is.null(segment)) {
+    metrics <- lazy_apply_dt_call(dt = atl03_atl08_dt2, call = call)
+    metrics <- as.data.table(metrics)
+    if (ncol(metrics) < 2) {
+      colnames(metrics) <- paste0(call)[1]
+    }
+  } else {
+    metrics <- lazy_apply_dt_call(dt = atl03_atl08_dt2, call = call, group.by = "by = segment")
+    latlon <- lazy_apply_dt_call(dt = atl03_atl08_dt2, call = call2, group.by = "by = segment")
+
+    metrics$latitude <- latlon$V1
+    metrics$longitude <- latlon$V2
+
+    if (ncol(metrics) == 4) {
+      colnames(metrics)[2] <- paste0(call)[1]
+    }
+
+    metrics$dist_along <- metrics$segment * seg_length - seg_length / 2
+    metrics <- metrics[-nrow(metrics), ]
+    colnames(metrics)[2:c(ncol(metrics) - 3)] <- paste0(names(metrics)[2:c(ncol(metrics) - 3)], "_", paste0(call)[2])
   }
 
-  metrics <- metrics[-nrow(metrics), ]
-  colnames(metrics)[2:c(ncol(metrics) - 3)] <- paste0(names(metrics)[2:c(ncol(metrics) - 3)], "_", paste0(call)[2])
-
+  setattr(metrics, "class", c("icesat2.atl08_dt", "data.table", "data.frame"))
   return(metrics)
 }

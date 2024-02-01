@@ -11,6 +11,9 @@ ATL08_read(atl08_path)
 
 \item{segment_length}{\code{\linkS4class{numeric}}. The desired segment length to split the photons.}
 
+\item{centroid}{character. Method used to calculate the segment centroid, either "mean" or "midpoint",
+see details. Default 'mean'.}
+
 \item{output}{Character vector. The output vector file. The GDAL vector format
 will be inferred by the file extension using \code{\link[terra:writeVector]{terra::writeVector()}}}
 
@@ -23,6 +26,15 @@ Returns an S4 object of class \link{"icesat2.atl03_atl08_dt-class"} containing I
 \description{
 This function reads the ICESat-2 Land and
 Vegetation Along-Track Products (ATL08) as h5 file.
+}
+\details{
+The centroid will be computed using either the photons centroid or the approximate segment centroid.
+\itemize{
+\item "mean": calculated using the average coordinates from all photons within the segment.
+This approach will better represent the mean statistics location.
+\item "mid-point": the minimum and maximum coordinates will be averaged to calculate a midpoint within
+the segment. This will give a better representation of the segment true mid-point
+}
 }
 \examples{
 # Specifying the path to ICESat-2 ATL08 data (zip file)

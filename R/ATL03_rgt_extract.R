@@ -43,8 +43,8 @@
 #' @importFrom data.table data.table rbindlist
 #' @importFrom terra writeVector
 #' @export
-ATL03_rgt_extract <- function(atl03_h5, output, overwrite = FALSE) {
-  beams <- getBeams(atl03_h5)
+ATL03_rgt_extract <- function(atl03_h5, output, beam = c("gt1r", "gt2r", "gt1l", "gt3l", "gt2l", "gt3r"), overwrite = FALSE) {
+  beams <- beam
 
   all_pts <- list()
   all_attr <- list()

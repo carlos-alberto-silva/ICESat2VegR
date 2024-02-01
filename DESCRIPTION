@@ -11,12 +11,15 @@ License: GPL-3
 Imports:
     gdalBindings,
     hdf5r,
+    mathjaxr,
     Rdpack
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)
-RdMacros: Rdpack
+RdMacros: 
+  mathjaxr, 
+  Rdpack
 Collate: 
     'ATL03_ATL08_compute_attributes_dt_segStat.R'
     'utmTools.R'
@@ -55,6 +58,7 @@ Collate:
     'ATL08_seg_attributes_dt_gridStat.R'
     'ATL08_seg_attributes_dt_polyStat.R'
     'ATL08_seg_attributes_h5_gridStat.R'
+    'ATL08_seg_cover_dt_compute.R'
     'ATLAS_dataDownload.R'
     'ATLAS_dataFinder.R'
     'argParse.R'
