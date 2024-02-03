@@ -9,17 +9,26 @@ Maintainer: Carlos Alberto silva <c.silva@ufl.edu>
 Description: Set of tools for downloading, reading, visualizing, processing and exporting NASA's ICESat-2 ATL03 (Global Geolocated Photon Data) and ATL08 (Land and Vegetation Height) products for Land and Vegetation Applications. 
 License: GPL-3
 Imports:
-    gdalBindings,
-    hdf5r,
-    mathjaxr,
-    Rdpack
+  gdalBindings,
+  hdf5r,
+  mathjaxr,
+  Rdpack
+Depends:
+    reticulate
+Config/reticulate/autoconfigure:
+  list(
+    packages = list(
+      list(package = "earthaccess"),
+      list(package = "h5py")
+    )
+  )
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)
 RdMacros: 
-  mathjaxr, 
-  Rdpack
+    mathjaxr, 
+    Rdpack
 Collate: 
     'ATL03_ATL08_compute_attributes_dt_segStat.R'
     'utmTools.R'
@@ -29,7 +38,8 @@ Collate:
     'ATL03_ATL08_photons_attributes_dt_gridStat.R'
     'ATL03_ATL08_photons_attributes_dt_join.R'
     'ATL03_ATL08_photons_attributes_dt_polyStat.R'
-    'ATL03_ATL08_photons_fitground_dt_seg.R'
+    'ATL03_ATL08_photons_seg_dt_fitground.R'
+    'ATL03_ATL08_photons_seg_dt_height_normalize.R'
     'ATL03_ATL08_seg_cover_dt_compute.R'
     'ATL03_ATL08_segment_create.R'
     'clipTools.R'
@@ -41,8 +51,6 @@ Collate:
     'ATL03_photons_attributes_dt_clipBox.R'
     'ATL03_photons_attributes_dt_clipGeometry.R'
     'ATL03_photons_dt_classify.R'
-    'ATL03_photons_dt_height_normalize.R'
-    'ATL03_photons_fitground_dt_seg.R'
     'ATL03_photons_plot.R'
     'ATL03_photons_simulator.R'
     'ATL03_read.R'

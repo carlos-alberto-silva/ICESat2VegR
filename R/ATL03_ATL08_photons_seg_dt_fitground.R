@@ -35,7 +35,7 @@
 #' so you can use:
 #'
 #' ```
-#' ATL03_ATL08_photons_seg_dt_fitground(
+#' ATL03_ATL08_photons_fitground_seg_dt(
 #'   dt,
 #'   interpolation_func = approx,
 #'   xout = 1:30
@@ -46,29 +46,20 @@
 #' may name the parameter differently, such as [`signal::pchip()`], which name
 #' the parameter as `xi` instead of `xout`. [`signal::pchip()`] is the
 #' algorithm used by ATL08 ATBD.
-#' 
-#' If you don't want to specify the vector to interpolate, but instead get the
-#' predictions for every photon then instead specify the parameter name used by
-#' the interpolation function in `xout_parameter_name`:
-#' 
-#' ```
-#' ATL03_ATL08_photons_seg_dt_fitground(
-#'   dt,
-#'   interpolation_func = signal::pchip,
-#'   xout_parameter_name = "xi"
-#' )
-#' ```
 #'
 #' The `smoothing_window` can be left NA, which will use the ATBD algoritm
 #' for calculating the window size:
 #'
-#' $Sspan = ceil[5 + 46 * (1 - e^{-a * length})]$, where *length*
+#' \eqn{Sspan = ceil[5 + 46 * (1 - e^{-a * length})]}, where *length*
 #' is the number of photons within segment.
 #'
-#' $$a \approx 21x10^{-6}$$
+#' \deqn{a \approx 21x10^{-6}}
 #'
-#' $$window_size = \frac{2}{3} Sspan$$
-#' @examples
+#' \deqn{window_size = \frac{2}{3} Sspan}
+#'
+#' This is not the same algorithm as used in ATL08
+#' but is an adapted version that uses the ATL08
+#' pre-classification
 #' @export
 ATL03_ATL08_photons_seg_dt_fitground <- function(
     atl03_atl08_seg_dt,

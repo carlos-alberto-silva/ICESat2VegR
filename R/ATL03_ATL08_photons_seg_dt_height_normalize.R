@@ -49,17 +49,16 @@
 #' The `smoothing_window` can be left NA, which will use the ATBD algoritm
 #' for calculating the window size:
 #'
-#' $Sspan = ceil[5 + 46 * (1 - e^{-a * length})]$, where *length*
+#' \eqn{Sspan = ceil[5 + 46 * (1 - e^{-a * length})]}, where *length*
 #' is the number of photons within segment.
 #'
-#' $$a \approx 21x10^{-6}$$
+#' \deqn{a \approx 21x10^{-6}}
 #'
-#' $$window_size = \frac{2}{3} Sspan$$
+#' \deqn{window_size = \frac{2}{3} Sspan}
 #'
 #' This is not the same algorithm as used in ATL08
 #' but is an adapted version that uses the ATL08
 #' pre-classification
-#' @examples
 #' @export
 ATL03_ATL08_photons_dt_height_normalize <- function(
     atl03_atl08_seg_dt,

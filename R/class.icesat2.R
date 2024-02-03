@@ -5,7 +5,7 @@ setRefClass("H5File")
 # Base class for icesat H5 files
 setClass(
   Class = "icesat2.h5",
-  slots = list(h5 = "H5File")
+  slots = list(h5 = "ANY")
 )
 
 #' Class for ICESat-2 ATL03
@@ -72,7 +72,14 @@ setMethod(
   "getBeams",
   signature = c("icesat2.h5"),
   function(h5, ...) {
-    groups <- h5@h5$ls()$name
+    if (inherits(h5@h5, "h5py._hl.files.File")) {
+      pymain <- reticulate::import_main()
+      pymain$f <- h5@h5
+
+      groups <- reticulate::py_run_string("lsh5 = list(f.keys())")$lsh5
+    } else {
+      groups <- h5@h5$ls()$name
+    }
     grep("gt[1-3][lr]", groups, value = TRUE)
   }
 )
@@ -384,5 +391,30 @@ setMethod(
         legend("topleft", legend = c("Noise", "Terrain", "Vegetation", "Top canopy"), pch = 16, col = colors, bty = "n")
       })
     }
+  }
+)
+
+
+
+
+setGeneric("h5exists", function(h5, ...) {
+  standardGeneric("h5exists")
+})
+
+setMethod(
+  "h5exists",
+  signature = c("icesat2.h5"),
+  function(h5, address, ...) {
+    if (inherits(h5@h5, "h5py._hl.files.File")) {
+      try({
+        h5@h5[[address]]
+        return(TRUE)
+      }, silent=TRUE)
+      
+      return(FALSE)
+    } else {
+      return (h5@h5$exists(address))
+    }
+    grep("gt[1-3][lr]", groups, value = TRUE)
   }
 )

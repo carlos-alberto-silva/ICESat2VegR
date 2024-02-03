@@ -5,11 +5,39 @@ lower_left_lat <- 30.0
 upper_right_lon <- -84.0
 upper_right_lat <- 31.0
 version <- "006"
+short_name <- "ATL08"
+persist <- TRUE
 daterange <- c("2019-08-19", "2019-08-20")
 
-atl03_granules <- ATLAS_dataFinder(
-  "ATL03", ul_lat, ul_lon, lr_lat, lr_lon, version, daterange
+
+res <- ATLAS_dataFinder_cloud(
+  short_name,
+  lower_left_lon,
+  lower_left_lat,
+  upper_right_lon,
+  upper_right_lat,
+  version,
+  daterange,
+  persist
 )
+
+f <- ATL03_read(res[1])
+
+test <- ATL03_photons_attributes_dt(f)
+
+if (!auth$authenticated) {
+  auth <- ea$login(strategy = "environment")
+}
+
+if (!auth$authenticated) {
+  auth <- ea$login(strategy = "interactive", persist = persist)
+}
+
+granules <- ATL03_read(res[[1]])
+ATL03_read("inst")
+f <- h5py$File(granules[[1]])
+g = f['gt1l']
+l = g[['land_segments/latitude']]
 
 atl08_granules <- ATLAS_dataFinder(
   "ATL08", ul_lat, ul_lon, lr_lat, lr_lon, version, daterange

@@ -17,6 +17,9 @@ ATL03_ATL08_seg_cover_dt_compute(
 )
 }
 \arguments{
+\item{atl03_atl08_seg_dt}{\code{\linkS4class{icesat2.atl03_atl08_dt}}.
+The output of the \code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}}.}
+
 \item{func}{The function to be applied for computing the defined statistics}
 
 \item{ph_class}{Character vector indicating photons to process based
@@ -42,14 +45,14 @@ and \mjseqn{\rho_v} is the ground reflectance. Default is 1 (same reflectance).}
 \item{seg_length}{Segment length. Default is 30 m}
 }
 \value{
-Returns an S4 object of class \link{"icesat2.atl03_atl08_dt-class"} containing ICESat-2 ATL08 data.
+Returns an S4 object of class \code{\link[data.table:data.table-class]{data.table::data.table}} containing ICESat-2 ATL08 data.
 
 Returns an S4 object of class \code{\linkS4class{icesat2.atl08_dt}}
 Containing Statistics of ATL03 and ATL08 labeled photons
 }
 \description{
 This function reads the ICESat-2 Land and
-Vegetation Along-Track Products (ATL08) as h5 file. \loadmathjax
+Vegetation Along-Track Products (ATL08) as h5 file.
 
 Computes a series of statistics from ATL03 and ATL08 labeled photons
 within a given segment length.

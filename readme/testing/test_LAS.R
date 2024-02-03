@@ -68,17 +68,17 @@ with(
     xlim = c(min_x, max_x), 
     col = c("orange", "forestgreen", "green")[classed_pc_flag])
 )
-which.max(l[
+which.min(l[
     classed_pc_flag >= 1
   , ph_h])
 
-mid_x = l[classed_pc_flag >= 1][7837796, dist_ph_along]
-min_x = mid_x - 50
-max_x = mid_x + 50
+mid_x = l[classed_pc_flag >= 1][7837932, dist_ph_along]
+min_x = mid_x - 100
+max_x = mid_x + 100
 
+windows()
 with(
-  atl03_atl08_dt[
-    
+  l[
       dist_ph_along >= min_x &
       dist_ph_along < max_x
   ],
@@ -87,6 +87,31 @@ with(
     xlim = c(min_x, max_x), 
     col = c("gray","orange", "forestgreen", "green")[classed_pc_flag+1])
 )
+
+windows()
+with(
+  atl03_atl08_dt[
+      dist_ph_along >= min_x &
+      dist_ph_along < max_x
+  ],
+  plot(
+    dist_ph_along, ph_h, 
+    xlim = c(min_x, max_x), 
+    col = c("gray","orange", "forestgreen", "green")[classed_pc_flag+1])
+)
+
+windows()
+with(
+  atl03_atl08_dt[
+      dist_ph_along >= min_x &
+      dist_ph_along < max_x
+  ],
+  plot(
+    dist_ph_along, h_ph, 
+    xlim = c(min_x, max_x), 
+    col = c("gray","orange", "forestgreen", "green")[classed_pc_flag+1])
+)
+
 
 plot(x, l)
 atl03_atl08_seg_dt[

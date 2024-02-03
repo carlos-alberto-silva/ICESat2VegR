@@ -28,12 +28,44 @@
 #'close(atl08)
 #'@import hdf5r
 #'@export
-ATL08_read <-function(atl08_path) {
-  if (!is.character(atl08_path) | !tools::file_ext(atl08_path) == "h5") {
-    stop("atl08_path must be a path to a h5 file")
-  }
+setGeneric("ATL08_read", function(atl08_path) {
+  standardGeneric("ATL08_read")
+})
 
-  atl08_h5 <- hdf5r::H5File$new(atl08_path, mode = 'r')
-  atl08<- new("icesat2.atl08_h5", h5 = atl08_h5)
-  return(atl08)
-}
+setMethod(
+  "ATL08_read",
+  signature = c("ANY"),
+  function(atl08_path) {
+    if (
+      !(
+        file.exists(atl08_path) &&
+          tools::file_ext(atl08_path) == "h5"
+      )
+    ) {
+      stop("atl08_path must be a path to a h5 file")
+    }
+
+    atl08_h5 <- hdf5r::H5File$new(atl08_path, mode = "r")
+    atl08 <- new("icesat2.atl08_h5", h5 = atl08_h5)
+    return(atl08)
+  }
+)
+
+h5py <- NA
+setRefClass("earthaccess.results.DataGranule")
+setMethod(
+  "ATL08_read",
+  signature = c("earthaccess.results.DataGranule"),
+  function(atl08_path) {
+    if (inherits(h5py, "logical")) {
+      if (!reticulate::py_module_available("h5py")) {
+        reticulate::py_install("h5py")
+      }
+      h5py <<- reticulate::import("h5py")
+    }
+    granules <- earthaccess$open(list(atl08_path))
+    atl08 <- new("icesat2.atl08_h5", h5 = h5py$File(reticulate::py_to_r(granules)[[1]]))
+
+    return(atl08)
+  }
+)

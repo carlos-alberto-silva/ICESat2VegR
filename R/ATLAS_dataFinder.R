@@ -6,14 +6,15 @@ PAGE_SIZE <- 2000
 #' for a given region of interest and date range
 #'
 #' @param short_name ICESat-2 ATLAS data level short_name; Options: "ATL03", "ATL08",
-#' @param ul_lat Numeric. Upper left (ul) corner coordinates, in lat
+#' @param lower_left_lon Numeric. Minimum longitude in
 #' (decimal degrees) for the bounding box of the area of interest.
-#' @param ul_lon Numeric. Upper left (ul) corner coordinates, in lon
+#' @param lower_left_lat Numeric. Minimum latitude in
 #' (decimal degrees) for the bounding box of the area of interest.
-#' @param lr_lat Numeric. Lower right (ul) corner coordinates, in lat
+#' @param upper_right_lon Numeric. Maximum longitude in lon
 #' (decimal degrees) for the bounding box of the area of interest.
-#' @param lr_lon Numeric. Lower right (ul) corner coordinates, in lon
+#' @param upper_right_lat Numeric. Maximum latitude in
 #' (decimal degrees) for the bounding box of the area of interest.
+
 #' @param version Character. The version of the ICESat-2 ATLAS product files to be
 #' returned (only V005 or V006). Default "006".
 #' @param daterange Vector. Date range. Specify your start and end dates
@@ -27,7 +28,7 @@ PAGE_SIZE <- 2000
 #'
 #' @seealso bbox: Defined by the upper left and lower right corner coordinates,
 #' in lat,lon ordering, for the bounding box of the area of interest
-#' (e.g. \[ul_lat,ul_lon,lr_lat,lr_lon\]).
+#' (e.g. lower_left_lon,lower_left_lat,upper_right_lon,upper_right_lat)
 #'
 #' This function relies on the existing CMR tool:
 #' \url{https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html}
@@ -38,10 +39,10 @@ PAGE_SIZE <- 2000
 #' # usually the request takes more than 5 seconds
 #'
 #' # Specifying bounding box coordinates
-#' ul_lat <- 42.0
-#' ul_lon <- -100
-#' lr_lat <- 40.0
-#' lr_lon <- -96.0
+#' lower_left_lon <- -96.0
+#' lower_left_lat <- 40.0
+#' upper_right_lon <- -100
+#' upper_right_lat <- 42.0
 #'
 #' # Specifying the date range
 #' daterange <- c("2019-07-01", "2020-05-22")
@@ -57,18 +58,18 @@ PAGE_SIZE <- 2000
 #'   daterange = daterange
 #' )
 #' }
-#' @import jsonlite curl magrittr
+#' @import jsonlite curl magrittr reticulate
 #' @export
-ICESat2_finder <- function(short_name,
-                           ul_lat,
-                           ul_lon,
-                           lr_lat,
-                           lr_lon,
-                           version = "006",
-                           daterange = NULL,
-                           cloud_hosted = TRUE) {
+ATLAS_dataFinder <- function(short_name,
+                             lower_left_lon,
+                             lower_left_lat,
+                             upper_right_lon,
+                             upper_right_lat,
+                             version = "006",
+                             daterange = NULL,
+                             cloud_hosted = TRUE) {
   `%>%` <- magrittr::`%>%`
-  bbox <- paste(ul_lon, lr_lat, lr_lon, ul_lat, sep = ",")
+  bbox <- paste(lower_left_lon, lower_left_lat, upper_right_lon, upper_right_lat, sep = ",")
 
   # short_name = "ATL08"
   # Get cloud hosted collection?
@@ -79,7 +80,9 @@ ICESat2_finder <- function(short_name,
     cloud_hosted
   )
   response <- curl::curl_fetch_memory(collection_search_url)
-  collections_json <- response$content %>% rawToChar() %>% jsonlite::parse_json()
+  collections_json <- response$content %>%
+    rawToChar() %>%
+    jsonlite::parse_json()
   collections_ids <- sapply(collections_json$feed$entry, function(x) x$id)
 
   # Granules search url pattern
@@ -110,7 +113,7 @@ ICESat2_finder <- function(short_name,
   granules_href <- sapply(collections_ids, function(x) fetchAllGranules(request_url, x))
   # Append fetched granules to granules_href
   # recursively, for each page (max 2000 per page)
- 
+
   return(granules_href)
 }
 
@@ -129,7 +132,7 @@ fetchAllGranules <- function(request_url, collection_id) {
     ))
 
     if (totalHits == 0) {
-      totalHits <- as.integer(curl::parse_headers_list(response$headers)[['cmr-hits']])
+      totalHits <- as.integer(curl::parse_headers_list(response$headers)[["cmr-hits"]])
     }
 
     result <- rawToChar(response$content) %>%
@@ -151,7 +154,6 @@ fetchAllGranules <- function(request_url, collection_id) {
 
     if ((page * PAGE_SIZE) >= totalHits) break
     page <- page + 1
-}
+  }
   return(granules_href)
 }
-

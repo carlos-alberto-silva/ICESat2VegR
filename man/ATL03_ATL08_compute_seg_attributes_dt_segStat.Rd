@@ -14,6 +14,9 @@ ATL03_ATL08_compute_seg_attributes_dt_segStat(
 )
 }
 \arguments{
+\item{atl03_atl08_seg_dt}{An S4 object of class \code{\linkS4class{icesat2.atl03_atl08_seg_dt}} containing ATL03 and ATL08 data
+(output of \code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}} function).}
+
 \item{func}{The function to be applied for computing the defined statistics}
 
 \item{ph_class}{Character vector indicating photons to process based
@@ -28,9 +31,6 @@ c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")}
 effect, 3=possible_tep. Default is 0}
 
 \item{night_flag}{Flag indicating the data were acquired in night conditions: 0=day, 1=night. Default is 1}
-
-\item{atl03_atl08_dt}{An S4 object of class "icesat2.atl03atl08_dt" containing ATL03 and ATL08 data
-(output of \code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}} function).}
 
 \item{seg_length}{Segment length. Default is 30 m}
 }
