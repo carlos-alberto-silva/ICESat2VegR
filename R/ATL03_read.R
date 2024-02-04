@@ -15,7 +15,7 @@
 #'outdir = tempdir()
 #'ATL03_fp_zip <- system.file("extdata",
 #'                   "ATL0302_A_2019108080338_O01964_T05337_02_001_01_sub.zip",
-#'                   package="rICESat2Veg")
+#'                   package="ICESat2VegR")
 #'
 #'# Unzipping ICESat-2 ATL03 data
 #'atl03_path <- unzip(ATL03_fp_zip,exdir = outdir)

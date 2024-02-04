@@ -5,8 +5,8 @@
 #'
 #' @usage ATL08_terrain_dt_segStat(atl03_atl08_dt, func, res)
 #'
-#' @param ATL08_terrain_dt  An S4 object of class [rICESat2Veg::icesat2.atl08_dt] containing ATL08 data
-#' (output of [rICESat2Veg::ATL08_terrain_attributes_dt()] or [rICESat2Veg::ATL08_terrain_dt_segStat()] functions).
+#' @param ATL08_terrain_dt  An S4 object of class [ICESat2VegR::icesat2.atl08_dt] containing ATL08 data
+#' (output of [ICESat2VegR::ATL08_terrain_attributes_dt()] or [ICESat2VegR::ATL08_terrain_dt_segStat()] functions).
 #' @param func The function to be applied for computing the defined statistics
 #' @param res Spatial resolution in decimal degrees for the output SpatRast raster layer. Default is 0.5.
 #'
@@ -19,7 +19,7 @@
 #'
 #'atl08_zip <- system.file("extdata",
 #'                   "ATL08_20220401221822_01501506_005_01.zip",
-#'                   package="rICESat2Veg")
+#'                   package="ICESat2VegR")
 #'
 #'# Unzipping ATL08 file
 #'atl08_path <- unzip(atl08_zip,exdir = outdir)

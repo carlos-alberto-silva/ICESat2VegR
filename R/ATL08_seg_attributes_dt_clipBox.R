@@ -4,14 +4,14 @@
 #'
 #' @usage ATL08_seg_attributes_dt_gridStat(atl08_seg_att_dt, xmin, xmax, ymin, ymax)
 #'
-#' @param atl08_seg_att_dt A atl08_seg_att_dt object (output of [rICESat2Veg::ATL08_seg_attributes_dt()] function).
-#' An S4 object of class [rICESat2Veg::icesat2.atl08_dt]
+#' @param atl08_seg_att_dt A atl08_seg_att_dt object (output of [ICESat2VegR::ATL08_seg_attributes_dt()] function).
+#' An S4 object of class [ICESat2VegR::icesat2.atl08_dt]
 #' @param xmin Numeric. West longitude (x) coordinate of bounding rectangle, in decimal degrees.
 #' @param xmax Numeric. East longitude (x) coordinate of bounding rectangle, in decimal degrees.
 #' @param ymin Numeric. South latitude (y) coordinate of bounding rectangle, in decimal degrees.
 #' @param ymax Numeric. North latitude (y) coordinate of bounding rectangle, in decimal degrees.
 #'
-#' @return Returns an S4 object of class [rICESat2Veg::icesat2.atl08_dt]
+#' @return Returns an S4 object of class [ICESat2VegR::icesat2.atl08_dt]
 #' containing the clipped ATL08 terrain and canopy attributes.
 #'
 #' @examples
@@ -19,7 +19,7 @@
 #' outdir <- tempdir()
 #' atl08_zip <- system.file("extdata",
 #'   "ATL08_20220401221822_01501506_005_01.zip",
-#'   package = "rICESat2Veg"
+#'   package = "ICESat2VegR"
 #' )
 #'
 #' # Unzipping ATL08 file

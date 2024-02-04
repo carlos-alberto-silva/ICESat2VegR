@@ -6,7 +6,7 @@
 #' @usage ATL08_terrain_dt_segStat(atl03_atl08_dt, func, seg_length,ph_class,beam,quality_ph,night_flag)
 #'
 #' @param atl03_atl08_dt  An S4 object of class "data.table" containing ATL03 and ATL08 data
-#' (output of [rICESat2Veg::ATL03_ATL08_join_dt()] function).
+#' (output of [ICESat2VegR::ATL03_ATL08_join_dt()] function).
 #' @param func The function to be applied for computing the defined statistics
 #' @param seg_length Segment length. Default is 30 m
 #' @param ph_class Character vector indicating photons to process based on the classification (1=ground, 2=terrain, 3=top terrain),
@@ -25,11 +25,11 @@
 #'outdir = tempdir()
 #'atl03_zip <- system.file("extdata",
 #'                   "ATL03_20220401221822_01501506_005_01.zip",
-#'                   package="rICESat2Veg")
+#'                   package="ICESat2VegR")
 #'
 #'atl08_zip <- system.file("extdata",
 #'                   "ATL08_20220401221822_01501506_005_01.zip",
-#'                   package="rICESat2Veg")
+#'                   package="ICESat2VegR")
 #'
 #'# Unzipping ATL03 file
 #'atl03_path <- unzip(atl03_zip,exdir = outdir)

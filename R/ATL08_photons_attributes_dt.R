@@ -14,7 +14,7 @@ ATL08_photon.var.map[["delta_time"]]="delta_time"
 #'@usage ATL08_photons_attributes_dt(atl08_h5, beam)
 #'
 #'@param atl08_h5 A ICESat-2 ATL08 object (output of [ATL08_read()] function).
-#'An S4 object of class [rICESat2Veg::icesat2.atl08_dt].
+#'An S4 object of class [ICESat2VegR::icesat2.atl08_dt].
 #'@param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
 #'
 #'@return Returns an S4 object of class [data.table::data.table]
@@ -40,7 +40,7 @@ ATL08_photon.var.map[["delta_time"]]="delta_time"
 #'outdir = tempdir()
 #'atl08_zip <- system.file("extdata",
 #'                   "ATL08_20220401221822_01501506_005_01.zip",
-#'                   package="rICESat2Veg")
+#'                   package="ICESat2VegR")
 #'
 #'# Unzipping ATL08 file
 #'atl08_path <- unzip(atl08_zip,exdir = outdir)

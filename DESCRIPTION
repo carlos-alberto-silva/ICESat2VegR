@@ -1,4 +1,4 @@
-Package: rICESat2Veg
+Package: ICESat2VegR
 Type: Package
 Title: NASA's Ice, Cloud, and Elevation Satellite (ICESat-2) Data analysis 
 Version: 0.0.1

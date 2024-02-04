@@ -5,12 +5,12 @@
 #'
 #' @usage ATL08_terrain_dt_polyStat(atl08_terrain_dt, func, poly_id)
 #'
-#' @param atl08_terrain_dt  An S4 object of class [rICESat2Veg::icesat2.atl08_dt] containing ATL08 terrain attributes
-#' (output of [rICESat2Veg::ATL08_terrain_attribute_dt()] function).
+#' @param atl08_terrain_dt  An S4 object of class [ICESat2VegR::icesat2.atl08_dt] containing ATL08 terrain attributes
+#' (output of [ICESat2VegR::ATL08_terrain_attribute_dt()] function).
 #' @param func The function to be applied for computing the defined statistics
 #' @param poly_id Polygon id. If defined, statistics will be computed for each polygon
 #'
-#' @return Returns an S4 object of class [rICESat2Veg::icesat2.atl08_dt]
+#' @return Returns an S4 object of class [ICESat2VegR::icesat2.atl08_dt]
 #' Containing Statistics of ATL08 classified terrain photons
 #'
 #' @examples
@@ -18,7 +18,7 @@
 #'outdir = tempdir()
 #'atl08_zip <- system.file("extdata",
 #'                   "ATL08_20220401221822_01501506_005_01.zip",
-#'                   package="rICESat2Veg")
+#'                   package="ICESat2VegR")
 #'
 #' # Unzipping ATL08 file
 #'atl08_path <- unzip(atl08_zip,exdir = outdir)
@@ -30,7 +30,7 @@
 #'atl08_terrain_dt<-ATL08_terrain_attributes(atl08_h5=atl08_h5)
 #'
 #' # Specifying the path to shapefile
-#' polygon_filepath <- system.file("extdata", "polygon.shp", package = "rICESat2Veg")
+#' polygon_filepath <- system.file("extdata", "polygon.shp", package = "ICESat2VegR")
 #'
 #' # Reading shapefile as sf object
 #'polygon <- terra::vect(polygon_filepath)

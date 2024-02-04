@@ -224,7 +224,7 @@ h5closeall <- function(con, ...) {
 }
 
 
-#' Safely closes the [`rICESat2Veg::icesat2.atl03_h5-class`]
+#' Safely closes the [`ICESat2VegR::icesat2.atl03_h5-class`]
 #'
 #' @description
 #' Closing files will avoid locking HDF5 ATL03 files.
@@ -238,7 +238,7 @@ h5closeall <- function(con, ...) {
 setMethod("close", signature = c("icesat2.atl03_h5"), h5closeall)
 
 
-#' Safely closes the [`rICESat2Veg::icesat2.atl08_h5-class`]
+#' Safely closes the [`ICESat2VegR::icesat2.atl08_h5-class`]
 #'
 #' @description
 #' Closing files will avoid locking HDF5 ATL08 files.
@@ -254,7 +254,7 @@ setMethod("close", signature = c("icesat2.atl08_h5"), h5closeall)
 #'
 #' @description This function plots photons along track
 #'
-#' @param x An object of class [`rICESat2Veg::icesat2.atl03atl08_dt-class`]
+#' @param x An object of class [`ICESat2VegR::icesat2.atl03atl08_dt-class`]
 #' @param y photon attribute to be plot (ph_h or h_ph)
 #'@param beam Character vector indicating only one beam to process ("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r").
 #'Default is "gt1r"
@@ -269,11 +269,11 @@ setMethod("close", signature = c("icesat2.atl08_h5"), h5closeall)
 #'outdir = tempdir()
 #'atl03_zip <- system.file("extdata",
 #'                   "ATL03_20220401221822_01501506_005_01.zip",
-#'                   package="rICESat2Veg")
+#'                   package="ICESat2VegR")
 #'
 #'atl08_zip <- system.file("extdata",
 #'                   "ATL08_20220401221822_01501506_005_01.zip",
-#'                   package="rICESat2Veg")
+#'                   package="ICESat2VegR")
 #'
 #'# Unzipping ATL03 file
 #'atl03_path <- unzip(atl03_zip,exdir = outdir)
@@ -290,7 +290,7 @@ setMethod("close", signature = c("icesat2.atl08_h5"), h5closeall)
 #'# Extracting ATL03 and ATL08 photons and heights
 #'atl03_atl08_dt<-ATL03_ATL08_photons_attributes_dt_join(atl03_h5,atl08_h5)
 #'
-#'rICESat2Veg::plot(atl03_atl08_dt=atl03_atl08_dt,attribute="ph_h",
+#'ICESat2VegR::plot(atl03_atl08_dt=atl03_atl08_dt,attribute="ph_h",
 #'                 colors = c("gray", "#bd8421", "forestgreen", "green"),
 #'                 pch = 16, cex = 0.5)
 #'
@@ -344,7 +344,7 @@ setMethod(
 #'
 #' @description This function plots photons along track
 #'
-#' @param x An object of class [`rICESat2Veg::icesat2.atl08_dt-class`]
+#' @param x An object of class [`ICESat2VegR::icesat2.atl08_dt-class`]
 #'@param beam Character vector indicating only one beam to process ("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r").
 #'Default is "gt1r"
 #' @param colors A vector containing colors for plotting noise, terrain, vegetation and top canopy photons
@@ -358,11 +358,11 @@ setMethod(
 #'outdir = tempdir()
 #'atl08_zip <- system.file("extdata",
 #'                   "atl08_20220401221822_01501506_005_01.zip",
-#'                   package="rICESat2Veg")
+#'                   package="ICESat2VegR")
 #'
 #'atl08_zip <- system.file("extdata",
 #'                   "ATL08_20220401221822_01501506_005_01.zip",
-#'                   package="rICESat2Veg")
+#'                   package="ICESat2VegR")
 #'
 #'# Unzipping atl08 file
 #'atl08_path <- unzip(atl08_zip,exdir = outdir)
@@ -373,7 +373,7 @@ setMethod(
 #'# Extracting atl08 and ATL08 photons and heights
 #'atl08_photons_dt<-atl08_seg_attributes_dt(atl08_h5=atl08_h5)
 #'
-#'rICESat2Veg::plot(atl08_photons_dt=atl08_photons_dt,
+#'ICESat2VegR::plot(atl08_photons_dt=atl08_photons_dt,
 #'                 beam="gt1r",
 #'                 colors = c("gray", "#bd8421", "forestgreen", "green"),
 #'                 pch = 16, cex = 0.5)
@@ -424,7 +424,7 @@ plot.icesat2.atl08_dt <- function(x, y, beam="gt1l",
 #'
 #' @description This function plots photons along track
 #'
-#' @param x An object of class [`rICESat2Veg::icesat2.atl03_dt-class`]
+#' @param x An object of class [`ICESat2VegR::icesat2.atl03_dt-class`]
 #' @param beam Character vector indicating only one beam to process ("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r").
 #'Default is "gt1r"
 #' @param col  Color for plotting the photons. Default is "gray"
@@ -437,11 +437,11 @@ plot.icesat2.atl08_dt <- function(x, y, beam="gt1l",
 #'outdir = tempdir()
 #'atl03_zip <- system.file("extdata",
 #'                   "atl03_20220401221822_01501506_005_01.zip",
-#'                   package="rICESat2Veg")
+#'                   package="ICESat2VegR")
 #'
 #'atl03_zip <- system.file("extdata",
 #'                   "atl03_20220401221822_01501506_005_01.zip",
-#'                   package="rICESat2Veg")
+#'                   package="ICESat2VegR")
 #'
 #'# Unzipping atl03 file
 #'atl03_path <- unzip(atl03_zip,exdir = outdir)
@@ -452,7 +452,7 @@ plot.icesat2.atl08_dt <- function(x, y, beam="gt1l",
 #'# Extracting atl03 and atl03 photons and heights
 #'atl03_photons_dt<-atl03_seg_attributes_dt(atl03_h5=atl03_h5)
 #'
-#'rICESat2Veg::plot(atl03_photons_dt
+#'ICESat2VegR::plot(atl03_photons_dt
 #'                 col = "gray",
 #'                 pch = 16,
 #'                 cex = 0.5)

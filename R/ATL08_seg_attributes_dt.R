@@ -48,11 +48,11 @@ ATL08.var.map[["terrain_slope"]] <- "/land_segments/terrain/terrain_slope"
 #' @usage ATL08_seg_attributes_dt(atl08_h5, beam)
 #'
 #' @param atl08_h5 A ICESat-2 ATL08 object (output of [ATL08_read()] function).
-#' An S4 object of class [rICESat2Veg::icesat2.atl08_dt].
+#' An S4 object of class [ICESat2VegR::icesat2.atl08_dt].
 #' @param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
 #' @param attribute A character vector containing the list of terrain and canopy attributes to be extracted.
 #' Default is attribute = c("h_canopy","canopy_h_metrics","canopy_openness","h_te_mean","h_te_median","terrain_slope")
-#' @return Returns an S4 object of class [rICESat2Veg::icesat2.atl08_dt]
+#' @return Returns an S4 object of class [ICESat2VegR::icesat2.atl08_dt]
 #' containing the ATL08-derived terrain and canopy attributes by segments.
 #'
 #' @details ATL08 canopy attributes:
@@ -111,7 +111,7 @@ ATL08.var.map[["terrain_slope"]] <- "/land_segments/terrain/terrain_slope"
 #' outdir <- tempdir()
 #' atl08_zip <- system.file("extdata",
 #'   "ATL08_20220401221822_01501506_005_01.zip",
-#'   package = "rICESat2Veg"
+#'   package = "ICESat2VegR"
 #' )
 #'
 #' # Unzipping ATL08 file

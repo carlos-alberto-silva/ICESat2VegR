@@ -5,7 +5,7 @@
 #'
 #' @usage ATL08_seg_attributes_dt_gridStat(atl08_seg_att_dt, func, res)
 #'
-#' @param atl08_seg_att_dt  An S4 object of class [rICESat2Veg::icesat2.atl08_dt] containing ATL08 data
+#' @param atl08_seg_att_dt  An S4 object of class [ICESat2VegR::icesat2.atl08_dt] containing ATL08 data
 #' (output of [ATL08_seg_attributes_dt()] functions).
 #' @param func The function to be applied for computing the defined statistics
 #' @param res Spatial resolution in decimal degrees for the output SpatRast raster layer. Default is 0.5.
@@ -19,7 +19,7 @@
 #'
 #' atl08_zip <- system.file("extdata",
 #'   "ATL08_20220401221822_01501506_005_01.zip",
-#'   package = "rICESat2Veg"
+#'   package = "ICESat2VegR"
 #' )
 #'
 #' # Unzipping ATL08 file

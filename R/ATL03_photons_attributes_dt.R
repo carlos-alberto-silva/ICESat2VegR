@@ -5,7 +5,7 @@
 #'@usage ATL03_photons_attributes_dt(ATL03_h5, beam)
 #'
 #'@param ATL03_h5 A ICESat-2 ATL03 object (output of [ATL03_read()] function).
-#'An S4 object of class [rICESat2Veg::icesat2.atl03_dt].
+#'An S4 object of class [ICESat2VegR::icesat2.atl03_dt].
 #'@param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
 #'
 #'@return Returns an S4 object of class [data.table::data.table]
@@ -31,7 +31,7 @@
 #'outdir = tempdir()
 #'atl03_zip <- system.file("extdata",
 #'                   "ATL03_20220401221822_01501506_005_01.zip",
-#'                   package="rICESat2Veg")
+#'                   package="ICESat2VegR")
 #'
 #'# Unzipping ATL03 file
 #'atl03_path <- unzip(atl03_zip,exdir = outdir)

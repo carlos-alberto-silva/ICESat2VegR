@@ -1,16 +1,16 @@
-![](https://github.com/carlos-alberto-silva/rICESat2Veg/blob/master/readme/cover.png)<br/>
-[![R-CMD-check](https://github.com/carlos-alberto-silva/rICESat2Veg/actions/workflows/r.yml/badge.svg?branch=master)](https://github.com/carlos-alberto-silva/rICESat2Veg/actions/workflows/r.yml)
-[![CRAN](https://www.r-pkg.org/badges/version/rICESat2Veg)](https://cran.r-project.org/package=rICESat2Veg)
+![](https://github.com/carlos-alberto-silva/ICESat2VegR/blob/master/readme/cover.png)<br/>
+[![R-CMD-check](https://github.com/carlos-alberto-silva/ICESat2VegR/actions/workflows/r.yml/badge.svg?branch=master)](https://github.com/carlos-alberto-silva/ICESat2VegR/actions/workflows/r.yml)
+[![CRAN](https://www.r-pkg.org/badges/version/ICESat2VegR)](https://cran.r-project.org/package=ICESat2VegR)
 ![Github](https://img.shields.io/badge/Github-0.1.12-green.svg)
 ![licence](https://img.shields.io/badge/Licence-GPL--3-blue.svg) 
-![Downloads](https://cranlogs.r-pkg.org/badges/grand-total/rICESat2Veg)
-[![Build Status](https://travis-ci.com/carlos-alberto-silva/rICESat2Veg.svg?token=Jqizwyc6gBxNafNccTdU&branch=master)](https://travis-ci.com/carlos-alberto-silva/rICESat2Veg)
+![Downloads](https://cranlogs.r-pkg.org/badges/grand-total/ICESat2VegR)
+[![Build Status](https://travis-ci.com/carlos-alberto-silva/ICESat2VegR.svg?token=Jqizwyc6gBxNafNccTdU&branch=master)](https://travis-ci.com/carlos-alberto-silva/ICESat2VegR)
 
-**rICESat2Veg: An R Package for NASA's Ice, Cloud, and Elevation Satellite (ICESat-2) Data Processing and Visualization for Land and Vegetation Applications.**
+**ICESat2VegR: An R Package for NASA's Ice, Cloud, and Elevation Satellite (ICESat-2) Data Processing and Visualization for Land and Vegetation Applications.**
 
 Authors: Carlos Alberto Silva and Caio Hamamura  
 
-The rICESat2Veg package provides functions for downloading, reading, visualizing, processing and exporting 
+The ICESat2VegR package provides functions for downloading, reading, visualizing, processing and exporting 
 NASA's ICESat-2 ATL03 (Global Geolocated Photon Data) and ATL08 (Land and Vegetation Height) 
 products for Land and Vegetation Applications in R environment.
 
@@ -20,14 +20,14 @@ products for Land and Vegetation Applications in R environment.
 ## Installation
 ```r
 #The CRAN version:
-install.packages("rICESat2Veg")
+install.packages("ICESat2VegR")
 
 # The development version:
 #install.packages("remotes")
-remotes::install_github("https://github.com/carlos-alberto-silva/rICESat2Veg", dependencies = TRUE)
+remotes::install_github("https://github.com/carlos-alberto-silva/ICESat2VegR", dependencies = TRUE)
 
 # loading rGEDI package
-library(rICESat2Veg)
+library(ICESat2VegR)
 
 ```    
 ## Downloading ICESat-2 data
@@ -36,7 +36,7 @@ library(rICESat2Veg)
 # Herein, we are using only a ICESat-2 sample dataset for this tutorial.
 #######
 # downloading zip file
-download.file("https://github.com/carlos-alberto-silva/rICESat2Veg/releases/download/datasets/examples.zip",destfile=file.path(outdir, "examples.zip"))
+download.file("https://github.com/carlos-alberto-silva/ICESat2VegR/releases/download/datasets/examples.zip",destfile=file.path(outdir, "examples.zip"))
 
 # unzip file 
 unzip(file.path(outdir,"examples.zip"))
@@ -97,7 +97,7 @@ par(mfrow=c(1,2))
 hist(atl08_seg_att_dt$h_canopy, col="green", xlab="height (m)", main="h_canopy")
 hist(atl08_seg_att_dt$h_te_mean, col="#bd8421", xlab="Elevation (m)", main="h_te_mean")
 ```
-![](https://github.com/carlos-alberto-silva/rICESat2Veg/blob/master/readme/hist_ATL08.png)
+![](https://github.com/carlos-alberto-silva/ICESat2VegR/blob/master/readme/hist_ATL08.png)
 
 ```r
 # Plotting ATL08 attribute on a map by segment coordinates
@@ -146,7 +146,7 @@ h_te_mean.map<-leaflet() %>%
   addLegend(pal = h_te_mean.pal,values = h_te_mean_bins,title ="h_te_mean (m)")
 sync(h_canopy.map, h_te_mean.map)
 ```
-![](https://github.com/carlos-alberto-silva/rICESat2Veg/blob/master/readme/ATL08_segments.png)
+![](https://github.com/carlos-alberto-silva/ICESat2VegR/blob/master/readme/ATL08_segments.png)
 
 ## Clipping ATL08 Terrain and Canopy Attributes
 
@@ -172,7 +172,7 @@ head(atl08_seg_att_dt_clip) # print the first six observations
 
 # Clipping by geometry
 # Specify the path to shapefile
-poly_filepath <- system.file("extdata", "polygon.shp", package = "rICESat2Veg")
+poly_filepath <- system.file("extdata", "polygon.shp", package = "ICESat2VegR")
 
 # Read shapefile
 poly <- terra::vect(poly_filepath)
@@ -233,7 +233,7 @@ m2<-leaflet() %>%
   addLegend(pal = pal, values = atl08_seg_att_dt_clipg$poly_id,title ="Poly IDs" )
 sync(m1, m2)
 ```
-![](https://github.com/carlos-alberto-silva/rICESat2Veg/blob/master/readme/Fig_clipping_ATL08.png)
+![](https://github.com/carlos-alberto-silva/ICESat2VegR/blob/master/readme/Fig_clipping_ATL08.png)
 
 ## Gridding AT08 Terrain and Canopy Attributes
 ```r
@@ -244,7 +244,7 @@ plot(max_h_canopy, xlim=c(-107.2,-106.8),ylim=c(38,39), col=viridis::inferno(8),
      xlab="Langitude (degree)",
      ylab="Latitude (degree)")
 ```
-<img align="right" src="https://github.com/carlos-alberto-silva/rICESat2Veg/blob/master/readme/grid_h_canopy.png"  width="300">
+<img align="right" src="https://github.com/carlos-alberto-silva/ICESat2VegR/blob/master/readme/grid_h_canopy.png"  width="300">
 
 ```r
 # Define your own function
@@ -268,7 +268,7 @@ plot(h_canopy_metrics,
      xlab="Langitude (degree)",
      ylab="Latitude (degree)")
 ```
-<img align="right" src="https://github.com/carlos-alberto-silva/rICESat2Veg/blob/master/readme/grid_h_canopy2.png"  width="300">
+<img align="right" src="https://github.com/carlos-alberto-silva/ICESat2VegR/blob/master/readme/grid_h_canopy2.png"  width="300">
 
 
 ## Join ATL03 and ATL08 photon attributes tables
@@ -298,21 +298,21 @@ head(atl03_atl08_dt)
 plot(atl03_atl08_dt, y="ph_h",colors, beam = "gt1l",
      ylim=c(0,7), xlim=c(2400,3800), pch=16)
 ```
-![](https://github.com/carlos-alberto-silva/rICESat2Veg/blob/master/readme/cloud_height.png)
+![](https://github.com/carlos-alberto-silva/ICESat2VegR/blob/master/readme/cloud_height.png)
 
 ```r
 # plot by "h_ph"
 plot(atl03_atl08_dt, y="h_ph",colors, beam = "gt1l",
      ylim=c(300,355),xlim=c(2400,3800), pch=16)
 ```
-![](https://github.com/carlos-alberto-silva/rICESat2Veg/blob/master/readme/cloud_height2.png)
+![](https://github.com/carlos-alberto-silva/ICESat2VegR/blob/master/readme/cloud_height2.png)
 
 ## Gridding ATL03 and AT08 Photons Attributes
 ```r
 # Computing the mean of h_ph attribute at 0.05 degree grid cell
 mean_h_ph <- ATL03_ATL08_photons_attributes_dt_gridStat(atl03_atl08_dt, func = mean(h_ph), res = 0.05)
 ```
-<img align="right" src="https://github.com/carlos-alberto-silva/rICESat2Veg/blob/master/readme/h_ph_map.png"  width="300">
+<img align="right" src="https://github.com/carlos-alberto-silva/ICESat2VegR/blob/master/readme/h_ph_map.png"  width="300">
 
 ```r
 plot(mean_h_ph,
@@ -348,7 +348,7 @@ plot(h_ph_metrics,
 ## Clipping ATL03 and joined ATL03 and ATL08 photons attributes
 
 
-<img align="right" src="https://github.com/carlos-alberto-silva/rICESat2Veg/blob/master/readme/h_ph_map_all.png"  width="300">
+<img align="right" src="https://github.com/carlos-alberto-silva/ICESat2VegR/blob/master/readme/h_ph_map_all.png"  width="300">
 
 
 ```r
@@ -447,7 +447,7 @@ points(max_ph_h_seg_30m$dist_along,max_ph_h_seg_30m$max_ph_h, col="red", pch=16)
 points(max_ph_h_seg_100m$dist_along,max_ph_h_seg_100m$max_ph_h, col="blue", pch=16)
 legend("topleft",legend=c("ATL03 unclassified","ATL03 ground","ATL03 Canopy","ATL03 Top canopy","Max ph_h at 30m","Max ph_h at 100m"), col=c(colors,"red","blue"), pch=16, bty="n")
 ```
-![](https://github.com/carlos-alberto-silva/rICESat2Veg/blob/master/readme/profile_metrics.png)
+![](https://github.com/carlos-alberto-silva/ICESat2VegR/blob/master/readme/profile_metrics.png)
 
 ```r
 
@@ -492,11 +492,11 @@ head(h_canopy_metrics)
 We gratefully acknowledge funding from NASA’s ICESat-2 (ICESat-2, grant 22-ICESat2_22-0006), Carbon Monitoring System (CMS, grant 22-CMS22-0015) and Commercial Smallsat Data Scientific Analysis(CSDSA, grant 22-CSDSA22_2-0080). 
 
 # Reporting Issues 
-Please report any issue regarding the rICESat2Veg package to Dr. Silva (c.silva@ufl.edu)
+Please report any issue regarding the ICESat2VegR package to Dr. Silva (c.silva@ufl.edu)
 
-# Citing rICESat2Veg
-Silva,C.A; Hamamura,C.rICESat2Veg: An R Package for NASA's Ice, Cloud, and Elevation Satellite (ICESat-2) Data Processing and Visualization for Terrestrial Applications.version 0.0.1, accessed on November. 22 2023, available at: <https://CRAN.R-project.org/package=rICESat2Veg>
+# Citing ICESat2VegR
+Silva,C.A; Hamamura,C.ICESat2VegR: An R Package for NASA's Ice, Cloud, and Elevation Satellite (ICESat-2) Data Processing and Visualization for Terrestrial Applications.version 0.0.1, accessed on November. 22 2023, available at: <https://CRAN.R-project.org/package=ICESat2VegR>
 
 # Disclaimer
-**rICESat2Veg package comes with no guarantee, expressed or implied, and the authors hold no responsibility for its use or reliability of its outputs.**
+**ICESat2VegR package comes with no guarantee, expressed or implied, and the authors hold no responsibility for its use or reliability of its outputs.**
 

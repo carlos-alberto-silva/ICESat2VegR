@@ -4,14 +4,14 @@
 #'
 #' @usage ATL03_ATL08_photons_attributes_dt_clipBox(atl03_atl08_dt, xmin, xmax, ymin, ymax)
 #'
-#' @param atl03_atl08_dt  An S4 object of class [rICESat2Veg::icesat2.atl03atl08_dt] containing ATL03 and ATL08 data
-#' (output of [rICESat2Veg::ATL03_ATL08_photons_attributes_dt_join()] function).
+#' @param atl03_atl08_dt  An S4 object of class [ICESat2VegR::icesat2.atl03atl08_dt] containing ATL03 and ATL08 data
+#' (output of [ICESat2VegR::ATL03_ATL08_photons_attributes_dt_join()] function).
 #' @param xmin Numeric. West longitude (x) coordinate of bounding rectangle, in decimal degrees.
 #' @param xmax Numeric. East longitude (x) coordinate of bounding rectangle, in decimal degrees.
 #' @param ymin Numeric. South latitude (y) coordinate of bounding rectangle, in decimal degrees.
 #' @param ymax Numeric. North latitude (y) coordinate of bounding rectangle, in decimal degrees.
 #'
-#' @return Returns an S4 object of class [rICESat2Veg::icesat2.atl03atl08_dt]
+#' @return Returns an S4 object of class [ICESat2VegR::icesat2.atl03atl08_dt]
 #' containing a subset of the ATL03 and ATL08 photon attributes.
 #'
 #'@seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
@@ -22,11 +22,11 @@
 #'outdir = tempdir()
 #'atl03_zip <- system.file("extdata",
 #'                   "ATL03_20220401221822_01501506_005_01.zip",
-#'                   package="rICESat2Veg")
+#'                   package="ICESat2VegR")
 #'
 #'atl08_zip <- system.file("extdata",
 #'                   "ATL08_20220401221822_01501506_005_01.zip",
-#'                   package="rICESat2Veg")
+#'                   package="ICESat2VegR")
 #'
 #'# Unzipping ATL03 file
 #'atl03_path <- unzip(atl03_zip,exdir = outdir)

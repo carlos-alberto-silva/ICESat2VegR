@@ -83,7 +83,7 @@ default_agg_join <- function(x1, x2) {
 #' (n, m1, m2, m3, m4, min, max). m1 to m4 are the central moments.
 #' One can calculate mean, standard deviation, skewness and kurtosis
 #' with the following formulas according to Terriberry (2007) and
-#' \insertCite{Joanes1998;textual}{rICESat2Veg}:
+#' \insertCite{Joanes1998;textual}{ICESat2VegR}:
 #'
 #' \deqn{ \bar{x} = m_1 }{mean = m1}
 #'
@@ -179,7 +179,7 @@ default_agg_join <- function(x1, x2) {
 #'
 #' @examples
 #' # Specifying the path to GEDI leveatl08_canopy_dt data (zip file)
-#' library(rICESat2Veg)
+#' library(ICESat2VegR)
 #' library(data.table)
 #'
 #' # Specifying the path to ATL08 file (zip file)
@@ -187,7 +187,7 @@ default_agg_join <- function(x1, x2) {
 #'
 #' atl08_zip <- system.file("extdata",
 #'   "ATL08_20220401221822_01501506_005_01.zip",
-#'   package = "rICESat2Veg"
+#'   package = "ICESat2VegR"
 #' )
 #'
 #' # Unzipping ATL08 file

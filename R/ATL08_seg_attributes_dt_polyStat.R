@@ -6,11 +6,11 @@
 #' @usage ATL08_seg_attributes_dt_polyStat(atl08_seg_att_dt, func, poly_id)
 #'
 #' @param atl08_seg_att_dt  An S4 object of class [`icesat2.atl08_dt-class`] containing
-#' ATL08 terrain and canopy attributes (output of [`rICESat2Veg::ATL08_seg_attributes_dt()`] function).
+#' ATL08 terrain and canopy attributes (output of [`ICESat2VegR::ATL08_seg_attributes_dt()`] function).
 #' @param func The function to be applied for computing the defined statistics
 #' @param poly_id Polygon id. If defined, statistics will be computed for each polygon
 #'
-#' @return Returns an S4 object of class [rICESat2Veg::icesat2.atl08_dt]
+#' @return Returns an S4 object of class [ICESat2VegR::icesat2.atl08_dt]
 #' Containing Statistics of ATL08 terrain and canopy attributes
 #'
 #' @examples
@@ -18,7 +18,7 @@
 #' outdir <- tempdir()
 #' atl08_zip <- system.file("extdata",
 #'   "ATL08_20220401221822_01501506_005_01.zip",
-#'   package = "rICESat2Veg"
+#'   package = "ICESat2VegR"
 #' )
 #'
 #' # Unzipping ATL08 file
@@ -31,7 +31,7 @@
 #' atl08_seg_att_dt <- ATL08_seg_attributes_dt(atl08_h5 = atl08_h5)
 #'
 #' # Specifying the path to shapefile
-#' polygon_filepath <- system.file("extdata", "polygon.shp", package = "rICESat2Veg")
+#' polygon_filepath <- system.file("extdata", "polygon.shp", package = "ICESat2VegR")
 #'
 #' # Reading shapefile as sf object
 #' polygon <- terra::vect(polygon_filepath)
