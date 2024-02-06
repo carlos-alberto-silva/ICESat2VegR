@@ -1,5 +1,6 @@
+#' @import R6
 #' @export
-ICESat2.h5_cloud <- R6Class("ICESat2.h5_cloud", list(
+ICESat2.h5_cloud <- R6::R6Class("ICESat2.h5_cloud", list(
     inherit = "ICESat2.h5",
     h5 = NULL,
     initialize = function(h5) {
