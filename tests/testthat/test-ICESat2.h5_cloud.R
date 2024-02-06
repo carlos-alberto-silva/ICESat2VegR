@@ -10,7 +10,7 @@ res <- NA
 atl08_h5 <- NA
 group <- NA
 ds <- NA
-vasl <- NA
+vals <- NA
 
 
 test_that("ATLAS_dataFinder_cloud works", {
@@ -24,7 +24,6 @@ test_that("ATLAS_dataFinder_cloud works", {
     daterange,
     persist
   )
-  message(res[1])
   expect_equal(length(res), 1)
 })
 

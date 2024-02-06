@@ -1,0 +1,35 @@
+h5_path <- Sys.getenv("ATL08_PATH")
+atl08_h5 <- NA
+group <- NA
+ds <- NA
+vals <- NA
+lower_left_lon <- -85
+lower_left_lat <- 30.0
+upper_right_lon <- -84.0
+upper_right_lat <- 31.0
+version <- "006"
+short_name <- "ATL08"
+persist <- TRUE
+daterange <- c("2019-08-19", "2019-08-20")
+res2 <- NA
+group2 <- NA
+ds2 <- NA
+vals2 <- NA
+
+atl08_h5 <- ICESat2.h5_local$new(h5 = h5_path)
+res <- ATLAS_dataFinder_cloud(
+  short_name,
+  lower_left_lon,
+  lower_left_lat,
+  upper_right_lon,
+  upper_right_lat,
+  version,
+  daterange,
+  persist
+)
+
+atl08_h5_cloud <- ICESat2.h5_cloud$new(h5 = res[1])
+
+test_that("Groups are equal", {
+  expect_true(all(atl08_h5$ls() == atl08_h5_cloud$ls()))
+})

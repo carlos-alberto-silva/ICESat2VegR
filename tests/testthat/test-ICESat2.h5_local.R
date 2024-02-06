@@ -2,7 +2,7 @@ h5_path <- Sys.getenv("ATL08_PATH")
 atl08_h5 <- NA
 group <- NA
 ds <- NA
-vals <<- NA
+vals <- NA
 
 test_that("Can create a ICESat2.h5_local", {
   atl08_h5 <<- ICESat2.h5_local$new(h5 = h5_path)
