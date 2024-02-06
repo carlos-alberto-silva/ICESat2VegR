@@ -133,6 +133,6 @@ ATL03_ATL08_seg_cover_dt_compute <- function(
     colnames(metrics)[2:c(ncol(metrics) - 3)] <- paste0(names(metrics)[2:c(ncol(metrics) - 3)], "_", paste0(call)[2])
   }
 
-  setattr(metrics, "class", c("icesat2.atl08_dt", "data.table", "data.frame"))
+  prepend_class(metrics, "icesat2.atl08_dt")
   return(metrics)
 }

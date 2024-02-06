@@ -1,15 +1,15 @@
 
-#atl08_path<-"C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL08_20220401221822_01501506_005_01.h5"
+#atl08_path<-"C:\\Users\\c.silva\\Documents\\ICESat2VegR\\inst\\exdata\\ATL08_20220401221822_01501506_005_01.h5"
 #atl08_h5<-ATL08_read(atl08_path=atl08_path)
-#atl03_path<-"C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL03_20220401221822_01501506_005_01.h5"
+#atl03_path<-"C:\\Users\\c.silva\\Documents\\ICESat2VegR\\inst\\exdata\\ATL03_20220401221822_01501506_005_01.h5"
 #atl03_h5<-ATL03_read(atl03_path=atl03_path)
 
-atl08_path<-"Z:\\01_Projects\\04_NASA_ICESat2\\10_others\\rICESat2Veg\\inst\\exdata\\ATL08_20220401221822_01501506_005_01.h5"
-atl03_path<-"Z:\\01_Projects\\04_NASA_ICESat2\\10_others\\rICESat2Veg\\inst\\exdata\\ATL03_20220401221822_01501506_005_01.h5"
+atl08_path<-"Z:\\01_Projects\\04_NASA_ICESat2\\10_others\\ICESat2VegR\\inst\\exdata\\ATL08_20220401221822_01501506_005_01.h5"
+atl03_path<-"Z:\\01_Projects\\04_NASA_ICESat2\\10_others\\ICESat2VegR\\inst\\exdata\\ATL03_20220401221822_01501506_005_01.h5"
 
-#atl08_path<-"C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL08_20220401221822_01501506_005_01.h5"
+#atl08_path<-"C:\\Users\\c.silva\\Documents\\ICESat2VegR\\inst\\exdata\\ATL08_20220401221822_01501506_005_01.h5"
 atl08_h5<-ATL08_read(atl08_path=atl08_path)
-#atl03_path<-"C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL03_20220401221822_01501506_005_01.h5"
+#atl03_path<-"C:\\Users\\c.silva\\Documents\\ICESat2VegR\\inst\\exdata\\ATL03_20220401221822_01501506_005_01.h5"
 atl03_h5<-ATL03_read(atl03_path=atl03_path)
 
 
@@ -80,7 +80,7 @@ head(atl03_atl08_dt)
 
 
 # Clipping ATL08 Canopy Height Metrics by Geometry
-polygon_filepath <- "C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\polygon.shp"
+polygon_filepath <- "C:\\Users\\c.silva\\Documents\\ICESat2VegR\\inst\\exdata\\polygon.shp"
 library(terra)
 polygon <- terra::vect(polygon_filepath)
 polygon$FID<-c(1,2)
@@ -227,7 +227,7 @@ Terriberry, Timothy B. (2007), Computing Higher-Order Moments Online, archived f
 #'
 @examples
 # Specifying the path to GEDI leveatl08_canopy_dt data (zip file)
-library(rICESat2Veg)
+library(ICESat2VegR)
 library(data.table)
 #'
 #'# Specifying the path to ATL08 file (zip file)
@@ -235,7 +235,7 @@ library(data.table)
 #'
 #'atl08_zip <- system.file("extdata",
                   "ATL08_20220401221822_01501506_005_01.zip",
-                  package="rICESat2Veg")
+                  package="ICESat2VegR")
 #'
 #'# Unzipping ATL08 file
 #'atl08_path <- unzip(atl08_zip,exdir = outdir)
@@ -273,7 +273,7 @@ finalizer = list(
     range = "max-min"
 )
 #'
-outdir<-"C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\"
+outdir<-"C:\\Users\\c.silva\\Documents\\ICESat2VegR\\inst\\exdata\\"
 require(data.table)
 ATL08_canopy_h5_gridStat(
   atl08_path = outdir,

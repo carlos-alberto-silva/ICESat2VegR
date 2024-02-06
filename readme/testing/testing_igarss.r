@@ -1,4 +1,4 @@
-library(rICESat2Veg)
+library(ICESat2VegR)
 
 lower_left_lon <- -85
 lower_left_lat <- 30.0

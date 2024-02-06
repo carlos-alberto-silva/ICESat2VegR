@@ -1,9 +1,9 @@
-library(rICESat2Veg)
-atl08_path<-"C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL08_20220401221822_01501506_005_01.h5"
-atl03_path<-"C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL03_20220401221822_01501506_005_01.h5"
+library(ICESat2VegR)
+atl08_path<-"C:\\Users\\c.silva\\Documents\\ICESat2VegR\\inst\\exdata\\ATL08_20220401221822_01501506_005_01.h5"
+atl03_path<-"C:\\Users\\c.silva\\Documents\\ICESat2VegR\\inst\\exdata\\ATL03_20220401221822_01501506_005_01.h5"
 
-# atl08_path<-"Y:\\01_Projects\\04_NASA_ICESat2\\10_others\\rICESat2Veg\\inst\\exdata\\ATL08_20220401221822_01501506_005_01.h5"
-# atl03_path<-"Y:\\01_Projects\\04_NASA_ICESat2\\10_others\\rICESat2Veg\\inst\\exdata\\ATL03_20220401221822_01501506_005_01.h5"
+# atl08_path<-"Y:\\01_Projects\\04_NASA_ICESat2\\10_others\\ICESat2VegR\\inst\\exdata\\ATL08_20220401221822_01501506_005_01.h5"
+# atl03_path<-"Y:\\01_Projects\\04_NASA_ICESat2\\10_others\\ICESat2VegR\\inst\\exdata\\ATL03_20220401221822_01501506_005_01.h5"
 
 # atl08_path<-"..\\inst\\exdata\\ATL08_20220401221822_01501506_005_01.h5"
 # atl03_path<-"..\\inst\\exdata\\ATL03_20220401221822_01501506_005_01.h5"
@@ -139,8 +139,8 @@ head(atl08_seg_att_dt_clip) # print the first six observations
 # Clipping by geometry
 
 # Specify the path to shapefile
-#poly_filepath <- system.file("extdata", "polygon.shp", package = "rICESat2Veg")
-poly_filepath <- "C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\polygon.shp"
+#poly_filepath <- system.file("extdata", "polygon.shp", package = "ICESat2VegR")
+poly_filepath <- "C:\\Users\\c.silva\\Documents\\ICESat2VegR\\inst\\exdata\\polygon.shp"
 
 # Read shapefile
 poly <- terra::vect(poly_filepath)
@@ -516,7 +516,7 @@ head(atl03_atl08_dt)
 
 
 # Clipping ATL08 Canopy Height Metrics by Geometry
-# polygon_filepath <- "C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\polygon.shp"
+# polygon_filepath <- "C:\\Users\\c.silva\\Documents\\ICESat2VegR\\inst\\exdata\\polygon.shp"
 polygon_filepath <- "..\\inst\\exdata\\polygon.shp"
 library(terra)
 polygon <- terra::vect(polygon_filepath)
@@ -635,7 +635,7 @@ list(
 )
 
 # Specifying the path to GEDI leveatl08_canopy_dt data (zip file)
-library(rICESat2Veg)
+library(ICESat2VegR)
 library(data.table)
 #'
 #'# Specifying the path to ATL08 file (zip file)
@@ -643,7 +643,7 @@ library(data.table)
 #'
 #'atl08_zip <- system.file("extdata",
                   #"ATL08_20220401221822_01501506_005_01.zip",
-                  #package="rICESat2Veg")
+                  #package="ICESat2VegR")
 #'
 #'# Unzipping ATL08 file
 #'atl08_path <- unzip(atl08_zip,exdir = outdir)

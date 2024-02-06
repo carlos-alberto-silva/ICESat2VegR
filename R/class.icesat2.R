@@ -1,6 +1,8 @@
+#' @include class_tools.R
+
 .datatable.aware <- TRUE
 #' @importFrom hdf5r H5File
-setRefClass("H5File")
+setRefClass("icesat2.hdf5r")
 
 # Base class for icesat H5 files
 setClass(
@@ -44,6 +46,8 @@ icesat2.h5_dataset <- setClass(
   slots = list(ds = "ANY")
 )
 
+setRefClass("icesat2.h5_cloud")
+
 #' Dispatches the `[[` function to h5
 #'
 #' @param x An object of class `[icesat2.h5-class]`
@@ -54,7 +58,7 @@ setMethod(
   "[[",
   signature = c("icesat2.h5"),
   definition = function(x, i, j, ...) {
-  res <- x@h5[[i]]
+    res <- x@h5[[i]]
     try(expr = {
       res[1]
       return(new("icesat2.h5_dataset", ds = res))
@@ -84,6 +88,34 @@ setMethod(
   }
 )
 
+#' List H5 contents using any [`icesat2.h5-class`]
+#' @export
+setGeneric("icesat2.h5_list", function(x) {
+  standardGeneric("icesat2.h5_list")
+})
+
+
+#' @export
+setMethod(
+"icesat2.h5_list",
+signature = c("icesat2.h5"),
+function(x) {
+   icesat2.h5_list(x@h5)
+}
+)
+
+#' @export
+setMethod(
+"icesat2.h5_list",
+signature = c("icesat2.h5_cloud"),
+function(x) {
+  pymain <- reticulate::import_main()
+  pymain$temp_keys <- x$keys()
+  reticulate::py_run_string("res = list(temp_keys)")
+  pymain$res
+}
+)
+
 #' Get Beams for icesat h5 classes
 #'
 #' @param h5 An object of class [`icesat2.atl03_h5-class`] or [`icesat2.atl08_h5-class`]
@@ -98,11 +130,11 @@ setMethod(
   "getBeams",
   signature = c("icesat2.h5"),
   function(h5, ...) {
-    if (inherits(h5@h5, "h5py._hl.files.File")) {
+    if (inherits(h5@h5, "icesat2.h5_cloud")) {
       pymain <- reticulate::import_main()
       pymain$f <- h5@h5
 
-      groups <- reticulate::py_run_string("lsh5 = list(f.keys())")$lsh5
+      groups <- reticulate::py_run_string("temp_list = list(f.keys())")$temp_list
     } else {
       groups <- h5@h5$ls()$name
     }
@@ -133,6 +165,18 @@ setRefClass("icesat2.atl08_dt")
 #' @export
 setRefClass("icesat2.atl03_dt")
 
+#' Class for ATL03 segment attributes
+#'
+#' @slot data.table Object of class [`data.table`][data.table::data.table-class] from `data.table` package
+#' containing the Extracted ICESat-2 ATL03 segment attributes
+
+#'
+#' @seealso [`data.table`][data.table::data.table-class] in the `data.table` package and
+#' \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
+#'
+#' @import methods
+#' @importClassesFrom data.table data.table
+#' @export
 setRefClass("icesat2.atl03_seg_dt")
 
 #' Class for joined ATL03 and ATL08 attributes

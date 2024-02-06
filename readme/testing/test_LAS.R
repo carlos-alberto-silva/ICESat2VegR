@@ -1,14 +1,16 @@
 # install.packages("lidR")
 
 require(lidR)
-library(rICESat2Veg)
+library(ICESat2VegR)
 
 
-atl08_path <- "inst\\exdata\\ATL08_20220401221822_01501506_005_01.h5"
-atl03_path <- "inst\\exdata\\ATL03_20220401221822_01501506_005_01.h5"
+atl08_path <- "../inst\\exdata\\ATL08_20220826063041_09981605_005_01.h5"
+# atl03_path <- "inst\\exdata\\ATL03_20220401221822_01501506_005_01.h5"
 atl08_h5 <- ATL08_read(atl08_path)
-atl03_h5 <- ATL03_read(atl03_path = atl03_path)
+# atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 
+ds <- atl08_h5[["gt1l/land_segments/latitude"]]
+ds[]
 
 
 atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5, beam = c("gt1l"))

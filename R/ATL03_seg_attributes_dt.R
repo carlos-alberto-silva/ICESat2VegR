@@ -185,7 +185,7 @@ ATL03_seg_attributes_dt <- function(atl03_h5,
   }
 
   seg.dt <- data.table::rbindlist(seg.dt)
-  data.table::setattr(seg.dt, "class", c("icesat2.atl03_seg_dt", "data.table", "data.frame"))
+  prepend_class(seg.dt, "icesat2.atl03_seg_dt")
 
 
   close(pb)

@@ -1,7 +1,7 @@
 # source("R/clipTools.R")
 # source("R/ATL08_h5_clipBox.R")
 
-# library(rICESat2Veg)
+# library(ICESat2VegR)
 
 # atl03_path <- "../inst/exdata/ATL03_20220401221822_01501506_005_01.h5"
 
@@ -27,7 +27,7 @@
 
 
 
-library(rICESat2Veg)
+library(ICESat2VegR)
 
 atl08_path <- "../inst/exdata/ATL08_20220401221822_01501506_005_01.h5"
 

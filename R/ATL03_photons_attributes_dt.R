@@ -95,7 +95,7 @@ ATL03_photons_attributes_dt <- function(atl03_h5,
     utils::setTxtProgressBar(pb, i_s)
   }
 
-  setattr(photon_dt, "class", c("icesat2.atl03_dt", "data.table", "data.frame"))
+  prepend_class(photon_dt, "icesat2.atl03_dt")
 
 
   close(pb)

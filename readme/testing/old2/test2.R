@@ -1,5 +1,5 @@
 
-polygon_filepath <- "C:/Users/c.silva/Documents/rICESat2Veg/polygon.shp"
+polygon_filepath <- "C:/Users/c.silva/Documents/ICESat2VegR/polygon.shp"
 
 require(sf)
 pol = st_polygon(
@@ -82,7 +82,7 @@ polygon0$geometry
 
 require(hdf5r)
 
-atl08_path<-"Z:\\01_Projects\\04_NASA_ICESat2\\10_others\\rICESat2Veg\\inst\\exdata\\ATL08_20220401221822_01501506_005_01.h5"
+atl08_path<-"Z:\\01_Projects\\04_NASA_ICESat2\\10_others\\ICESat2VegR\\inst\\exdata\\ATL08_20220401221822_01501506_005_01.h5"
 atl08_h5<-ATL08_read(ATL08path=atl08_path)
 
 ATL03_read <-function(ATL03path) {
@@ -91,8 +91,8 @@ ATL03_read <-function(ATL03path) {
   return(ATL03)
 }
 
-atl03_path<-"C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL03_20220401221822_01501506_005_01.h5"
-atl03_h5<-ATL03_read(ATL03path="C:\\Users\\c.silva\\Documents\\rICESat2Veg\\inst\\exdata\\ATL03_20220826063041_09981605_005_01.h5")
+atl03_path<-"C:\\Users\\c.silva\\Documents\\ICESat2VegR\\inst\\exdata\\ATL03_20220401221822_01501506_005_01.h5"
+atl03_h5<-ATL03_read(ATL03path="C:\\Users\\c.silva\\Documents\\ICESat2VegR\\inst\\exdata\\ATL03_20220826063041_09981605_005_01.h5")
 
 names(atl03_h5@h5[["gt1r/heights"]])
 

@@ -86,12 +86,12 @@ ATL03_ATL08_photons_attributes_dt_join <- function(atl03_h5, atl08_h5,
     ph_h <-
     solar_elevation <- NA
   # Check file input
-  if (inherits(atl03_h5,"icesat2.atl03_h5") == FALSE) {
+  if (inherits(atl03_h5, "icesat2.atl03_h5") == FALSE) {
     stop("atl03_h5 must be an object of class 'icesat2.atl03_h5' - output of [ATL03_read()] function ")
   }
 
   # Check file input
-  if (inherits(atl08_h5,"icesat2.atl08_h5") == FALSE) {
+  if (inherits(atl08_h5, "icesat2.atl08_h5") == FALSE) {
     stop("atl08_h5 must be an object of class 'icesat2.atl08_h5' - output of [ATL08_read()] function ")
   }
 
@@ -184,7 +184,7 @@ ATL03_ATL08_photons_attributes_dt_join <- function(atl03_h5, atl08_h5,
 
   photon_dt <- data.table::rbindlist(photon.dt, fill = TRUE)
 
-  data.table::setattr(photon_dt, "class", c("icesat2.atl03atl08_dt", "data.table", "data.frame"))
+  prepend_class(photon_dt, "icesat2.atl03atl08_dt")
   close(pb)
   return(photon_dt)
 }

@@ -106,7 +106,7 @@ ATL08_seg_attributes_dt_clipGeometry <- function(atl08_seg_att_dt, polygon, spli
       newFile <- atl08_seg_att_dtdt[pts$nid, ]
     }
 
-    setattr(newFile, "class", c("icesat2.atl08_dt", "data.table", "data.frame"))
+    prepend_class(newFile, "icesat2.atl08_dt")
 
 
 

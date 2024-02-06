@@ -11,6 +11,7 @@ License: GPL-3
 Imports:
   gdalBindings,
   hdf5r,
+  lazyeval,
   mathjaxr,
   Rdpack
 Depends:
@@ -54,6 +55,7 @@ Collate:
     'ATL03_photons_simulator.R'
     'zzz.R'
     'ATL03_read.R'
+    'class_tools.R'
     'class.icesat2.R'
     'ATL03_rgt_extract.R'
     'ATL03_seg_attributes_dt.R'

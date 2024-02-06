@@ -1,3 +1,5 @@
+#' @include class_tools.R
+
 #' Read ICESat-2 ATL03 data
 #'
 #' @description This function reads the ICESat-2 Global Geolocated Photons (ATL03) Product (ATL03) as h5 file.
@@ -46,6 +48,7 @@ setMethod(
     }
 
     atl03_h5 <- hdf5r::H5File$new(atl03_path, mode = "r")
+    prepend_class(atl03_h5, "icesat2.hdf5r")
     atl03 <- new("icesat2.atl03_h5", h5 = atl03_h5)
     return(atl03)
   }
@@ -64,7 +67,10 @@ setMethod(
       h5py <<- reticulate::import("h5py")
     }
     granules <- earthaccess$open(list(atl03_path))
-    atl03 <- new("icesat2.atl03_h5", h5 = h5py$File(reticulate::py_to_r(granules)[[1]]))
+    atl03_h5 <- h5py$File(reticulate::py_to_r(granules)[[1]])
+
+    prepend_class(atl03_h5, "icesat2.h5_cloud")
+    atl03 <- new("icesat2.atl03_h5", h5 = atl03_h5)
 
     return(atl03)
   }

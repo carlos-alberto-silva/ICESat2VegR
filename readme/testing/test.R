@@ -1,5 +1,5 @@
 # Specifying the path to GEDI leveatl08_canopy_dt data (zip file)
-library(rICESat2Veg)
+library(ICESat2VegR)
 library(data.table)
 
 # Specifying the path to ATL08 file (zip file)
@@ -7,7 +7,7 @@ outdir <- "C:/Users/caiohamamura/Desktop/saida"
 
 # atl08_zip <- system.file("extdata",
 #   "ATL08_20220401221822_01501506_005_01.h5",
-#   package = "rICESat2Veg"
+#   package = "ICESat2VegR"
 # )
 
 # # Unzipping ATL08 file

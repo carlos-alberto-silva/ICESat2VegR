@@ -65,7 +65,7 @@ ATL08_seg_attributes_dt_clipBox <- function(atl08_seg_att_dt, xmin, xmax, ymin, 
   mask <- (seq_along(atl08_seg_att_dt$latitude))[mask]
   newFile <- atl08_seg_att_dt[mask, ]
 
-  setattr(newFile, "class", c("icesat2.atl08_dt", "data.table", "data.frame"))
+  prepend_class(newFile, "icesat2.atl08_dt")
 
 
   return(newFile)

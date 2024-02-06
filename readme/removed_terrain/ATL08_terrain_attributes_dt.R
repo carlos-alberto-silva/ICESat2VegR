@@ -80,15 +80,11 @@ ATL08_terrain_attributes_dt <- function(atl08_h5,
     stop("atl08_h5 must be an object of class 'icesat2.atl08_h5' - output of [ATL08_read()] function ")
   }
 
-  # h5
-  atl08_h5v2 <- atl08_h5@h5
-
   # Check beams to select
-  groups_id <- hdf5r::list.groups(atl08_h5v2, recursive = F)
+  groups_id <- getBeams(atl08_h5)
 
-  check_beams <- groups_id %in% beam
-  beam <- groups_id[check_beams]
 
+  beam <- intersect(groups_id, beam)
   terrain.dt <- data.table::data.table()
 
   pb <- utils::txtProgressBar(min = 0, max = length(beam), style = 3)
@@ -100,10 +96,10 @@ ATL08_terrain_attributes_dt <- function(atl08_h5,
       i_s <- i_s + 1
       utils::setTxtProgressBar(pb, i_s)
 
-      atl08_h5v2_i <- atl08_h5v2[[paste0(i, "/land_segments/terrain")]]
+      atl08_h5v2_i <- atl08_h5[[paste0(i, "/land_segments/terrain")]]
 
-      lat_i <- atl08_h5v2[[paste0(i, "/land_segments/latitude")]][]
-      lon_i <- atl08_h5v2[[paste0(i, "/land_segments/longitude")]][]
+      lat_i <- atl08_h5[[paste0(i, "/land_segments/latitude")]][]
+      lon_i <- atl08_h5[[paste0(i, "/land_segments/longitude")]][]
 
       m <- data.table::data.table(latitude = lat_i, longitude = lon_i, beam = i)
 
@@ -112,7 +108,7 @@ ATL08_terrain_attributes_dt <- function(atl08_h5,
         metric_address <- ATL08_terrain.var.map[[col]]
 
         if (is.null(metric_address)) {
-          if (atl08_h5v2_i$exists(col)) {
+          if (h5exists(atl08_h5v2_i, col)) {
             metric_address <- col
           } else {
             if (!col %in% names(atl08_h5v2_i)) {
@@ -128,7 +124,7 @@ ATL08_terrain_attributes_dt <- function(atl08_h5,
           }
         }
         base_addr <- gsub("^(.*)/.*", "\\1", metric_address)
-        if (atl08_h5v2_i$exists(base_addr) && atl08_h5v2_i$exists(metric_address)) {
+        if (h5exists(atl08_h5v2_i, base_addr) && h5exists(atl08_h5v2_i, metric_address)) {
           if (metric_address %in% c("h_te_best_fit_20m", "subset_te_flag")) {
             m <- cbind(m, t(atl08_h5v2_i[[metric_address]][, ]))
 

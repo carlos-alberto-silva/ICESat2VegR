@@ -116,7 +116,7 @@ ATL08_photons_attributes_dt <- function(atl08_h5,
     }
   }
 
-  setattr(photon_dt, "class", c("icesat2.atl08_dt", "data.table", "data.frame"))
+  prepend_class(photon_dt, "icesat2.atl08_dt")
 
   close(pb)
 

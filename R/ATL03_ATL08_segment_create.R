@@ -106,6 +106,6 @@ ATL03_ATL08_segment_create <- function(atl03_atl08_dt, segment_length, centroid 
     terra::writeVector(v, output, overwrite = TRUE)
   }
 
-  data.table::setattr(dt, "class", c("icesat2.atl03_atl08_seg_dt", "data.table", "data.frame"))
+  prepend_class(dt, "icesat2.atl03_atl08_seg_dt")
   dt
 }
