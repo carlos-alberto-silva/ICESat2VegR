@@ -1,6 +1,5 @@
-#' @include class.icesat2.h5.R
+#' @include class.icesat2.h5_local.R
 #' @include class.icesat2.h5_cloud.R
-#' @include class.icesat2.h5_ds_cloud.R
 #' @include class_tools.R
 
 .datatable.aware <- TRUE
@@ -31,6 +30,15 @@ setMethod(
     )
   }
 )
+
+setMethod(
+  "[[",
+  signature = c("icesat2.granules_cloud"),
+  definition = function(x, i = NULL, ...) {
+    x[i]
+  }
+)
+
 
 #' @importFrom hdf5r H5File
 setRefClass("icesat2.hdf5r")

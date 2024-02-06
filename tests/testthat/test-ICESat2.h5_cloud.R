@@ -24,14 +24,12 @@ test_that("ATLAS_dataFinder_cloud works", {
     daterange,
     persist
   )
+  message(res[1])
   expect_equal(length(res), 1)
 })
 
 test_that("Can create a ICESat2.h5_cloud", {
-  granules <- earthaccess$open(list(res[1]))
-  h5 <- h5py$File(granules[0])
-
-  atl08_h5 <<- ICESat2.h5_cloud$new(h5 = h5)
+  atl08_h5 <<- ICESat2.h5_cloud$new(h5 = res[1])
   expect_true(inherits(atl08_h5, "ICESat2.h5_cloud"))
 })
 
@@ -64,7 +62,7 @@ test_that("Can open dataset from group", {
 })
 
 test_that("Can find dataset dimension", {
-  expect_true(all(ds$dims() > 0))
+  expect_true(all(ds$dims > 0))
 })
 
 test_that("Can find open one value from dataset", {
@@ -81,7 +79,7 @@ test_that("Can find open five values from dataset", {
 
 test_that("Can open entire datase", {
   vals <<- ds[]
-  expect_true(length(vals) == ds$dims())
+  expect_true(length(vals) == ds$dims)
 })
 
 test_that("Can open by mask", {

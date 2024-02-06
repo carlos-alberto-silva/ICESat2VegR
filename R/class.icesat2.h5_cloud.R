@@ -1,10 +1,21 @@
+#' @include class.icesat2.h5_ds_cloud.R
 #' @import R6 reticulate
 #' @export
 ICESat2.h5_cloud <- R6::R6Class("ICESat2.h5_cloud", list(
     inherit = "ICESat2.h5",
     h5 = NULL,
     initialize = function(h5) {
-        self$h5 <- h5
+        if (inherits(h5, "icesat2.granules_cloud")) {
+            stop("For now the package only works with one granule at a time
+try with only one granule [i].")
+        }
+        if (inherits(h5, "icesat2.granule_cloud")) {
+            granules <- earthaccess$open(list(h5))
+            h5file <- h5py$File(granules[0])
+            self$h5 <- h5file
+        } else {
+            self$h5 <- h5
+        }
     },
     ls = function() {
         pymain <- reticulate::import_main()

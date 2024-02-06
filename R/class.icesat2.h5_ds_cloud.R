@@ -2,11 +2,10 @@
 #' @export
 ICESat2.h5_ds_cloud <- R6::R6Class("ICESat2.h5_ds_cloud", list(
     ds = NULL,
+    dims = NULL,
     initialize = function(ds) {
         self$ds <- ds
-    },
-    dims = function() {
-        as.numeric(self$ds$shape)
+        self$dims <- as.numeric(self$ds$shape)
     }
 ))
 
