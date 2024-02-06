@@ -39,25 +39,51 @@ icesat2.atl08_h5 <- setClass(
   contains = "icesat2.h5"
 )
 
+icesat2.h5_dataset <- setClass(
+  Class = "icesat2.h5_dataset",
+  slots = list(ds = "ANY")
+)
+
 #' Dispatches the `[[` function to h5
 #'
-#' @param x An object of class `icesat2.atl03_h5`
+#' @param x An object of class `[icesat2.h5-class]`
 #' @param path The path for the dataset which to open
 #'
 #' @export
-`[[.icesat2.atl03_h5` <- function(x, path) {
-  x@h5[[path]]
-}
-#' Dispatches the `[[` function to h5
-#'
-#'
-#' @param x An object of class `icesat2.atl08_h5`
-#' @param path The path for the dataset which to open
-#'
-#' @export
-`[[.icesat2.atl08_h5` <- function(x, path) {
-  x@h5[[path]]
-}
+setMethod(
+  "[[",
+  signature = c("icesat2.h5"),
+  definition = function(x, i, j, ...) {
+  res <- x@h5[[i]]
+    try(expr = {
+      res[1]
+      return(new("icesat2.h5_dataset", ds = res))
+    }, silent = TRUE)
+
+    new("icesat2.h5", h5 = res)
+  }
+)
+
+setMethod(
+  "[",
+  signature = c("icesat2.h5_dataset"),
+  definition = function(x, i = NULL, ...) {
+    try(
+      {
+        if (inherits(x@ds, "h5py._hl.dataset.Dataset")) {
+          if (is.numeric(i)) {
+            return(x@ds[i - 1])
+          }
+        }
+        return(x@ds[i])
+      },
+      silent = TRUE
+    )
+
+    x@ds[]
+  }
+)
+
 #' Get Beams for icesat h5 classes
 #'
 #' @param h5 An object of class [`icesat2.atl03_h5-class`] or [`icesat2.atl08_h5-class`]
