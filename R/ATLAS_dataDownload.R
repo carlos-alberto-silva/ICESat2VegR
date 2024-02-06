@@ -169,13 +169,13 @@ getNetRC <- function(dl_dir) {
     user <- Sys.getenv("NASA_USER")
     if (user == "") {
       user <- getPass::getPass(
-        msg = "Enter NASA Earthdata Login Username \n (or create an account at urs.earthdata.nasa.gov) :"
+        "Enter NASA Earthdata Login Username \n (or create an account at urs.earthdata.nasa.gov) :"
       )
     }
 
     password <- Sys.getenv("NASA_PASSWORD")
     if (password == "") {
-      password <- getPass::getPass(msg = "Enter NASA Earthdata Login Password:")
+      password <- getPass::getPass("Enter NASA Earthdata Login Password:")
     }
     # User will be prompted for NASA Earthdata Login Username and Password below
     writeLines(c(
