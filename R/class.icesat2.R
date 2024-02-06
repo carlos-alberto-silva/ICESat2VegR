@@ -1,3 +1,6 @@
+#' @include class.icesat2.h5.R
+#' @include class.icesat2.h5_cloud.R
+#' @include class.icesat2.h5_ds_cloud.R
 #' @include class_tools.R
 
 .datatable.aware <- TRUE
@@ -143,6 +146,16 @@ function(x) {
   pymain$res
 }
 )
+
+#' @export
+setMethod(
+"icesat2.h5_list",
+signature = c("icesat2.hdf5r"),
+function(x) {
+  x$ls()$name
+}
+)
+
 
 #' Get Beams for icesat h5 classes
 #'

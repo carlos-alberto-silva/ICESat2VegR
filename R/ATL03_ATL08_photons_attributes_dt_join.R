@@ -120,7 +120,8 @@ ATL03_ATL08_photons_attributes_dt_join <- function(atl03_h5, atl08_h5,
   for (i in beam) {
     i_s <- i_s + 0.25
     utils::setTxtProgressBar(pb, i_s)
-    n_segments <- atl03_h5[[paste0(i, "/geolocation/segment_length")]]$dims
+
+    n_segments <- icesat2.h5_dims(atl03_h5[[paste0(i, "/geolocation/segment_length")]])
 
     segment_ph_cnt <- atl03_h5[[paste0(i, "/geolocation/segment_ph_cnt")]][]
 
