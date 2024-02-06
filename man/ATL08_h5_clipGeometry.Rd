@@ -29,7 +29,7 @@ but keeps metada and ancillary data the same.
 outdir <- tempdir()
 atl08_zip <- system.file("extdata",
   "atl08_20220401221822_01501506_005_01.zip",
-  package = "rICESat2Veg"
+  package = "ICESat2VegR"
 )
 
 # Unzipping ATL08 file
@@ -42,7 +42,7 @@ output <- file.path(outdir, "clipped.h5")
 
 vect_path <- system.file("extdata",
   "polygons.shp",
-  package = "rICESat2Veg"
+  package = "ICESat2VegR"
 )
 
 vect <- terra::vect()

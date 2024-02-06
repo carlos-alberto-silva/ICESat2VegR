@@ -4,11 +4,11 @@
 #'
 #' @usage ATL03_photons_attributes_dt(ATL03_h5, beam)
 #'
-#' @param ATL03_h5 A ICESat-2 ATL03 object (output of [`ATL03_read()`] function).
-#' An S4 object of class [`ICESat2VegR::icesat2.atl03_dt``].
+#' @param ATL03_h5 A ICESat-2 ATL03 object (output of [ATL03_read()] function).
+#' An S4 object of class [`ICESat2VegR::icesat2.atl03_dt-class`].
 #' @param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
 #'
-#' @return Returns an S4 object of class [data.table::data.table]
+#' @return Returns an S4 object of class [`data.table::data.table-class`]
 #' containing the ATL03 photons attributes.
 #'
 #' @details These are the photons attributes extracted:

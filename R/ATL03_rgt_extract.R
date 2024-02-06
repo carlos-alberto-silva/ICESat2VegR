@@ -4,7 +4,7 @@
 #' and writes it as a GDAL vector format.
 #'
 #' @param ATL03_h5 A ICESat-2 ATL03 object (output of [ATL03_read()] function).
-#' An S4 object of class [rICESat2Veg::icesat2.atl03_dt].
+#' An S4 object of class [ICESat2VegR::icesat2.atl03_dt].
 #' @param output Character vector. The output vector file. The GDAL vector format
 #' will be inferred by the file extension using [`terra::writeVector()`]
 #' @param overwrite logical input to control if the output vector file should be overwritten.
@@ -25,7 +25,7 @@
 #' outdir <- tempdir()
 #' atl03_zip <- system.file("extdata",
 #'   "ATL03_20220401221822_01501506_005_01.zip",
-#'   package = "rICESat2Veg"
+#'   package = "ICESat2VegR"
 #' )
 #'
 #' # Unzipping ATL03 file

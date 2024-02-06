@@ -1,6 +1,6 @@
 #' Converts ATL03 photon cloud to LAS
 #'
-#' @param atl03_dt  An S4 object of class [rICESat2Veg::icesat2.atl03_dt]
+#' @param atl03_dt  An S4 object of class [ICESat2VegR::icesat2.atl03_dt]
 #' (output of [`ATL03_photons_attributes_dt()`] function).
 #' @param output character. The output path of for the LAS(Z) file(s)
 #' The function will create one LAS file per UTM Zone in WGS84 datum.
@@ -13,7 +13,7 @@
 #' outdir <- tempdir()
 #' atl03_zip <- system.file("extdata",
 #'   "ATL03_20220401221822_01501506_005_01.zip",
-#'   package = "rICESat2Veg"
+#'   package = "ICESat2VegR"
 #' )
 #'
 #' # Unzipping ATL03 file

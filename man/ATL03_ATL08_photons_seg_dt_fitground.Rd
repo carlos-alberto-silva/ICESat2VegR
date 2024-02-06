@@ -53,7 +53,7 @@ The interpolation functions need a third parameter which is the
 \code{stats::approx()} and \code{stats::spline()} name this argument as \code{xout},
 so you can use:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{ATL03_ATL08_photons_seg_dt_fitground(
+\if{html}{\out{<div class="sourceCode">}}\preformatted{ATL03_ATL08_photons_fitground_seg_dt(
   dt,
   interpolation_func = approx,
   xout = 1:30
@@ -65,24 +65,17 @@ may name the parameter differently, such as \code{\link[signal:pchip]{signal::pc
 the parameter as \code{xi} instead of \code{xout}. \code{\link[signal:pchip]{signal::pchip()}} is the
 algorithm used by ATL08 ATBD.
 
-If you don't want to specify the vector to interpolate, but instead get the
-predictions for every photon then instead specify the parameter name used by
-the interpolation function in \code{xout_parameter_name}:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{ATL03_ATL08_photons_seg_dt_fitground(
-  dt,
-  interpolation_func = signal::pchip,
-  xout_parameter_name = "xi"
-)
-}\if{html}{\out{</div>}}
-
 The \code{smoothing_window} can be left NA, which will use the ATBD algoritm
 for calculating the window size:
 
-$Sspan = ceil\link{5 + 46 * (1 - e^{-a * length})}$, where \emph{length}
+\eqn{Sspan = ceil[5 + 46 * (1 - e^{-a * length})]}, where \emph{length}
 is the number of photons within segment.
 
-$$a \approx 21x10^{-6}$$
+\deqn{a \approx 21x10^{-6}}
 
-$$window_size = \frac{2}{3} Sspan$$
+\deqn{window_size = \frac{2}{3} Sspan}
+
+This is not the same algorithm as used in ATL08
+but is an adapted version that uses the ATL08
+pre-classification
 }

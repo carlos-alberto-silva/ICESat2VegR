@@ -1,6 +1,6 @@
 #' Converts ATL08 segments to LAS
 #'
-#' @param atl08_dt  An S4 object of class [rICESat2Veg::icesat2.atl08_dt] containing ATL03 and ATL08 data
+#' @param atl08_dt  An S4 object of class [ICESat2VegR::icesat2.atl08_dt] containing ATL03 and ATL08 data
 #' (output of [ATL03_ATL08_photons_attributes_dt_join()] function).
 #' @param output character. The output path of for the LAS(Z) file(s)
 #' The function will create one LAS file per UTM Zone in WGS84 datum.
@@ -14,7 +14,7 @@
 #'
 #' atl08_zip <- system.file("extdata",
 #'   "ATL08_20220401221822_01501506_005_01.zip",
-#'   package = "rICESat2Veg"
+#'   package = "ICESat2VegR"
 #' )
 #'
 #' # Unzipping ATL08 file

@@ -17,7 +17,7 @@
 #' effect, 3=possible_tep. Default is 0
 #' @param night_flag Flag indicating the data were acquired in night conditions: 0=day, 1=night. Default is 1
 #'
-#' @return Returns an S4 object of class [`rICESat2Veg::icesat2.atl08_dt-class`]
+#' @return Returns an S4 object of class [`ICESat2VegR::icesat2.atl08_dt-class`]
 #' Containing Statistics of ATL03 and ATL08 labeled photons
 #'
 #' @examples
@@ -25,11 +25,11 @@
 #' outdir = tempdir()
 #' atl03_zip <- system.file("extdata",
 #'                   "ATL03_20220401221822_01501506_005_01.zip",
-#'                   package="rICESat2Veg")
+#'                   package="ICESat2VegR")
 #'
 #' atl08_zip <- system.file("extdata",
 #'                   "ATL08_20220401221822_01501506_005_01.zip",
-#'                   package="rICESat2Veg")
+#'                   package="ICESat2VegR")
 #'
 #' # Unzipping ATL03 file
 #' atl03_path <- unzip(atl03_zip,exdir = outdir)

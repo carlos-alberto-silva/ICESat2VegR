@@ -21,7 +21,7 @@ Vegetation Along-Track Products (ATL08) as h5 file.
 outdir <- tempdir()
 atl08_fp_zip <- system.file("extdata",
   "ATL0802_A_2019108080338_O01964_T05337_02_001_01_sub.zip",
-  package = "rICESat2Veg"
+  package = "ICESat2VegR"
 )
 
 # Unzipping ICESat-2 ATL08 data

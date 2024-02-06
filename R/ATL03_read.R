@@ -51,7 +51,7 @@ setMethod(
   }
 )
 
-h5py <- NA
+#' @include zzz.R
 setRefClass("earthaccess.results.DataGranule")
 setMethod(
   "ATL03_read",

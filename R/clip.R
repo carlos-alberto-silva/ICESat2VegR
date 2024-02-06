@@ -22,7 +22,7 @@
 #' outdir <- tempdir()
 #' atl03_zip <- system.file("extdata",
 #'   "atl03_20220401221822_01501506_005_01.zip",
-#'   package = "rICESat2Veg"
+#'   package = "ICESat2VegR"
 #' )
 #'
 #' # Unzipping ATL03 file
@@ -35,7 +35,7 @@
 #'
 #' vect_path <- system.file("extdata",
 #'   "polygons.shp",
-#'   package = "rICESat2Veg"
+#'   package = "ICESat2VegR"
 #' )
 #'
 #' vect <- terra::vect(vect_path)

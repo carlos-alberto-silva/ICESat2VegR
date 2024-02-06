@@ -66,7 +66,7 @@ Coverage is calculated with the formula
 outdir <- tempdir()
 atl08_fp_zip <- system.file("extdata",
   "ATL0802_A_2019108080338_O01964_T05337_02_001_01_sub.zip",
-  package = "rICESat2Veg"
+  package = "ICESat2VegR"
 )
 
 # Unzipping ICESat-2 ATL08 data
@@ -80,11 +80,11 @@ close(atl08)
 outdir = tempdir()
 atl03_zip <- system.file("extdata",
                   "ATL03_20220401221822_01501506_005_01.zip",
-                  package="rICESat2Veg")
+                  package="ICESat2VegR")
 
 atl08_zip <- system.file("extdata",
                   "ATL08_20220401221822_01501506_005_01.zip",
-                  package="rICESat2Veg")
+                  package="ICESat2VegR")
 
 # Unzipping ATL03 file
 atl03_path <- unzip(atl03_zip,exdir = outdir)

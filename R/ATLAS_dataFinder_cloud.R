@@ -1,5 +1,5 @@
 PAGE_SIZE <- 2000
-earthaccess <- NA
+
 
 #' ICESat-2 ATL03 and ATL08 data finder
 #'
@@ -80,7 +80,7 @@ ATLAS_dataFinder_cloud <- function(short_name,
 
 
   if (inherits(earthaccess, "logical")) {
-    earthaccess <<- reticulate::import("earthaccess", convert = FALSE)
+    earthaccess <- reticulate::import("earthaccess", convert = FALSE)
   }
 
   # Try different authentication mechanisms

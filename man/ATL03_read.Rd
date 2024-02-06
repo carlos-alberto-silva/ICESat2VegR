@@ -7,7 +7,8 @@
 ATL03_read(atl03_path)
 }
 \arguments{
-\item{atl03_path}{File path pointing to ICESat-2 ATL03 data. Data in HDF5 Hierarchical Data Format (.h5).}
+\item{atl03_path}{Either file path pointing to ICESat-2 ATL03 h5 data
+or a granule resulting from \code{\link[=ATLAS_dataFinder_cloud]{ATLAS_dataFinder_cloud()}}.}
 }
 \value{
 Returns an S4 object of class \code{\link{icesat2.atl03_dt}} containing ICESat-2 ATL03 data.
@@ -17,16 +18,17 @@ This function reads the ICESat-2 Global Geolocated Photons (ATL03) Product (ATL0
 }
 \examples{
 # Specifying the path to ICESat-2 ATL03 data (zip file)
-outdir = tempdir()
+outdir <- tempdir()
 ATL03_fp_zip <- system.file("extdata",
-                  "ATL0302_A_2019108080338_O01964_T05337_02_001_01_sub.zip",
-                  package="rICESat2Veg")
+  "ATL0302_A_2019108080338_O01964_T05337_02_001_01_sub.zip",
+  package = "ICESat2VegR"
+)
 
 # Unzipping ICESat-2 ATL03 data
-atl03_path <- unzip(ATL03_fp_zip,exdir = outdir)
+atl03_path <- unzip(ATL03_fp_zip, exdir = outdir)
 
 # Reading ICESat-2 ATL03 data (h5 file)
-ATL03<-ATL03_read(atl03_path=atl03_path)
+ATL03 <- ATL03_read(atl03_path = atl03_path)
 
 close(ATL03)
 }

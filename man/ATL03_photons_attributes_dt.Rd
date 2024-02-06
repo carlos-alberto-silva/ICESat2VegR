@@ -45,7 +45,7 @@ conditions: 0=day, 1=night. Night flag is set when solar elevation is below 0.0 
 outdir <- tempdir()
 atl03_zip <- system.file("extdata",
   "ATL03_20220401221822_01501506_005_01.zip",
-  package = "rICESat2Veg"
+  package = "ICESat2VegR"
 )
 
 # Unzipping ATL03 file

@@ -27,7 +27,7 @@ area defined by a polygon
 outdir <- tempdir()
 atl08_zip <- system.file("extdata",
   "ATL08_20220401221822_01501506_005_01.zip",
-  package = "rICESat2Veg"
+  package = "ICESat2VegR"
 )
 
 # Unzipping ATL08 file
@@ -40,7 +40,7 @@ atl08_h5 <- ATL08_read(ATL08_path = atl08_path)
 atl08_seg_att_dt <- ATL08_seg_attributes_dt(atl08_h5 = atl08_h5)
 
 # Specifying the path to shapefile
-polygon_filepath <- system.file("extdata", "polygon.shp", package = "rICESat2Veg")
+polygon_filepath <- system.file("extdata", "polygon.shp", package = "ICESat2VegR")
 
 # Reading shapefile as sf object
 polygon <- terra::vect(polygon_filepath)

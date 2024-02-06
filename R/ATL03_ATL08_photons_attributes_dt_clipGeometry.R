@@ -2,17 +2,15 @@
 #'
 #' @description This function clips joined ATL03 and ATL08 photon attributes within a given geometry
 #'
-#' @usage ATL03_ATL08_photons_attributes_dt_clipGeometry(atl03_atl08_dt, polygon, split_by = "FID")
-#'
-#' @param atl03_atl08_dt  An S4 object of class [`rICESat2Veg::icesat2.atl03atl08_dt-class`] containing ATL03 and ATL08 data
-#' (output of [rICESat2Veg::ATL03_ATL08_photons_attributes_dt_join()] function).
+#' @param atl03_atl08_dt  An S4 object of class [`ICESat2VegR::icesat2.atl03atl08_dt-class`] containing ATL03 and ATL08 data
+#' (output of [`ICESat2VegR::ATL03_ATL08_photons_attributes_dt_join()`] function).
 #' @param polygon Polygon. An object of class [`terra::SpatVector`],
 #' which can be loaded as an ESRI shapefile using [terra::vect] function in the
 #' \emph{sf} package.
 #' @param split_by Polygon id. If defined, GEDI data will be clipped by each polygon using
 #' the polygon id from table of attribute defined by the user
 #'
-#' @return Returns an S4 object of class [ICESat2VegR::icesat2.atl03atl08_dt]
+#' @return Returns an S4 object of class [`ICESat2VegR::icesat2.atl03atl08_dt-class`]
 #' containing the clipped ATL08 Terrain attributes.
 #'
 #' @examples

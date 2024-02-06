@@ -1,6 +1,6 @@
 Package: ICESat2VegR
 Type: Package
-Title: rICESat2Veg: An R Package for NASA's Ice, Cloud, and Elevation Satellite (ICESat-2) Data Processing and Visualization for Land and Vegetation Applications.
+Title: An R Package for NASA's Ice, Cloud, and Elevation Satellite (ICESat-2) Data Processing and Visualization for Land and Vegetation Applications.
 Version: 0.0.1
 Authors@R: c(
     person("Carlos Alberto", "Silva", email = "c.silva@ufl.edu", role = c("aut", "cph", "cre")),
@@ -52,6 +52,7 @@ Collate:
     'ATL03_photons_dt_classify.R'
     'ATL03_photons_plot.R'
     'ATL03_photons_simulator.R'
+    'zzz.R'
     'ATL03_read.R'
     'class.icesat2.R'
     'ATL03_rgt_extract.R'
@@ -75,4 +76,3 @@ Collate:
     'clip (box, geometry, h5 and dt).R'
     'clip.R'
     'lazy_applier.R'
-    'zzz.R'

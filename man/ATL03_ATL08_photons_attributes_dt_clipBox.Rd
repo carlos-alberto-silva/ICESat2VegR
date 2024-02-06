@@ -30,11 +30,11 @@ This function clips joined ATL03 and ATL08 photon attributes within a given Boun
 outdir = tempdir()
 atl03_zip <- system.file("extdata",
                   "ATL03_20220401221822_01501506_005_01.zip",
-                  package="rICESat2Veg")
+                  package="ICESat2VegR")
 
 atl08_zip <- system.file("extdata",
                   "ATL08_20220401221822_01501506_005_01.zip",
-                  package="rICESat2Veg")
+                  package="ICESat2VegR")
 
 # Unzipping ATL03 file
 atl03_path <- unzip(atl03_zip,exdir = outdir)
