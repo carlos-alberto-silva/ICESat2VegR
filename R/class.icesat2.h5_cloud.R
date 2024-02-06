@@ -13,8 +13,8 @@ ICESat2.h5_cloud <- R6::R6Class("ICESat2.h5_cloud", list(
     },
     exists = function(path) {
         pymain <- reticulate::import_main()
-        pymain$h5 <- atl08_h5@h5
-        pymain$path <- "gt1r"
+        pymain$h5 <- self$h5
+        pymain$path <- path
         reticulate::py_run_string("res = path in h5")$res
     },
     close_all = function() {
