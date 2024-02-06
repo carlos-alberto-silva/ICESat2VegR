@@ -1,3 +1,4 @@
+#' @include class.icesat2.R
 PAGE_SIZE <- 2000
 
 
@@ -106,5 +107,7 @@ ATLAS_dataFinder_cloud <- function(short_name,
   granule_query$version(version)
   granule_query$short_name(short_name)
   res <- granule_query$get_all()
+
+  res <- new("icesat2.granules_cloud", granules = res)
   return(res)
 }

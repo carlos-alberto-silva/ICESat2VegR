@@ -1,5 +1,3 @@
-#' @include class_tools.R
-
 #' Read ICESat-2 ATL03 data
 #'
 #' @description This function reads the ICESat-2 Global Geolocated Photons (ATL03) Product (ATL03) as h5 file.
@@ -34,6 +32,9 @@ setGeneric("ATL03_read", function(atl03_path) {
   standardGeneric("ATL03_read")
 })
 
+
+#' @include zzz.R
+#' @include class.icesat2.R
 setMethod(
   "ATL03_read",
   signature = c("ANY"),
@@ -54,11 +55,9 @@ setMethod(
   }
 )
 
-#' @include zzz.R
-setRefClass("earthaccess.results.DataGranule")
 setMethod(
   "ATL03_read",
-  signature = c("earthaccess.results.DataGranule"),
+  signature = c("icesat2.granule_cloud"),
   function(atl03_path) {
     if (inherits(h5py, "logical")) {
       if (!reticulate::py_module_available("h5py")) {

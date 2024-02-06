@@ -33,6 +33,11 @@ setGeneric("ATL08_read", function(atl08_path) {
   standardGeneric("ATL08_read")
 })
 
+
+#' @include class.icesat2.R
+#' @include zzz.R
+
+
 setMethod(
   "ATL08_read",
   signature = c("ANY"),
@@ -47,17 +52,16 @@ setMethod(
     }
 
     atl08_h5 <- hdf5r::H5File$new(atl08_path, mode = "r")
-    atl08_h5 <- prepend_class(atl08_h5, "icesat2.hdf5r")
+    prepend_class(atl08_h5, "icesat2.hdf5r")
+
     atl08 <- new("icesat2.atl08_h5", h5 = atl08_h5)
     return(atl08)
   }
 )
 
-h5py <- NA
-setRefClass("earthaccess.results.DataGranule")
 setMethod(
   "ATL08_read",
-  signature = c("earthaccess.results.DataGranule"),
+  signature = c("icesat2.granule_cloud"),
   function(atl08_path) {
     if (inherits(h5py, "logical")) {
       if (!reticulate::py_module_available("h5py")) {
@@ -67,7 +71,7 @@ setMethod(
     }
     granules <- earthaccess$open(list(atl08_path))
     atl08_h5 <- h5py$File(reticulate::py_to_r(granules)[[1]])
-    atl08_h5 <- prepend_class(atl08_h5, "icesat2.h5_cloud")
+    prepend_class(atl08_h5, "icesat2.h5_cloud")
 
     atl08 <- new("icesat2.atl08_h5", h5 = atl08_h5)
 

@@ -1,6 +1,34 @@
 #' @include class_tools.R
 
 .datatable.aware <- TRUE
+
+# Base class for icesat H5 files
+setClass(
+  Class = "icesat2.granules_cloud",
+  slots = list(granules = "ANY")
+)
+
+setRefClass("icesat2.granule_cloud")
+
+setMethod(
+  "[",
+  signature = c("icesat2.granules_cloud"),
+  definition = function(x, i = NULL, ...) {
+    tryCatch(
+      {
+        res <- x@granules[i - 1]
+      },
+      error = function(e) {
+        res <- x@granules[i]
+      },
+      finally = {
+        prepend_class(res, "icesat2.granule_cloud")
+        return(res)
+      }
+    )
+  }
+)
+
 #' @importFrom hdf5r H5File
 setRefClass("icesat2.hdf5r")
 
