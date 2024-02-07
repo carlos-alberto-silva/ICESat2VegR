@@ -16,7 +16,20 @@ ICESat2.h5ds_local <- R6::R6Class("ICESat2.h5ds_local", list(
         self$ds$get_fill_value()
     },
     get_creation_property_list = function() {
-        self$ds$get_create_plist()
+        old_plist <- self$ds$get_create_plist()
+        number_filters <- old_plist$get_nfilters()
+
+        plist <- hdf5r::H5P_DATASET_CREATE$new()
+        for (ii in (seq_len(number_filters) - 1)) {
+            old_filter <- old_plist$get_filter(ii)
+            filter_id <- old_filter$filter
+            flags <- old_filter
+            client_data <- as.integer(old_filter[[3]])
+
+            plist$set_filter(filter_id, flags, client_data)
+        }
+        plist$set_fill_value(self$get_type(), self$get_fill_value())
+        return(plist)
     }
 ))
 
