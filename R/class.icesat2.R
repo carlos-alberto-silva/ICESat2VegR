@@ -494,7 +494,7 @@ setMethod(
     } else {
       x <- x[x$beam == beam, ]
       suppressWarnings({
-        plot(x = x$dist_along, y = x$h_ph, col = col, xlab = "Distance along-track (m)", ylab = "Elevation (m)", ...)
+        plot(x = x$dist_ph_along, y = x$h_ph, col = col, xlab = "Distance along-track (m)", ylab = "Elevation (m)", ...)
         legend("topleft", legend = c("Noise", "Terrain", "Vegetation", "Top canopy"), pch = 16, col = colors, bty = "n")
       })
     }

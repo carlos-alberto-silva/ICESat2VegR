@@ -34,12 +34,7 @@ ICESat2.h5ds_local <- R6::R6Class("ICESat2.h5ds_local", list(
 ))
 
 #' @export
-"[.ICESat2.h5ds_local" <- function(x, i, ...) {
-    try(
-        {
-            return(x$ds[i])
-        },
-        silent = TRUE
-    )
-    x$ds[]
+"[.ICESat2.h5ds_local" <- function(x, ...) {
+    args <- alist(x$ds, ...)
+    do.call("[", args)
 }
