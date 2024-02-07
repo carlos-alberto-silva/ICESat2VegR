@@ -52,6 +52,7 @@ setMethod(
     }
 
     atl08 <- ICESat2.h5_local$new(h5 = atl08_path)
+    prepend_class(atl08, "icesat2.atl08_h5")
     return(atl08)
   }
 )
@@ -70,6 +71,7 @@ setMethod(
   signature = c("icesat2.granule_cloud"),
   function(atl08_path) {
     atl08 <- ICESat2.h5_cloud$new(h5 = atl08_path)
+    prepend_class(atl08, "icesat2.atl08_h5")
     return(atl08)
   }
 )
