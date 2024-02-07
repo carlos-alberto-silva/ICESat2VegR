@@ -80,7 +80,6 @@ Collate:
     'ATLAS_dataFinder.R'
     'ATLAS_dataFinder_cloud.R'
     'argParse.R'
-    'class.icesat2.h5.R'
     'clip (box, geometry, h5 and dt).R'
     'clip.R'
     'lazy_applier.R'

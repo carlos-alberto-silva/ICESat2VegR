@@ -7,7 +7,7 @@ ICESat2.h5_local <- R6::R6Class("ICESat2.h5_local", list(
     beams = NULL,
     initialize = function(h5) {
         if (inherits(h5, "character")) {
-            self$h5 <- H5File$new(h5)
+            self$h5 <- H5File$new(h5, mode = "r")
             groups <- self$ls()
             self$beams <- grep("gt[1-3][lr]", groups, value = TRUE)
         } else {
