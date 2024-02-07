@@ -73,9 +73,10 @@ ATL03_photons_attributes_dt <- function(atl03_h5,
 
   for (i in beam) {
     i_s <- i_s + 1
-
+    message(i)
     n_segments <- atl03_h5[[paste0(i, "/geolocation/segment_length")]]$dims
-    segment_ph_cnt <- atl03_h5[[paste0(i, "/geolocation/segment_ph_cnt")]][]
+    segment_ph_cnt <- atl03_h5[[paste0(i, "/geolocation/segment_ph_cnt")]]
+    segment_ph_cnt <- segment_ph_cnt[]
     segment_length <- c(0, cumsum(atl03_h5[[paste0(i, "/geolocation/segment_length")]][1:(n_segments - 1)]))
     segment_lengths <- rep(segment_length, segment_ph_cnt)
 

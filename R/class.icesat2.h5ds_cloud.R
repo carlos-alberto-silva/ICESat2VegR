@@ -27,9 +27,9 @@ ICESat2.h5ds_cloud <- R6::R6Class("ICESat2.h5ds_cloud", list(
     get_creation_property_list = function() {
         py_plist <- self$ds$id$get_create_plist()
         number_filters <- py_plist$get_nfilters()
-        
+
         plist <- hdf5r::H5P_DATASET_CREATE$new()
-        for (ii in (seq_len(number_filters)-1)) {
+        for (ii in (seq_len(number_filters) - 1)) {
             py_filter <- py_plist$get_filter(ii)
             filter_id <- py_filter[[1]]
             flags <- py_filter[[2]]
@@ -44,7 +44,13 @@ ICESat2.h5ds_cloud <- R6::R6Class("ICESat2.h5ds_cloud", list(
 ))
 
 #' @export
-"[.ICESat2.h5ds_local" <- function(x, ...) {
-    args <- alist(x$ds, ...)
-    do.call("[", args)
+"[.ICESat2.h5ds_cloud" <- function(x, ...) {
+    args <- eval(substitute(alist(...)))
+    for (ii in seq_along(args)) {
+        jj <- args[[ii]]
+        if (!missing(jj)) {
+            args[[ii]] <- eval(jj, parent.frame())
+        }
+    }
+    do.call("[", c(list(x$ds), args))
 }

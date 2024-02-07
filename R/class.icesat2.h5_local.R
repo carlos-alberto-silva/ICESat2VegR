@@ -44,7 +44,7 @@ ICESat2.h5_local <- R6::R6Class("ICESat2.h5_local", list(
 ))
 
 #' @export
-"[[.ICESat2.h5_local" <- function(x, i = NULL, j, ...) {
+"[[.ICESat2.h5_local" <- function(x, i) {
     res <- x$h5[[i]]
     if (inherits(res, "H5D")) {
         return(ICESat2.h5ds_local$new(ds = res))
