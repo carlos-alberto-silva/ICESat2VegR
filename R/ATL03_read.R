@@ -48,9 +48,7 @@ setMethod(
       stop("atl03_path must be a path to a h5 file")
     }
 
-    atl03_h5 <- hdf5r::H5File$new(atl03_path, mode = "r")
-    prepend_class(atl03_h5, "icesat2.hdf5r")
-    atl03 <- new("icesat2.atl03_h5", h5 = atl03_h5)
+    atl03 <- ICESat2.h5_local$new(h5 = atl03_path)
     return(atl03)
   }
 )
@@ -59,17 +57,7 @@ setMethod(
   "ATL03_read",
   signature = c("icesat2.granule_cloud"),
   function(atl03_path) {
-    if (inherits(h5py, "logical")) {
-      if (!reticulate::py_module_available("h5py")) {
-        reticulate::py_install("h5py")
-      }
-      h5py <<- reticulate::import("h5py")
-    }
-    granules <- earthaccess$open(list(atl03_path))
-    atl03_h5 <- h5py$File(reticulate::py_to_r(granules)[[1]])
-
-    prepend_class(atl03_h5, "icesat2.h5_cloud")
-    atl03 <- new("icesat2.atl03_h5", h5 = atl03_h5)
+    atl03 <- ICESat2.h5_cloud$new(h5 = atl03_path)
 
     return(atl03)
   }
