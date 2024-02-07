@@ -61,7 +61,7 @@
 #' close(atl08_h5)
 #' @export
 ATL08_seg_attributes_dt_clipGeometry <- function(atl08_seg_att_dt, polygon, split_by = "id") {
-  if (!class(atl08_seg_att_dt)[1] == "icesat2.atl08_dt") {
+  if (!inherits(atl08_seg_att_dt, "icesat2.atl08_dt")) {
     stop("atl08_seg_att_dt needs to be an object of class 'icesat2.atl08_dt' ")
   }
   exshp <- terra::ext(polygon)

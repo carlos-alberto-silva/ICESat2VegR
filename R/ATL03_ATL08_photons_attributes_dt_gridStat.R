@@ -78,7 +78,7 @@ ATL03_ATL08_photons_attributes_dt_gridStat <- function(atl03_atl08_dt,
                                            beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
                                            quality_ph = 0,
                                            night_flag = 1) {
-  if (!class(atl03_atl08_dt)[1] == "icesat2.atl03atl08_dt") {
+  if (!inherits(atl03_atl08_dt, "icesat2.atl03atl08_dt")) {
     stop("atl03_atl08_dt needs to be an object of class 'icesat2.atl03atl08_dt' ")
   }
 

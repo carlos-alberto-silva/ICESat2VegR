@@ -94,7 +94,7 @@ ATL03_ATL08_compute_seg_attributes_dt_segStat <- function(
     night_flag <-
     classed_pc_flag <- NA
 
-  if (!class(atl03_atl08_seg_dt)[1] == "icesat2.atl03atl08_dt") {
+  if (!inherits(atl03_atl08_seg_dt, "icesat2.atl03atl08_dt")) {
     stop("atl03_atl08_dt needs to be an object of class 'icesat2.atl03atl08_dt' ")
   }
 

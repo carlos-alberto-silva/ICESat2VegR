@@ -46,7 +46,7 @@
 #' @import hdf5r stats
 #' @export
 ATL03_photons_attributes_dt_clipBox <- function(atl03_photons_dt, xmin, xmax, ymin, ymax) {
-  if (!class(atl03_photons_dt)[1] == "icesat2.atl03_dt") {
+  if (!inherits(atl03_photons_dt, "icesat2.atl03_dt")) {
     stop("atl03_photons_dt needs to be an object of class 'icesat2.atl03_dt' ")
   }
 

@@ -149,7 +149,7 @@ ATL03_seg_attributes_dt <- function(atl03_h5,
                                           "yaw"
                                         )) {
   # Check file input
-  if (!class(atl03_h5) == "icesat2.atl03_h5") {
+  if (!inherits(atl03_h5, "icesat2.atl03_h5")) {
     stop("atl03_h5 must be an object of class 'icesat2.atl03_h5' - output of [ATL03_read()] function ")
   }
 

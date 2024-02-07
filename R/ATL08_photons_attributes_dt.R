@@ -59,7 +59,7 @@ ATL08_photons_attributes_dt <- function(atl08_h5,
                                         beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
                                         photon_attribute = c("ph_segment_id", "classed_pc_indx", "classed_pc_flag", "ph_h", "d_flag", "delta_time")) {
   # Check file input
-  if (!class(atl08_h5) == "icesat2.atl08_h5") {
+  if (!inherits(atl08_h5, "icesat2.atl08_h5")) {
     stop("atl08_h5 must be an object of class 'icesat2.atl08_h5' - output of [ATL08_read()] function ")
   }
 

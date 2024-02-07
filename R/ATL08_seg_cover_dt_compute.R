@@ -92,7 +92,7 @@ ATL03_ATL08_seg_cover_dt_compute <- function(
     night_flag = 1) {
   lon_ph <- lat_ph <- NA
 
-  if (!class(atl03_atl08_seg_dt)[1] == "icesat2.atl03atl08_dt") {
+  if (!inherits(atl03_atl08_seg_dt, "icesat2.atl03atl08_dt")) {
     stop("atl03_atl08_dt needs to be an object of class 'icesat2.atl03atl08_dt' ")
   }
 

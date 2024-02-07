@@ -136,7 +136,7 @@ ATL08_seg_attributes_dt <- function(atl08_h5,
                                       "terrain_slope"
                                     )) {
   # Check file input
-  if (!class(atl08_h5) == "icesat2.atl08_h5") {
+  if (!inherits(atl08_h5, "icesat2.atl08_h5")) {
     stop("atl08_h5 must be an object of class 'icesat2.atl08_h5' - output of [ATL08_read()] function ")
   }
 

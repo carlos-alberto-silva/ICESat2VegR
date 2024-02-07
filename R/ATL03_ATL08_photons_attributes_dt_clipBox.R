@@ -60,7 +60,7 @@
 #'@export
 ATL03_ATL08_photons_attributes_dt_clipBox <- function(atl03_atl08_dt, xmin, xmax, ymin, ymax) {
 
-  if (!class(atl03_atl08_dt)[1]=="icesat2.atl03atl08_dt"){
+  if (!inherits(atl03_atl08_dt, "icesat2.atl03atl08_dt")){
     stop("atl03_atl08_dt needs to be an object of class 'icesat2.at03atl08_dt' ")
   }
 

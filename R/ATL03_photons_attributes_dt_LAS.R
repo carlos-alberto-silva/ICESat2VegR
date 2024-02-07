@@ -42,7 +42,7 @@ ATL03_photons_attributes_dt_LAS <- function(atl03_dt, output) {
     Y = lat_ph,
     Z =  h_ph
   )])
-  # class(dt2)<-"data.table"
+  # inherits(dt2, "data.table")
 
   names(dt) <- c("X", "Y", "Z")
 
