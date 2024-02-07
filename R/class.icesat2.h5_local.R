@@ -9,7 +9,18 @@ ICESat2.h5_local <- R6::R6Class("ICESat2.h5_local", list(
         if (inherits(h5, "character")) {
             self$h5 <- H5File$new(h5, mode = "r")
             groups <- self$ls()
-            self$beams <- grep("gt[1-3][lr]", groups, value = TRUE)
+            if (self$attr("short_name") == "ATL03") {
+                beams <- grep("gt[1-3][lr]", groups, value = TRUE)
+                beamsList <- list()
+                for (beam in beams) {
+                    if ("geolocation" %in% self[[beam]]$ls()) {
+                        beamsList[[""]] <- beam
+                    }
+                }
+                self$beams <- as.character(beamsList)
+            } else {
+                self$beams <- grep("gt[1-3][lr]", groups, value = TRUE)
+            }
         } else {
             self$h5 <- h5
         }
