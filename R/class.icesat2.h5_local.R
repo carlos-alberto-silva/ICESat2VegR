@@ -5,6 +5,7 @@ ICESat2.h5_local <- R6::R6Class("ICESat2.h5_local", list(
     inherit = "ICESat2.h5",
     h5 = NULL,
     beams = NULL,
+    isOpen = TRUE,
     initialize = function(h5) {
         if (inherits(h5, "character")) {
             self$h5 <- H5File$new(h5, mode = "r")
@@ -35,7 +36,10 @@ ICESat2.h5_local <- R6::R6Class("ICESat2.h5_local", list(
         hdf5r::h5attr(self$h5, attribute)
     },
     close_all = function() {
-        self$h5$close_all()
+        if (self$isOpen) {
+            self$isOpen = FALSE
+            self$h5$close_all()
+        }
     }
 ))
 
