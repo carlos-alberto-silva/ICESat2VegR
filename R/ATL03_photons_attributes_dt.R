@@ -60,7 +60,7 @@ ATL03_photons_attributes_dt <- function(atl03_h5,
   }
 
   # Check beams to select
-  groups_id <- getBeams(atl03_h5)
+  groups_id <- atl03_h5$beams
 
   check_beams <- groups_id %in% beam
   beam <- groups_id[check_beams]

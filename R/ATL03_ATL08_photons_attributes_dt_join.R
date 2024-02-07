@@ -96,12 +96,9 @@ ATL03_ATL08_photons_attributes_dt_join <- function(atl03_h5, atl08_h5,
   }
 
   # Check beams to select
-  groups_id_atl03 <- getBeams(atl03_h5)
-  groups_id_atl08 <- getBeams(atl08_h5)
-  #
-  # groups_id_atl03 <- getBeams(atl03_h5, recursive = FALSE)
-  # groups_id_atl08 <- getBeams(atl08_h5, recursive = FALSE)
-
+  groups_id_atl03 <- atl03_h5$beams
+  groups_id_atl08 <- atl08_h5$beams
+  
   check_beams_atl03 <- groups_id_atl03 %in% beam
   check_beams_atl08 <- groups_id_atl08 %in% beam
 
@@ -121,7 +118,7 @@ ATL03_ATL08_photons_attributes_dt_join <- function(atl03_h5, atl08_h5,
     i_s <- i_s + 0.25
     utils::setTxtProgressBar(pb, i_s)
 
-    n_segments <- icesat2.h5_dims(atl03_h5[[paste0(i, "/geolocation/segment_length")]])
+    n_segments <- atl03_h5[[paste0(i, "/geolocation/segment_length")]]$dims
 
     segment_ph_cnt <- atl03_h5[[paste0(i, "/geolocation/segment_ph_cnt")]][]
 

@@ -65,7 +65,7 @@ ATL08_photons_attributes_dt <- function(atl08_h5,
 
 
   # Check beams to select
-  groups_id <- getBeams(atl08_h5)
+  groups_id <- atl08_h5$beams
 
 
   beam <- intersect(groups_id, beam)
@@ -89,7 +89,7 @@ ATL08_photons_attributes_dt <- function(atl08_h5,
         metric_address <- ATL08_photon.var.map[[col]]
 
         if (is.null(metric_address)) {
-          if (h5exists(atl08_h5v2_i, col)) {
+          if (atl08_h5v2_i$exists(col)) {
             metric_address <- col
           } else {
             if (i.s == 1) {
@@ -105,7 +105,7 @@ ATL08_photons_attributes_dt <- function(atl08_h5,
           }
         }
         base_addr <- gsub("^(.*)/.*", "\\1", metric_address)
-        if (h5exists(atl08_h5v2_i, base_addr) && h5exists(atl08_h5v2_i, metric_address)) {
+        if (atl08_h5v2_i$exists(base_addr) && atl08_h5v2_i$exists(metric_address)) {
           m[, eval(col) := atl08_h5v2_i[[metric_address]][]]
         }
         m$beam <- i

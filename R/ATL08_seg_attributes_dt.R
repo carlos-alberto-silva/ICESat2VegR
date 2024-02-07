@@ -142,8 +142,7 @@ ATL08_seg_attributes_dt <- function(atl08_h5,
 
 
   # Check beams to select
-  groups <- getBeams(atl08_h5)
-  groups_id <- grep("gt[1-3][lr]", groups, value = TRUE)
+  groups_id <- atl08_h5$beams
 
   check_beams <- groups_id %in% beam
   beam <- groups_id[check_beams]
@@ -172,7 +171,7 @@ ATL08_seg_attributes_dt <- function(atl08_h5,
 
 
         if (is.null(metric_address)) {
-          if (h5exists(atl08_h5, full_addr)) {
+          if (atl08_h5$exists(full_addr)) {
             metric_address <- col
           } else {
             if (i.s == 1) {
@@ -190,7 +189,7 @@ ATL08_seg_attributes_dt <- function(atl08_h5,
 
         # base_addr <- gsub("^(.*)/.*", "\\1", metric_address)
         # atl08_h5$exists(base_addr) &&
-        if (h5exists(atl08_h5,full_addr)) {
+        if (atl08_h5$exists(full_addr)) {
           if (col %in% c("h_canopy_20m", "canopy_h_metrics_abs", "subset_can_flag", "canopy_h_metrics")) {
             m <- cbind(m, t(atl08_h5[[full_addr]][, ]))
 

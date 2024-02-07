@@ -13,6 +13,16 @@ test_that("Can list groups", {
   expect_true("gt1l" %in% atl08_h5$ls())
 })
 
+test_that("Can read attribute", {
+  message(atl08_h5$attr("short_name"))
+  expect_equal(atl08_h5$attr("short_name"), "ATL08")
+})
+
+test_that("Beams are fetched", {
+  message(atl08_h5$beams)
+  expect_true("gt1l" %in% atl08_h5$beams)
+})
+
 test_that("Can open group", {
   group <<- atl08_h5[["gt1l"]]
   expect_true(inherits(group, "ICESat2.h5_local"))
@@ -29,12 +39,12 @@ test_that("Group can also list groups", {
 
 test_that("Can open dataset from file", {
   ds <<- atl08_h5[["gt1l/land_segments/latitude"]]
-  expect_true(inherits(ds, "ICESat2.h5_ds_local"))
+  expect_true(inherits(ds, "ICESat2.h5ds_local"))
 })
 
 test_that("Can open dataset from group", {
   ds <<- group[["land_segments/latitude"]]
-  expect_true(inherits(ds, "ICESat2.h5_ds_local"))
+  expect_true(inherits(ds, "ICESat2.h5ds_local"))
 })
 
 test_that("Can find dataset dimension", {

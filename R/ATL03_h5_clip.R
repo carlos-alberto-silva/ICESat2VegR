@@ -192,7 +192,7 @@ ATL03_h5_clipBox <- function(atl03, output, bbox) {
   }
 
   # Get all beams
-  beams <- getBeams(atl03)
+  beams <- atl03$beams
 
   nBeam <- 0
   nBeams <- length(beams)

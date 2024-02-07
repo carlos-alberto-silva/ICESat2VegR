@@ -164,33 +164,6 @@ function(x) {
 }
 )
 
-
-#' Get Beams for icesat h5 classes
-#'
-#' @param h5 An object of class [`icesat2.atl03_h5-class`] or [`icesat2.atl08_h5-class`]
-#' @param ... Other parameters to dispatch to the hdf5 library
-#'
-#' @export
-setGeneric("getBeams", function(h5, ...) {
-  standardGeneric("getBeams")
-})
-
-setMethod(
-  "getBeams",
-  signature = c("icesat2.h5"),
-  function(h5, ...) {
-    if (inherits(h5@h5, "icesat2.h5_cloud")) {
-      pymain <- reticulate::import_main()
-      pymain$f <- h5@h5
-
-      groups <- reticulate::py_run_string("temp_list = list(f.keys())")$temp_list
-    } else {
-      groups <- h5@h5$ls()$name
-    }
-    grep("gt[1-3][lr]", groups, value = TRUE)
-  }
-)
-
 #' Class for ATL08 attributes
 #'
 #' @seealso [`data.table`][data.table::data.table-class] in the `data.table` package and
@@ -525,26 +498,5 @@ setMethod(
         legend("topleft", legend = c("Noise", "Terrain", "Vegetation", "Top canopy"), pch = 16, col = colors, bty = "n")
       })
     }
-  }
-)
-
-#' @export
-setGeneric("h5exists", function(x, col, ...) {
-  standardGeneric("h5exists")
-})
-
-setMethod(
-  "h5exists",
-  signature = c("icesat2.h5"),
-  definition = function(x, col) {
-    try(
-      {
-        x@h5[[col]]
-        return(TRUE)
-      },
-      silent = TRUE
-    )
-
-    return(FALSE)
   }
 )

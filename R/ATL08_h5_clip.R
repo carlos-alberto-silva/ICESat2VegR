@@ -29,7 +29,7 @@ ATL08_h5_clip <- function(atl08, output, clip_obj, landSegmentsMask_fn) {
   }
 
   # Get all beams
-  beams <- getBeams(atl08)
+  beams <- atl08$beams
 
 
   nBeam <- 0

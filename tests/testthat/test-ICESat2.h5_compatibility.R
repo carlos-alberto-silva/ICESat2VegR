@@ -31,5 +31,21 @@ res <- ATLAS_dataFinder_cloud(
 atl08_h5_cloud <- ICESat2.h5_cloud$new(h5 = res[1])
 
 test_that("Groups are equal", {
-  expect_true(all(atl08_h5$ls() == atl08_h5_cloud$ls()))
+    list1 <- atl08_h5$ls()
+    list2 <- atl08_h5_cloud$ls()
+    list3 <- intersect(list1, list2)
+    expect_equal(length(list1), length(list2))
+    expect_equal(length(list1), length(list3))
+})
+
+test_that("Datasets dims are equal", {
+    ds1 <- atl08_h5[["gt1l/land_segments/latitude"]]
+    ds2 <- atl08_h5_cloud[["gt1l/land_segments/latitude"]]
+    expect_true(all.equal(ds1$dims, ds2$dims))
+})
+
+test_that("Datasets complex dims are equal", {
+    ds1 <- atl08_h5[["gt1l/land_segments/canopy/canopy_h_metrics_abs"]]
+    ds2 <- atl08_h5_cloud[["gt1l/land_segments/canopy/canopy_h_metrics_abs"]]
+    expect_true(all.equal(ds1$dims, ds2$dims))
 })

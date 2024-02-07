@@ -157,7 +157,7 @@ ATL03_seg_attributes_dt <- function(atl03_h5,
   atl03_h5v2 <- atl03_h5@h5
 
   # Check beams to select
-  groups_id <- getBeams(atl03_h5)
+  groups_id <- atl03_h5$beams
 
   check_beams <- groups_id %in% beam
   beam <- groups_id[check_beams]
