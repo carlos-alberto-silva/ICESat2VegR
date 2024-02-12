@@ -4,3 +4,4 @@
 .Ruserdata
 *.dll
 *.o
+.vscode

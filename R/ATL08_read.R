@@ -40,7 +40,7 @@ setGeneric("ATL08_read", function(atl08_path) {
 
 setMethod(
   "ATL08_read",
-  signature = c("ANY"),
+  signature = c("character"),
   function(atl08_path) {
     if (
       !(

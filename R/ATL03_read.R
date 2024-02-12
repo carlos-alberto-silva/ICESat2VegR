@@ -28,7 +28,7 @@
 #' close(ATL03)
 #' @import hdf5r
 #' @export
-setGeneric("ATL03_read", function(atl03_path) {
+setGeneric("ATL03_character", function(atl03_path) {
   standardGeneric("ATL03_read")
 })
 
