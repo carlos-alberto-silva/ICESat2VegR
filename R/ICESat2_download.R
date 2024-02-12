@@ -3,8 +3,9 @@
 #' @description Download ICESat-2 ATL03 and ALT08 data from LP DAAC Data Pool. Users will need to enter their
 #' Earth Explore login Information for downloading the data.
 #'
+#' @usage ICESat2data_download(filepath, outdir, overwrite, buffer_size, timeout)
 #'
-#' @param url character vector object; url to ATL03 or ALT08 data, or both (output of [`ATLAS_dataFinder()`])
+#' @param filepath Vector object; path to ATL03 or ALT08 data, or both (output of [`rICESat2Veg::ICESat2_finder()`])
 #' @param outdir Vector object, output directory for downloading GEDI data, default [tempdir()]
 #' @param overwrite logical; overwrite file if they already exists in destination, default FALSE
 #' @param buffer_size integer; the size of download chunk in KB to hold in memory before writing to file, default 512.
@@ -17,9 +18,9 @@
 #' \dontrun{
 #' # Set path to ICESat-2 data
 #' # herein we will only download xml metedata
-#' url <- c(
-#'   "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/ATLAS/ATL08/006/2019/07/13/ATL08_20190713210015_02410406_006_02.h5",
-#'   "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/ATLAS/ATL08/006/2019/07/15/ATL08_20190715084425_02640402_006_02.h5"
+#' filepath <- c(
+#'   "https://n5eil01u.ecs.nsidc.org/DP7/ATLAS/ATL08.005/2019.07.23/ATL08_20190723195221_03930406_005_01.h5",
+#'   "https://n5eil01u.ecs.nsidc.org/DP7/ATLAS/ATL08.005/2020.09.30/ATL08_20200930105550_00960901_005_01.h5"
 #' )
 #'
 #' # Set dir to download files to
@@ -29,8 +30,6 @@
 #' netrc <- file.path(outdir, ".netrc")
 #' netrc_conn <- file(netrc)
 #'
-#' # Assuming login data is saved in the
-#' # environmental variables NASA_USER and NASA_PASSWORD
 #' writeLines(c(
 #'   "machine urs.earthdata.nasa.gov",
 #'   sprintf("login %s", Sys.getenv("NASA_USER")),
@@ -40,11 +39,11 @@
 #' close(netrc_conn)
 #'
 #' #' Downloading ICEsat-2 data
-#' ATLAS_dataDownload(url, outdir)
+#' ICESat2data_download(filepath, outdir)
 #' }
 #' @import curl
 #' @export
-ATLAS_dataDownload <- function(url, outdir = NULL, overwrite = FALSE, buffer_size = 512, timeout = 10) {
+ICESat2data_download <- function(filepath, outdir = NULL, overwrite = FALSE, buffer_size = 512, timeout = 10) {
   if (is.null(outdir)) {
     outdir <- tempdir()
   }
@@ -56,7 +55,7 @@ ATLAS_dataDownload <- function(url, outdir = NULL, overwrite = FALSE, buffer_siz
   buffer_size <- as.integer(buffer_size)
   netrc <- getNetRC(outdir)
 
-  files <- url
+  files <- filepath
   n_files <- length(files)
 
   # Download all files in filepath vector
@@ -101,27 +100,18 @@ icesat2DownloadFile <- function(url, outdir, overwrite, buffer_size, netrc, time
 
   # Connection config
   h <- curl::new_handle()
-  curl::handle_setopt(
-    h,
-    netrc = 1,
-    netrc_file = netrc,
-    resume_from = resume_from,
-    connecttimeout = timeout,
-    followlocation = 1
-  )
+  curl::handle_setopt(h, netrc = 1, netrc_file = netrc, resume_from = resume_from, connecttimeout = timeout)
 
   tryCatch({
     fileHandle <- file(resume, open = "ab", raw = T)
     message("Connecting...")
     conn <- tryCatch(curl::curl(url, handle = h, open = "rb"), error = function(e) {
-      tryCatch(curl::curl(url, handle = h, open = "rb"), error = function(e) {
-        file.remove(netrc)
-        stop(e)
-      })
+      file.remove(netrc)
+      stop(e)
     })
     message("Connected successfully, downloading...")
-    headers <- curl::parse_headers_list(rawToChar(curl::handle_data(h)$headers))
-    total_size <- as.numeric(headers[["content-length"]])
+    headers <- rawToChar(curl::handle_data(h)$headers)
+    total_size <- as.numeric(gsub("[^\u00e7]*Content-Length: ([0-9]+)[^\u00e7]*", "\\1", x = headers, perl = T))
     while (TRUE) {
       message(
         sprintf(
@@ -166,22 +156,13 @@ getNetRC <- function(dl_dir) {
   if (file.exists(netrc) == FALSE || any(grepl("urs.earthdata.nasa.gov", readLines(netrc))) == FALSE) {
     netrc_conn <- file(netrc)
 
-    user <- Sys.getenv("NASA_USER")
-    if (user == "") {
-      user <- getPass::getPass(
-        "Enter NASA Earthdata Login Username \n (or create an account at urs.earthdata.nasa.gov) :"
-      )
-    }
-
-    password <- Sys.getenv("NASA_PASSWORD")
-    if (password == "") {
-      password <- getPass::getPass("Enter NASA Earthdata Login Password:")
-    }
     # User will be prompted for NASA Earthdata Login Username and Password below
     writeLines(c(
       "machine urs.earthdata.nasa.gov",
-      sprintf("login %s", user),
-      sprintf("password %s", password)
+      sprintf("login %s", getPass::getPass(
+        msg = "Enter NASA Earthdata Login Username \n (or create an account at urs.earthdata.nasa.gov) :"
+      )),
+      sprintf("password %s", getPass::getPass(msg = "Enter NASA Earthdata Login Password:"))
     ), netrc_conn)
     close(netrc_conn)
     message("A .netrc file with your Earthdata Login credentials was stored in the output directory ")

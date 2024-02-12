@@ -50,7 +50,7 @@ PAGE_SIZE <- 2000
 #' daterange <- c("2019-07-01", "2020-05-22")
 #'
 #' # Extracting the path to ICESat-2 ATLAS data for the specified boundary box coordinates
-#' ATLAS02b_list <- ATLAS_dataFinder(
+#' ATLAS02b_list <- ICESat2_finder(
 #'   short_name = "ATL08",
 #'   ul_lat,
 #'   ul_lon,
@@ -62,7 +62,7 @@ PAGE_SIZE <- 2000
 #' }
 #' @import jsonlite curl magrittr reticulate
 #' @export
-ATLAS_dataFinder_cloud <- function(short_name,
+ICESat2_finder_cloud <- function(short_name,
                                    lower_left_lon,
                                    lower_left_lat,
                                    upper_right_lon,
