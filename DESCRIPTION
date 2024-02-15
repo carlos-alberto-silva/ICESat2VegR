@@ -9,6 +9,7 @@ Maintainer: Carlos Alberto silva <c.silva@ufl.edu>
 Description: Set of tools for downloading, reading, visualizing, processing and exporting NASA's ICESat-2 ATL03 (Global Geolocated Photon Data) and ATL08 (Land and Vegetation Height) products for Land and Vegetation Applications. 
 License: GPL-3
 Imports:
+  dplyr, 
   gdalBindings,
   hdf5r,
   lazyeval,
@@ -45,6 +46,12 @@ Collate:
     'ATL03_ATL08_seg_cover_dt_compute.R'
     'ATL03_ATL08_segment_create.R'
     'clipTools.R'
+    'class_tools.R'
+    'class.icesat2.h5ds_cloud.R'
+    'class.icesat2.h5_cloud.R'
+    'class.icesat2.h5ds_local.R'
+    'class.icesat2.h5_local.R'
+    'class.icesat2.R'
     'ATL03_h5_clip.R'
     'ATL03_h5_clipGeometry.R'
     'ATL03_photons_attributes_dt.R'
@@ -54,12 +61,6 @@ Collate:
     'ATL03_photons_dt_classify.R'
     'ATL03_photons_plot.R'
     'ATL03_photons_simulator.R'
-    'class_tools.R'
-    'class.icesat2.h5ds_cloud.R'
-    'class.icesat2.h5_cloud.R'
-    'class.icesat2.h5ds_local.R'
-    'class.icesat2.h5_local.R'
-    'class.icesat2.R'
     'zzz.R'
     'ATL03_read.R'
     'ATL03_rgt_extract.R'
@@ -68,6 +69,7 @@ Collate:
     'ATL08_h5_clip.R'
     'ATL08_h5_clipBox.R'
     'ATL08_photons_attributes_dt.R'
+    'ATL08_photons_attributes_dt_LAS.R'
     'ATL08_seg_attributes_dt.R'
     'ATL08_seg_attributes_dt_LAS.R'
     'ATL08_seg_attributes_dt_clipBox.R'
@@ -76,12 +78,16 @@ Collate:
     'ATL08_seg_attributes_dt_polyStat.R'
     'ATL08_seg_attributes_h5_gridStat.R'
     'ATL08_seg_cover_dt_compute.R'
-    'ATLAS_dataDownload.R'
-    'ATLAS_dataFinder.R'
-    'ATLAS_dataFinder_cloud.R'
+    'ICESat2_dataDownload.R'
+    'ICESat2_download.R'
+    'ICESat2_finder.R'
+    'ICESat2_finder_cloud.R'
     'argParse.R'
     'clip (box, geometry, h5 and dt).R'
     'clip.R'
+    'gee-base.R'
+    'gee-filterBounds.R'
+    'gee-search.R'
     'lazy_applier.R'
 Suggests: 
     testthat (>= 3.0.0)

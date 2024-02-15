@@ -4,9 +4,9 @@ eeCollection <- R6::R6Class(
   public = list(
     collection_id = NA,
     bands = list(),
-    expression = NA,
+    expression_bands = NA,
     collection = NA,
-    initialize = function(collection_id, bands, expression) {
+    initialize = function(collection_id, bands, expression_bands, ) {
       self$collection_id <- collection_id
       self$bands <- bands
       if (exists("ee") && ee == reticulate::import("ee") && ee$Authenticate()) {
@@ -44,7 +44,16 @@ eeImage <- R6::R6Class(
   )
 )
 
+setMethod(
+  "mutate",
+  signature = c("mutate.ee.imagecollection.ImageCollection"),
+  function(.data, ...) {
+    .data
+  }
+)
+mutate.ee.imagecollection.ImageCollection <- function(x) {
 
+}
 
 "[[.eeCollection" <- function(x, ii) {
   eeImage$new(x$select(ii))

@@ -5,6 +5,8 @@
 \title{Clips ICESat-2 ATL03 H5 data}
 \usage{
 ATL03_h5_clipBox(atl03, output, bbox)
+
+ATL03_h5_clipBox(atl03, output, bbox)
 }
 \arguments{
 \item{output}{character. Path to the output h5 file.}
@@ -18,12 +20,41 @@ obtained through \code{\link[=ATL03_read]{ATL03_read()}} for clipping}
 }
 \value{
 Returns the clipped S4 object of class \code{\linkS4class{icesat2.atl03_h5}}
+
+Returns the clipped S4 object of class \code{\linkS4class{icesat2.atl03_h5}}
 }
 \description{
 This function clips ATL03 HDF5 file within beam groups,
 but keeps metada and ancillary data the same.
+
+This function clips ATL03 HDF5 file within beam groups,
+but keeps metada and ancillary data the same.
 }
 \examples{
+# Specifying the path to ATL03 file (zip file)
+outdir <- tempdir()
+atl03_zip <- system.file("extdata",
+  "atl03_20220401221822_01501506_005_01.zip",
+  package = "rICESat2Veg"
+)
+
+# Unzipping ATL03 file
+atl03_path <- unzip(atl03_zip, exdir = outdir)
+
+# Reading ATL03 data (h5 file)
+atl03_h5 <- atl03_read(atl03_path = atl03_path)
+
+
+# Bounding rectangle coordinates
+xmin <- -107.7
+xmax <- -106.5
+ymin <- 32.75
+ymax <- 42.75
+
+# Clipping ATL03 photons  by boundary box extent
+atl03_photons_dt_clip <- ATL03_h5_clipBox(atl03_h5, outdir, xmin, xmax, ymin, ymax)
+
+close(atl03_h5)
 # Specifying the path to ATL03 file (zip file)
 outdir <- tempdir()
 atl03_zip <- system.file("extdata",

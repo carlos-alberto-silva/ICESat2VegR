@@ -10,10 +10,10 @@ ATL03_photons_attributes_dt(ATL03_h5, beam)
 \item{beam}{Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")}
 
 \item{ATL03_h5}{A ICESat-2 ATL03 object (output of \code{\link[=ATL03_read]{ATL03_read()}} function).
-An S4 object of class \link{icesat2.atl03_dt}.}
+An S4 object of class \code{\linkS4class{icesat2.atl03_dt}}.}
 }
 \value{
-Returns an S4 object of class \link[data.table:data.table]{data.table::data.table}
+Returns an S4 object of class \code{\link[data.table:data.table-class]{data.table::data.table}}
 containing the ATL03 photons attributes.
 }
 \description{

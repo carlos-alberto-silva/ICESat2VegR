@@ -27,19 +27,43 @@ geemap <- reticulate::import("geemap")
 geemap$ee_initialize()
 library(dplyr)
 
-dt <- search_datasets('landsat.*toa')
-dt$title
+dt <- search_datasets('landsat 9', 'tier 2','toa')
+(collection_id <- get_catalog_path(dt))
 
-get_catalog_path(dt[10])
 collection <- 
-  eeCollection$new(
-    collection_id = "LANDSAT/LC08/C02/T1_TOA",
-    bands = c("B2", "B3", "B4", "B5", "B6", "B7"),
-    expression = list(
-      ndvi = "(B5 - B4)/(B5 + B4)"
-    )
+  ee$ImageCollection(collection_id)
+
+
+bounds <- ee$Geometry$BBox(
+  west = -87.6,
+  south = 24.5,
+  east = -79.8,
+  north = 31
   )
-collection$collection
+
+collection2 <- collection$filterBounds(bounds)$filterDate("2022-01-01", "2022-01-31")
+collection2$size()$getInfo()
+mapId <- collection2$getMapId()
+url <- mapId$tile_fetcher$url_format
+
+library(leaflet)
+# color_ramp <- leaflet::colorNumeric(palette = c("#FFFFFF", "#006400"), domain = c(0, 30))
+
+leaflet_map <- leaflet::leaflet() %>%
+  addProviderTiles(providers$Esri.WorldImagery, group = "Other") %>%
+  leaflet::addTiles(
+    urlTemplate = url,
+    options = leaflet::tileOptions(opacity = 1),
+    group = "Landsat"
+  ) %>%
+  addLayersControl(
+    overlayGroups = c("Landsat"),
+    options = layersControlOptions(collapsed = FALSE)
+  ) %>%
+  leaflet::setView(lng = -82, lat = 28, zoom = 11)
+
+leaflet_map
+
 
 map = geemap$Map()
 map$search_loc_geom
@@ -50,13 +74,17 @@ feature_list[[1]]$image$ $bandNames()$getInfo()
 expression  = "landsat.B2"
 
 roi <- ee$Geometry$Rectangle(c(-87.6, 24.5, -79.8, 31))
-
-
 l8 <- ee$ImageCollection("LANDSAT/LC08/C01/T1")
 
+
+
+
+
 image <- ee$Algorithms$Landsat$simpleComposite(
-  collection = l8$filterDate("2018-01-01", "2018-12-31"), asFloat = TRUE
+  collection = l8$filterDate("2018-01-01", "2018-01-31"), asFloat = TRUE
 )
+
+
 
 
 library(ICESat2VegR)

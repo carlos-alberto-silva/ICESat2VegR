@@ -3,7 +3,8 @@
 \name{close,icesat2.atl03_h5-method}
 \alias{close,icesat2.atl03_h5-method}
 \alias{close,icesat2.atl08_h5-method}
-\title{Safely closes the \code{\linkS4class{icesat2.atl03_h5}}}
+\title{Safely closes the \code{\linkS4class{icesat2.atl03_h5}}
+Safely closes the \code{\linkS4class{icesat2.atl03_h5}}}
 \usage{
 \S4method{close}{icesat2.atl03_h5}(con, ...)
 

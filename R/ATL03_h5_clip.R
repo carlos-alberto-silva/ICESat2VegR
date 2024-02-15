@@ -71,7 +71,7 @@ setGeneric(
 
 #' @include class.icesat2.R
 #' @importClassesFrom terra SpatExtent
-#' @exportMethod clip
+#' @export
 setMethod(
   "clip",
   signature = c("icesat2.atl03_h5", "character", "SpatExtent"),
@@ -81,7 +81,6 @@ setMethod(
 )
 
 #' @include class.icesat2.R
-#' @exportMethod clip
 setMethod(
   "clip",
   signature = c("icesat2.atl03_h5", "character", "numeric"),
@@ -336,7 +335,6 @@ setGeneric(
 
 #' @include class.icesat2.R
 #' @importClassesFrom terra SpatExtent
-#' @exportMethod clip
 setMethod(
   "clip",
   signature = c("icesat2.atl03_h5", "character", "SpatExtent"),
@@ -348,7 +346,6 @@ setMethod(
 
 #' @include class.icesat2.R
 #' @importClassesFrom terra SpatVector
-#' @exportMethod clip
 setMethod(
   "clip",
   signature = c("icesat2.atl03_h5", "character", "SpatVector"),
@@ -359,7 +356,6 @@ setMethod(
 
 #' @include class.icesat2.R
 #' @importClassesFrom terra SpatVector
-#' @exportMethod clip
 setMethod(
   "clip",
   signature = c("icesat2.atl03_h5", "character", "numeric"),
