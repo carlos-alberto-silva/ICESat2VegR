@@ -20,7 +20,7 @@ setMethod(
   "length",
   signature = c("ee.imagecollection.ImageCollection"),
   function(x) {
-    return(x$size()$getInfo())
+    return(invisible(x$size()$getInfo()))
   }
 )
 
@@ -67,7 +67,7 @@ setMethod(
   "map",
   signature = c("ee.imagecollection.ImageCollection"),
   function(collection, fn) {
-    collection$map(fn)
+    return(invisible(collection$map(fn)))
   }
 )
 
@@ -76,49 +76,49 @@ setMethod(
 #' @export
 "*.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
-    return(ee$Image$constant(e1)$multiply(e2))
+    return(invisible(ee$Image$constant(e1)$multiply(e2)))
   }
-  return(e1$multiply(e2))
+  return(invisible(e1$multiply(e2)))
 }
 
 #' @export
 "/.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
-    return(ee$Image$constant(e1)$divide(e2))
+    return(invisible(ee$Image$constant(e1)$divide(e2)))
   }
-  return(e1$divide(e2))
+  return(invisible(e1$divide(e2)))
 }
 
 #' @export
 "+.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
-    return(ee$Image$constant(e1)$add(e2))
+    return(invisible(ee$Image$constant(e1)$add(e2)))
   }
-  return(e1$add(e2))
+  return(invisible(e1$add(e2)))
 }
 
 #' @export
 "-.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
-    return(ee$Image$constant(e1)$subtract(e2))
+    return(invisible(ee$Image$constant(e1)$subtract(e2)))
   }
-  return(e1$subtract(e2))
+  return(invisible(e1$subtract(e2)))
 }
 
 #' @export
 "|.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
-    return(ee$Image$constant(e1)$bitwiseOr(e2))
+    return(invisible(ee$Image$constant(e1)$bitwiseOr(e2)))
   }
-  return(e1$bitwiseOr(e2))
+  return(invisible(e1$bitwiseOr(e2)))
 }
 
 #' @export
 "&.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
-    return(ee$Image$constant(e1)$bitwiseAnd(e2))
+    return(invisible(ee$Image$constant(e1)$bitwiseAnd(e2)))
   }
-  return(e1$bitwiseAnd(e2))
+  return(invisible(e1$bitwiseAnd(e2)))
 }
 
 #' @export
@@ -127,83 +127,99 @@ setMethod(
 #' @export
 "^.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
-    return(ee$Image$constant(e1)$pow(e2))
+    return(invisible(ee$Image$constant(e1)$pow(e2)))
   }
-  return(e1$pow(e2))
+  return(invisible(e1$pow(e2)))
 }
 
 #' @export
-"exp.ee.image.Image" <- function(e1) e1$exp()
+"exp.ee.image.Image" <- function(e1) {
+  return(invisible(e1$exp()))
+}
 
 #' @export
-"log.ee.image.Image" <- function(e1) e1$log()
+"log.ee.image.Image" <- function(e1) {
+  return(invisible(e1$log()))
+}
 
 #' @export
 ">.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
-    return(ee$Image$constant(e1)$gt(e2))
+    return(invisible(ee$Image$constant(e1)$gt(e2)))
   }
-  return(e1$gt(e2))
+  return(invisible(e1$gt(e2)))
 }
 
 #' @export
 "<.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
-    return(ee$Image$constant(e1)$lt(e2))
+    return(invisible(ee$Image$constant(e1)$lt(e2)))
   }
-  return(e1$lt(e2))
+  return(invisible(e1$lt(e2)))
 }
 
 #' @export
 ">=.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
-    return(ee$Image$constant(e1)$gte(e2))
+    return(invisible(ee$Image$constant(e1)$gte(e2)))
   }
-  return(e1$gte(e2))
+  return(invisible(e1$gte(e2)))
 }
 
 #' @export
 "<=.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
-    return(ee$Image$constant(e1)$lte(e2))
+    return(invisible(ee$Image$constant(e1)$lte(e2)))
   }
-  return(e1$lte(e2))
+  return(invisible(e1$lte(e2)))
 }
 
 #' @export
 "%%.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
-    return(ee$Image$constant(e1)$mod(e2))
+    return(invisible(ee$Image$constant(e1)$mod(e2)))
   }
-  return(e1$mod(e2))
+  return(invisible(e1$mod(e2)))
 }
 
 #' @export
-"as.integer.ee.image.Image" <- function(e1) e1$int()
+"as.integer.ee.image.Image" <- function(e1) {
+  return(invisible(e1$int()))
+}
 
 #' @export
-"[[.ee.image.Image" <- function(x, ...) do.call(x$select, list(...))
+"[[.ee.image.Image" <- function(x, ...) {
+  return(invisible(do.call(x$select, list(...))))
+}
 
 #' @export
-"names.ee.image.Image" <- function(x) x$bandNames()$getInfo()
+"names.ee.image.Image" <- function(x) {
+  return(invisible(x$bandNames()$getInfo()))
+}
 
 #' @export
-"names<-.ee.image.Image" <- function(x, value) x$select(names(x), value)
+"names<-.ee.image.Image" <- function(x, value) {
+  return(invisible(x$select(names(x), value)))
+}
 
 #' @export
 "[[<-.ee.image.Image" <- function(x, i, j, ..., value) {
-  value2 <- value$rename(i)
-  x$addBands(value2)
+  if (is.character(i) && i != "") {
+    value2 <- value$rename(i)
+  } else {
+    value2 <- value
+  }
+  return(invisible(x$addBands(value2)))
 }
 
 #' @export
 "mean.ee.image.Image" <- function(x) {
-  x$getMapId()$tile_fetcher$url_format
+  return(invisible(x$getMapId()$tile_fetcher$url_format))
 }
 
 #' @export
 "min.ee.image.Image" <- function(x, ...) {
-  return(x$reduceRegion(
+  return(invisible(unlist(x$reduceRegion(
     reducer = ee$Reducer$min(),
     geometry = ee$Geometry$BBox(
       west = -180,
@@ -211,12 +227,12 @@ setMethod(
       east = 180,
       north = 90
     )
-  )$getInfo()$constant)
+  )$getInfo())))
 }
 
 #' @export
 "max.ee.image.Image" <- function(x, ...) {
-  return(x$reduceRegion(
+  return(invisible(unlist(x$reduceRegion(
     reducer = ee$Reducer$max(),
     geometry = ee$Geometry$BBox(
       west = -180,
@@ -224,12 +240,12 @@ setMethod(
       east = 180,
       north = 90
     )
-  )$getInfo()$constant)
+  )$getInfo())))
 }
 
 #' @export
 "range.ee.image.Image" <- function(x, ...) {
-  rev(unlist(x$reduceRegion(
+  return(invisible(rev(unlist(x$reduceRegion(
     reducer = ee$Reducer$minMax(),
     geometry = ee$Geometry$BBox(
       west = -180,
@@ -237,5 +253,68 @@ setMethod(
       east = 180,
       north = 90
     )
-  )$getInfo()))
+  )$getInfo()))))
+}
+
+#' @export
+"sqrt.ee.image.Image" <- function(x, ...) {
+  return(invisible(x$sqrt()))
+}
+
+
+#' @export
+glcmTexture <- function(x, ...) {
+  UseMethod("glcmTexture")
+}
+
+#' @export
+"glcmTexture.ee.image.Image" <- function(x, ...) {
+  return(invisible(x$glcmTexture(...)))
+}
+
+#' @export
+unmix <- function(x, ...) {
+  UseMethod("unmix")
+}
+
+
+#' @export
+"unmix.ee.image.Image" <- function(x, ...) {
+  return(invisible(x$unmix(...)))
+}
+
+
+#' @export
+"c.ee.image.Image" <- function(x, ...) {
+  return(invisible(ee$Image$cat(x, ...)))
+}
+
+
+#' @export
+"print.ee.image.Image" <- function(x, ...) {
+  cat("ee.image.Image\n\n")
+  cat("Bands\n")
+  print(names(x))
+  invisible()
+}
+
+
+#' @export
+slope <- function(x, ...) {
+  UseMethod("slope")
+}
+
+#' @export
+"slope.ee.image.Image" <- function(x, ...) {
+  return(invisible(ee$Terrain$slope(x, ...)))
+}
+
+#' @export
+aspect <- function(x, ...) {
+  UseMethod("aspect")
+}
+
+#' @export
+"aspect.ee.image.Image" <- function(x, ...) {
+  return(invisible(ee$Terrain$aspect(x, ...)))
 }

@@ -14,7 +14,7 @@ default_finalizer <- list(
 
 default_agg_function <- ~ data.table::data.table(
   n = length(x),
-  M1 = mean(x, na.rm = TRUE),
+  M1 = mean_red(x, na.rm = TRUE),
   M2 = e1071::moment(x, order = 2, center = TRUE, na.rm = TRUE) * length(x),
   M3 = e1071::moment(x, order = 3, center = TRUE, na.rm = TRUE) * length(x),
   M4 = e1071::moment(x, order = 4, center = TRUE, na.rm = TRUE) * length(x),
