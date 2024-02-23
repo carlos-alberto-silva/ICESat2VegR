@@ -193,6 +193,12 @@ setMethod(
 }
 
 #' @export
+"names.ee.imagecollection.ImageCollection" <- function(x) {
+  return(invisible(x$first()$bandNames()$getInfo()))
+}
+
+
+#' @export
 "names.ee.image.Image" <- function(x) {
   return(invisible(x$bandNames()$getInfo()))
 }

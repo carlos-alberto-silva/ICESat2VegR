@@ -7,9 +7,9 @@ library(ICESat2VegR)
 library(terra)
 library(magrittr)
 
-geom <- terra::vect("../output.gpkg")
+geom <- terra::vect("../output.geojson")
 ext <- terra::ext(geom)
-center <- terra::geom(terra::centroids(terra::vect(ext)))[, c("x", "y")]
+center <- as.numeric(terra::geom(terra::centroids(terra::vect(ext)))[, c("x", "y")])
 aoi <- ee$Geometry$BBox(
   west = ext$xmin,
   south = ext$ymin,
@@ -41,7 +41,8 @@ waterMask <- function(image) {
   )
 }
 
-
+bandNames(collection)
+pybase <- reticulate::import_builtins()
 hls <- collection$
   filterBounds(aoi)$
   filterDate("2021-02-01", "2021-05-31")$
@@ -49,6 +50,8 @@ hls <- collection$
   map(hlsMask)$
   map(waterMask)$
   median()
+
+
 
 hls <- hls[["B2", "B3", "B4", "B5", "B6", "B7"]]
 names(hls) <- c("blue", "green", "red", "nir", "swir1", "swir2")
@@ -167,12 +170,13 @@ fullStack
 
 
 
-visBand <- "ndvi_mean"
+img <- hls
+visBand <- "blue"
 
-img <- fullStack$visualize(
+img <- blue$visualize(
   bands = c(visBand),
-  min = min(fullStack[[visBand]]),
-  max = max(fullStack[[visBand]])
+  min = min(img[[visBand]]),
+  max = max(img[[visBand]])
 )
 
 url <- img$getMapId()$tile_fetcher$url_format
@@ -200,51 +204,67 @@ leaflet_map
 
 
 
+source("R/extract.R")
+
 # Extract
-geom <- sf::st_read("../output.gpkg")
-sample_size <- 1000
+train <- terra::vect("../train2.geojson")
+test <- terra::vect("../test.geojson")
+
+train <- train[train$h_canopy <= 50]
+test <- test[test$h_canopy <= 50]
+
+train_extract <- extract(fullStack, train, 30)
+test_extract <- extract(fullStack, test, 30)
+train_df <- ee_to_df(train_extract)
+test_df <- ee_to_df(test_extract)
+x <- train_df[, -c(1, which(names(train_df) == "h_canopy"))]
+y <- train_df[, "h_canopy"]
+x_test <- test_df[, -c(1, which(names(train_df) == "h_canopy"))]
+y_test <- test_df[, "h_canopy"]
+
+randomForestClassifier <- randomForestRegression(train_extract, property_name = "h_canopy", nTrees = 100, nodesize = 1)
+gee_predict <- randomForestClassifier %>% predict(test_extract)
+(gee_rmse <- sqrt(mean((y_test - gee_predict)^2)))
+lims <- c(0, max(c(y_test, gee_predict)))
+plot(y_test, gee_predict, xlim = lims, ylim = lims, main = sprintf("GEE randomForest (RMSE = %.4f)", gee_rmse))
+lines(c(-9999, 9999), c(-9999, 9999), col = "red")
+
+library(randomForest)
+rf <- randomForest(x, y, ntree = 100, nodesize = 1)
+rf_predict <- rf %>% predict(test_df)
+rf_rmse <- sqrt(mean((y_test - rf_predict)^2))
+
+plot(y_test, rf_predict, xlim = lims, ylim = lims, main = sprintf("R randomForest (RMSE = %.4f)", rf_rmse))
+lines(c(-9999, 9999), c(-9999, 9999), col = "red")
 
 
-geom <- geom %>%
-  sf::st_sample(size = sample_size) %>%
-  sf::st_cast("POINT") %>%
-  sf::st_sf()
+sklearn <- reticulate::import("sklearn")
+rf_sklearn <- sklearn$ensemble$RandomForestRegressor(n_estimators = as.integer(100), max_features = 0.333333)$fit(x, y)
+sk_predict <- rf_sklearn$predict(x_test)
+(sk_rmse <- sqrt(mean((y_test - sk_predict)^2)))
 
-if (file.exists("../output.geojson")) {
-  unlink("../output.geojson")
-}
+plot(y_test, sk_predict, xlim = lims, ylim = lims, main = sprintf("sklearn randomForest (RMSE = %.4f)", sk_rmse))
+lines(c(-9999, 9999), c(-9999, 9999), col = "red")
 
-geom %>% sf::st_write("../output.geojson")
+# Convert to gee
+geemap <- import("geemap")
+trees <- geemap$ml$rf_to_strings(rf_sklearn, feature_names = names(x_test), processes = 8, output_mode = "REGRESSION")
+ee_classifier <- geemap$ml$strings_to_classifier(trees)
+gee_predict2 <- ee_classifier %>% predict(test_extract)
+(gee_rmse2 <- sqrt(mean((y_test - gee_predict2)^2)))
 
+writeLines(trees, "../trees.txt")
 
-parsed <- jsonlite::parse_json(readLines("../output.geojson"))
+data(iris)
+rf_iris = randomForest(iris[,1:3], iris[,4])
+df = data.frame(
+  left = rf_iris$forest$leftDaughter[1:87,1],
+  right = rf_iris$forest$rightDaughter[1:87,1],
+  bestvar = rf_iris$forest$bestvar[1:87,1],
+  xbestsplit = rf_iris$forest$ [1:87,1],
+  nodestatus = rf_iris$forest$nodestatus[1:87,1],
+  nodepred = rf_iris$forest$nodepred[1:87,1]
+  )
 
-geojson <- ee$FeatureCollection(parsed)
-
-sampled <- fullStack$sampleRegions(
-  collection = geojson,
-  scale = fullStack$projection()$nominalScale()
-)
-
-
-downloadId <- ee$data$getTableDownloadId(list(table = sampled, format = "csv"))
-url2 = ee$data$makeTableDownloadUrl(downloadId)
-res <- ee$data$requests$get(url2)
-df <- read.table(
-  text = res$content$decode('utf8'),
-  sep = ',',
-  header = TRUE
-)
-ids <- df[,1]
-ids <- as.integer(gsub("_0", "", ids)) + 1
-df[,1] <- ids
-
-coords <- sf::st_coordinates(geom)[ids, ]
-
-final_vect <- terra::vect(
-  cbind(coords, df),
-  geom = c("X", "Y"),
-  crs = "epsg:4326"
-)
-
-terra::writeVector(final_vect, "../final_output.gpkg")
+sum(df$left == 0)
+sum(df$left != 0)
