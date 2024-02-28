@@ -99,9 +99,12 @@ atl08_seg_dt <- ATL08_seg_attributes_dt(
     "segment_landcover"
   )
 )
-dataset <- atl08_seg_dt[night_flag == 1 & !segment_landcover %in% c(0, 80, 200) & h_canopy < 300]
+dataset <- atl08_seg_dt[night_flag == 1 & !segment_landcover %in% c(0, 80, 200) & h_canopy < 50]
 set.seed(5789174)
-train <- dataset[dataset[, sample(.I, size = 1000)]]
+shuffled <- dataset[order(runif(nrow(dataset)))]
+
+train <- shuffled[1:700]
+test <- shuffled[701:1000]
 
 library(terra)
 v <- terra::vect(
@@ -113,12 +116,21 @@ v <- terra::vect(
 terra::writeVector(v, "../train.geojson", filetype = "geojson", overwrite = TRUE)
 
 
-geojson <- geemap$geojson_to_ee("../train.geojson")
-
-sampled <- image$sampleRegions(
-  collection = geojson,
-  scale = image$projection()$nominalScale()
+v2 <- terra::vect(
+  as.data.frame(test[, list(latitude, longitude, h_canopy)]),
+  geom = c("longitude", "latitude"),
+  crs = "epsg:4326"
 )
+
+terra::writeVector(v2, "../test.geojson", filetype = "geojson", overwrite = TRUE)
+
+
+# geojson <- geemap$geojson_to_ee("../train.geojson")
+
+# sampled <- image$sampleRegions(
+#   collection = geojson,
+#   scale = image$projection()$nominalScale()
+# )
 
 library(data.table)
 backJson <- sampled$getInfo()

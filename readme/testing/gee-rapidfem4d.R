@@ -7,8 +7,10 @@ library(ICESat2VegR)
 library(terra)
 library(magrittr)
 
-geom <- terra::vect("../output.geojson")
-ext <- terra::ext(geom)
+geom <- terra::vect("../train.geojson")
+geom2 <- terra::vect("../test.geojson")
+all_geoms <- terra::union(geom, geom2)
+ext <- terra::ext(all_geoms)
 center <- as.numeric(terra::geom(terra::centroids(terra::vect(ext)))[, c("x", "y")])
 aoi <- ee$Geometry$BBox(
   west = ext$xmin,
@@ -16,6 +18,8 @@ aoi <- ee$Geometry$BBox(
   east = ext$xmax,
   north = ext$ymax
 )
+
+aoi <- aoi$buffer(30)
 
 search <- search_datasets("hls", "landsat")
 
@@ -41,11 +45,10 @@ waterMask <- function(image) {
   )
 }
 
-bandNames(collection)
-pybase <- reticulate::import_builtins()
+
 hls <- collection$
   filterBounds(aoi)$
-  filterDate("2021-02-01", "2021-05-31")$
+  filterDate("2020-02-01", "2020-05-31")$
   filter("CLOUD_COVERAGE < 10")$
   map(hlsMask)$
   map(waterMask)$
@@ -55,6 +58,7 @@ hls <- collection$
 
 hls <- hls[["B2", "B3", "B4", "B5", "B6", "B7"]]
 names(hls) <- c("blue", "green", "red", "nir", "swir1", "swir2")
+hls <- hls$clip(aoi)
 
 # ndvi
 hls[["ndvi"]] <- (hls[["nir"]] - hls[["red"]]) / (hls[["nir"]] + hls[["red"]])
@@ -132,30 +136,16 @@ hls[[""]] <- img$glcmTexture(size = 3)
 ###########################
 # Elevation
 ###########################
-result <- search_datasets("dem", "copernicus")
-result
-
+result <- search_datasets("nasa", "dem")
 catalog_id <- get_catalog_id(result)
-catalog_id
 
-elevation <- ee$ImageCollection(catalog_id)
-elevation <- elevation$
-  filterBounds(aoi)$
-  median()
-elevation <- elevation$clip(aoi)
-elevation
+elevation <- ee$Image(catalog_id)
 
-
-the_slope <- slope(elevation)
+the_slope <- as.integer(slope(as.integer(elevation)) * 1000)
 the_aspect <- elevation %>% aspect()
 
 # stackDem
-stackDem <- c(elevation, the_slope, the_aspect)
-
-
-stackS2 <- hls[["ndvi", "kndvi", "evi", "savi", "msavi", "sri", "ndwi", "gci", "wdrvi", "gvmi", "cvi", "cmr"]]
-stackS2[[""]] <- img
-stackS2[[""]] <- unmixing
+stackDem <- c(elevation, the_slope, the_aspect)$clip(aoi)
 
 fullStack <- c(hls, stackDem)
 
@@ -169,28 +159,37 @@ for (reducerName in reducerNames) {
 fullStack
 
 
+source("R/gee-base.R")
 
-img <- hls
-visBand <- "blue"
+visBand <- "slope"
+img <- fullStack[[visBand]]
 
-img <- blue$visualize(
-  bands = c(visBand),
-  min = min(img[[visBand]]),
-  max = max(img[[visBand]])
+img <- img$visualize(
+  bands = visBand,
+  min = min(img, scale = 900, geometry = aoi),
+  max = max(img, scale = 900, geometry = aoi)
 )
 
 url <- img$getMapId()$tile_fetcher$url_format
 library(leaflet)
 library(magrittr)
 # color_ramp <- leaflet::colorNumeric(palette = c("#FFFFFF", "#006400"), domain = c(0, 30))
-
+coords <- terra::geom(geom)
 
 leaflet_map <- leaflet::leaflet() %>%
-  # addProviderTiles(providers$Esri.WorldImagery, group = "Other") %>%
+  addProviderTiles(providers$Esri.WorldImagery, group = "Other") %>%
   leaflet::addTiles(
     urlTemplate = url,
     options = leaflet::tileOptions(opacity = 1),
     group = "Landsat"
+  ) %>%
+  leaflet::addCircleMarkers(
+    lng = coords[, "x"],
+    lat = coords[, "y"],
+    radius = 2,
+    stroke = FALSE,
+    fillOpacity = 1,
+    fillColor = "yellow"
   ) %>%
   addLayersControl(
     overlayGroups = c("Landsat"),
@@ -207,32 +206,41 @@ leaflet_map
 source("R/extract.R")
 
 # Extract
-train <- terra::vect("../train2.geojson")
-test <- terra::vect("../test.geojson")
 
-train <- train[train$h_canopy <= 50]
-test <- test[test$h_canopy <= 50]
+train <- terra::vect("../train.geojson")
+test <- terra::vect("../test.geojson")
 
 train_extract <- extract(fullStack, train, 30)
 test_extract <- extract(fullStack, test, 30)
-train_df <- ee_to_df(train_extract)
-test_df <- ee_to_df(test_extract)
-x <- train_df[, -c(1, which(names(train_df) == "h_canopy"))]
-y <- train_df[, "h_canopy"]
-x_test <- test_df[, -c(1, which(names(train_df) == "h_canopy"))]
-y_test <- test_df[, "h_canopy"]
+train_dt <- ee_to_dt(train_extract)
+test_dt <- ee_to_dt(test_extract)
+
+x_columns <- names(train_dt)[-c(1, which(names(train_dt) == "h_canopy"))]
+x <- train_dt[, .SD, .SDcols = x_columns]
+y <- train_dt$h_canopy
+x_test <- test_dt[, .SD, .SDcols = x_columns]
+y_test <- test_dt$h_canopy
 
 randomForestClassifier <- randomForestRegression(train_extract, property_name = "h_canopy", nTrees = 100, nodesize = 1)
 gee_predict <- randomForestClassifier %>% predict(test_extract)
+
+StatModel(y_test, gee_predict2, xlim = c(0, 30), ylim = c(0, 30))
+
 (gee_rmse <- sqrt(mean((y_test - gee_predict)^2)))
 lims <- c(0, max(c(y_test, gee_predict)))
 plot(y_test, gee_predict, xlim = lims, ylim = lims, main = sprintf("GEE randomForest (RMSE = %.4f)", gee_rmse))
 lines(c(-9999, 9999), c(-9999, 9999), col = "red")
 
 library(randomForest)
-rf <- randomForest(x, y, ntree = 100, nodesize = 1)
-rf_predict <- rf %>% predict(test_df)
-rf_rmse <- sqrt(mean((y_test - rf_predict)^2))
+rf <- randomForest::randomForest(x, y, ntree = 100, nodesize = 1)
+rf_predict <- rf %>% predict(test_dt)
+(rf_rmse <- sqrt(mean((y_test - rf_predict)^2)))
+trees <- build_forest(rf)
+
+
+gee_rf <- ee$Classifier$decisionTreeEnsemble(trees)
+gee_rf_predict <- gee_rf %>% predict(test_extract)
+(gee_rf_rmse <- sqrt(mean((y_test - gee_rf_predict)^2)))
 
 plot(y_test, rf_predict, xlim = lims, ylim = lims, main = sprintf("R randomForest (RMSE = %.4f)", rf_rmse))
 lines(c(-9999, 9999), c(-9999, 9999), col = "red")
@@ -248,23 +256,22 @@ lines(c(-9999, 9999), c(-9999, 9999), col = "red")
 
 # Convert to gee
 geemap <- import("geemap")
-trees <- geemap$ml$rf_to_strings(rf_sklearn, feature_names = names(x_test), processes = 8, output_mode = "REGRESSION")
-ee_classifier <- geemap$ml$strings_to_classifier(trees)
+trees <- geemap$ml$rf_to_strings(rf_sklearn, feature_names = names(x_test), processes = as.integer(8), output_mode = "REGRESSION")
+
+writeLines(trees, "output.txt")
+trees
+ee_classifier <- geemap$ml$strings_to_classifier(res)
 gee_predict2 <- ee_classifier %>% predict(test_extract)
 (gee_rmse2 <- sqrt(mean((y_test - gee_predict2)^2)))
 
 writeLines(trees, "../trees.txt")
 
+library(randomForest)
 data(iris)
-rf_iris = randomForest(iris[,1:3], iris[,4])
-df = data.frame(
-  left = rf_iris$forest$leftDaughter[1:87,1],
-  right = rf_iris$forest$rightDaughter[1:87,1],
-  bestvar = rf_iris$forest$bestvar[1:87,1],
-  xbestsplit = rf_iris$forest$ [1:87,1],
-  nodestatus = rf_iris$forest$nodestatus[1:87,1],
-  nodepred = rf_iris$forest$nodepred[1:87,1]
-  )
-
+rf_iris <- randomForest(iris[, 1:3], iris[, 4])
+randomForest::getTree(rf_iris, 1)
 sum(df$left == 0)
 sum(df$left != 0)
+
+res <- build_forest(rf)
+strsplit(res[1], "\n")[[1]][1:10]

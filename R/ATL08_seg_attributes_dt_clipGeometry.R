@@ -60,7 +60,7 @@
 #' }
 #' close(atl08_h5)
 #' @export
-ATL08_seg_attributes_dt_clipGeometry <- function(atl08_seg_att_dt, polygon, split_by = "id") {
+ATL08_seg_attributes_dt_clipGeometry <- function(atl08_seg_att_dt, polygon, split_by = NULL) {
   if (!inherits(atl08_seg_att_dt, "icesat2.atl08_dt")) {
     stop("atl08_seg_att_dt needs to be an object of class 'icesat2.atl08_dt' ")
   }
@@ -75,9 +75,9 @@ ATL08_seg_attributes_dt_clipGeometry <- function(atl08_seg_att_dt, polygon, spli
   )
 
   if (any(is.na(atl08_seg_att_dtdt))) {
-    atl08_seg_att_dtdt <- na.omit(atl08_seg_att_dtdt@dt)
+    atl08_seg_att_dtdt <- na.omit(atl08_seg_att_dtdt)
   } else {
-    atl08_seg_att_dtdt <- atl08_seg_att_dtdt@dt
+    atl08_seg_att_dtdt <- atl08_seg_att_dtdt
   }
 
   atl08_seg_att_dtdt$nid <- 1:nrow(atl08_seg_att_dtdt)
@@ -86,7 +86,7 @@ ATL08_seg_attributes_dt_clipGeometry <- function(atl08_seg_att_dt, polygon, spli
     print("The polygon does not overlap the ATL08 data")
   } else {
     points <- terra::vect(
-      atl08_seg_att_dtdt,
+      as.data.frame(atl08_seg_att_dtdt),
       geom = c("longitude", "latitude"),
       crs = terra::crs(polygon)
     )

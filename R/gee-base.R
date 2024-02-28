@@ -225,28 +225,40 @@ setMethod(
 
 #' @export
 "min.ee.image.Image" <- function(x, ...) {
-  return(invisible(unlist(x$reduceRegion(
-    reducer = ee$Reducer$min(),
-    geometry = ee$Geometry$BBox(
+  args <- list(...)
+  args[["na.rm"]] <- NULL
+  args$reducer <- ee$Reducer$min()
+  if (is.null(args$geometry)) {
+    args$geometry <- ee$Geometry$BBox(
       west = -180,
       south = -90,
       east = 180,
       north = 90
     )
-  )$getInfo())))
+  }
+  return(invisible(unlist(
+    do.call(x$reduceRegion, args)$
+      getInfo()
+  )))
 }
 
 #' @export
 "max.ee.image.Image" <- function(x, ...) {
-  return(invisible(unlist(x$reduceRegion(
-    reducer = ee$Reducer$max(),
-    geometry = ee$Geometry$BBox(
+  args <- list(...)
+  args[["na.rm"]] <- NULL
+  args$reducer <- ee$Reducer$max()
+  if (is.null(args$geometry)) {
+    args$geometry <- ee$Geometry$BBox(
       west = -180,
       south = -90,
       east = 180,
       north = 90
     )
-  )$getInfo())))
+  }
+  return(invisible(unlist(
+    do.call(x$reduceRegion, args)$
+      getInfo()
+  )))
 }
 
 #' @export

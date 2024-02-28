@@ -1,3 +1,5 @@
+#' @useDynLib ICESat2VegR
+
 #' @export
 earthaccess <- NA
 
