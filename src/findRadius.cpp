@@ -71,6 +71,8 @@ IntegerVector findRadius3(NumericVector x, NumericVector y, const double radius,
   NumericVector rng = range(x);
   GridIndex gridIndex(x, y, (abs(rng[1] - rng[0]) / 1000.0));
 
+  int finalSize = sampleSize;
+
   for (int ii = 0; ii < sampleSize; ii++)
   {
     int sampleIndex = (int)floor(R::runif(0, nrows--));
@@ -82,6 +84,7 @@ IntegerVector findRadius3(NumericVector x, NumericVector y, const double radius,
 
     if (correctedIndex > nrows)
     {
+      finalSize = ii;
       // Rprintf("Cannot find anymore samples beyond the provided radius!");
       break;
     }
@@ -108,10 +111,13 @@ IntegerVector findRadius3(NumericVector x, NumericVector y, const double radius,
     if (tabooSize == x.length())
     {
       // Rprintf("Cannot find anymore samples beyond the provided radius!");
+      finalSize = ii;
       break;
     }
   }
-  return output;
+
+  IntegerVector final = output[Rcpp::Range(0, finalSize - 1)];
+  return final;
 }
 
 
