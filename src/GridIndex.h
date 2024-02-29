@@ -22,6 +22,7 @@ private:
     void buildIndex();
 
 public:
+    Rcpp::XPtr<GridIndex> getPointer();
     GridIndex(const NumericVector& xValues, const NumericVector& yValues, const double factor);
 
     IntegerVector searchFixedRadius(const double x, const double y, const double dist);

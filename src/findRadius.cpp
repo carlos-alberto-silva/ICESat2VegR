@@ -1,123 +1,59 @@
-// [[Rcpp::depends(ICESat2VegR)]]
-#include <GridIndex.cpp>
+#include <GridIndex.h>
 #include <Rcpp.h>
-
+#include <random>
 
 using namespace Rcpp;
 
+//' Sample within a radius distance
+//' @param x NumericVector
+//' @param y NumericVector
+//' @param radius double
+//' @param sampleSize double
+//' @export
 // [[Rcpp::export]]
-int countGreaterEq(IntegerVector tabooVector, int value, int pos)
+IntegerVector findRadius(NumericVector x, NumericVector y, const double radius, const int sampleSize)
 {
-  // Rprintf("%d %d\nVector:", value, pos);
-  // for (int ii = 0; ii < pos; ii++) {
-  //   Rprintf(" %d", tabooVector[ii]);
-  // }
-  // Rprintf("\n");
-
-  int countContainer = 0;
-  int initialValue = value;
-  int intervalSize = pos > 1 ? pos - 1 : 1;
-  LogicalVector intervalContainer(intervalSize);
-
-
-  int maxTaboo = tabooVector.length();
-  for (int ii = 0; ii < pos && ii < maxTaboo; ii++)
-  {
-    if (tabooVector[ii] <= value)
-    {
-      value++;
-      // As value increments, test if it can be contained by
-      // the most incremented possible value after all pos
-      // are evaluated
-    }
-    else if (tabooVector[ii] <= (initialValue + pos))
-    {
-      int jj = std::min(intervalSize - 1,  tabooVector[ii] - initialValue - 1);
-      intervalContainer[jj] = true;
-      countContainer++;
-    }
-  }
-
-  if (countContainer == 0) {
-    return value;
-  }
-  int check = initialValue + 1;
-  int ii = 0;
-  while (check <= value && ii < (pos - 1) && ii < intervalSize)
-  {
-    if (intervalContainer[ii] == true)
-    {
-      value++;
-    }
-    check++;
-    ii++;
-  }
-  return value;
-}
-
-
-
-// [[Rcpp::export]]
-IntegerVector findRadius3(NumericVector x, NumericVector y, const double radius, const int sampleSize)
-{
+  // Set seed for the std random number generator
+  int seed = (int)R::runif(0, std::numeric_limits<int>::max());
   int nrows = x.length();
 
-  int tabooSize = 0;
-  LogicalVector tabooFlag(x.length());
-  IntegerVector tabooList(x.length());
+  LogicalVector tabooFlag(nrows);
   IntegerVector output(sampleSize);
   // Rcout << "Ok1" << std::endl;
 
   NumericVector rng = range(x);
-  GridIndex gridIndex(x, y, (abs(rng[1] - rng[0]) / 1000.0));
+  GridIndex gridIndex(x, y, (abs(rng[1] - rng[0]) / 1.0));
 
-  int finalSize = sampleSize;
+  // Create a vector of indices from 0 to nrows - 1
+  IntegerVector indices = Range(0, nrows - 1);
 
-  for (int ii = 0; ii < sampleSize; ii++)
+  // Generate a vector of random numbers
+  std::shuffle(indices.begin(), indices.end(), std::mt19937(seed));
+
+  int ii = 0;
+  for (int idx : indices)
   {
-    int sampleIndex = (int)floor(R::runif(0, nrows--));
+    if (tabooFlag[idx] == true)
+      continue;
 
-    int correctedIndex = countGreaterEq(tabooList, sampleIndex, tabooSize);
-    // int correctedIndex = sampleIndex;
+    tabooFlag[idx] = true;
+    output[ii++] = idx;
 
-    output[ii] = correctedIndex;
-
-    if (correctedIndex > nrows)
-    {
-      finalSize = ii;
-      // Rprintf("Cannot find anymore samples beyond the provided radius!");
-      break;
-    }
-
-    if (tabooFlag[correctedIndex] == false)
-    {
-      tabooFlag[correctedIndex] = true;
-      tabooList[tabooSize++] = correctedIndex;
+    if (ii >= sampleSize) {
+      break;  
     }
 
     // Add points around to tabooList
-    // Rcout << "Ok" << ii << std::endl;
-    IntegerVector pointsWithin = gridIndex.searchFixedRadius(x[correctedIndex], y[correctedIndex], radius);
-
-    for (int jj = 0; jj < pointsWithin.length(); jj++)
+    IntegerVector pointsWithin = gridIndex.searchFixedRadius(x[idx], y[idx], radius);
+    for (int tabooIdx : pointsWithin)
     {
-      if (tabooFlag[pointsWithin[jj]] == false)
+      if (tabooFlag[tabooIdx] == false)
       {
-        tabooFlag[pointsWithin[jj]] = true;
-        tabooList[tabooSize++] = pointsWithin[jj];
+        tabooFlag[tabooIdx] = true;
       }
-    }
-
-    if (tabooSize == x.length())
-    {
-      // Rprintf("Cannot find anymore samples beyond the provided radius!");
-      finalSize = ii;
-      break;
     }
   }
 
-  IntegerVector final = output[Rcpp::Range(0, finalSize - 1)];
+  IntegerVector final = output[Rcpp::Range(0, ii - 1)];
   return final;
 }
-
-

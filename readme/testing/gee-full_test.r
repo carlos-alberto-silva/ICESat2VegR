@@ -1,12 +1,10 @@
-# source("C:/Users/caiohamamura/src/r/rICESat2Veg/readme/testing/gee-full_test.r") 
+# source("readme/testing/gee-full_test.r") 
 library(ICESat2VegR)
 library(terra)
 library(magrittr)
 
-geom <- terra::vect("Z:/01_Projects/04_NASA_ICESat2/00_data/01_SHPs/all_boundary.shp")
+geom <- terra::vect("../inst/exdata/all_boundary.shp")
 ext <- terra::ext(geom)
-
-
 
 hurricane_michael_date <- "2018-10-10"
 fall_pre_michael_date_start <- "2018-09-23"
@@ -39,34 +37,32 @@ for (granule in granulesName) {
 dt <- data.table::rbindlist(all_data)
 
 ICESat2VegR::prepend_class(dt, "icesat2.atl08_dt")
-
 dt2 <- ATL08_seg_attributes_dt_clipGeometry(dt, geom)
 
-library(Rcpp)
-setwd("C:/Users/caiohamamura/src/r/rICESat2Veg/")
-gridCpp <- Rcpp::sourceCpp("src/GridIndex.cpp")
-Rcpp::loadModule("grid_index_module")
-Rcpp::sourceCpp("src/findRadius.cpp")
+# library(Rcpp)
+# setwd("C:/Users/caioh/src/r/rICESat2Veg")
+# gridCpp <- Rcpp::sourceCpp("src/GridIndex.cpp")
+# Rcpp::loadModule("grid_index_module")
+# Rcpp::sourceCpp("src/findRadius.cpp")
   
 grid <- GridIndex$new(dt2$longitude, dt2$latitude, 0.01)
 dt2[,"I" := .I]
-(idx = sample(dt2$I, 1))
-pt = dt2[idx]
+# (idx = sample(dt2$I, 1))
+# pt = dt2[idx]
+# grid$searchFixedRadius(pt$longitude, pt$latitude, 0.1)
 
-microbenchmark::microbenchmark(grid$searchFixedRadius(pt$longitude, pt$latitude, 0.1), times=1000)
+idx <- findRadius(dt2$longitude, dt2$latitude, 0.01, 1000)
+dt2[idx, plot(longitude, latitude, xlim=c(-85.46, -85.41), ylim=c(30.3,30.5))]
+dt2[idx, text(longitude, latitude, labels=I)]
 
-microbenchmark::microbenchmark(findRadius3(dt2$longitude, dt2$latitude, 0.1, 100), times = 100)
-findRadius(dt2$longitude, dt2$latitude, 0.1, 100, grid$getPointer())
+dt2[c(17774, 19098)]
 
+17774 %in% dt2[19098,grid$searchFixedRadius(longitude, latitude, 0.01)]
+19098 %in% dt2[17774,grid$searchFixedRadius(longitude, latitude, 0.01)]
+# queryX = 2.5
+# queryY = 6.5
+# radius = 1.0
 
-
-library(Rcpp)
-
-
-queryX = 2.5
-queryY = 6.5
-radius = 1.0
-
-grid$searchFixedRadius(pt$longitude, pt$latitude, 0.01)
-grid$searchFixedRadius(queryX, queryY, 2.5)
+# grid$searchFixedRadius(pt$longitude, pt$latitude, 0.01)
+# grid$searchFixedRadius(queryX, queryY, 2.5)
 

@@ -5,7 +5,6 @@ Version: 0.0.1
 Authors@R: c(
     person("Carlos Alberto", "Silva", email = "c.silva@ufl.edu", role = c("aut", "cph", "cre")),
     person("Caio", "Hamamura", email = "caiohamamura@gmail.com", role = c("aut", "cph")))
-Maintainer: Carlos Alberto silva <c.silva@ufl.edu>
 Description: Set of tools for downloading, reading, visualizing, processing and exporting NASA's ICESat-2 ATL03 (Global Geolocated Photon Data) and ATL08 (Land and Vegetation Height) products for Land and Vegetation Applications. 
 License: GPL-3
 Imports:
@@ -15,17 +14,10 @@ Imports:
   lazyeval,
   mathjaxr,
   Rcpp,
-  Rdpack
+  Rdpack,
+  reticulate
 Depends:
-    reticulate,
     R6
-Config/reticulate/autoconfigure:
-  list(
-    packages = list(
-      list(package = "earthaccess"),
-      list(package = "h5py")
-    )
-  )
 Encoding: UTF-8
 LazyData: true
 NeedsCompilation: yes
@@ -63,7 +55,6 @@ Collate:
     'ATL03_photons_dt_classify.R'
     'ATL03_photons_plot.R'
     'ATL03_photons_simulator.R'
-    'RcppExports.R'
     'zzz.R'
     'ATL03_read.R'
     'ATL03_rgt_extract.R'
@@ -85,6 +76,7 @@ Collate:
     'ICESat2_download.R'
     'ICESat2_finder.R'
     'ICESat2_finder_cloud.R'
+    'RcppExports.R'
     'argParse.R'
     'clip (box, geometry, h5 and dt).R'
     'clip.R'

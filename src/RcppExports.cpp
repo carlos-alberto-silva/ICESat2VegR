@@ -11,7 +11,7 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // findRadius
-NumericVector findRadius(NumericVector x, NumericVector y, const double radius, const int sampleSize);
+IntegerVector findRadius(NumericVector x, NumericVector y, const double radius, const int sampleSize);
 RcppExport SEXP _ICESat2VegR_findRadius(SEXP xSEXP, SEXP ySEXP, SEXP radiusSEXP, SEXP sampleSizeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -25,8 +25,11 @@ BEGIN_RCPP
 END_RCPP
 }
 
+RcppExport SEXP _rcpp_module_boot_grid_index_module();
+
 static const R_CallMethodDef CallEntries[] = {
     {"_ICESat2VegR_findRadius", (DL_FUNC) &_ICESat2VegR_findRadius, 4},
+    {"_rcpp_module_boot_grid_index_module", (DL_FUNC) &_rcpp_module_boot_grid_index_module, 0},
     {NULL, NULL, 0}
 };
 
