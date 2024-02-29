@@ -1,19 +1,18 @@
 #' @useDynLib ICESat2VegR
 
-#' @export GridIndex
-NA
-
 #' @export
 earthaccess <- NA
 
 #' @export
 ee <- NA
 
+
+pkg_module <- Rcpp::Module("icesat2_module")
+
 ee_cache <- new.env(parent = emptyenv())
 ee_cache$search <- NULL
 
 .onLoad <- function(libname, pkgname) {
-  Rcpp::loadModule("grid_index_module", TRUE, TRUE)
   earthaccess <<- reticulate::import("earthaccess", delay_load = TRUE, convert = FALSE)
   ee <<- reticulate::import("ee", delay_load = TRUE, convert = TRUE)
   tryCatch(
