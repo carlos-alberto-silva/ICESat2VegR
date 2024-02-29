@@ -47,7 +47,7 @@ uint64_t GridIndex::convertToIndex(double x, double y)
 
 IntegerVector GridIndex::pointsWithinIndex(uint64_t index)
 {
-  return mapIndex[index];
+  return mapIndex[index] + 1;
 }
 
 IntegerVector GridIndex::searchFixedRadius(const double x, const double y, const double dist)
@@ -57,9 +57,9 @@ IntegerVector GridIndex::searchFixedRadius(const double x, const double y, const
   double xmax = std::min((x + dist + factor / 2), xMax);
   double ymin = std::max((y - dist), yMin);
   double ymax = std::min((y + dist + factor / 2), yMax);
-  for (double curY = ymin; curY <= ymax; curY += factor / 2)
+  for (double curY = ymin; curY <= ymax; curY += factor)
   {
-    for (double curX = xmin; curX <= xmax; curX += factor / 2)
+    for (double curX = xmin; curX <= xmax; curX += factor)
     {
       uint64_t idx = convertToIndex(curX, curY);
       auto it = mapIndex.find(idx);

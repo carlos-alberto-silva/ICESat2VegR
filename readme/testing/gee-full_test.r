@@ -45,7 +45,8 @@ dt2 <- ATL08_seg_attributes_dt_clipGeometry(dt, geom)
 # Rcpp::loadModule("grid_index_module")
 # Rcpp::sourceCpp("src/findRadius.cpp")
   
-grid <- GridIndex$new(dt2$longitude, dt2$latitude, 0.01)
+grid <- GridIndex$new(dt2$longitude, dt2$latitude, abs(diff(range(dt2$longitude))) / 1000)
+
 dt2[,"I" := .I]
 # (idx = sample(dt2$I, 1))
 # pt = dt2[idx]
@@ -55,9 +56,15 @@ idx <- findRadius(dt2$longitude, dt2$latitude, 0.01, 1000)
 dt2[idx, plot(longitude, latitude, xlim=c(-85.46, -85.41), ylim=c(30.3,30.5))]
 dt2[idx, text(longitude, latitude, labels=I)]
 
+idx <- findRadius(dt2$longitude, dt2$latitude, 0.1, 1000)
+dt2[idx, plot(longitude, latitude)]
+dt2[idx, text(longitude, latitude, labels=I)]
+
+
 dt2[c(17774, 19098)]
 
-17774 %in% dt2[19098,grid$searchFixedRadius(longitude, latitude, 0.01)]
+17099 %in% dt2[16427,grid$searchFixedRadius(longitude, latitude, 0.1)]
+16427 %in% dt2[17099,grid$searchFixedRadius(longitude, latitude, 0.1)]
 19098 %in% dt2[17774,grid$searchFixedRadius(longitude, latitude, 0.01)]
 # queryX = 2.5
 # queryY = 6.5

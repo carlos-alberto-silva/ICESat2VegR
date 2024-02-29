@@ -22,7 +22,7 @@ IntegerVector findRadius(NumericVector x, NumericVector y, const double radius, 
   // Rcout << "Ok1" << std::endl;
 
   NumericVector rng = range(x);
-  GridIndex gridIndex(x, y, (abs(rng[1] - rng[0]) / 1.0));
+  GridIndex gridIndex(x, y, (abs(rng[1] - rng[0]) / 1000));
 
   // Create a vector of indices from 0 to nrows - 1
   IntegerVector indices = Range(0, nrows - 1);
@@ -33,17 +33,20 @@ IntegerVector findRadius(NumericVector x, NumericVector y, const double radius, 
   int ii = 0;
   for (int idx : indices)
   {
+    // Skip if idx is taboo
     if (tabooFlag[idx] == true)
       continue;
 
+    // Mark as taboo and accept sample
     tabooFlag[idx] = true;
-    output[ii++] = idx;
+    output[ii++] = idx + 1;
 
+    // Did we reach sampleSize?
     if (ii >= sampleSize) {
       break;  
     }
 
-    // Add points around to tabooList
+    // Add points within radius to tabooList
     IntegerVector pointsWithin = gridIndex.searchFixedRadius(x[idx], y[idx], radius);
     for (int tabooIdx : pointsWithin)
     {
