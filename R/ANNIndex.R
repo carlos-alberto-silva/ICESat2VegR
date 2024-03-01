@@ -11,6 +11,7 @@
 #' @export
 ANNIndex <- R6::R6Class("ANNIndex",
   public = list(
+    #' @field tree The C++ pointer for the built tree
     tree = NULL,
     #' @description
     #' Creates a new instance of the [`ANNIndex-class`] class.

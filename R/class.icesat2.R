@@ -500,3 +500,19 @@ setMethod(
     }
   }
 )
+
+
+
+genericICESatC <- function(classname, x, ...) {
+  function(x, ...) {
+    dt_list <- list(..., x)
+    dt <- data.table::rbindlist(dt_list)
+    ICESat2VegR::prepend_class(dt, classname)
+    dt
+  }
+}
+
+#' @export
+"c.icesat2.atl03_seg_dt" <- genericICESatC("icesat2.atl03_seg_dt")
+#' @export
+"c.icesat2.atl08_dt" <- genericICESatC("icesat2.atl08_dt")

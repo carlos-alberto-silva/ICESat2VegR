@@ -25,3 +25,8 @@ ee_cache$search <- NULL
   )
   h5py <<- reticulate::import("h5py", delay_load = TRUE)
 }
+
+
+.onUnload <- function (libpath) {
+  library.dynam.unload("ICESat2VegR", libpath)
+}

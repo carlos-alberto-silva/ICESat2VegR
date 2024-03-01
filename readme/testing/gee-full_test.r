@@ -1,7 +1,7 @@
 # source("C:/Users/caiohamamura/src/r/rICESat2Veg/readme/testing/gee-full_test.r")
-library(ICESat2VegR)
 library(terra)
 library(magrittr)
+library(ICESat2VegR)
 
 geom <- terra::vect("Z:/01_Projects/04_NASA_ICESat2/00_data/01_SHPs/all_boundary.shp")
 ext <- terra::ext(geom)
@@ -27,30 +27,39 @@ granules
 ICESat2VegR::ICESat2_download(granules, outdir = "../inst/exdata/")
 
 granulesName <- basename(granules)
-all_data <- list()
+all_data <- NULL
 for (granule in granulesName) {
   atl08 <- ICESat2VegR::ATL08_read(file.path("../inst/exdata", granule))
   dt <- ICESat2VegR::ATL08_seg_attributes_dt(atl08, attribute = c("h_canopy"))
   dt <- suppressWarnings(dt[, granule := granule])
-  all_data[[granule]] <- dt
+  if (is.null(all_data)) {
+    all_data <- dt
+  } else {
+    all_data <- c(dt, all_data)
+  }
 }
-dt <- data.table::rbindlist(all_data)
 
-ICESat2VegR::prepend_class(dt, "icesat2.atl08_dt")
 
-dt2 <- ICESat2VegR::ATL08_seg_attributes_dt_clipGeometry(dt, geom)
-dt2[, I := .I]
+all_data <- all_data %>% ATL08_seg_attributes_dt_clipGeometry(geom)
+
 radius <- 0.01
-
 # Build a new Spatial Index
-ann <- ANNIndex$new(dt2$longitude, dt2$latitude)
+ann <- ANNIndex$new(all_data$longitude, all_data$latitude)
+
+library(magrittr)
 
 # Get some samples
 set.seed(123)
-idx <- sampleMinDistance(
-  dt2$longitude,
-  dt2$latitude,
-  nSamples = 1000,
-  radius = radius,
-  spatialIndex = ann
-)
+sample1 <- sample(all_data, gridSampling) 
+sample2 <- sample(sample1, stratifiedSampling())
+
+
+library(ggplot2)
+library(terra)
+library(tidyterra)
+
+ggplot() + 
+  geom_spatvector(data = geom, color = "orange", lwd=2, fill = NA) +
+  ggplot2::geom_point(data = the_sample, aes(longitude, latitude)) + 
+  theme_bw()
+

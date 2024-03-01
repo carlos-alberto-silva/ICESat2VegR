@@ -11,6 +11,13 @@ for finding points that are within a specified range.
 Mount, D. M.; Arya, S. ANN: A Library for Approximate Nearest Neighbor Searching,
 available in \url{https://www.cs.umd.edu/~mount/ANN/}
 }
+\section{Public fields}{
+\if{html}{\out{<div class="r6-fields">}}
+\describe{
+\item{\code{tree}}{The C++ pointer for the built tree}
+}
+\if{html}{\out{</div>}}
+}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
