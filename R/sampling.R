@@ -3,8 +3,6 @@ randomSamplingWorker <- function(dt, size) {
 }
 
 radiusSamplingWorker <- function(dt, size, radius, spatialIndex = NULL) {
-  idx <- sampleMinDistance(dt$longitude, dt$latitude, radius, size, spatialIndex)
-
   if (is.null(spatialIndex)) {
     spatialIndex <- ANNIndex$new(dt$longitude, dt$latitude)
   }

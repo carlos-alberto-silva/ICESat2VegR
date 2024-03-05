@@ -87,7 +87,7 @@ Collate:
     'gee-filterBounds.R'
     'gee-search.R'
     'lazy_applier.R'
-    'sampleMinDistance.R'
+    'sampling.R'
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

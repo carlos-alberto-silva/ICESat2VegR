@@ -45,9 +45,12 @@ all_data <- all_data %>% ATL08_seg_attributes_dt_clipGeometry(geom)
 radius <- 0.01
 # Build a new Spatial Index
 ann <- ANNIndex$new(all_data$longitude, all_data$latitude)
+grid <- GridIndex$new(all_data$longitude, all_data$latitude, radius)
+
+
 
 library(magrittr)
-
+sample1 <- sample(all_data, gridSampling) 
 # Get some samples
 set.seed(123)
 sample1 <- sample(all_data, gridSampling) 
