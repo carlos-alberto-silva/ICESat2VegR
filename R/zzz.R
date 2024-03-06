@@ -30,3 +30,16 @@ ee_cache$search <- NULL
 .onUnload <- function (libpath) {
   library.dynam.unload("ICESat2VegR", libpath)
 }
+
+.onAttach <- function(lib, pkg){
+  info <- utils::packageDescription("ICESat2VegR")
+  if (is.null(info$Date)){info$Date="2024-03-06 UTC"}
+  base::packageStartupMessage(
+    paste('\n##----------------------------------------------------------------##\n',
+          'ICESat2VegR package, version ', info$Version, ', Released ', info$Date, '\n',
+          'This package is based upon work supported by the NASA ICESat-2 ',
+          'under grants No. ****. \n',
+          '##----------------------------------------------------------------##',
+          sep="")
+  )
+}

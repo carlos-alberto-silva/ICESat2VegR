@@ -75,6 +75,7 @@ Collate:
     'ATL08_seg_attributes_dt_polyStat.R'
     'ATL08_seg_attributes_h5_gridStat.R'
     'ATL08_seg_cover_dt_compute.R'
+    'GridIndex.R'
     'ICESat2_dataDownload.R'
     'ICESat2_download.R'
     'ICESat2_finder.R'

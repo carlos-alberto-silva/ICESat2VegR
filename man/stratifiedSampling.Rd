@@ -14,6 +14,10 @@ available observations within the group.}
 \item{variable}{Variable name used for the stratification}
 
 \item{...}{forward to the \code{\link[graphics:hist]{graphics::hist()}}, where you can manually define the breaks.}
+
+\item{chainSampling}{chains different methods of sampling by providing the result
+of another samplingMethod \code{\link[=randomSampling]{randomSampling()}}, \code{\link[=spacedSampling]{spacedSampling()}}, \code{\link[=stratifiedSampling]{stratifiedSampling()}}.
+You can chain for example, a gridSampling(100, )}
 }
 \value{
 A \code{\linkS4class{icesat2_sampling_method}} for defining the method used in \code{\link[=sample]{sample()}}

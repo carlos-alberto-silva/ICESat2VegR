@@ -4,20 +4,13 @@
 \alias{sample.icesat2.atl03_seg_dt}
 \title{Sample spatial points given a minimum distance between them}
 \usage{
-\method{sample}{icesat2.atl03_seg_dt}(dt, size, radius, spatialIndex = NULL)
+\method{sample}{icesat2.atl03_seg_dt}(dt, sampling_method, ...)
 }
 \arguments{
 \item{dt}{\code{\linkS4class{icesat2.atl03_seg_dt}} data.table. Which can be extracted using
 \code{\link[=ATL08_seg_attributes_dt]{ATL08_seg_attributes_dt()}}}
 
-\item{size}{the sample size. Either an integer of absolute number of samples or
-if it is between (0, 1) it will sample a percentage relative to the number of
-available observations within the group.}
-
-\item{radius}{the minimum radius between the points}
-
-\item{spatialIndex}{the spatial index for accelerating the search
-between points. default NULL will calculate a new ANN index tree.}
+\item{sampling_method}{between points. default NULL will calculate a new ANN index tree.}
 }
 \value{
 a subset sample of the input \code{\linkS4class{icesat2.atl03_seg_dt}}

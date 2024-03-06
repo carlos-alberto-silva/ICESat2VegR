@@ -1,8 +1,8 @@
 randomSamplingWorker <- function(dt, size) {
-  dt[saneSample(seq_len(len = nrow(all_data)), size)]
+  saneSample(dt, size)
 }
 
-radiusSamplingWorker <- function(dt, size, radius, spatialIndex = NULL) {
+spacedSamplingWorker <- function(dt, size, radius, spatialIndex = NULL) {
   if (is.null(spatialIndex)) {
     spatialIndex <- ANNIndex$new(dt$longitude, dt$latitude)
   }
@@ -18,45 +18,70 @@ radiusSamplingWorker <- function(dt, size, radius, spatialIndex = NULL) {
 
   dt[idx]
 }
-# all_data$nid <- NULL
-# dt <- all_data
-gridSamplingWorker <- function(dt, size, grid_size) {
+# grid_size = 0.1
+# size = 0.999999
+gridSamplingWorker <- function(dt, size, grid_size, chainSampling = NULL) {
+  if (is.null(chainSampling)) chainSampling <- randomSampling(size)
   longitude <- latitude <- group <- NA
   x_grid <- dt[, as.integer((longitude - min(longitude)) / grid_size)]
   y_grid <- dt[, as.integer((latitude - min(latitude)) / grid_size)]
 
   grouped <- dt[, cbind(.SD, x_grid, y_grid)]
   grouped[, I := .I]
-  idx <- grouped[, list(idx = saneSample(I, size)), by = list(x_grid, y_grid)]
-
-  dt[idx$idx, cbind(.SD, idx[, .SD, .SDcols = -"idx"])]
+  grouped[, do.call(chainSampling$fn, c(list(.SD), chainSampling$params)), by = list(x_grid, y_grid)]
 }
 
 
-stratifiedSamplingWorker <- function(dt, size, variable, ...) {
-  group <- NA
+stratifiedSamplingWorker <- function(dt, size, variable, chainSampling = NULL, ...) {
+  if (is.null(chainSampling)) chainSampling <- randomSampling(size)
+  breaks <- NA
   .N <- data.table::.N
   # variable <- "h_canopy"
 
-  hist_bins <- hist(dt[, get(variable)], plot = FALSE, ...)
+  y <- dt[, .SD, .SDcols = variable][[1]]
+  hist_bins <- hist(y, plot = FALSE, ...)
 
-  grouped <- dt[, cbind(.SD, breaks = cut(get(variable), hist_bins$breaks))]
+  grouped <- dt[, cbind(.SD, breaks = cut(y, hist_bins$breaks))]
   grouped[, I := .I]
 
-  idx <- grouped[, list(idx = saneSample(I, size)), by = breaks]
-  dt[idx$idx, cbind(.SD, idx[, .SD, .SDcols = -"idx"])]
+  grouped[, do.call(chainSampling$fn, c(list(.SD), chainSampling$params)), by = breaks]
 }
 
 
+
+#' @export
+sample <- function(dt, size = NULL, method = NULL, ...) {
+  allMethods <- gsub("sample\\.", "", as.character(.S3methods("sample")))
+  if (any(class(dt) %in% allMethods)) {
+    UseMethod("sample")
+  }
+
+  base::sample(dt, size, ...)
+}
+
+
+saneSample <- function(dt, n) {
+  nrows <- nrow(dt)
+  if (n < 1 && n > 0) {
+    return(dt[sample(dt[, .I], round(n * nrows))])
+  }
+  if (nrows < n) {
+    warning(sprintf(
+      "Not enough samples within group, truncated to %d samples",
+      nrows
+    ))
+    n <- nrows
+  }
+  return(dt[sample(dt[, .I], n)])
+}
 
 #' Sample spatial points given a minimum distance between them
 #'
 #' @param dt [`icesat2.atl08_dt-class`] data.table. Which can be extracted using
 #' [`ATL08_seg_attributes_dt()`]
-#' @param size the sample size
-#' @param radius the minimum radius between the points
-#' @param spatialIndex the spatial index for accelerating the search
-#' between points. default NULL will calculate a new ANN index tree.
+#' @param method the sampling method, either one of the sampling methods
+#' provided [`randomSampling()`], [`spacedSampling()`], [`gridSampling()`],
+#' [`stratifiedSampling()`]
 #'
 #' @return a subset sample of the input [`icesat2.atl08_dt-class`]
 #'
@@ -69,46 +94,19 @@ stratifiedSamplingWorker <- function(dt, size, variable, ...) {
 #' Mount, D. M.; Arya, S. ANN: A Library for Approximate Nearest Neighbor Searching,
 #' available in <https://www.cs.umd.edu/~mount/ANN/>
 #'
-
 #' @export
-sample <- function(dt, size, radius, spatialIndex, ...) {
-  allMethods <- gsub("sample\\.", "", as.character(.S3methods("sample")))
-  if (any(class(dt) %in% allMethods)) {
-    UseMethod("sample")
-  }
-
-  base::sample(dt, size, ...)
+`sample.icesat2.atl08_dt` <- function(dt, method, ...) {
+  do.call(method$fn, c(list(dt), method$params))
 }
 
 
-saneSample <- function(x, n) {
-  size_x <- length(x)
-  if (n < 1 && n > 0) {
-    return(sample(x, round(n * size_x)))
-  }
-  if (size_x < n) {
-    warning(sprintf(
-      "Not enough samples within group, truncated to %d samples",
-      size_x
-    ))
-    n <- size_x
-  }
-  sample(x, n)
-}
-
-#' @export
-`sample.icesat2.atl08_dt` <- radiusSamplingWorker
 
 
 #' Sample spatial points given a minimum distance between them
 #'
 #' @param dt [`icesat2.atl03_seg_dt-class`] data.table. Which can be extracted using
 #' [`ATL08_seg_attributes_dt()`]
-#' @param size the sample size. Either an integer of absolute number of samples or
-#' if it is between (0, 1) it will sample a percentage relative to the number of
-#' available observations within the group.
-#' @param radius the minimum radius between the points
-#' @param spatialIndex the spatial index for accelerating the search
+#' @param sampling_method
 #' between points. default NULL will calculate a new ANN index tree.
 #'
 #' @return a subset sample of the input [`icesat2.atl03_seg_dt-class`]
@@ -124,7 +122,9 @@ saneSample <- function(x, n) {
 #'
 
 #' @export
-`sample.icesat2.atl03_seg_dt` <- radiusSamplingWorker
+`sample.icesat2.atl03_seg_dt` <- function(dt, sampling_method, ...) {
+
+}
 
 
 
@@ -134,11 +134,36 @@ saneSample <- function(x, n) {
 ########################
 setRefClass("icesat2_sampling_method")
 
-genericSamplingMethod <- function(fn, ...) {
-  params <- list(...)
-  params_string <- paste(gsub("^", ", ", names(params)), collapse = "")
+#' @export
+"+.icesat2_sampling_method" <- function(e1, e2) {
+  e1$params[["chainSampling"]] <- e2
+  e1
+}
 
-  eval(parse(text = sprintf('
+genericSamplingMethod <- function(fn, ..., chainSampling = NULL) {
+  params <- list(...)
+  params_string <- ""
+  if (length(params) > 0) {
+    params_names <- names(params)
+
+    # Get params names whose values are not NULL
+    params_with_value_names <- unlist(sapply(names(params), function(x) if (!is.null(params[[x]])) x))
+
+    params_string <- paste(gsub("^", ", ", params_names), collapse = "")
+    if (!is.null(params_with_value_names)) {
+      params_string <- gsub(
+        gettextf("(%s)", params_with_value_names),
+        gettextf("\\1 = %s", list(params_with_value)),
+        params_string
+      )
+    }
+  }
+
+  if (!is.null(chainSampling)) {
+    params_string <- gettextf("%s, chainSampling = %s", params_string, list(chainSampling))
+  }
+
+  fn_definition <- sprintf('
   function(size%1$s, ...) {
     methodContainer <- list(
       fn = fn,
@@ -148,7 +173,12 @@ genericSamplingMethod <- function(fn, ...) {
     prepend_class(methodContainer, "icesat2_sampling_method")
     methodContainer
   }
-  ', params_string)))
+  ', params_string)
+
+  params_with_value <-
+    eval(parse(text = fn_definition))
+
+  params_with_value
 }
 
 #' Pure random sampling method
@@ -176,7 +206,9 @@ randomSampling <- genericSamplingMethod(randomSamplingWorker)
 #' @return A [`icesat2_sampling_method-class`] for defining the method used in [`sample()`]
 #'
 #' @export
-gridSampling <- genericSamplingMethod(gridSamplingWorker, grid_size = TRUE)
+gridSampling <- genericSamplingMethod(gridSamplingWorker, grid_size = NULL)
+
+
 
 #' Get samples stratified by a variable binning histogram
 #'
@@ -184,13 +216,16 @@ gridSampling <- genericSamplingMethod(gridSamplingWorker, grid_size = TRUE)
 #' if it is between (0, 1) it will sample a percentage relative to the number of
 #' available observations within the group.
 #' @param variable Variable name used for the stratification
+#' @param chainSampling chains different methods of sampling by providing the result
+#' of another samplingMethod [`randomSampling()`], [`spacedSampling()`], [`stratifiedSampling()`].
+#' You can chain for example, a gridSampling(100, )
 #' @param ...
 #' forward to the [`graphics::hist()`], where you can manually define the breaks.
 #'
 #' @return A [`icesat2_sampling_method-class`] for defining the method used in [`sample()`]
 #'
 #' @export
-stratifiedSampling <- genericSamplingMethod(stratifiedSamplingWorker, variable = TRUE)
+stratifiedSampling <- genericSamplingMethod(stratifiedSamplingWorker, variable = NULL)
 
 #' Get observations given a minimum radius distance between samples
 #'
@@ -204,7 +239,7 @@ stratifiedSampling <- genericSamplingMethod(stratifiedSamplingWorker, variable =
 #' @return A [`icesat2_sampling_method-class`] for defining the method used in [`sample()`]
 #'
 #' @export
-radiusSampling <- genericSamplingMethod(radiusSamplingWorker, radius = TRUE)
+spacedSampling <- genericSamplingMethod(spacedSamplingWorker, radius = NULL)
 
 
 

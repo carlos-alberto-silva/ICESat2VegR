@@ -1,7 +1,7 @@
 # source("C:/Users/caiohamamura/src/r/rICESat2Veg/readme/testing/gee-full_test.r")
+library(ICESat2VegR)
 library(terra)
 library(magrittr)
-library(ICESat2VegR)
 
 geom <- terra::vect("Z:/01_Projects/04_NASA_ICESat2/00_data/01_SHPs/all_boundary.shp")
 ext <- terra::ext(geom)
@@ -44,8 +44,18 @@ all_data <- all_data %>% ATL08_seg_attributes_dt_clipGeometry(geom)
 
 radius <- 0.01
 # Build a new Spatial Index
+
 ann <- ANNIndex$new(all_data$longitude, all_data$latitude)
 grid <- GridIndex$new(all_data$longitude, all_data$latitude, radius)
+
+# devtools::load_all()
+gridSamp <- gridSampling(size = 10, grid_size = 0.1)
+stratSamp <- stratifiedSampling(size = 2, variable = "h_canopy")
+combinedSamp <- gridSamp + stratSamp
+# chainSampling = stratSamp
+
+(sampled <- sample(all_data, gridSamp + stratSamp))
+
 
 
 
@@ -61,8 +71,11 @@ library(ggplot2)
 library(terra)
 library(tidyterra)
 
-ggplot() + 
-  geom_spatvector(data = geom, color = "orange", lwd=2, fill = NA) +
-  ggplot2::geom_point(data = the_sample, aes(longitude, latitude)) + 
-  theme_bw()
+ggplot() +
+  geom_spatvector(data = geom, color = "orange", fill = NA) +
+  geom_point(data = sampled, aes(longitude, latitude, color = h_canopy), cex = 3) +
+  scale_x_continuous(breaks = seq(min(all_data$longitude), max(all_data$longitude), 1)) +
+  scale_y_continuous(breaks = seq(min(all_data$latitude), max(all_data$latitude), 1)) +
+  scale_color_gradient(low = "gray", high = "forestgreen") +
+  ggplot2::theme_bw()
 

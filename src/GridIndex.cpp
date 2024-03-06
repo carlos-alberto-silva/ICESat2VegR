@@ -4,17 +4,13 @@
 
 using namespace Rcpp;
 
-GridIndex::GridIndex(const NumericVector& x, const NumericVector& y, double grid_size)
+GridIndex::GridIndex(const NumericVector &x, const NumericVector &y, double grid_size) : x_coords(x), y_coords(y), grid_size(grid_size)
 {
   if (x.size() != y.size())
   {
     REprintf("Error: The size of x and y coordinates must be the same.\n");
     return;
   }
-
-  this->grid_size = grid_size;
-  this->x_coords = x;
-  this->y_coords = y;
 
   for (size_t i = 0; i < x.size(); ++i)
   {
@@ -36,9 +32,9 @@ IntegerVector GridIndex::searchFixedRadius(const double x, const double y, const
   int grid_y = static_cast<int>(y / grid_size);
   int radiusCells = static_cast<int>(ceil(radius / grid_size));
 
-  for (int i = -radiusCells; i <= radiusCells; ++i)
+  for (int i = -radiusCells - grid_size; i <= (radiusCells + grid_size); ++i)
   {
-    for (int j = -radiusCells; j <= radiusCells; ++j)
+    for (int j = -radiusCells - grid_size; j <= (radiusCells + grid_size); ++j)
     {
       int neighbor_x = grid_x + i;
       int neighbor_y = grid_y + j;

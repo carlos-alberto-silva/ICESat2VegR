@@ -18,7 +18,7 @@ GridIndex <- R6::R6Class("GridIndex",
     #'
     #' @param x NumericVector of x/longitude
     #' @param y NumericVector of y/latitude
-    #' @param radius the minimum radius between the points
+    #' @param grid_size the size used for gridding
     initialize = function(x, y, grid_size) {
       self$tree <- pkg_module$GridIndex$new(x, y, grid_size)
     },
@@ -28,7 +28,7 @@ GridIndex <- R6::R6Class("GridIndex",
     #'
     #' @param x NumericVector of x/longitude
     #' @param y NumericVector of y/latitude
-    #' @param radius the minimum radius between the points
+    #' @param radius the search radius
     searchFixedRadius = function(x, y, radius) {
       self$tree$searchFixedRadius(x, y, radius)
     }
