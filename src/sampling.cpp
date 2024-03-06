@@ -1,7 +1,6 @@
 #include <Rcpp.h>
 #include <random>
 #include <ANNIndex.h>
-#include <GridIndex.h>
 
 using namespace Rcpp;
 
@@ -61,7 +60,4 @@ RCPP_MODULE(icesat2_module)
       .constructor<NumericVector, NumericVector>()
       .method("searchFixedRadius", ANNIndex::searchFixedRadius);
 
-  class_<GridIndex>("GridIndex")
-      .constructor<NumericVector, NumericVector, const double>()
-      .method("searchFixedRadius", GridIndex::searchFixedRadius);
 }

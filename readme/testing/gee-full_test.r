@@ -41,6 +41,7 @@ for (granule in granulesName) {
 
 
 all_data <- all_data %>% ATL08_seg_attributes_dt_clipGeometry(geom)
+all_data = all_data[h_canopy < 100]
 
 radius <- 0.01
 # Build a new Spatial Index
@@ -49,22 +50,14 @@ ann <- ANNIndex$new(all_data$longitude, all_data$latitude)
 grid <- GridIndex$new(all_data$longitude, all_data$latitude, radius)
 
 # devtools::load_all()
-gridSamp <- gridSampling(size = 10, grid_size = 0.1)
-stratSamp <- stratifiedSampling(size = 2, variable = "h_canopy")
+gridSamp <- gridSampling(size = 0.999999, grid_size = 1)
+stratSamp <- stratifiedSampling(size = 2, variable = "h_canopy", breaks=c(0,10,20,9999))
+spacedSamp
 combinedSamp <- gridSamp + stratSamp
 # chainSampling = stratSamp
-
-(sampled <- sample(all_data, gridSamp + stratSamp))
-
-
-
-
-library(magrittr)
-sample1 <- sample(all_data, gridSampling) 
-# Get some samples
-set.seed(123)
-sample1 <- sample(all_data, gridSampling) 
-sample2 <- sample(sample1, stratifiedSampling())
+?graphics::hist
+(sampled <- sample(all_data, method = combinedSamp))
+unique(sampled$breaks)
 
 
 library(ggplot2)
