@@ -4,7 +4,7 @@
 \alias{stratifiedSampling}
 \title{Get samples stratified by a variable binning histogram}
 \usage{
-stratifiedSampling(size, variable, ...)
+stratifiedSampling(size, variable, chainSampling = NULL, ...)
 }
 \arguments{
 \item{size}{the sample size. Either an integer of absolute number of samples or
@@ -13,11 +13,10 @@ available observations within the group.}
 
 \item{variable}{Variable name used for the stratification}
 
-\item{...}{forward to the \code{\link[graphics:hist]{graphics::hist()}}, where you can manually define the breaks.}
-
 \item{chainSampling}{chains different methods of sampling by providing the result
-of another samplingMethod \code{\link[=randomSampling]{randomSampling()}}, \code{\link[=spacedSampling]{spacedSampling()}}, \code{\link[=stratifiedSampling]{stratifiedSampling()}}.
-You can chain for example, a gridSampling(100, )}
+of another samplingMethod \code{\link[=randomSampling]{randomSampling()}}, \code{\link[=spacedSampling]{spacedSampling()}}, \code{\link[=stratifiedSampling]{stratifiedSampling()}}.}
+
+\item{...}{forward to the \code{\link[graphics:hist]{graphics::hist()}}, where you can manually define the breaks.}
 }
 \value{
 A \code{\linkS4class{icesat2_sampling_method}} for defining the method used in \code{\link[=sample]{sample()}}

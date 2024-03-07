@@ -4,17 +4,17 @@
 \alias{randomSampling}
 \title{Pure random sampling method}
 \usage{
-randomSampling(size, ...)
+randomSampling(size)
 }
 \arguments{
 \item{size}{the sample size. Either an integer of absolute number of samples or
 if it is between (0, 1) it will sample a percentage relative to the number of
 available observations within the group.}
 
-\item{...}{generic params not used by randomSampling}
-
 \item{dt}{\code{\linkS4class{icesat2.atl03_seg_dt}} data.table. Which can be extracted using
 \code{\link[=ATL08_seg_attributes_dt]{ATL08_seg_attributes_dt()}}}
+
+\item{...}{generic params not used by randomSampling}
 }
 \value{
 A \code{\linkS4class{icesat2_sampling_method}} for defining the method used in \code{\link[=sample]{sample()}}

@@ -4,7 +4,7 @@
 \alias{gridSampling}
 \title{Get samples stratified by grid cells of specified size}
 \usage{
-gridSampling(size, grid_size, ...)
+gridSampling(size, grid_size, chainSampling = NULL)
 }
 \arguments{
 \item{size}{the sample size. Either an integer of absolute number of samples or
@@ -13,6 +13,9 @@ available observations within the group.}
 
 \item{grid_size}{generic params. The \code{\link[=gridSampling]{gridSampling()}} will take a \code{grid_size} parameter
 defining the grid size for the sampling}
+
+\item{chainSampling}{chains different methods of sampling by providing the result
+of another samplingMethod \code{\link[=randomSampling]{randomSampling()}}, \code{\link[=spacedSampling]{spacedSampling()}}, \code{\link[=stratifiedSampling]{stratifiedSampling()}}.}
 }
 \value{
 A \code{\linkS4class{icesat2_sampling_method}} for defining the method used in \code{\link[=sample]{sample()}}

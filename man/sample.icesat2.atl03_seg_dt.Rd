@@ -2,28 +2,21 @@
 % Please edit documentation in R/sampling.R
 \name{sample.icesat2.atl03_seg_dt}
 \alias{sample.icesat2.atl03_seg_dt}
-\title{Sample spatial points given a minimum distance between them}
+\title{Sampling function which accepts a method for sampling}
 \usage{
-\method{sample}{icesat2.atl03_seg_dt}(dt, sampling_method, ...)
+\method{sample}{icesat2.atl03_seg_dt}(dt, method, ...)
 }
 \arguments{
 \item{dt}{\code{\linkS4class{icesat2.atl03_seg_dt}} data.table. Which can be extracted using
 \code{\link[=ATL08_seg_attributes_dt]{ATL08_seg_attributes_dt()}}}
 
-\item{sampling_method}{between points. default NULL will calculate a new ANN index tree.}
+\item{method}{the sampling method, either one of the sampling methods
+provided \code{\link[=randomSampling]{randomSampling()}}, \code{\link[=spacedSampling]{spacedSampling()}}, \code{\link[=gridSampling]{gridSampling()}},
+\code{\link[=stratifiedSampling]{stratifiedSampling()}}}
 }
 \value{
 a subset sample of the input \code{\linkS4class{icesat2.atl03_seg_dt}}
 }
 \description{
-Sample spatial points given a minimum distance between them
-}
-\details{
-This function uses a wrap around C++ ANN library from Mount and Arya (2010).
-for calculating the nearest neighbors and including them in a taboo list
-which won't be considered for the next sampling.
-}
-\seealso{
-Mount, D. M.; Arya, S. ANN: A Library for Approximate Nearest Neighbor Searching,
-available in \url{https://www.cs.umd.edu/~mount/ANN/}
+Sampling function which accepts a method for sampling
 }

@@ -3,7 +3,7 @@ library(ICESat2VegR)
 library(terra)
 library(magrittr)
 
-geom <- terra::vect("Z:/01_Projects/04_NASA_ICESat2/00_data/01_SHPs/all_boundary.shp")
+geom <- terra::vect("../split.shp")
 ext <- terra::ext(geom)
 
 hurricane_michael_date <- "2018-10-10"

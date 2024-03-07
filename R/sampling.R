@@ -1,10 +1,16 @@
+#' @export
 randomSamplingWorker <- function(dt, size) {
   saneSample(dt, size)
 }
 
-spacedSamplingWorker <- function(dt, size, radius, spatialIndex = NULL) {
+#' @export
+spacedSamplingWorker <- function(dt, size, radius, spatialIndex = NULL, chainSampling = NULL) {
   if (is.null(spatialIndex)) {
     spatialIndex <- ANNIndex$new(dt$longitude, dt$latitude)
+  }
+
+  if (size < 1 && size > 0) {
+    size <- as.integer(round(nrow(dt) * size))
   }
 
   idx <- pkg_module$sampleMinDistanceRcpp(
@@ -16,10 +22,13 @@ spacedSamplingWorker <- function(dt, size, radius, spatialIndex = NULL) {
     as.integer(runif(1, 0, 2147483647))
   )
 
-  dt[idx]
+  if (is.null(chainSampling)) {
+    return(dt[idx])
+  }
+  return(do.call(chainSampling$fn, c(list(dt[idx]), chainSampling$params)))
 }
-# grid_size = 0.1
-# size = 0.999999
+
+#' @export
 gridSamplingWorker <- function(dt, size, grid_size, chainSampling = NULL) {
   if (is.null(chainSampling)) chainSampling <- randomSampling(size)
   longitude <- latitude <- group <- NA
@@ -31,11 +40,11 @@ gridSamplingWorker <- function(dt, size, grid_size, chainSampling = NULL) {
   grouped[, do.call(chainSampling$fn, c(list(.SD), chainSampling$params)), by = list(x_grid, y_grid)]
 }
 
-
+#' @export
 stratifiedSamplingWorker <- function(dt, size, variable, chainSampling = NULL, ...) {
   if (is.null(chainSampling)) chainSampling <- randomSampling(size)
   breaks <- NA
-  .N <- data.table::.N
+  .SD <- data.table::.SD
   # variable <- "h_canopy"
 
   y <- dt[, .SD, .SDcols = variable][[1]]
@@ -45,6 +54,31 @@ stratifiedSamplingWorker <- function(dt, size, variable, chainSampling = NULL, .
   grouped[, I := .I]
 
   grouped[, do.call(chainSampling$fn, c(list(.SD), chainSampling$params)), by = breaks]
+}
+
+#' @export
+geomSamplingWorker <- function(dt, size, geom, split_id = NULL, chainSampling = NULL) {
+  group <- NA
+  `:=` <- data.table::`:=`
+  .SD <- data.table::.SD
+
+  if (is.null(chainSampling)) chainSampling <- randomSampling(size)
+
+  if (is.null(split_id)) {
+    split_id <- "rowid"
+    geom[["rowid"]] <- seq_along(geom)
+    geom[[names(geom)]]
+  }
+
+  v <- terra::vect(
+    as.data.frame(dt),
+    geom = c("longitude", "latitude"),
+    crs = "epsg:4326"
+  )
+
+  geom_v <- terra::intersect(v, geom)
+  dt[, group := geom_v[[split_id]]]
+  dt[, do.call(chainSampling$fn, c(list(.SD), chainSampling$params)), by = group]
 }
 
 
@@ -75,7 +109,7 @@ saneSample <- function(dt, n) {
   return(dt[sample(dt[, .I], n)])
 }
 
-#' Sample spatial points given a minimum distance between them
+#' Sampling function which accepts a method for sampling
 #'
 #' @param dt [`icesat2.atl08_dt-class`] data.table. Which can be extracted using
 #' [`ATL08_seg_attributes_dt()`]
@@ -85,15 +119,6 @@ saneSample <- function(dt, n) {
 #'
 #' @return a subset sample of the input [`icesat2.atl08_dt-class`]
 #'
-#' @details
-#' This function uses a wrap around C++ ANN library from Mount and Arya (2010).
-#' for calculating the nearest neighbors and including them in a taboo list
-#' which won't be considered for the next sampling.
-#'
-#' @seealso
-#' Mount, D. M.; Arya, S. ANN: A Library for Approximate Nearest Neighbor Searching,
-#' available in <https://www.cs.umd.edu/~mount/ANN/>
-#'
 #' @export
 `sample.icesat2.atl08_dt` <- function(dt, method, ...) {
   do.call(method$fn, c(list(dt), method$params))
@@ -102,28 +127,19 @@ saneSample <- function(dt, n) {
 
 
 
-#' Sample spatial points given a minimum distance between them
+#' Sampling function which accepts a method for sampling
 #'
 #' @param dt [`icesat2.atl03_seg_dt-class`] data.table. Which can be extracted using
 #' [`ATL08_seg_attributes_dt()`]
-#' @param sampling_method
-#' between points. default NULL will calculate a new ANN index tree.
+#' @param method the sampling method, either one of the sampling methods
+#' provided [`randomSampling()`], [`spacedSampling()`], [`gridSampling()`],
+#' [`stratifiedSampling()`]
 #'
 #' @return a subset sample of the input [`icesat2.atl03_seg_dt-class`]
 #'
-#' @details
-#' This function uses a wrap around C++ ANN library from Mount and Arya (2010).
-#' for calculating the nearest neighbors and including them in a taboo list
-#' which won't be considered for the next sampling.
-#'
-#' @seealso
-#' Mount, D. M.; Arya, S. ANN: A Library for Approximate Nearest Neighbor Searching,
-#' available in <https://www.cs.umd.edu/~mount/ANN/>
-#'
-
 #' @export
-`sample.icesat2.atl03_seg_dt` <- function(dt, sampling_method, ...) {
-
+`sample.icesat2.atl03_seg_dt` <- function(dt, method, ...) {
+  do.call(method$fn, c(list(dt), method$params))
 }
 
 
@@ -136,44 +152,46 @@ setRefClass("icesat2_sampling_method")
 
 #' @export
 "+.icesat2_sampling_method" <- function(e1, e2) {
-  e1$params[["chainSampling"]] <- e2
-  e1
+  ii <- 1
+  chainSampling <- e1
+  while (!is.null(chainSampling$params$chainSampling)) {
+    chainSampling <- chainSampling$params$chainSampling
+    ii <- ii + 1
+  }
+  samplingString <- paste0(rep("$params$chainSampling", ii), collapse = "")
+  evaluater <- paste0("e1", samplingString, " <- e2", collapse = "")
+  eval(parse(text = evaluater))
+  return(invisible(e1))
 }
 
-genericSamplingMethod <- function(fn, ..., chainSampling = NULL) {
-  params <- list(...)
-  params_string <- ""
-  if (length(params) > 0) {
-    params_names <- names(params)
-
-    # Get params names whose values are not NULL
-    params_with_value_names <- unlist(sapply(names(params), function(x) if (!is.null(params[[x]])) x))
-
-    params_string <- paste(gsub("^", ", ", params_names), collapse = "")
-    if (!is.null(params_with_value_names)) {
-      params_string <- gsub(
-        gettextf("(%s)", params_with_value_names),
-        gettextf("\\1 = %s", list(params_with_value)),
-        params_string
+genericSamplingMethod <- function(fn) {
+  fn_name <- as.character(substitute(fn))
+  # formals extract params of a function as list
+  params <- formals(fn)
+  params[[1]] <- NULL
+  params_string <- paste0(sapply(names(params), function(x) {
+    if (!is.null(params[[x]]) && params[[x]] == "") {
+      x
+    } else {
+      gettextf(
+        "%s = %s", x,
+        list(params[[x]])
       )
     }
-  }
-
-  if (!is.null(chainSampling)) {
-    params_string <- gettextf("%s, chainSampling = %s", params_string, list(chainSampling))
-  }
+  }), collapse = ", ")
 
   fn_definition <- sprintf('
-  function(size%1$s, ...) {
+  function(%1$s) {
     methodContainer <- list(
       fn = fn,
-      params = list(size%1$s, ...)
+      params = list(%1$s),
+      methodName = "%2$s"
     )
 
     prepend_class(methodContainer, "icesat2_sampling_method")
     methodContainer
   }
-  ', params_string)
+  ', params_string, fn_name)
 
   params_with_value <-
     eval(parse(text = fn_definition))
@@ -202,11 +220,14 @@ randomSampling <- genericSamplingMethod(randomSamplingWorker)
 #' available observations within the group.
 #' @param grid_size generic params. The [`gridSampling()`] will take a `grid_size` parameter
 #' defining the grid size for the sampling
+#' @param chainSampling chains different methods of sampling by providing the result
+#' of another samplingMethod [`randomSampling()`], [`spacedSampling()`], [`stratifiedSampling()`].
+
 #'
 #' @return A [`icesat2_sampling_method-class`] for defining the method used in [`sample()`]
 #'
 #' @export
-gridSampling <- genericSamplingMethod(gridSamplingWorker, grid_size = NULL)
+gridSampling <- genericSamplingMethod(gridSamplingWorker)
 
 
 
@@ -218,14 +239,13 @@ gridSampling <- genericSamplingMethod(gridSamplingWorker, grid_size = NULL)
 #' @param variable Variable name used for the stratification
 #' @param chainSampling chains different methods of sampling by providing the result
 #' of another samplingMethod [`randomSampling()`], [`spacedSampling()`], [`stratifiedSampling()`].
-#' You can chain for example, a gridSampling(100, )
 #' @param ...
 #' forward to the [`graphics::hist()`], where you can manually define the breaks.
 #'
 #' @return A [`icesat2_sampling_method-class`] for defining the method used in [`sample()`]
 #'
 #' @export
-stratifiedSampling <- genericSamplingMethod(stratifiedSamplingWorker, variable = NULL)
+stratifiedSampling <- genericSamplingMethod(stratifiedSamplingWorker)
 
 #' Get observations given a minimum radius distance between samples
 #'
@@ -239,9 +259,23 @@ stratifiedSampling <- genericSamplingMethod(stratifiedSamplingWorker, variable =
 #' @return A [`icesat2_sampling_method-class`] for defining the method used in [`sample()`]
 #'
 #' @export
-spacedSampling <- genericSamplingMethod(spacedSamplingWorker, radius = NULL)
+spacedSampling <- genericSamplingMethod(spacedSamplingWorker)
 
-
+#' Get observations given a minimum radius distance between samples
+#'
+#' @param size the sample size. Either an integer of absolute number of samples or
+#' if it is between (0, 1) it will sample a percentage relative to the number of
+#' available observations within the group.
+#' @param geom a [`terra::SpatVector-class`] object opened with [`terra::vect()`]
+#' @param split_id character. The variable name of the geometry to use as split factor
+#' for sampling
+#' @param ...
+#' forward to the [`graphics::hist()`], where you can manually define the breaks.
+#'
+#' @return A [`icesat2_sampling_method-class`] for defining the method used in [`sample()`]
+#'
+#' @export
+geomSampling <- genericSamplingMethod(geomSamplingWorker)
 
 
 # ggplot() +

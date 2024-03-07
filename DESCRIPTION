@@ -12,18 +12,20 @@ License: GPL (>= 3)
 Imports:
   dplyr, 
   gdalBindings,
+  getPass,
   hdf5r,
   lazyeval,
   mathjaxr,
   Rcpp,
   Rdpack,
-  reticulate
+  reticulate,
+  signal
 Depends:
     R6
 Encoding: UTF-8
 LazyData: true
 NeedsCompilation: yes
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.0
 Roxygen: list(markdown = TRUE)
 RdMacros: 
     mathjaxr, 
@@ -75,7 +77,6 @@ Collate:
     'ATL08_seg_attributes_dt_polyStat.R'
     'ATL08_seg_attributes_h5_gridStat.R'
     'ATL08_seg_cover_dt_compute.R'
-    'GridIndex.R'
     'ICESat2_dataDownload.R'
     'ICESat2_download.R'
     'ICESat2_finder.R'

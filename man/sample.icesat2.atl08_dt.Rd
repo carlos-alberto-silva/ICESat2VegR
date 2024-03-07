@@ -2,7 +2,7 @@
 % Please edit documentation in R/sampling.R
 \name{sample.icesat2.atl08_dt}
 \alias{sample.icesat2.atl08_dt}
-\title{Sample spatial points given a minimum distance between them}
+\title{Sampling function which accepts a method for sampling}
 \usage{
 \method{sample}{icesat2.atl08_dt}(dt, method, ...)
 }
@@ -18,14 +18,5 @@ provided \code{\link[=randomSampling]{randomSampling()}}, \code{\link[=spacedSam
 a subset sample of the input \code{\linkS4class{icesat2.atl08_dt}}
 }
 \description{
-Sample spatial points given a minimum distance between them
-}
-\details{
-This function uses a wrap around C++ ANN library from Mount and Arya (2010).
-for calculating the nearest neighbors and including them in a taboo list
-which won't be considered for the next sampling.
-}
-\seealso{
-Mount, D. M.; Arya, S. ANN: A Library for Approximate Nearest Neighbor Searching,
-available in \url{https://www.cs.umd.edu/~mount/ANN/}
+Sampling function which accepts a method for sampling
 }
