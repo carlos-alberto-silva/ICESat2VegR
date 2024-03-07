@@ -1,7 +1,7 @@
 library(terra)
 library(magrittr)
 
-geom <- terra::vect("../inst/extdata/split.shp")
+geom <- terra::vect("Z:/01_Projects/04_NASA_ICESat2/00_data/01_SHPs/split.shp")
 ext <- terra::ext(geom)
 
 hurricane_michael_date <- "2018-10-10"

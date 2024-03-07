@@ -16,6 +16,9 @@ available observations within the group.}
 \item{split_id}{character. The variable name of the geometry to use as split factor
 for sampling}
 
+\item{chainSampling}{chains different methods of sampling by providing the result
+of another samplingMethod \code{\link[=randomSampling]{randomSampling()}}, \code{\link[=spacedSampling]{spacedSampling()}}, \code{\link[=stratifiedSampling]{stratifiedSampling()}}.}
+
 \item{...}{forward to the \code{\link[graphics:hist]{graphics::hist()}}, where you can manually define the breaks.}
 }
 \value{

@@ -10,13 +10,17 @@
 \item{dt}{\code{\linkS4class{icesat2.atl03_seg_dt}} data.table. Which can be extracted using
 \code{\link[=ATL08_seg_attributes_dt]{ATL08_seg_attributes_dt()}}}
 
-\item{method}{the sampling method, either one of the sampling methods
+\item{method}{the sampling method, either one or a combination of the sampling methods
 provided \code{\link[=randomSampling]{randomSampling()}}, \code{\link[=spacedSampling]{spacedSampling()}}, \code{\link[=gridSampling]{gridSampling()}},
-\code{\link[=stratifiedSampling]{stratifiedSampling()}}}
+\code{\link[=stratifiedSampling]{stratifiedSampling()}}, \code{\link[=geomSampling]{geomSampling()}}, \code{\link[=rasterSampling]{rasterSampling()}}}
 }
 \value{
 a subset sample of the input \code{\linkS4class{icesat2.atl03_seg_dt}}
 }
 \description{
 Sampling function which accepts a method for sampling
+}
+\seealso{
+\code{\link[=randomSampling]{randomSampling()}}, \code{\link[=spacedSampling]{spacedSampling()}}, \code{\link[=gridSampling]{gridSampling()}},
+\code{\link[=stratifiedSampling]{stratifiedSampling()}}, \code{\link[=geomSampling]{geomSampling()}}, \code{\link[=rasterSampling]{rasterSampling()}}
 }

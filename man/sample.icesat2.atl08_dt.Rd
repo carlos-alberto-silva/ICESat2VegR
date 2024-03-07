@@ -15,8 +15,13 @@ provided \code{\link[=randomSampling]{randomSampling()}}, \code{\link[=spacedSam
 \code{\link[=stratifiedSampling]{stratifiedSampling()}}}
 }
 \value{
-a subset sample of the input \code{\linkS4class{icesat2.atl08_dt}}
+a subset sample of the input \code{\linkS4class{icesat2.atl08_dt}} plus addiotional
+columns regarding the grouping
 }
 \description{
 Sampling function which accepts a method for sampling
+}
+\seealso{
+\code{\link[=randomSampling]{randomSampling()}}, \code{\link[=spacedSampling]{spacedSampling()}}, \code{\link[=gridSampling]{gridSampling()}},
+\code{\link[=stratifiedSampling]{stratifiedSampling()}}, \code{\link[=geomSampling]{geomSampling()}}, \code{\link[=rasterSampling]{rasterSampling()}}
 }

@@ -4,16 +4,21 @@
 \alias{spacedSampling}
 \title{Get observations given a minimum radius distance between samples}
 \usage{
-spacedSampling(size, radius, spatialIndex = NULL)
+spacedSampling(size, radius, spatialIndex = NULL, chainSampling = NULL)
 }
 \arguments{
 \item{size}{the sample size. Either an integer of absolute number of samples or
 if it is between (0, 1) it will sample a percentage relative to the number of
 available observations within the group.}
 
-\item{variable}{Variable name used for the stratification}
+\item{spatialIndex}{optional parameter. You can create a spatial index for accelerating
+the search space with \code{\linkS4class{ANNIndex}} and reuse that if needed elsewhere. It will create
+one automatically everytime if you don't specify one.}
 
-\item{...}{forward to the \code{\link[graphics:hist]{graphics::hist()}}, where you can manually define the breaks.}
+\item{chainSampling}{chains different methods of sampling by providing the result
+of another samplingMethod \code{\link[=randomSampling]{randomSampling()}}, \code{\link[=spacedSampling]{spacedSampling()}}, \code{\link[=stratifiedSampling]{stratifiedSampling()}}.}
+
+\item{variable}{Variable name used for the stratification}
 }
 \value{
 A \code{\linkS4class{icesat2_sampling_method}} for defining the method used in \code{\link[=sample]{sample()}}

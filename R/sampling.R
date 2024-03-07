@@ -1,9 +1,102 @@
+#' Makes sample function an S3 generic
+#'
+#' @param x the generic input data to be sampled
+#' @param size the sampling size
+#' @param method forward to which method we are using for sampling
+#'
+#' @seealso
+#' [`randomSampling()`], [`spacedSampling()`], [`gridSampling()`],
+#' [`stratifiedSampling()`], [`geomSampling()`], [`rasterSampling()`]
 #' @export
+sample <- function(x, size = NULL, method = NULL, ...) {
+  allMethods <- gsub("sample\\.", "", as.character(.S3methods("sample")))
+  if (any(class(x) %in% allMethods)) {
+    UseMethod("sample")
+  }
+
+  base::sample(x, size, ...)
+}
+
+
+#' Sampling function which accepts a method for sampling
+#'
+#' @param dt [`icesat2.atl08_dt-class`] data.table. Which can be extracted using
+#' [`ATL08_seg_attributes_dt()`]
+#' @param method the sampling method, either one of the sampling methods
+#' provided [`randomSampling()`], [`spacedSampling()`], [`gridSampling()`],
+#' [`stratifiedSampling()`]
+#'
+#' @return a subset sample of the input [`icesat2.atl08_dt-class`] plus addiotional
+#' columns regarding the grouping
+#'
+#' @seealso
+#' [`randomSampling()`], [`spacedSampling()`], [`gridSampling()`],
+#' [`stratifiedSampling()`], [`geomSampling()`], [`rasterSampling()`]
+#'
+#' @export
+`sample.icesat2.atl08_dt` <- function(dt, method, ...) {
+  do.call(method$fn, c(list(dt), method$params))
+}
+
+#' Sampling function which accepts a method for sampling
+#'
+#' @param dt [`icesat2.atl03_seg_dt-class`] data.table. Which can be extracted using
+#' [`ATL08_seg_attributes_dt()`]
+#' @param method the sampling method, either one or a combination of the sampling methods
+#' provided [`randomSampling()`], [`spacedSampling()`], [`gridSampling()`],
+#' [`stratifiedSampling()`], [`geomSampling()`], [`rasterSampling()`]
+#'
+#' @return a subset sample of the input [`icesat2.atl03_seg_dt-class`]
+#'
+#' @seealso
+#' [`randomSampling()`], [`spacedSampling()`], [`gridSampling()`],
+#' [`stratifiedSampling()`], [`geomSampling()`], [`rasterSampling()`]
+#'
+#' @export
+`sample.icesat2.atl03_seg_dt` <- function(dt, method, ...) {
+  do.call(method$fn, c(list(dt), method$params))
+}
+
+#' @export
+`sample.icesat2.atl03atl08_dt` <- function(dt, method, ...) {
+  do.call(method$fn, c(list(dt), method$params))
+}
+
+
+setRefClass("icesat2_sampling_method")
+
+#' @export
+"+.icesat2_sampling_method" <- function(e1, e2) {
+  ii <- 1
+  chainSampling <- e1
+  chainSamplingDeepString <- list("$params$chainSampling")
+
+  while (!is.null(chainSampling$params$chainSampling)) {
+    chainSampling <- chainSampling$params$chainSampling
+    ii <- ii + 1
+    chainSamplingDeepString[""] <- "$params$chainSampling"
+  }
+  finalChainingString <- paste(chainSamplingDeepString, collapse = "")
+  evaluater <- paste0("e1", finalChainingString, " <- e2", collapse = "")
+  eval(parse(text = evaluater))
+  return(invisible(e1))
+}
+
+
+#################################################################
+## SAMPLING METHODS
+#################################################################
+# WORKERS
+#
+# Workers are the functions that actually do the sampling work.
+#
+# The sampling functions will just wrap around the worker so
+# that we can chain them before actually doing the computation.
+#################################################################
 randomSamplingWorker <- function(dt, size) {
   saneSample(dt, size)
 }
 
-#' @export
 spacedSamplingWorker <- function(dt, size, radius, spatialIndex = NULL, chainSampling = NULL) {
   if (is.null(spatialIndex)) {
     spatialIndex <- ANNIndex$new(dt$longitude, dt$latitude)
@@ -28,7 +121,6 @@ spacedSamplingWorker <- function(dt, size, radius, spatialIndex = NULL, chainSam
   return(do.call(chainSampling$fn, c(list(dt[idx]), chainSampling$params)))
 }
 
-#' @export
 gridSamplingWorker <- function(dt, size, grid_size, chainSampling = NULL) {
   if (is.null(chainSampling)) chainSampling <- randomSampling(size)
   longitude <- latitude <- group <- NA
@@ -40,7 +132,6 @@ gridSamplingWorker <- function(dt, size, grid_size, chainSampling = NULL) {
   grouped[, do.call(chainSampling$fn, c(list(.SD), chainSampling$params)), by = list(x_grid, y_grid)]
 }
 
-#' @export
 stratifiedSamplingWorker <- function(dt, size, variable, chainSampling = NULL, ...) {
   if (is.null(chainSampling)) chainSampling <- randomSampling(size)
   breaks <- NA
@@ -56,9 +147,8 @@ stratifiedSamplingWorker <- function(dt, size, variable, chainSampling = NULL, .
   grouped[, do.call(chainSampling$fn, c(list(.SD), chainSampling$params)), by = breaks]
 }
 
-#' @export
 geomSamplingWorker <- function(dt, size, geom, split_id = NULL, chainSampling = NULL) {
-  group <- NA
+  geom_group <- NA
   `:=` <- data.table::`:=`
   .SD <- data.table::.SD
 
@@ -77,22 +167,28 @@ geomSamplingWorker <- function(dt, size, geom, split_id = NULL, chainSampling = 
   )
 
   geom_v <- terra::intersect(v, geom)
-  dt[, group := geom_v[[split_id]]]
-  dt[, do.call(chainSampling$fn, c(list(.SD), chainSampling$params)), by = group]
+  dt[, geom_group := geom_v[[split_id]]]
+  dt[, do.call(chainSampling$fn, c(list(.SD), chainSampling$params)), by = geom_group]
 }
 
+rasterSamplingWorker <- function(dt, size, raster, chainSampling = NULL) {
+  raster_group <- NA
 
+  if (is.null(chainSampling)) chainSampling <- randomSampling(size)
 
-#' @export
-sample <- function(dt, size = NULL, method = NULL, ...) {
-  allMethods <- gsub("sample\\.", "", as.character(.S3methods("sample")))
-  if (any(class(dt) %in% allMethods)) {
-    UseMethod("sample")
-  }
+  v <- terra::vect(
+    as.data.frame(dt),
+    geom = c("longitude", "latitude"),
+    crs = "epsg:4326"
+  )
 
-  base::sample(dt, size, ...)
+  v_rast <- terra::extract(raster, v)
+
+  dt[, raster_group := as.factor(v_rast[, 2])]
+  dt <- dt[!is.na(raster_group)]
+
+  dt[, do.call(chainSampling$fn, c(list(.SD), chainSampling$params)), by = raster_group]
 }
-
 
 saneSample <- function(dt, n) {
   nrows <- nrow(dt)
@@ -109,61 +205,14 @@ saneSample <- function(dt, n) {
   return(dt[sample(dt[, .I], n)])
 }
 
-#' Sampling function which accepts a method for sampling
-#'
-#' @param dt [`icesat2.atl08_dt-class`] data.table. Which can be extracted using
-#' [`ATL08_seg_attributes_dt()`]
-#' @param method the sampling method, either one of the sampling methods
-#' provided [`randomSampling()`], [`spacedSampling()`], [`gridSampling()`],
-#' [`stratifiedSampling()`]
-#'
-#' @return a subset sample of the input [`icesat2.atl08_dt-class`]
-#'
-#' @export
-`sample.icesat2.atl08_dt` <- function(dt, method, ...) {
-  do.call(method$fn, c(list(dt), method$params))
-}
 
 
-
-
-#' Sampling function which accepts a method for sampling
-#'
-#' @param dt [`icesat2.atl03_seg_dt-class`] data.table. Which can be extracted using
-#' [`ATL08_seg_attributes_dt()`]
-#' @param method the sampling method, either one of the sampling methods
-#' provided [`randomSampling()`], [`spacedSampling()`], [`gridSampling()`],
-#' [`stratifiedSampling()`]
-#'
-#' @return a subset sample of the input [`icesat2.atl03_seg_dt-class`]
-#'
-#' @export
-`sample.icesat2.atl03_seg_dt` <- function(dt, method, ...) {
-  do.call(method$fn, c(list(dt), method$params))
-}
-
-
-
-
-########################
-## SAMPLING METHODS
-########################
-setRefClass("icesat2_sampling_method")
-
-#' @export
-"+.icesat2_sampling_method" <- function(e1, e2) {
-  ii <- 1
-  chainSampling <- e1
-  while (!is.null(chainSampling$params$chainSampling)) {
-    chainSampling <- chainSampling$params$chainSampling
-    ii <- ii + 1
-  }
-  samplingString <- paste0(rep("$params$chainSampling", ii), collapse = "")
-  evaluater <- paste0("e1", samplingString, " <- e2", collapse = "")
-  eval(parse(text = evaluater))
-  return(invisible(e1))
-}
-
+#################################################################
+# Generic dynamic evaluated function
+#
+# This just creates the appropriate function to wrap around the
+# workers based on their declared parameters
+##################################################################
 genericSamplingMethod <- function(fn) {
   fn_name <- as.character(substitute(fn))
   # formals extract params of a function as list
@@ -199,6 +248,9 @@ genericSamplingMethod <- function(fn) {
   params_with_value
 }
 
+##########################################################
+# SAMPLING FUNCTIONS using the generic function above
+##########################################################
 #' Pure random sampling method
 #'
 #' @param dt [`icesat2.atl03_seg_dt-class`] data.table. Which can be extracted using
@@ -253,11 +305,14 @@ stratifiedSampling <- genericSamplingMethod(stratifiedSamplingWorker)
 #' if it is between (0, 1) it will sample a percentage relative to the number of
 #' available observations within the group.
 #' @param variable Variable name used for the stratification
-#' @param ...
-#' forward to the [`graphics::hist()`], where you can manually define the breaks.
-#'
+#' @param spatialIndex optional parameter. You can create a spatial index for accelerating
+#' the search space with [`ANNIndex-class`] and reuse that if needed elsewhere. It will create
+#' one automatically everytime if you don't specify one.
+#' @param chainSampling chains different methods of sampling by providing the result
+#' of another samplingMethod [`randomSampling()`], [`spacedSampling()`], [`stratifiedSampling()`].
+#' 
 #' @return A [`icesat2_sampling_method-class`] for defining the method used in [`sample()`]
-#'
+#' 
 #' @export
 spacedSampling <- genericSamplingMethod(spacedSamplingWorker)
 
@@ -269,6 +324,8 @@ spacedSampling <- genericSamplingMethod(spacedSamplingWorker)
 #' @param geom a [`terra::SpatVector-class`] object opened with [`terra::vect()`]
 #' @param split_id character. The variable name of the geometry to use as split factor
 #' for sampling
+#' @param chainSampling chains different methods of sampling by providing the result
+#' of another samplingMethod [`randomSampling()`], [`spacedSampling()`], [`stratifiedSampling()`].
 #' @param ...
 #' forward to the [`graphics::hist()`], where you can manually define the breaks.
 #'
@@ -276,6 +333,22 @@ spacedSampling <- genericSamplingMethod(spacedSamplingWorker)
 #'
 #' @export
 geomSampling <- genericSamplingMethod(geomSamplingWorker)
+
+#' Get observations given a minimum radius distance between samples
+#'
+#' @param size the sample size. Either an integer of absolute number of samples or
+#' if it is between (0, 1) it will sample a percentage relative to the number of
+#' available observations within the group.
+#' @param raster a [`terra::SpatRaster-class`] object opened with [`terra::rast()`]
+#' @param chainSampling chains different methods of sampling by providing the result
+#' of another samplingMethod [`randomSampling()`], [`spacedSampling()`], [`stratifiedSampling()`].
+#' @param ...
+#' forward to the [`graphics::hist()`], where you can manually define the breaks.
+#'
+#' @return A [`icesat2_sampling_method-class`] for defining the method used in [`sample()`]
+#'
+#' @export
+rasterSampling <- genericSamplingMethod(rasterSamplingWorker)
 
 
 # ggplot() +
