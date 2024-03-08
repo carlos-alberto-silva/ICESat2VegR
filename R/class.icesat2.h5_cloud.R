@@ -21,9 +21,24 @@ try with only one granule [i].")
     }
   },
   ls = function() {
-    pymain <- reticulate::import_main()
-    pymain$temp <- self$h5$keys()
-    reticulate::py_run_string("temp = list(temp)")$temp
+    pybuiltins <- reticulate::import_builtins()
+    pybuiltins$list(self$h5$keys())
+  },
+  ls_groups = function(recursive = FALSE) {
+    if (recursive) {
+      pymain <- reticulate::import_main()
+      pymain$keys <- list()
+      pymain$h5 <- self$h5
+      
+      reticulate::py_run_string("
+      import h5py
+      h5.visit(lambda key: keys.append(key) if isinstance(h5[key], h5py.Group) else None)")
+      all_keys <- pymain$keys
+
+      return(all_keys)
+    } else {
+      all_items <- self$h5$ls()
+    }
   },
   exists = function(path) {
     pymain <- reticulate::import_main()

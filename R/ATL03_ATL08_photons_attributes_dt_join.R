@@ -96,16 +96,10 @@ ATL03_ATL08_photons_attributes_dt_join <- function(atl03_h5, atl08_h5,
   }
 
   # Check beams to select
-  groups_id_atl03 <- atl03_h5$beams
-  groups_id_atl08 <- atl08_h5$beams
-  
-  check_beams_atl03 <- groups_id_atl03 %in% beam
-  check_beams_atl08 <- groups_id_atl08 %in% beam
+  beam_atl03 <- intersect(beam, atl03_h5$beams)
+  beam_atl08 <- intersect(beam, atl08_h5$beams)
 
-  beam_atl03 <- groups_id_atl03[check_beams_atl03]
-  beam_atl08 <- groups_id_atl08[check_beams_atl08]
-
-  beam <- beam_atl03[beam_atl03 %in% beam_atl08]
+  beam <- intersect(beam_atl03, beam_atl08)
 
   photon.dt <- list()
 
@@ -113,14 +107,14 @@ ATL03_ATL08_photons_attributes_dt_join <- function(atl03_h5, atl08_h5,
 
 
   i_s <- 0
-
+  # i <- beam[2]
   for (i in beam) {
     i_s <- i_s + 0.25
     utils::setTxtProgressBar(pb, i_s)
 
-    n_segments <- atl03_h5[[paste0(i, "/geolocation/segment_length")]]$dims
+    n_segments <- atl03_h5[[i]][["geolocation/segment_length"]]$dims
 
-    segment_ph_cnt <- atl03_h5[[paste0(i, "/geolocation/segment_ph_cnt")]][]
+    segment_ph_cnt <- atl03_h5[[i]][["geolocation/segment_ph_cnt"]][]
 
     segment_length <- c(0, cumsum(atl03_h5[[paste0(i, "/geolocation/segment_length")]][1:(n_segments - 1)]))
     segment_lengths <- rep(segment_length, segment_ph_cnt)
@@ -140,7 +134,8 @@ ATL03_ATL08_photons_attributes_dt_join <- function(atl03_h5, atl08_h5,
 
     dataTableATL03Segs <- data.table::data.table(data.frame(
       ph_segment_id = atl03_h5[[paste0(i, "/geolocation/segment_id")]][],
-      ph_index_beg = atl03_h5[[paste0(i, "/geolocation/ph_index_beg")]][]
+      ph_index_beg = atl03_h5[[paste0(i, "/geolocation/ph_index_beg")]][],
+      segment_ph_cnt = segment_ph_cnt
     ))
 
 
@@ -160,9 +155,13 @@ ATL03_ATL08_photons_attributes_dt_join <- function(atl03_h5, atl08_h5,
     i_s <- i_s + 0.25
     utils::setTxtProgressBar(pb, i_s)
 
-    idx <- dataTableATL03Segs[dataTableATL08Photons, ph_index_beg + classed_pc_indx - 1, on = "ph_segment_id"]
+    segment_ph_cnt
+    maxClassIdx <- dataTableATL08Photons[, list(max_idx = max(classed_pc_indx)), by = ph_segment_id]
+    selectedSegs <- dataTableATL03Segs[maxClassIdx, on = "ph_segment_id"][max_idx <= segment_ph_cnt]
 
-    dataTableATL03Photons[idx, names(dataTableATL08Photons) := dataTableATL08Photons]
+
+    idx <- na.omit(selectedSegs[dataTableATL08Photons, list(I = .I, idx = ph_index_beg + classed_pc_indx - 1), on = "ph_segment_id"])
+    dataTableATL03Photons[idx$idx, names(dataTableATL08Photons)] <- dataTableATL08Photons[idx$I]
 
     i_s <- i_s + 0.25
     utils::setTxtProgressBar(pb, i_s)

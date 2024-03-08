@@ -176,7 +176,7 @@ lapply(atl03_clip_geom, close)
 }
 \seealso{
 \code{\link[=ATL03_h5_clipBox]{ATL03_h5_clipBox()}}, \code{\link[=ATL03_h5_clipGeometry]{ATL03_h5_clipGeometry()}},
-\code{\link[=ATL08_h5_clipBox]{ATL08_h5_clipBox()}}, \code{\link[=ATL08_h5_clipGeometry]{ATL08_h5_clipGeometry()}}
+\code{\link[=ATL08_h5_clipBox]{ATL08_h5_clipBox()}}, \code{\link[=ATL08_h5_clip]{ATL08_h5_clip()}}
 
 \code{\link[=ATL03_h5_clipBox]{ATL03_h5_clipBox()}}, \code{\link[=ATL03_h5_clipGeometry]{ATL03_h5_clipGeometry()}},
 \code{\link[=ATL08_h5_clipBox]{ATL08_h5_clipBox()}}, \code{\link[=ATL08_h5_clipGeometry]{ATL08_h5_clipGeometry()}}

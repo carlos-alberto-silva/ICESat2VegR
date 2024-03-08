@@ -162,7 +162,7 @@ ATL03_photons_per_segment <- function(beam, photonsMask) {
 #' close(atl03_h5)
 #' @import hdf5r
 #' @export
-ATL03_h5_clipBox <- function(atl03, output, bbox) {
+ATL03_h5_clip <- function(atl03, output, bbox, mask_fn) {
   dataset.rank <- dataset.dims <- obj_type <- name <- NA
 
   # Create a new HDF5 file
@@ -170,24 +170,23 @@ ATL03_h5_clipBox <- function(atl03, output, bbox) {
 
 
   # Create all groups
-  structure_dt <- data.table::as.data.table(atl03@h5$ls(recursive = T))
-  groups <- structure_dt[obj_type == "H5I_GROUP"]$name
+  groups <- atl03$ls_groups(recursive = TRUE)
 
 
   for (group in groups) {
     grp <- newFile$create_group(group)
 
     # Create all atributes within group
-    attributes <- hdf5r::list.attributes(atl03[[group]])
+    attributes <- atl03[[group]]$ls_attrs()
     for (attribute in attributes) {
-      grp$create_attr(attribute, hdf5r::h5attr(atl03[[group]], attribute))
+      grp$create_attr(attribute, atl03[[group]]$attr(attribute))
     }
   }
 
   # Create root attributes
-  attributes <- hdf5r::list.attributes(atl03@h5)
+  attributes <- atl03$ls_attrs()
   for (attribute in attributes) {
-    hdf5r::h5attr(newFile, attribute) <- hdf5r::h5attr(atl03@h5, attribute)
+    hdf5r::h5attr(newFile, attribute) <- atl03$attr(attribute)
   }
 
   # Get all beams
@@ -197,6 +196,7 @@ ATL03_h5_clipBox <- function(atl03, output, bbox) {
   nBeams <- length(beams)
 
   # Loop the beams
+  # beamName = beams[nBeam + 1]
   for (beamName in beams) {
     nBeam <- nBeam + 1
     message(sprintf("Clipping %s (%d/%d)", beamName, nBeam, nBeams))
@@ -208,7 +208,7 @@ ATL03_h5_clipBox <- function(atl03, output, bbox) {
     updateBeam <- newFile[[beamName]]
 
     # Get the masks
-    photonsMask <- ATL03_photons_mask(beam, bbox)
+    photonsMask <- mask_fn(beam, bbox)
     photons_per_segment <- ATL03_photons_per_segment(beam, photonsMask)
     segmentsMask <- as.integer(names(photons_per_segment))
 
@@ -217,7 +217,7 @@ ATL03_h5_clipBox <- function(atl03, output, bbox) {
     segmentsSize <- beam[["geolocation/ph_index_beg"]]$dims
 
     # Get all datasets
-    datasets_dt <- data.table::as.data.table(beam$ls(recursive = TRUE))[obj_type == 5]
+    datasets_dt <- beam$dt_datasets(recursive = TRUE)
 
     # Get all types of clipping photons/segment/no cut
     photonsCut <- datasets_dt[dataset.dims == photonsSize]$name
@@ -280,7 +280,7 @@ ATL03_h5_clipBox <- function(atl03, output, bbox) {
 #'
 #' @seealso
 #' [`ATL03_h5_clipBox()`], [`ATL03_h5_clipGeometry()`],
-#' [`ATL08_h5_clipBox()`], [`ATL08_h5_clipGeometry()`]
+#' [`ATL08_h5_clipBox()`], [`ATL08_h5_clip()`]
 #'
 #' @examples
 ##' # Specifying the path to ATL03 file (zip file)
@@ -415,72 +415,3 @@ ATL03_h5_clipBox <- function(atl03, output, bbox) {
 }
 
 
-#' Clips ICESat-2 ATL03 H5 data
-#'
-#' @param atl03 [`icesat2.atl03_h5-class`] object,
-#' obtained through [`ATL03_read()`] for clipping
-#' @param output character. Path to the output h5 file, the attribute for polygons
-#' will be appended to the file name.
-#' @param vect [`terra::SpatVector-class`] for clipping
-#' @param polygon_id [`character-class`]. The attribute name used for identifying
-#' the different polygons. Default is "id"
-#'
-#' @return Returns a list of clipped S4 object of class [`icesat2.atl03_h5-class`]
-#'
-#' @description This function clips ATL03 HDF5 file within beam groups,
-#' but keeps metada and ancillary data the same.
-#'
-#' @examples
-##' # Specifying the path to ATL03 file (zip file)
-#' outdir <- tempdir()
-#' atl03_zip <- system.file("extdata",
-#'   "atl03_20220401221822_01501506_005_01.zip",
-#'   package = "rICESat2Veg"
-#' )
-#'
-#' # Unzipping ATL03 file
-#' atl03_path <- unzip(atl03_zip, exdir = outdir)
-#'
-#' # Reading ATL03 data (h5 file)
-#' atl03_h5 <- atl03_read(atl03_path = atl03_path)
-#'
-#' output <- file.path(outdir, "clipped.h5")
-#'
-#' vect_path <- system.file("extdata",
-#'   "polygons.shp",
-#'   package = "rICESat2Veg"
-#' )
-#'
-#' vect <- terra::vect()
-#'
-#' # Clipping ATL03 photons  by boundary box extent
-#' atl03_photons_dt_clip <- ATL03_h5_clipGeometry(
-#'   atl03_h5,
-#'   output,
-#'   vect,
-#'   polygon_id = "id"
-#' )
-#'
-#' close(atl03_h5)
-#' @import hdf5r
-#' @include clipTools.R
-#' @export
-ATL03_h5_clipGeometry <- function(atl03, output, vect, polygon_id = "id") {
-  outputs <- list()
-
-  n_polygons <- nrow(vect)
-  n_places <- floor(log10(n_polygons))
-  for (geom_idx in seq_along(vect)) {
-    current_places <- floor(log10(geom_idx))
-    message("=============================", appendLF = FALSE)
-    message(paste0(rep("=", current_places + n_places), collapse = ""))
-    message(sprintf("== Processing geometry %s/%s ==", geom_idx, n_polygons))
-    message("=============================", appendLF = FALSE)
-    message(paste0(rep("=", current_places + n_places), collapse = ""))
-    geom <- vect[geom_idx]
-    sub_output <- gsub(".h5$", sprintf("_%s.h5", geom[[polygon_id]][[1]]), output)
-
-    outputs[[geom[[polygon_id]][[1]]]] <-
-      ATL03_h5_clip(atl03, sub_output, geom = geom, ATL03_photons_mask_fn = ATL03_photons_mask_geometry)
-  }
-}

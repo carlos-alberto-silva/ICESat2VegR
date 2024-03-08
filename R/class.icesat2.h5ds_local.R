@@ -23,7 +23,7 @@ ICESat2.h5ds_local <- R6::R6Class("ICESat2.h5ds_local", list(
     for (ii in (seq_len(number_filters) - 1)) {
       old_filter <- old_plist$get_filter(ii)
       filter_id <- old_filter$filter
-      flags <- old_filter
+      flags <- old_filter$flags
       client_data <- as.integer(old_filter[[3]])
 
       plist$set_filter(filter_id, flags, client_data)

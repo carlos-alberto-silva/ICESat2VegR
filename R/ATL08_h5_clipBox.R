@@ -1,5 +1,3 @@
-
-
 #' Clips ICESat-2 ATL08 data
 #'
 #' @param atl08 [`icesat2.atl08_h5-class`] object, obtained through [`ATL08_read()`]
@@ -94,23 +92,8 @@ ATL08_h5_clipBox <- function(atl08, output, bbox) {
 #' @import hdf5r
 #' @export
 ATL08_h5_clipGeometry <- function(atl08, output, vect, polygon_id = "id") {
-  outputs <- list()
-
-  n_polygons <- nrow(vect)
-  n_places <- floor(log10(n_polygons))
-  for (geom_idx in seq_along(vect)) {
-    current_places <- floor(log10(geom_idx))
-    message("=============================", appendLF = FALSE)
-    message(paste0(rep("=", current_places + n_places), collapse = ""))
-    message(sprintf("== Processing geometry %s/%s ==", geom_idx, n_polygons))
-    message("=============================", appendLF = FALSE)
-    message(paste0(rep("=", current_places + n_places), collapse = ""))
-    geom <- vect[geom_idx]
-    sub_output <- gsub(".h5$", sprintf("_%s.h5", geom[[polygon_id]][[1]]), output)
-
-    outputs[[geom[[polygon_id]][[1]]]] <-
-      ATL08_h5_clip(atl08, sub_output, clip_obj = geom, landSegmentsMask_fn = landsegmentsMask_geom)
-  }
+  geom <- terra::union(vect)
+  ATL08_h5_clip(atl08, output, clip_obj = geom, landSegmentsMask_fn = landsegmentsMask_geom)
 }
 
 landSegments_bbox <- function(beam, bbox) {
@@ -151,4 +134,3 @@ landsegmentsMask_geom <- function(beam, geom) {
   res <- terra::intersect(pts, geom)
   res$I
 }
-

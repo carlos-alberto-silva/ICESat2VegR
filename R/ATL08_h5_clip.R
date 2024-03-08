@@ -6,26 +6,24 @@ ATL08_h5_clip <- function(atl08, output, clip_obj, landSegmentsMask_fn) {
   # Create a new HDF5 file
   newFile <- hdf5r::H5File$new(output, mode = "w")
 
-
   # Create all groups
-  structure_dt <- data.table::as.data.table(atl08@h5$ls(recursive = T))
-  groups <- structure_dt[obj_type == "H5I_GROUP"]$name
+  groups <- atl08$ls_groups(recursive = TRUE)
 
 
   for (group in groups) {
     grp <- newFile$create_group(group)
 
     # Create all atributes within group
-    attributes <- hdf5r::list.attributes(atl08[[group]])
+    attributes <- atl08[[group]]$ls_attrs()
     for (attribute in attributes) {
-      grp$create_attr(attribute, hdf5r::h5attr(atl08[[group]], attribute))
+      grp$create_attr(attribute, atl08[[group]]$attr(attribute))
     }
   }
 
   # Create root attributes
-  attributes <- hdf5r::list.attributes(atl08@h5)
+  attributes <- atl08$ls_attrs()
   for (attribute in attributes) {
-    hdf5r::h5attr(newFile, attribute) <- hdf5r::h5attr(atl08@h5, attribute)
+    hdf5r::h5attr(newFile, attribute) <- atl08$attr(attribute)
   }
 
   # Get all beams
@@ -36,7 +34,7 @@ ATL08_h5_clip <- function(atl08, output, clip_obj, landSegmentsMask_fn) {
   nBeams <- length(beams)
 
   # Loop the beams
-  # beamName <- beams[2]
+  # beamName <- beams[nBeam + 1]
   for (beamName in beams) {
     nBeam <- nBeam + 1
     message(sprintf("Clipping %s (%d/%d)", beamName, nBeam, nBeams))
@@ -46,7 +44,6 @@ ATL08_h5_clip <- function(atl08, output, clip_obj, landSegmentsMask_fn) {
 
     # Get the beam to update
     updateBeam <- newFile[[beamName]]
-
 
     # Get land segments mask
     landSegmentsMask <- landSegmentsMask_fn(beam, clip_obj)
@@ -69,7 +66,7 @@ ATL08_h5_clip <- function(atl08, output, clip_obj, landSegmentsMask_fn) {
     segmentsSize <- beam[["land_segments/segment_watermask"]]$dims
 
     # Get all datasets
-    datasets_dt <- data.table::as.data.table(beam$ls(recursive = TRUE))[obj_type == 5]
+    datasets_dt <- beam$dt_datasets(recursive = TRUE)
 
     # Get all types of clipping photons/segment/no cut
     photonsCut <- datasets_dt[dataset.dims == photonsSize]$name

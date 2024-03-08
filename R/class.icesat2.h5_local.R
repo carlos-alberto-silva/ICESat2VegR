@@ -29,6 +29,19 @@ ICESat2.h5_local <- R6::R6Class("ICESat2.h5_local", list(
   ls = function() {
     self$h5$ls()$name
   },
+  ls_groups = function(recursive = FALSE) {
+    data.table::as.data.table(
+      self$h5$ls(recursive = recursive)
+    )[obj_type == "H5I_GROUP", name]
+  },
+  ls_attrs = function() {
+    hdf5r::list.attributes(self$h5)
+  },
+  dt_datasets = function(recursive = FALSE) {
+    data.table::as.data.table(
+      self$h5$ls(recursive)
+    )[obj_type == "H5I_DATASET", list(name, dataset.dims, dataset.rank)]
+  },
   exists = function(path) {
     self$h5$exists(path)
   },
