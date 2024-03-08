@@ -7,6 +7,29 @@ library(ICESat2VegR)
 library(terra)
 library(magrittr)
 
+geom <- terra::vect("Z:/01_Projects/04_NASA_ICESat2/00_data/01_SHPs/all_boundary.shp")
+bbox <- terra::ext(geom)
+
+years <- c(2019:2022)
+aprilPlaceholder <- "%s-04-01"
+mayPlaceholder <- "%s-05-31"
+
+all_granules <- list()
+
+for (year in years) {
+  granules <- ICESat2VegR::ICESat2_finder(
+    short_name = "ATL08",
+    version = "006",
+    daterange = c(gettextf(aprilPlaceholder, year), gettextf(mayPlaceholder, year)),
+    lower_left_lon = ext$xmin,
+    lower_left_lat = ext$ymin,
+    upper_right_lon = ext$xmax,
+    upper_right_lat = ext$ymax
+  )
+  all_granules[[as.character(year)]] <- granules
+}
+
+
 
 geom <- terra::vect("../train.geojson")
 geom2 <- terra::vect("../test.geojson")
