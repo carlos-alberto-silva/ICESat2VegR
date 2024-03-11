@@ -47,6 +47,7 @@ ee_to_dt <- function(sampled) {
 randomForestRegression <- function(
     featurecollection,
     property_name,
+    train_properties,
     nTrees = 500,
     mtry = NULL,
     nodesize = 5,
@@ -63,6 +64,7 @@ randomForestRegression <- function(
     )$
       train(
       features = featurecollection,
+      inputProperties = train_properties,
       classProperty = "h_canopy"
     )$
       setOutputMode("REGRESSION")
