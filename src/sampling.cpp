@@ -58,5 +58,5 @@ RCPP_MODULE(icesat2_module)
   class_<ANNIndex>("ANNIndex")
 
       .constructor<NumericVector, NumericVector>()
-      .method("searchFixedRadius", ANNIndex::searchFixedRadius);
+      .method("searchFixedRadius", &ANNIndex::searchFixedRadius);
 }

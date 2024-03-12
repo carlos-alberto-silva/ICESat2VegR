@@ -11,6 +11,7 @@ Description: Set of tools for downloading, reading, visualizing, processing and 
 License: GPL (>= 3)
 Imports:
   dplyr, 
+  formattable,
   gdalBindings,
   getPass,
   hdf5r,
@@ -85,11 +86,15 @@ Collate:
     'clip (box, geometry, h5 and dt).R'
     'clip.R'
     'extract.R'
+    'gee-base-feature.R'
+    'gee-base-list.R'
+    'gee-base-number.R'
     'gee-base.R'
     'gee-filterBounds.R'
     'gee-search.R'
     'lazy_applier.R'
     'sampling.R'
+    'stat_model.R'
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

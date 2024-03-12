@@ -1,10 +1,10 @@
 #' @useDynLib ICESat2VegR
 
 #' @export
-earthaccess <- NA
+earthaccess <- NULL
 
 #' @export
-ee <- NA
+ee <- NULL
 
 
 pkg_module <- Rcpp::Module("icesat2_module")

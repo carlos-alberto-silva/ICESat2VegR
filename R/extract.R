@@ -1,3 +1,17 @@
+#' Given a stack image raster from GEE
+#' retrieve the point geometry with values for the images
+#'
+#' @param stack A single image or a vector/list of images from Earth Engine.
+#' @param geom A geometry from [`terra::SpatVector-class`] read with [`terra::vect`].
+#' @param scale The scale in meters for the extraction (image resolution).
+#'
+#' @export
+seg_gee_ancillary_dt_extract <- function(stack, geom, scale = 30) {
+  sampled <- extract(stack, geom, scale)
+  ee_to_dt(sampled)
+}
+
+
 #' Given a geometry with point samples and images from Earth Engine
 #' retrieve the point geometry with values for the images
 #'
@@ -21,32 +35,39 @@ extract <- function(images, geom, scale) {
   return(sampled)
 }
 
+
 #' @export
 ee_to_dt <- function(sampled) {
-  ids <- sampled$aggregate_array("system:index")$getInfo()
-  ids <- as.integer(gsub("_0", "", ids)) + 1
-  df <- data.table::data.table(ids = ids)
-  df[["ids"]] <- ids
+  sampled <- sampled$map(function(x) {
+    id <- x$getString("system:index")
+    id <- ee$Number(id$replace("_0", "")$decodeJSON())
+    x$set(list(
+      "idx" = id$add(1)
+    ))
+  })
+  columns <- sampled$first()$propertyNames()
+  columns <- columns$remove("system:index")
+  
+  
+  
+  nested_list <- sampled$reduceColumns(ee$Reducer$toList(columns$size()), columns)$values()$get(0)
+  dt <- data.table::rbindlist(nested_list$getInfo())
+  names(dt) <- columns$getInfo()
+  
+  return(dt)
+}
 
-  column_df <- sampled$first()$propertyNames()$getInfo()[-1]
-  nested_list <- sampled$reduceColumns(ee$Reducer$toList(length(column_df)), column_df)$values()$get(0)
-
-  pymain <- reticulate::import_main()
-  pymain$nested_list <- nested_list
-  reticulate::py_run_string("import numpy as np")
-  reticulate::py_run_string("result = np.array(nested_list.getInfo())")
-
-
-  df2 <- data.table::data.table(pymain$result)
-  names(df2) <- column_df
-
-  return(cbind(df, df2))
+#' @export 
+model_fit <- function(x, y, method = "randomForest") {
+  fc <- build_fc(x, y)
+  result <- randomForestRegression(fc, list(names(y)), list(names(x)), nTrees = 100, nodesize = 1)
+  return(result)
 }
 
 #' @export
 randomForestRegression <- function(
     featurecollection,
-    property_name,
+    property,
     train_properties,
     nTrees = 500,
     mtry = NULL,
@@ -90,11 +111,16 @@ randomForestRegression <- function(
 setRefClass("ee.Classifier")
 #' @export
 "predict.ee.Classifier" <- function(x, data, ...) {
+  if (!inherits(data, "ee.featurecollection.FeatureCollection")) {
+    data <- build_fc(data, NULL)
+  }
+  
   predicted <- data$classify(x)
   classification <- predicted$aggregate_array("classification")$getInfo()
   return(classification)
 }
 
+#' @export
 build_forest <- Rcpp::cppFunction('
 CharacterVector build_forest(List rf) {
   void visitNode(std::stringstream&, List, int, int, int, int);
@@ -154,3 +180,81 @@ void visitNode(std::stringstream& temp, List rf, int idx, int previdx = 1, int d
   visitNode(temp, rf, right_idx, previdx * 2 + 1, depth + 1, tree);
   return;
 }')
+
+INT_MAX <- 2147483647
+
+build_fc <- function(x, y = NULL) {
+  all_data <- cbind(x, y)
+  ee$FeatureCollection(lapply(1:n, function(x) ee$Feature(NULL, all_data[x])))
+}
+
+#' @export
+var_select <- function(x, y, method = "forward", nboots = 10, nTrees = 100, train_split = 0.7, delta = 0.01) {
+
+  ee_bandNames <- colnames(x)
+  n <- nrow(x)
+  train_size <- as.integer(round(n * train_split))
+  validation_size <- n - train_size
+  x <- build_fc(x, y)
+  y <- names(y)
+
+  selected_properties <- ee$List(list())
+  rmses <- ee$List(list())
+
+  minRmse <- ee_number(1e10)
+  lastRmse <- ee_number(1e11)
+  while (((1 - minRmse / lastRmse) >= delta)$getInfo() == 1) {
+    result <- list(
+      property = ee$List(list()),
+      rmse = ee$List(list())
+    )
+
+    for (band in ee_bandNames) {
+      current <- selected_properties$add(band)
+
+      rmseList <- ee$List(list())
+      message(gettextf("Testing %s", list(current$getInfo())), appendLF = TRUE)
+      for (i in 1:nboots) {
+        message(gettextf("\rBoot %d/%d", i, nboots), appendLF = FALSE)
+        x <- x$randomColumn(seed = floor(runif(1) * INT_MAX))
+        train_sample <- x$limit(train_size, "random")$select(current$add(y))
+        validation_sample <- x$limit(validation_size, "random", ascending = FALSE)$select(current$add(y))
+
+
+        randomForestClassifier <- randomForestRegression(train_sample, property = y, train_properties = current, nTrees = nTrees)
+        classification <- validation_sample$classify(randomForestClassifier)
+        classification2 <- classification$map(function(f) {
+          f[["sqerror"]] <- (f[["h_canopy"]] - f[["classification"]]) ^ 2
+          return(f)
+        })
+        rmse <- sqrt(classification2$aggregate_mean("sqerror"))
+        rmseList[[]] <- rmse
+      }
+      message(appendLF = TRUE)
+
+      meanRmse <- rmseList$reduce(ee$Reducer$mean())
+      result$rmse <- result$rmse$add(meanRmse)
+      result$property <- result$property$add(band)
+    }
+    lastRmse <- minRmse
+    minRmse <- result$rmse$reduce(ee$Reducer$min())
+    minIdx <- result$rmse$indexOf(minRmse)
+    minRmse <- result$rmse$getNumber(minIdx)
+    # ee$Dictionary(result)$getInfo()
+    rmses <- rmses$add(minRmse)
+
+    # rmses$getInfo()
+
+    bandAdd <- result$property$getString(minIdx)
+    selected_properties <- selected_properties$add(bandAdd)
+    ee_bandNames <- ee_bandNames[ee_bandNames != bandAdd$getInfo()]
+  }
+
+  final_result <- ee$Dictionary(list(
+    properties = selected_properties,
+    rmse = rmses
+  ))
+
+  df <- data.frame(final_result$getInfo())
+  return(df)
+}
