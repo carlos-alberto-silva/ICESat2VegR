@@ -60,7 +60,7 @@ ee_to_dt <- function(sampled) {
 #' @export 
 model_fit <- function(x, y, method = "randomForest") {
   fc <- build_fc(x, y)
-  result <- randomForestRegression(fc, list(names(y)), list(names(x)), nTrees = 100, nodesize = 1)
+  result <- randomForestRegression(fc, as.list(names(y)), as.list(names(x)), nTrees = 100, nodesize = 1)
   return(result)
 }
 
@@ -185,12 +185,11 @@ INT_MAX <- 2147483647
 
 build_fc <- function(x, y = NULL) {
   all_data <- cbind(x, y)
-  ee$FeatureCollection(lapply(1:n, function(x) ee$Feature(NULL, all_data[x])))
+  ee$FeatureCollection(lapply(seq_len(nrow(x)), function(ii) ee$Feature(NULL, as.list(all_data[ii]))))
 }
 
 #' @export
 var_select <- function(x, y, method = "forward", nboots = 10, nTrees = 100, train_split = 0.7, delta = 0.01) {
-
   ee_bandNames <- colnames(x)
   n <- nrow(x)
   train_size <- as.integer(round(n * train_split))

@@ -1,3 +1,6 @@
+# devtools::install_deps()
+# devtools::install()
+
 library(ICESat2VegR)
 library(terra)
 library(magrittr)
@@ -28,9 +31,7 @@ for (year in years) {
 }
 
 ICESat2_download(all_granules, "Z:\\01_Projects\\04_NASA_ICESat2\\00_data\\04_ICESat2_datasets\\StudySite")
-
-current_year <- 2019
-granules <- list.files("../inst/extdata", "2019", full.names = TRUE)
+granules <- list.files("Z:\\01_Projects\\04_NASA_ICESat2\\00_data\\04_ICESat2_datasets\\StudySite", "ATL08.*h5", full.names = TRUE)
 
 power_beams <- c(
     "gt1r",
