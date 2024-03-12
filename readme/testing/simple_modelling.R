@@ -127,8 +127,10 @@ y <- out_dt[, "h_canopy"]
 nboots <- 3
 
 res <- var_select(x, y, "forward", nboots = nboots)
+print(res)
 selected_properties <- res$properties[-nrow(res)]
 x_selected <- x[, .SD, .SDcols = selected_properties]
+
 rf_model <- model_fit(x_selected, y, method = "randomForest")
 predicted <- rf_model %>% predict(x)
 
