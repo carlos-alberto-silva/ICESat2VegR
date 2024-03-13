@@ -65,6 +65,12 @@ model_fit <- function(x, y, method = "randomForest") {
 }
 
 #' @export
+map_create <- function(model, stack) {
+  result <- stack$classify(model)
+  result
+}
+
+#' @export
 randomForestRegression <- function(
     featurecollection,
     property,

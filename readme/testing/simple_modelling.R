@@ -135,3 +135,47 @@ rf_model <- model_fit(x_selected, y, method = "randomForest")
 predicted <- rf_model %>% predict(x)
 
 stat_model(y[[1]], predicted)
+
+
+result <- map_create(rf_model, fullStack)
+
+
+######################
+## VISUALIZE THE MAP
+######################
+
+forest_height_palette <- c("#ffffff", "#8b4513", "#99cc99", "#006600", "#004d00")
+
+
+vis <- result$visualize(
+    bands = "classification",
+    min = 0,
+    max = 30,
+    palette = forest_height_palette
+)
+url <- vis$getMapId()$tile_fetcher$url_format
+
+library(leaflet)
+center = apply(matrix(bbox, nrow = 2), 2, mean)
+coords <- terra::geom(sampled_vect)
+leaflet_map <- leaflet::leaflet() %>%
+  addProviderTiles(providers$Esri.WorldImagery, group = "Other") %>%
+  leaflet::addTiles(
+    urlTemplate = url,
+    options = leaflet::tileOptions(opacity = 1),
+    group = "Landsat"
+  ) %>%
+  leaflet::addCircleMarkers(
+    lng = coords[, "x"],
+    lat = coords[, "y"],
+    radius = 2,
+    stroke = FALSE,
+    fillOpacity = 1,
+    fillColor = "yellow"
+  ) %>%
+  addLayersControl(
+    overlayGroups = c("Landsat"),
+    options = layersControlOptions(collapsed = FALSE)
+  ) %>%
+  leaflet::setView(lng = center[1], lat = center[2], zoom = 11)
+leaflet_map
