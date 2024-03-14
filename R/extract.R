@@ -6,9 +6,8 @@
 #' @param scale The scale in meters for the extraction (image resolution).
 #'
 #' @export
-seg_gee_ancillary_dt_extract <- function(stack, geom, scale = 30) {
+seg_gee_ancillary_dt_extract <- function(stack, geom, scale = 30, chunk_size = 10) {
   n <- nrow(geom)
-  chunk_size <- 10
   dts <- list()
   for (ii in seq(1, n, chunk_size)) {
     tail <- ii + chunk_size - 1
@@ -41,7 +40,8 @@ extract <- function(images, geom, scale) {
 
   sampled <- final$sampleRegions(
     collection = geojson,
-    scale = scale
+    scale = scale,
+    tileScale = 16
   )
 
   return(sampled)
