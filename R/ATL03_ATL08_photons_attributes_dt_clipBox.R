@@ -83,8 +83,6 @@ ATL03_ATL08_photons_attributes_dt_clipBox <- function(atl03_atl08_dt, xmin, xmax
   mask <- (seq_along(atl03_atl08_dt$lat_ph))[mask]
   newFile <- atl03_atl08_dt[mask, ]
 
-  newFile<- new("icesat2.atl03atl08_dt", dt = newFile)
-
   # newFile<- new("gedi.level1b.dt", dt = level1bdt[mask,])
   return(newFile)
 }

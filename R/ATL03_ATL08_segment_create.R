@@ -70,8 +70,8 @@ ATL03_ATL08_segment_create <- function(atl03_atl08_dt, segment_length, centroid 
         "centroid_x",
         "centroid_y"
       ) := list(
-        mean_red(lon_ph),
-        mean_red(lat_ph)
+        mean(lon_ph),
+        mean(lat_ph)
       ),
       by = segment_id
     ]

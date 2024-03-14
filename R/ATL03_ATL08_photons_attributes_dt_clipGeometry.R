@@ -53,7 +53,7 @@
 #'close(atl03_h5)
 #'close(atl08_h5)
 #' @export
-ATL03_ATL08_photons_attributes_dt_clipGeometry <- function(atl03_atl08_dt, polygon, split_by = "id") {
+ATL03_ATL08_photons_attributes_dt_clipGeometry <- function(atl03_atl08_dt, polygon, split_by = NULL) {
 
   if (!inherits(atl03_atl08_dt, "icesat2.atl03atl08_dt")){
     stop("atl03_atl08_dt needs to be an object of class 'icesat2.at03atl08_dt' ")
@@ -75,13 +75,13 @@ ATL03_ATL08_photons_attributes_dt_clipGeometry <- function(atl03_atl08_dt, polyg
     atl03_atl08_dt<-atl03_atl08_dt
   }
 
-  atl03_atl08_dt$nid<-1:nrow(atl03_atl08_dt)
+  atl03_atl08_dt[, nid := .I]
 
   if (nrow(atl03_atl08_dt) == 0) {
     print("The polygon does not overlap the ATL08 data")
   } else {
     points <- terra::vect(
-      atl03_atl08_dt,
+      as.data.frame(atl03_atl08_dt),
       geom = c("lon_ph", "lat_ph"),
       crs = terra::crs(polygon)
     )
@@ -102,7 +102,7 @@ ATL03_ATL08_photons_attributes_dt_clipGeometry <- function(atl03_atl08_dt, polyg
       newFile <- atl03_atl08_dt[pts$nid, ]
       #newFile <- atl03_atl08_dt[mask, ]
     }
-    newFile<- new("icesat2.atl03atl08_dt", dt = newFile)
+    
     return(newFile)
   }
 }
