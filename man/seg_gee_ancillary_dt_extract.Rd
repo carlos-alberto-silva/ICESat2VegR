@@ -5,7 +5,7 @@
 \title{Given a stack image raster from GEE
 retrieve the point geometry with values for the images}
 \usage{
-seg_gee_ancillary_dt_extract(stack, geom, scale = 30)
+seg_gee_ancillary_dt_extract(stack, geom, scale = 30, chunk_size = 10)
 }
 \arguments{
 \item{stack}{A single image or a vector/list of images from Earth Engine.}

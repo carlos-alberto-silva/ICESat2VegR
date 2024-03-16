@@ -26,7 +26,7 @@ Depends:
 Encoding: UTF-8
 LazyData: true
 NeedsCompilation: yes
-RoxygenNote: 7.3.0
+RoxygenNote: 7.3.1
 Roxygen: list(markdown = TRUE)
 RdMacros: 
     mathjaxr, 
@@ -79,7 +79,6 @@ Collate:
     'ATL08_seg_attributes_h5_gridStat.R'
     'ATL08_seg_cover_dt_compute.R'
     'ICESat2_dataDownload.R'
-    'ICESat2_download.R'
     'ICESat2_finder.R'
     'ICESat2_finder_cloud.R'
     'argParse.R'
