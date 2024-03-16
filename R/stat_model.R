@@ -1,5 +1,15 @@
+#' Based on observed and predicted values create analyzes the model
+#' accuracy based on multiple statistics
+#' 
+#' @param obs [`numeric-class`]. A numeric vector for the observed values.
+#' @param est [`numeric-class`]. A numeric vector for predicted values.
+#' @param plotR [`logical-class`]. If TRUE will plot the observed x predicted
+#' 1 to 1 plot.
+#' @param xlab [`character-class`]. The label for x axis, default "Observed".
+#' @param ylab [`character-class`]. The label for y axis, default "Predicted".
+#' 
 #' @export
-stat_model <- function( obs, est , plotR=TRUE, xlim=NULL,ylim=NULL, xlab="Observed", ylab="Predicted", main=NULL, col="black")
+stat_model <- function(obs, est , plotR=TRUE, xlab="Observed", ylab="Predicted", ...)
 {
 
   xy<-na.omit(cbind(obs,est))
@@ -29,7 +39,7 @@ stat_model <- function( obs, est , plotR=TRUE, xlim=NULL,ylim=NULL, xlab="Observ
   StatInfo2<-StatInfo
   StatInfo2$Values<-round(StatInfo2$Values,2)
   if (plotR==TRUE) {
-    plot(obs, est, xlim=xlim,ylim=xlim, xlab=xlab,ylab=ylab, main=main, col=col)
+    plot(obs, est, xlab=xlab, ylab=ylab, ...)
     abline(0,1, col="red")
     abline(lm(est~obs), col="black", lwd=2)
     legend("topleft",c(paste0("RMSE=",StatInfo2[1,2],"Mg/ha"),

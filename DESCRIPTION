@@ -19,6 +19,7 @@ Imports:
   mathjaxr,
   Rcpp,
   Rdpack,
+  randomForest,
   reticulate,
   signal
 Depends:
@@ -92,8 +93,13 @@ Collate:
     'gee-filterBounds.R'
     'gee-search.R'
     'lazy_applier.R'
-    'sampling.R'
+    'map_create.R'
+    'model_tools.R'
+    'model_fit.R'
+    'predict.R'
+    'sample.R'
     'stat_model.R'
+    'var_select.R'
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

@@ -5,14 +5,18 @@
 \title{Given a geometry with point samples and images from Earth Engine
 retrieve the point geometry with values for the images}
 \usage{
-extract(images, geom, scale)
+extract(stack, geom, scale)
 }
 \arguments{
-\item{images}{A single image or a vector/list of images from Earth Engine.}
+\item{stack}{A single image or a vector/list of images from Earth Engine.}
 
-\item{geom}{A geometry from \code{\link[terra:SpatVector-class]{terra::SpatVector}} read with \code{\link[terra:vect]{terra::vect}}.}
+\item{geom}{A geometry from \code{\link[terra:SpatVector-class]{terra::SpatVector}} read with \code{\link[terra:vect]{terra::vect()}}.}
 
 \item{scale}{The scale in meters for the extraction (image resolution).}
+}
+\value{
+An ee.FeatureCollection with the properties extracted from the
+stack of images from ee.
 }
 \description{
 Given a geometry with point samples and images from Earth Engine

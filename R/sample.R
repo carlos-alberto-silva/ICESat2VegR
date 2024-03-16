@@ -1,4 +1,4 @@
-#' Makes sample function an S3 generic
+#' Sample method for applying multiple sampling methods
 #'
 #' @param x the generic input data to be sampled
 #' @param size the sampling size
@@ -9,14 +9,11 @@
 #' [`stratifiedSampling()`], [`geomSampling()`], [`rasterSampling()`]
 #' @export
 sample <- function(x, size = NULL, method = NULL, ...) {
-  allMethods <- gsub("sample\\.", "", as.character(.S3methods("sample")))
-  if (any(class(x) %in% allMethods)) {
-    UseMethod("sample")
-  }
-
-  base::sample(x, size, ...)
+  UseMethod("sample")
 }
 
+#' @export
+sample.default <- function(x, size, ...) base::sample(x, size, ...)
 
 #' Sampling function which accepts a method for sampling
 #'
@@ -313,6 +310,7 @@ stratifiedSampling <- genericSamplingMethod(stratifiedSamplingWorker)
 #' 
 #' @return A [`icesat2_sampling_method-class`] for defining the method used in [`sample()`]
 #' 
+#' @include ANNIndex.R
 #' @export
 spacedSampling <- genericSamplingMethod(spacedSamplingWorker)
 

@@ -8,7 +8,7 @@
 ATL03_ATL08_photons_attributes_dt_clipGeometry(
   atl03_atl08_dt,
   polygon,
-  split_by = "id"
+  split_by = NULL
 )
 }
 \arguments{

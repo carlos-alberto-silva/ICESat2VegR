@@ -14,6 +14,10 @@ seg_gee_ancillary_dt_extract(stack, geom, scale = 30, chunk_size = 10)
 
 \item{scale}{The scale in meters for the extraction (image resolution).}
 }
+\value{
+A \link[data.table:data.table-class]{data.table::data.table} with the properties extracted
+from the ee images.
+}
 \description{
 Given a stack image raster from GEE
 retrieve the point geometry with values for the images
