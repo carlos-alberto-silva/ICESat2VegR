@@ -7,8 +7,20 @@
 #'
 #' @export
 seg_gee_ancillary_dt_extract <- function(stack, geom, scale = 30) {
-  sampled <- extract(stack, geom, scale)
-  ee_to_dt(sampled)
+  n <- nrow(geom)
+  chunk_size <- 10
+  dts <- list()
+  for (ii in seq(1, n, chunk_size)) {
+    tail <- ii + chunk_size - 1
+    if (tail > n) {
+      tail <- n
+    }
+    message(gettextf("Processing %d-%d of %d", ii, tail, n))
+    sampled <- extract(stack, geom[ii:tail], scale)
+    dts[[""]] <- ee_to_dt(sampled)
+  }
+  dt <- data.table::rbindlist(dts)
+  return (dt)
 }
 
 
@@ -48,8 +60,8 @@ ee_to_dt <- function(sampled) {
   columns <- sampled$first()$propertyNames()
   columns <- columns$remove("system:index")
   
-  
-  
+  all_list <- list()
+  sampled$size()$getInfo()
   nested_list <- sampled$reduceColumns(ee$Reducer$toList(columns$size()), columns)$values()$get(0)
   dt <- data.table::rbindlist(nested_list$getInfo())
   names(dt) <- columns$getInfo()
@@ -62,12 +74,6 @@ model_fit <- function(x, y, method = "randomForest") {
   fc <- build_fc(x, y)
   result <- randomForestRegression(fc, as.list(names(y)), as.list(names(x)), nTrees = 100, nodesize = 1)
   return(result)
-}
-
-#' @export
-map_create <- function(model, stack) {
-  result <- stack$classify(model)
-  result
 }
 
 #' @export
