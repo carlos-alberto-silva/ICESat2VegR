@@ -13,6 +13,7 @@ ee_cache <- new.env(parent = emptyenv())
 ee_cache$search <- NULL
 
 .onLoad <- function(libname, pkgname) {
+  reticulate::use_condaenv("r-reticulate")
   earthaccess <<- reticulate::import("earthaccess", delay_load = TRUE, convert = FALSE)
   ee <<- reticulate::import("ee", delay_load = TRUE, convert = TRUE)
   tryCatch(

@@ -63,13 +63,13 @@ PAGE_SIZE <- 2000
 #' @import jsonlite curl magrittr reticulate
 #' @export
 ICESat2_finder_cloud <- function(short_name,
-                                   lower_left_lon,
-                                   lower_left_lat,
-                                   upper_right_lon,
-                                   upper_right_lat,
-                                   version = "006",
-                                   daterange = NULL,
-                                   persist = TRUE) {
+                                 lower_left_lon,
+                                 lower_left_lat,
+                                 upper_right_lon,
+                                 upper_right_lat,
+                                 version = "006",
+                                 daterange = NULL,
+                                 persist = TRUE) {
   if (!reticulate::py_module_available("earthaccess")) {
     tryCatch(expr = {
       reticulate::py_install("earthaccess")
@@ -86,15 +86,16 @@ ICESat2_finder_cloud <- function(short_name,
 
   # Try different authentication mechanisms
   py_to_r <- reticulate::py_to_r
-  auth <- earthaccess$login(strategy = "netrc")
-  if (!py_to_r(auth$authenticated)) {
-    auth <- earthaccess$login(strategy = "environment")
+  
+  auth <- earthaccess$login(strategy = "environment")
+  if (!py_to_r(auth$authenticated) && file.exists(".netrc")) {
+    auth <- earthaccess$login(strategy = "netrc")
   }
   if (!py_to_r(auth$authenticated)) {
     auth <- earthaccess$login(strategy = "interactive", persist = persist)
   }
   if (!py_to_r(auth$authenticated)) {
-    stop("Could not authenticate in NASA earthaccess, 
+    stop("Could not authenticate in NASA earthaccess,
     please verify your credentials.")
   }
 
