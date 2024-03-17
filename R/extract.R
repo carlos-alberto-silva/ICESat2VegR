@@ -38,7 +38,7 @@ seg_gee_ancillary_dt_extract <- function(stack, geom, scale = 30, chunk_size = 1
 #'
 #' @export
 extract <- function(stack, geom, scale) {
-  final <- c(images)
+  final <- c(stack)
   tempjson <- tempfile(fileext = ".geojson")
   terra::writeVector(geom, tempjson, filetype = "geojson")
   parsed <- jsonlite::parse_json(readLines(tempjson))

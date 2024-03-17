@@ -1,19 +1,18 @@
 #' Sample method for applying multiple sampling methods
 #'
 #' @param x the generic input data to be sampled
-#' @param size the sampling size
-#' @param method forward to which method we are using for sampling
+#' @param ... generic params to pass ahead to the specific sampling function
 #'
 #' @seealso
 #' [`randomSampling()`], [`spacedSampling()`], [`gridSampling()`],
 #' [`stratifiedSampling()`], [`geomSampling()`], [`rasterSampling()`]
 #' @export
-sample <- function(x, size = NULL, method = NULL, ...) {
+sample <- function(x, ...) {
   UseMethod("sample")
 }
 
 #' @export
-sample.default <- function(x, size, ...) base::sample(x, size, ...)
+sample.default <- function(x, ...) base::sample(x, ...)
 
 #' Sampling function which accepts a method for sampling
 #'
@@ -55,7 +54,7 @@ sample.default <- function(x, size, ...) base::sample(x, size, ...)
 }
 
 #' @export
-`sample.icesat2.atl03atl08_dt` <- function(dt, method, ...) {
+`sample.icesat2.atl03_atl08_seg_dt` <- function(dt, method, ...) {
   do.call(method$fn, c(list(dt), method$params))
 }
 

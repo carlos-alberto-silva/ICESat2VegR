@@ -4,14 +4,12 @@
 \alias{sample}
 \title{Sample method for applying multiple sampling methods}
 \usage{
-sample(x, size = NULL, method = NULL, ...)
+sample(x, ...)
 }
 \arguments{
 \item{x}{the generic input data to be sampled}
 
-\item{size}{the sampling size}
-
-\item{method}{forward to which method we are using for sampling}
+\item{...}{generic params to pass ahead to the specific sampling function}
 }
 \description{
 Sample method for applying multiple sampling methods

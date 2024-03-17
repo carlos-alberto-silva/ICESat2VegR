@@ -9,6 +9,7 @@ Description: Set of tools for downloading, reading, visualizing, processing and 
 License: GPL (>= 3)
 Imports:
   dplyr, 
+  e1071,
   formattable,
   gdalBindings,
   getPass,

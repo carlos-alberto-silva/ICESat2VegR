@@ -3,6 +3,9 @@
 #' 
 #' @param x [`data.frame-class`]. The vectors of features available for predicion
 #' 
+#' @return A [`data.frame-class`] containing the selected properties and the mean
+#' RMSEs from the bootstrapping runs for each variable selected.
+#' 
 #' @include model_tools.R
 #' @export
 var_select <- function(x, y, method = "forward", nboots = 10, nTrees = 100, train_split = 0.7, delta = 0.01) {

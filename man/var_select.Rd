@@ -18,6 +18,10 @@ var_select(
 \arguments{
 \item{x}{\code{\linkS4class{data.frame}}. The vectors of features available for predicion}
 }
+\value{
+A \code{\linkS4class{data.frame}} containing the selected properties and the mean
+RMSEs from the bootstrapping runs for each variable selected.
+}
 \description{
 Uses Google Earth Engine for selecting the variables
 based on a forward feature selection wrapper

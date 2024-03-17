@@ -91,29 +91,22 @@ ATL03_ATL08_compute_seg_attributes_dt_segStat <- function(
     quality_ph = 0,
     night_flag = 1) {
 
-
   if (!inherits(atl03_atl08_seg_dt, "icesat2.atl03atl08_dt")) {
     stop("atl03_atl08_dt needs to be an object of class 'icesat2.atl03atl08_dt' ")
   }
 
   atl03_atl08_dt2 <- atl03_atl08_seg_dt[
-    atl03_atl08_seg_dt$classed_pc_flag %in% ph_class &
-      atl03_atl08_seg_dt$ quality_ph %in% quality_ph &
-      atl03_atl08_seg_dt$beam %in% beam &
-      atl03_atl08_seg_dt$night_flag %in% night_flag,
+    classed_pc_flag %in% ph_class &
+      quality_ph == selected_quality_ph &
+      beam %in% selected_beams &
+      night_flag == selected_night_flag,
   ]
 
-  # Add data.table operator
-  call <- lazy_call(func)
+  expr <- as.character(substitute(func))
 
-  metrics <- lazy_apply_dt_call(dt = atl03_atl08_dt2, call = call, group.by = "by = c('segment_id', 'beam')")
+  metrics <- eval.parent(parse(text=gettextf("atl03_atl08_dt2[, %s(%s), by = .(
+    segment_id, beam, longitude = centroid_x, latitude = centroid_y)]", expr[1], expr[2])))
 
-  if (ncol(metrics) == 4) {
-    colnames(metrics)[2] <- paste0(call)[1]
-  }
-
-  metrics <- metrics[-nrow(metrics), ]
-  colnames(metrics)[2:c(ncol(metrics) - 3)] <- paste0(names(metrics)[2:c(ncol(metrics) - 3)], "_", paste0(call)[2])
-
+  
   return(metrics)
 }

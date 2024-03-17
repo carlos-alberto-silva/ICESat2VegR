@@ -93,7 +93,7 @@ ATL03_ATL08_photons_attributes_dt_clipGeometry <- function(atl03_atl08_dt, polyg
     if (!is.null(split_by)) {
       if (any(names(polygon) == split_by)) {
         newFile <- atl03_atl08_dt[pts$nid, ]
-        newFile$poly_id<-pts[[split_by]]
+        newFile$poly_id <- pts[[split_by]]
       } else {
         stop(paste("The", split_by, "is not included in the attribute table.
                        Please check the names in the attribute table"))
@@ -106,5 +106,7 @@ ATL03_ATL08_photons_attributes_dt_clipGeometry <- function(atl03_atl08_dt, polyg
 
     return(newFile)
   }
+
+  return (NULL)
 }
 

@@ -57,11 +57,12 @@ ATL03_ATL08_segment_create <- function(atl03_atl08_dt, segment_length, centroid 
   lat_ph <- lon_ph <- dist_ph_along <-
     centroid_x <- centroid_y <- segment_id <- NA
 
-  dt <- atl03_atl08_dt[
+  atl03_atl08_dt[
     ,
-    .SD,
-    by = list(segment_id = floor(dist_ph_along / segment_length) + 1), .SDcols = names(atl03_atl08_dt)
+    segment_id := floor(dist_ph_along / segment_length) + 1,
   ]
+
+  dt <- atl03_atl08_dt
 
   if (centroid == "mean") {
     dt[
@@ -73,7 +74,7 @@ ATL03_ATL08_segment_create <- function(atl03_atl08_dt, segment_length, centroid 
         mean(lon_ph),
         mean(lat_ph)
       ),
-      by = segment_id
+      by = list(segment_id, beam)
     ]
   } else if (centroid == "midpoint") {
     dt[
@@ -82,10 +83,10 @@ ATL03_ATL08_segment_create <- function(atl03_atl08_dt, segment_length, centroid 
         "centroid_x",
         "centroid_y"
       ) := list(
-        x = mean_red(range(lon_ph)),
-        y = mean_red(range(lat_ph))
+        x = mean(range(lon_ph)),
+        y = mean(range(lat_ph))
       ),
-      by = segment_id
+      by = list(segment_id, beam)
     ]
   } else {
     stop("The centroid extraction method '%s', was not found!\nUse either 'mean' or 'midpoint'.")
