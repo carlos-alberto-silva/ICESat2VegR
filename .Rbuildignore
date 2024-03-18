@@ -2,3 +2,4 @@
 ^\.Rproj\.user$
 ^/inst/extdat$
 ^.vscode$
+^readme$

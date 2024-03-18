@@ -19,11 +19,10 @@ Imports:
   mathjaxr,
   Rcpp,
   Rdpack,
+  R6,
   randomForest,
   reticulate,
-  signal
-Depends:
-    R6
+  signal    
 Encoding: UTF-8
 LazyData: true
 NeedsCompilation: yes
@@ -79,6 +78,7 @@ Collate:
     'ATL08_seg_attributes_dt_polyStat.R'
     'ATL08_seg_attributes_h5_gridStat.R'
     'ATL08_seg_cover_dt_compute.R'
+    'ICESat2VegR_configure.R'
     'ICESat2_dataDownload.R'
     'ICESat2_finder.R'
     'ICESat2_finder_cloud.R'
