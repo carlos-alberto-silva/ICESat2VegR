@@ -153,9 +153,6 @@ ATL03_seg_attributes_dt <- function(atl03_h5,
     stop("atl03_h5 must be an object of class 'icesat2.atl03_h5' - output of [ATL03_read()] function ")
   }
 
-  # h5
-  atl03_h5v2 <- atl03_h5@h5
-
   # Check beams to select
   groups_id <- atl03_h5$beams
 

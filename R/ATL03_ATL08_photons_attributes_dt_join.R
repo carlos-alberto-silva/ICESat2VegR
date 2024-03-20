@@ -155,7 +155,6 @@ ATL03_ATL08_photons_attributes_dt_join <- function(atl03_h5, atl08_h5,
     i_s <- i_s + 0.25
     utils::setTxtProgressBar(pb, i_s)
 
-    segment_ph_cnt
     maxClassIdx <- dataTableATL08Photons[, list(max_idx = max(classed_pc_indx)), by = ph_segment_id]
     selectedSegs <- dataTableATL03Segs[maxClassIdx, on = "ph_segment_id"][max_idx <= segment_ph_cnt]
 

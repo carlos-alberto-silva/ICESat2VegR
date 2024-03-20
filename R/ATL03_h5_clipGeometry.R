@@ -51,5 +51,5 @@
 ATL03_h5_clipGeometry <- function(atl03, output, vect, polygon_id = NULL) {
   geom <- terra::union(vect)
 
-  ATL03_h5_clip(atl03, output, geom, ATL03_photons_mask_geometry)
+  ATL03_h5_clip(atl03, output, geom, ATL03_segments_mask_geometry)
 }

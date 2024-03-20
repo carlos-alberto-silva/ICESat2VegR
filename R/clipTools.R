@@ -64,8 +64,6 @@ clipByMask2D <- function(beam, updateBeam, datasets, mask, pb) {
 }
 
 
-
-
 ATL03_photons_mask <- function(beam, bbox) {
   x <- y <- 0
 
@@ -85,6 +83,46 @@ ATL03_photons_mask <- function(beam, bbox) {
   return(mask)
 }
 
+ATL03_segments_mask <- function(beam, bbox) {
+  x <- y <- 0
+
+  xy <- data.table::data.table(
+    x = beam[["geolocation/reference_photon_lon"]][],
+    y = beam[["geolocation/reference_photon_lat"]][]
+  )
+
+  mask <- xy[
+    , x >= bbox$xmin &
+      x <= bbox$xmax &
+      y >= bbox$ymin &
+      y <= bbox$ymax
+  ]
+
+  mask <- seq_along(mask)[mask]
+  return(mask)
+}
+
+ATL03_segments_mask_geometry <- function(beam, geom) {
+  ext <- terra::ext(geom)
+  mask_ext <- ATL03_segments_mask(beam, ext)
+
+  xy <- terra::vect(
+    data.frame(
+      longitude = beam[["geolocation/reference_photon_lon"]][mask_ext],
+      latitude = beam[["geolocation/reference_photon_lat"]][mask_ext],
+      row = mask_ext
+    ),
+    geom = c("longitude", "latitude"),
+    crs = "epsg:4326"
+  )
+
+  res <- terra::intersect(xy, geom)
+
+  return(res$row)
+}
+
+
+
 ATL03_photons_mask_geometry <- function(beam, geom) {
   ext <- terra::ext(geom)
   mask_ext <- ATL03_photons_mask(beam, ext)
@@ -103,6 +141,19 @@ ATL03_photons_mask_geometry <- function(beam, geom) {
 
   return(res$row)
 }
+
+seq_lens <- Vectorize(function(from, length.out) {seq.int(from, length.out = length.out)}, vectorize.args = c("from", "length.out"), SIMPLIFY = TRUE)
+seq_lens_simplify <- function(from, length.out) {
+  unlist(seq_lens(from, length.out))
+}
+
+ATL03_photons_segment_mask <- function(beam, segmentsMask) {
+  seg_indices <- beam[["geolocation/ph_index_beg"]][segmentsMask]
+  ph_cnt <- beam[["geolocation/segment_ph_cnt"]][segmentsMask]
+  photons_mask <- seq_lens_simplify(seg_indices, ph_cnt)
+  photons_mask
+}
+
 
 ATL03_photons_per_segment <- function(beam, photonsMask) {
   seg_indices <- beam[["geolocation/ph_index_beg"]][]
