@@ -81,7 +81,8 @@ ATL03_ATL08_photons_attributes_dt_clipGeometry <- function(atl03_atl08_dt, polyg
     print("The polygon does not overlap the ATL08 data")
   } else {
     points <- terra::vect(
-      as.data.frame(atl03_atl08_dt),
+      data.table(lon_ph=range(atl03_atl08_dt$lon_ph),
+                 lat_ph=range(atl03_atl08_dt$lat_ph)),
       geom = c("lon_ph", "lat_ph"),
       crs = terra::crs(polygon)
     )
@@ -102,7 +103,7 @@ ATL03_ATL08_photons_attributes_dt_clipGeometry <- function(atl03_atl08_dt, polyg
       newFile <- atl03_atl08_dt[pts$nid, ]
       #newFile <- atl03_atl08_dt[mask, ]
     }
-    
+
     return(newFile)
   }
 }

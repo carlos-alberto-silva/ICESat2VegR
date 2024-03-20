@@ -1,8 +1,7 @@
-#' Download ICESat-2  data
+#' Download CESat-2 ATL03 and ALT08 data
 #'
 #' @description Download ICESat-2 ATL03 and ALT08 data from LP DAAC Data Pool. Users will need to enter their
 #' Earth Explore login Information for downloading the data.
-#'
 #'
 #' @param url character vector object; url to ATL03 or ALT08 data, or both (output of [`ICESat2_finder()`])
 #' @param outdir Vector object, output directory for downloading GEDI data, default [tempdir()]
@@ -40,11 +39,11 @@
 #' close(netrc_conn)
 #'
 #' #' Downloading ICEsat-2 data
-#' ICESat2_download(url, outdir)
+#' ATLAS_dataDownload(url, outdir)
 #' }
 #' @import curl
 #' @export
-ICESat2_download <- function(url, outdir = NULL, overwrite = FALSE, buffer_size = 512, timeout = 10) {
+ATLAS_dataDownload <- function(url, outdir = NULL, overwrite = FALSE, buffer_size = 512, timeout = 10) {
   if (is.null(outdir)) {
     outdir <- tempdir()
   }

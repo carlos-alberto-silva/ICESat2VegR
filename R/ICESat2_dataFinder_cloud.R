@@ -2,10 +2,11 @@
 PAGE_SIZE <- 2000
 
 
-#' ICESat-2 ATL03 and ATL08 data finder
+#' ICESat-2 ATL03 and ATL08 data finder for cloud computing
 #'
 #' @description This function finds the exact granule(s) that contain ICESat-2 ATLAS data
-#' for a given region of interest and date range
+#' for a given region of interest and date range for cloud computing. For better processing efficiency, this function should be used
+#' on the cluster hosting ICESat-2 data (e.g. CryoCloud)
 #'
 #' @param short_name ICESat-2 ATLAS data level short_name; Options: "ATL03", "ATL08",
 #' @param lower_left_lon Numeric. Minimum longitude in
@@ -50,7 +51,7 @@ PAGE_SIZE <- 2000
 #' daterange <- c("2019-07-01", "2020-05-22")
 #'
 #' # Extracting the path to ICESat-2 ATLAS data for the specified boundary box coordinates
-#' ATLAS02b_list <- ICESat2_finder(
+#' ATLAS02b_list <- dataFinder_cloud(
 #'   short_name = "ATL08",
 #'   ul_lat,
 #'   ul_lon,
@@ -62,7 +63,7 @@ PAGE_SIZE <- 2000
 #' }
 #' @import jsonlite curl magrittr reticulate
 #' @export
-ICESat2_finder_cloud <- function(short_name,
+ICESat2_dataFinder_cloud <- function(short_name,
                                  lower_left_lon,
                                  lower_left_lat,
                                  upper_right_lon,
@@ -86,7 +87,7 @@ ICESat2_finder_cloud <- function(short_name,
 
   # Try different authentication mechanisms
   py_to_r <- reticulate::py_to_r
-  
+
   auth <- earthaccess$login(strategy = "environment")
   if (!py_to_r(auth$authenticated) && file.exists(".netrc")) {
     auth <- earthaccess$login(strategy = "netrc")

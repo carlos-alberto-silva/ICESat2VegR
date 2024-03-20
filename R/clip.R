@@ -1,17 +1,17 @@
 #' Generic function for clipping ICESat-2 ATL03 and ATL08 H5 data
 #'
+#' @description This function clips ATL03 and ATL08 HDF5 file within beam groups,
+#' but keeps metada and ancillary data the same.
+#'
 #' @param x [`icesat2.atl03_h5-class`] or [`icesat2.atl08_h5-class`] object,
 #' obtained through [`ATL03_read()`] or [`ATL08_read()`] for clipping
 #' @param output character. Path to the output h5 file.
 #' @param clip_obj [`numeric-class`], [`terra::SpatExtent`] or [`terra::SpatVector`]
-#' object for clipping. The bbox order is the default from NASA's ICESat-2 CMS searching:
+#' object for clipping. The bbox order is the default from NASA's ICESat-2 data searching:
 #' [ul_lat, ul_lon, lr_lat, lr_lon].
 #'
-#' @return Returns the clipped S4 object of the same class as input
+#' @return Returns the clipped S4 object of the same class as the input file
 #'
-#' @description This function clips ATL03 and ATL08 HDF5 file within beam groups,
-#' but keeps metada and ancillary data the same.
-#' This function will dispatch to one of the specifics functions for clipping.
 #'
 #' @seealso
 #' [`ATL03_h5_clipBox()`], [`ATL03_h5_clipGeometry()`],

@@ -33,42 +33,46 @@
 #' # Extracting ATL03 photons attributes
 #' atl03_photons_dt <- ATL03_photons_attributes_dt(atl03_h5 = atl03_h5)
 #'
-#' # Bounding rectangle coordinates
-#' xmin <- -107.7
-#' xmax <- -106.5
-#' ymin <- 32.75
-#' ymax <- 42.75
+#'# Bounding rectangle coordinates
+#'lower_left_lon=-107.7
+#'lower_left_lat=42.75
+#'upper_right_lon=-106.5
+#'upper_right_lat=32.75
 #'
-#' # Clipping ATL03 photons  by boundary box extent
-#' atl03_photons_dt_clip <- ATL03_photons_attributes_dt_clipBox(atl03_photons_dt, xmin, xmax, ymin, ymax)
+#'# Clipping ATL08-derived canopy metrics by boundary box extent
+#'atl03_photons_dt_clip <- ATL03_photons_attributes_dt_clipBox(atl03_photons_dt,
+#'                                                                lower_left_lon,
+#'                                                                upper_right_lon,
+#'                                                                upper_right_lat,
+#'                                                                lower_left_lat)
 #'
 #' close(atl03_h5)
 #' @import hdf5r stats
 #' @export
-ATL03_photons_attributes_dt_clipBox <- function(atl03_photons_dt, xmin, xmax, ymin, ymax) {
+ATL03_photons_attributes_dt_clipBox <- function(atl03_photons_dt,
+                                                lower_left_lon,
+                                                upper_right_lon,
+                                                upper_right_lat,
+                                                lower_left_lat) {
   if (!inherits(atl03_photons_dt, "icesat2.atl03_dt")) {
     stop("atl03_photons_dt needs to be an object of class 'icesat2.atl03_dt' ")
   }
 
-  if (any(is.na(atl03_photons_dt@dt))) {
-    atl03_photons_dt <- na.omit(atl03_photons_dt@dt)
-  } else {
-    atl03_photons_dt <- atl03_photons_dt@dt
+  if (any(is.na(atl03_photons_dt))) {
+    atl03_photons_dt <- na.omit(atl03_photons_dt)
   }
 
 
   # xmin ymin xmax ymax
   mask <-
-    atl03_photons_dt$lon_ph >= xmin &
-      atl03_photons_dt$lon_ph <= xmax &
-      atl03_photons_dt$lat_ph >= ymin &
-      atl03_photons_dt$lat_ph <= ymax
+    atl03_photons_dt$lon_ph >= lower_left_lon &
+      atl03_photons_dt$lon_ph <= upper_right_lon &
+      atl03_photons_dt$lat_ph >= upper_right_lat &
+      atl03_photons_dt$lat_ph <= lower_left_lat
 
   mask[!stats::complete.cases(mask)] <- FALSE
   mask <- (seq_along(atl03_photons_dt$lat_ph))[mask]
   newFile <- atl03_photons_dt[mask, ]
-
-  newFile <- new("icesat2.atl03_dt", dt = newFile)
 
   # newFile<- new("gedi.level1b.dt", dt = level1bdt[mask,])
   return(newFile)

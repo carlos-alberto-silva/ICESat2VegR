@@ -1,4 +1,79 @@
 library(ICESat2VegR)
+
+# Specifying bounding box coordinates
+lower_left_lon <- -96.0
+lower_left_lat <- 40.0
+upper_right_lon <- -100
+upper_right_lat <- 42.0
+
+
+# Specifying the date range
+daterange <- c("2019-07-01", "2020-05-22")
+
+# Extracting the path to ICESat-2 ATLAS data for the specified boundary box coordinates
+atl08_granules_list_d <- ICESat2_dataFinder(
+  short_name = "ATL08",
+  lower_left_lon,
+  lower_left_lat,
+  upper_right_lon,
+  upper_right_lat,
+  version = "006",
+  daterange = daterange,
+  persist = TRUE,
+  cloud_hosted = TRUE,
+  cloud_computing = FALSE
+)
+
+atl08_granules_list_c <- ICESat2_dataFinder(
+  short_name = "ATL08",
+  lower_left_lon,
+  lower_left_lat,
+  upper_right_lon,
+  upper_right_lat,
+  version = "006",
+  daterange = daterange,
+  persist = TRUE,
+  cloud_hosted = FALSE,
+  cloud_computing = TRUE
+)
+
+
+# Extracting the path to ICESat-2 ATLAS data for the specified boundary box coordinates
+atl03_granules_list_d <- ICESat2_dataFinder(
+  short_name = "ATL03",
+  lower_left_lon,
+  lower_left_lat,
+  upper_right_lon,
+  upper_right_lat,
+  version = "006",
+  daterange = daterange,
+  persist = TRUE,
+  cloud_hosted = TRUE,
+  cloud_computing = FALSE
+)
+
+atl03_granules_list_c <- ICESat2_dataFinder(
+  short_name = "ATL03",
+  lower_left_lon,
+  lower_left_lat,
+  upper_right_lon,
+  upper_right_lat,
+  version = "006",
+  daterange = daterange,
+  persist = TRUE,
+  cloud_hosted = FALSE,
+  cloud_computing = TRUE
+)
+
+
+# reading ATL03 and ATL04 data from the cloud
+atl03_cloud <- ATL03_read(atl03_granules_list_c[[1]])
+atl08_cloud <- ATL03_read(atl08_granules_list_c[[1]])
+
+# set working directory
+output_dir <- tempdir()
+setwd(output_dir)
+
 atl08_path<-"C:\\Users\\c.silva\\Documents\\ICESat2VegR\\inst\\exdata\\ATL08_20220401221822_01501506_005_01.h5"
 atl03_path<-"C:\\Users\\c.silva\\Documents\\ICESat2VegR\\inst\\exdata\\ATL03_20220401221822_01501506_005_01.h5"
 
@@ -46,6 +121,7 @@ head(atl08_photons_dt)
 # Extracting
 atl08_seg_att_dt <- ATL08_seg_attributes_dt(atl08_h5 = atl08_h5)
 head(atl08_seg_att_dt)
+class(atl08_seg_att_dt)
 
 ##   latitude longitude beam h_canopy canopy_openness h_te_mean terrain_slope
 ## 1: 59.49081 -103.7556 gt1r 4.820282       1.0603539  343.2197    0.06025224
@@ -59,8 +135,8 @@ head(atl08_seg_att_dt)
 summary(atl08_seg_att_dt)
 
 # plotting histograms
-atl08_seg_att_dt@dt$h_canopy[atl08_seg_att_dt@dt$h_canopy>80]<-NA # set NA to values > 80 m
-atl08_seg_att_dt@dt$h_te_mean[atl08_seg_att_dt@dt$h_te_mean>5000]<-NA # set NA to values > 5000 m
+atl08_seg_att_dt$h_canopy[atl08_seg_att_dt$h_canopy>80]<-NA # set NA to values > 80 m
+atl08_seg_att_dt$h_te_mean[atl08_seg_att_dt$h_te_mean>5000]<-NA # set NA to values > 5000 m
 par(mfrow=c(1,2))
 hist(atl08_seg_att_dt$h_canopy, col="green", xlab="height (m)", main="h_canopy")
 hist(atl08_seg_att_dt$h_te_mean, col="#bd8421", xlab="Elevation (m)", main="h_te_mean")
@@ -117,13 +193,18 @@ sync(h_canopy.map, h_te_mean.map)
 ```r
 # Clipping by  bounding box
 # Define the bounding box
-xmin <- -107.7
-xmax <- -106.5
-ymin <- 32.75
-ymax <- 42.75
+lower_left_lon=-107.7
+lower_left_lat=42.75
+upper_right_lon=-106.5
+upper_right_lat=32.75
 
 # Clip
-atl08_seg_att_dt_clip <- ATL08_seg_attributes_dt_clipBox(atl08_seg_att_dt, xmin, xmax, ymin, ymax)
+atl08_seg_att_dt_clip <- ATL08_seg_attributes_dt_clipBox(atl08_seg_att_dt,
+                                                         lower_left_lon,
+                                                         upper_right_lon,
+                                                         upper_right_lat,
+                                                         lower_left_lat)
+
 head(atl08_seg_att_dt_clip) # print the first six observations
 
 ##   latitude longitude beam  h_canopy canopy_openness h_te_mean  terrain_slope
@@ -143,11 +224,13 @@ head(atl08_seg_att_dt_clip) # print the first six observations
 poly_filepath <- "C:\\Users\\c.silva\\Documents\\ICESat2VegR\\inst\\exdata\\polygon.shp"
 
 # Read shapefile
-poly <- terra::vect(poly_filepath)
+library(terra)
+sppoly <- terra::vect(poly_filepath)
 
+class(atl08_seg_att_dt)
 
 # Clip
-atl08_seg_att_dt_clipg <- ATL08_seg_attributes_dt_clipGeometry(atl08_seg_att_dt, poly, split_by = "FID")
+atl08_seg_att_dt_clipg <- ATL08_seg_attributes_dt_clipGeometry(atl08_seg_att_dt, sppoly, split_by = "FID")
 head(atl08_seg_att_dt_clipg) # print the first six observations
 
 ##   latitude longitude beam h_canopy canopy_openness h_te_mean terrain_slope nid  poly_id
@@ -222,7 +305,7 @@ mySetOfMetrics <- function(x) {
 }
 
 # Computing a series of h_canopy statistics at 30 m grid cellfrom customized function
-atl08_seg_att_dt@dt$h_canopy[atl08_seg_att_dt@dt$h_canopy>80]<-NA # set values > 80 m to NA m
+atl08_seg_att_dt$h_canopy[atl08_seg_att_dt$h_canopy>80]<-NA # set values > 80 m to NA m
 h_canopy_metrics <-ATL08_seg_attributes_dt_gridStat(atl08_seg_att_dt, func=mySetOfMetrics(h_canopy),res=0.05)
 plot(h_canopy_metrics,
      xlim=c(-107.2,-106.8),
@@ -236,7 +319,7 @@ plot(h_canopy_metrics,
 ## Merging ATL03 and ATL08 photon attributes
 ```r
 atl03_atl08_dt<-ATL03_ATL08_photons_attributes_dt_join(atl03_h5,atl08_h5, beam = "gt1l")
-head(atl03_atl08_dt)
+  head(atl03_atl08_dt)
 
 ## lon_ph   lat_ph     h_ph quality_ph solar_elevation dist_ph_along ph_segment_id classed_pc_indx
 ## 1: -103.7541 59.49119 375.0020          0        23.49148     0.7613657            NA              NA
@@ -257,13 +340,15 @@ head(atl03_atl08_dt)
 ## Plotting photon cloud
 ```r
 # plot by "ph_h"
-plot(atl03_atl08_dt, y="ph_h",colors, beam = "gt1l",
+plot(atl03_atl08_dt, y="ph_h",colors= c("gray", "#bd8421", "forestgreen", "green"), beam = "gt1l",
      ylim=c(0,7), xlim=c(2400,3800), pch=16)
 
 # plot by "h_ph"
-plot(atl03_atl08_dt, y="h_ph",colors, beam = "gt1l",
+plot(atl03_atl08_dt, y="h_ph",colors= c("gray", "#bd8421", "forestgreen", "green"), beam = "gt1l",
      ylim=c(300,355),xlim=c(2400,3800), pch=16)
 ```
+
+summary(atl03_atl08_dt[,2:3])
 
 ## Computing the mean of h_ph attribute at 0.05 degree grid cell
 mean_h_ph <- ATL03_ATL08_photons_attributes_dt_gridStat(atl03_atl08_dt, func = mean(h_ph), res = 0.05)
@@ -301,30 +386,43 @@ plot(h_ph_metrics,
 # Clipping by  bounding box
 
 # ATL03 photons
-atl03_photons_dt_clip <- ATL03_photons_attributes_dt_clipBox(atl03_photons_dt, xmin, xmax, ymin, ymax)
+atl03_photons_dt_clip <- ATL03_photons_attributes_dt_clipBox(atl03_photons_dt,
+                                                             lower_left_lon,
+                                                             upper_right_lon,
+                                                             upper_right_lat,
+                                                             lower_left_lat)
 head(atl03_photons_dt_clip) # print the first six observations
 
 # AT03 and ATL08 photons
-atl03_atl08_photons_dt_clip <- ATL03_ATL08_photons_attributes_dt_clipBox(atl03_atl08_dt, xmin, xmax, ymin, ymax)
-head(atl03_atl08_dt_clip) # print the first six observations
+atl03_atl08_photons_dt_clip <- ATL03_ATL08_photons_attributes_dt_clipBox(atl03_atl08_dt,
+                                                                         lower_left_lon,
+                                                                         upper_right_lon,
+                                                                         upper_right_lat,
+                                                                         lower_left_lat)
+head(atl03_atl08_photons_dt_clip) # print the first six observations
 
 # Clipping by geometry
 
 # ATL03 photons
-atl03_photons_dt_clipg <- ATL03_photons_attributes_dt_clipGeometry(atl03_photons_dt, polygon, split_by = "FID")
+atl03_photons_dt_clipg <- ATL03_photons_attributes_dt_clipGeometry(atl03_photons_dt, sppoly, split_by = "FID")
 head(atl03_photons_dt_clipg) # print the first six observations
 
 # ATL03 and ATL08 photons
-atl03_atl08_photons_dt_clipg <- ATL03_ATL08_photons_attributes_dt_cliGeometry(atl03_photons_dt, polygon, split_by = "FID")
+atl03_atl08_photons_dt_clipg <- ATL03_ATL08_photons_attributes_dt_cliGeometry(atl03_photons_dt, sppoly, split_by = "FID")
 head(atl03_photons_dt_clipg) # print the first six observations
 ```
 
+## Computing new segments a within length (e.g. 30m)
+atl03_atl08_dt_seg<-ATL03_ATL08_segment_create(atl03_atl08_dt,
+                                               segment_length=30,
+                                               centroid = "mean",
+                                               output = NA,
+                                               overwrite = FALSE)
+head(atl03_atl08_dt_seg)
 ## Computing terrain and canopy metrics by a within segment length
-
 ```r
 # Computing the max canopy height at 30 m segments
-max_ph_h_seg_30m <-ATL03_ATL08_compute_seg_attributes_dt_segStat(atl03_atl08_dt, func=max(ph_h),
-                                seg_length = 30,
+max_ph_h_seg_30m <-ATL03_ATL08_compute_seg_attributes_dt_segStat(atl03_atl08_dt_seg, func=~max(ph_h),
                                 ph_class=c(2,3),
                                 beam=c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
                                 quality_ph=0,
@@ -339,13 +437,13 @@ head(max_ph_h_seg_30m)
 ## 6:       6 2.302063 59.48966 -103.7544        165
 
 max_ph_h_seg_100m <-ATL03_ATL08_compute_seg_attributes_dt_segStat(atl03_atl08_dt, func=max(ph_h),
-                                                                 seg_length = 100,
                                                                  ph_class=c(2,3),
                                                                  beam=c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
                                                                  quality_ph=0,
                                                                  night_flag=1)
 
-head(max_ph_h_seg)
+head(max_ph_h_seg_100m)
+
 ##   segment max_ph_h latitude longitude dist_along
 ## 1:   1 2.025024 59.49107 -103.7541         15
 ## 2:   2 2.578125 59.49079 -103.7541         45

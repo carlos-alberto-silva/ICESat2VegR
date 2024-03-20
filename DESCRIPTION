@@ -1,12 +1,10 @@
 Package: ICESat2VegR
 Type: Package
-Title: An R Package for NASA's Ice, Cloud, and Elevation Satellite (ICESat-2) Data Processing and Visualization for Land and Vegetation Applications.
+Title: NASA's Ice, Cloud, and Elevation Satellite (ICESat-2) Data Analysis for Land and Vegetation Applications.
 Version: 0.0.1
 Authors@R: c(
     person("Carlos Alberto", "Silva", email = "c.silva@ufl.edu", role = c("aut", "cph", "cre")),
-    person("Caio", "Hamamura", email = "caiohamamura@gmail.com", role = c("aut", "cph")),
-    person("David", "Mount", email = "mount@cs.umd.edu", role = c("cph")),
-    person("Sunil", "Arya", email = "arya@cs.ust.hk", role = c("cph")))
+    person("Caio", "Hamamura", email = "caiohamamura@gmail.com", role = c("aut", "cph")))
 Description: Set of tools for downloading, reading, visualizing, processing and exporting NASA's ICESat-2 ATL03 (Global Geolocated Photon Data) and ATL08 (Land and Vegetation Height) products for Land and Vegetation Applications. 
 License: GPL (>= 3)
 Imports:

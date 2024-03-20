@@ -84,8 +84,6 @@ ATL03_ATL08_photons_attributes_dt_gridStat <- function(atl03_atl08_dt,
 
   if (any(is.na(atl03_atl08_dt))) {
     atl03_atl08_dt2 <- na.omit(atl03_atl08_dt)
-  } else {
-    atl03_atl08_dt2 <- atl03_atl08_dt
   }
 
   atl03_atl08_dt2 <- atl03_atl08_dt2[
@@ -107,7 +105,8 @@ ATL03_ATL08_photons_attributes_dt_gridStat <- function(atl03_atl08_dt,
   call <- substitute(func)
 
   vect <- terra::vect(
-    atl03_atl08_dt2,
+    data.table(lon_ph=atl03_atl08_dt$lon_ph,
+               lat_ph=atl03_atl08_dt$lat_ph),
     geom = c("lon_ph", "lat_ph"),
     crs = "epsg:4326"
   )
