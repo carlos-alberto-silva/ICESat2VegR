@@ -37,46 +37,40 @@ ATL08_photon.var.map[["delta_time"]] <- "delta_time"
 #' @examples
 #'
 #' # Specifying the path to ATL08 file (zip file)
-#' outdir <- tempdir()
-#' atl08_zip <- system.file("extdata",
-#'   "ATL08_20220401221822_01501506_005_01.zip",
+#' atl08_path <- system.file("extdata",
+#'   "atl08_clip.h5",
 #'   package = "ICESat2VegR"
 #' )
 #'
-#' # Unzipping ATL08 file
-#' atl08_path <- unzip(atl08_zip, exdir = outdir)
-#'
 #' # Reading ATL08 data (h5 file)
-# atl08_h5<-ATL08_read(ATL08_path=atl08_path)
+#' atl08_h5 <- ATL08_read(atl08_path)
 #'
 #' # Extracting ATL08 classified photons and heights
 #' atl08_photons <- ATL08_photons_attributes_dt(atl08_h5 = atl08_h5)
-#' head(atl08_photons)
 #'
+#' head(atl08_photons)
 #' close(atl08_h5)
 #' @export
-ATL08_photons_attributes_dt <- function(atl08_h5,
-                                        beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
-                                        photon_attribute = c("ph_segment_id", "classed_pc_indx", "classed_pc_flag", "ph_h", "d_flag", "delta_time")) {
+ATL08_photons_attributes_dt <- function(
+    atl08_h5,
+    beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
+    photon_attribute = c("ph_segment_id", "classed_pc_indx", "classed_pc_flag", "ph_h", "d_flag", "delta_time")) {
   # Check file input
   if (!inherits(atl08_h5, "icesat2.atl08_h5")) {
     stop("atl08_h5 must be an object of class 'icesat2.atl08_h5' - output of [ATL08_read()] function ")
   }
 
-
   # Check beams to select
   groups_id <- atl08_h5$beams
-
 
   beam <- intersect(groups_id, beam)
   photon.dt <- list()
 
   pb <- utils::txtProgressBar(min = 0, max = length(beam), style = 3)
-
   i_s <- 0
 
   if (length(photon_attribute) > 1) {
-    # i = beam[1]
+    # i = beam[2]
     for (i in beam) {
       i_s <- i_s + 1
 
@@ -85,7 +79,7 @@ ATL08_photons_attributes_dt <- function(atl08_h5,
       m <- data.table::data.table()
 
       for (col in photon_attribute) {
-        #col = photon_attribute[1]
+        # col = photon_attribute[1]
         metric_address <- ATL08_photon.var.map[[col]]
 
         if (is.null(metric_address)) {
@@ -111,11 +105,12 @@ ATL08_photons_attributes_dt <- function(atl08_h5,
         m$beam <- i
       }
 
-      photon_dt <- data.table::rbindlist(list(photon.dt, m), fill = TRUE)
+      photon.dt[[""]] <- m
       utils::setTxtProgressBar(pb, i_s)
     }
   }
 
+  photon_dt <- data.table::rbindlist(photon.dt, fill = TRUE)
   prepend_class(photon_dt, "icesat2.atl08_dt")
 
   close(pb)

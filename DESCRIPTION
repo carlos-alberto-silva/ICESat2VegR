@@ -45,6 +45,7 @@ Collate:
     'ATL03_ATL08_seg_cover_dt_compute.R'
     'ATL03_ATL08_segment_create.R'
     'clipTools.R'
+    'class-ICESat2.h5.R'
     'class_tools.R'
     'class.icesat2.h5ds_cloud.R'
     'class.icesat2.h5_cloud.R'

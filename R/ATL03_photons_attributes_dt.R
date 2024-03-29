@@ -34,23 +34,19 @@
 #' @examples
 #'
 #' # Specifying the path to ATL03 file (zip file)
-#' outdir <- tempdir()
-#' atl03_zip <- system.file("extdata",
-#'   "ATL03_20220401221822_01501506_005_01.zip",
+#' atl03_path <- system.file("extdata",
+#'   "atl03_clip.h5",
 #'   package = "ICESat2VegR"
 #' )
 #'
-#' # Unzipping ATL03 file
-#' atl03_path <- unzip(atl03_zip, exdir = outdir)
-#'
 #' # Reading ATL03 data (h5 file)
-# atl03_h5<-ATL03_read(atl03_path=atl03_path)
+#' atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 #'
 #' # Extracting ATL03 photons attributes
 #' atl03_photons_dt <- ATL03_photons_attributes_dt(atl03_h5 = atl03_h5)
-#' head(ATL03_photons_dt)
 #'
-#' close(ATL03_h5)
+#' head(atl03_photons_dt)
+#' close(atl03_h5)
 #' @export
 ATL03_photons_attributes_dt <- function(atl03_h5,
                                         beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")) {
@@ -60,10 +56,7 @@ ATL03_photons_attributes_dt <- function(atl03_h5,
   }
 
   # Check beams to select
-  groups_id <- atl03_h5$beams
-
-  check_beams <- groups_id %in% beam
-  beam <- groups_id[check_beams]
+  beam <- intersect(beam, atl03_h5$beams)
 
   photon.dt <- data.table::data.table()
 
@@ -74,6 +67,10 @@ ATL03_photons_attributes_dt <- function(atl03_h5,
   for (i in beam) {
     i_s <- i_s + 1
     message(i)
+
+    if (!atl03_h5$exists(paste0(i, "/geolocation/segment_length"))) {
+      next
+    }
     n_segments <- atl03_h5[[paste0(i, "/geolocation/segment_length")]]$dims
     if (n_segments == 0) {
       next

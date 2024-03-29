@@ -216,32 +216,19 @@ h5closeall <- function(con, ...) {
 }
 
 
-#' Safely closes the [`ICESat2VegR::icesat2.atl03_h5-class`]
-#' Safely closes the [`ICESat2VegR::icesat2.atl03_h5-class`]
+#' Safely closes the ICESat2.h5 base classes
 #'
 #' @description
 #' Closing files will avoid locking HDF5 ATL03 files.
 #'
-#' @param con An object of class `icesat2.atl03_h5`
+#' @param con An object of class `ICESat2.h5`
 #' @param ... Inherited from base
 #'
+#' @rdname close
+#' @include class-ICESat2.h5.R
 #' @export
-#' @rdname close
-#' @method close icesat2.atl03_h5
-setMethod("close", signature = c("ICESat2.h5"), h5closeall)
+setMethod("close", signature = c("icesat2.h5"), h5closeall)
 
-
-#' Safely closes the [`ICESat2VegR::icesat2.atl08_h5-class`]
-#' Safely closes the [`ICESat2VegR::icesat2.atl08_h5-class`]
-#'
-#' @description
-#' Closing files will avoid locking HDF5 ATL08 files.
-#'
-#' @param con An object of class `icesat2.atl08_h5`
-#' @param ... Inherited from base
-#' @method close icesat2.atl08_h5
-#' @rdname close
-setMethod("close", signature = c("icesat2.atl08_h5"), h5closeall)
 
 
 #' Plot photons from ATL03 and ATL08 joined products

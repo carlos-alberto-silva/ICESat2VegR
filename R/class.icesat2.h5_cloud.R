@@ -1,4 +1,4 @@
-#' @include class.icesat2.h5ds_cloud.R
+#' @include class.icesat2.h5ds_cloud.R class-ICESat2.h5.R
 #' @import R6 reticulate
 #' @export
 ICESat2.h5_cloud <- R6::R6Class("ICESat2.h5_cloud", list(

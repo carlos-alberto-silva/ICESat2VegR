@@ -2,7 +2,7 @@
 % Please edit documentation in R/ICESat2_dataFinder.R
 \name{ICESat2_dataFinder}
 \alias{ICESat2_dataFinder}
-\title{ICESat-2 ATL03 and ATL08 data finder for either direct downloa or cloud computing}
+\title{ICESat-2 ATL03 and ATL08 data finder for either direct download or cloud computing}
 \usage{
 ICESat2_dataFinder(
   short_name,
@@ -50,39 +50,37 @@ it will return links to be passed in the function \link{ICESat2_dataDownload} fo
 }
 \value{
 Return either a vector object pointing out the path to
-ICESat-2 ATLAS data found within the boundary box coordinates provided for data download or a vector object containing
-the granules hosted on the cloud for cloud computing directly.
+ICESat-2 ATLAS data found within the boundary box coordinates provided for data download or a vector
+object containing the granules hosted on the cloud for cloud computing directly.
 }
 \description{
 This function finds the exact granule(s) that contain ICESat-2 ATLAS data
 for a given region of interest and date range
 }
 \examples{
-\donttest{
 # ICESat-2 data finder is a web service provided by NASA
 # usually the request takes more than 5 seconds
 
 # Specifying bounding box coordinates
 lower_left_lon <- -96.0
 lower_left_lat <- 40.0
-upper_right_lon <- -100
-upper_right_lat <- 42.0
+upper_right_lon <- -96.5
+upper_right_lat <- 40.5
 
 # Specifying the date range
-daterange <- c("2019-07-01", "2020-05-22")
+daterange <- c("2022-05-01", "2022-05-02")
 
 # Extracting the path to ICESat-2 ATLAS data for the specified boundary box coordinates
-for data download
-ICESat-2 ATLAS02b_list <- ICESat2_dataFinder(
+# for data download
+ATLAS02b_list <- ICESat2_dataFinder(
   short_name = "ATL08",
-  ul_lat,
-  ul_lon,
-  lr_lat,
-  lr_lon,
+  lower_left_lon,
+  lower_left_lat,
+  upper_right_lon,
+  upper_right_lat,
   version = "006",
   daterange = daterange
 )
-}
 }
 \seealso{
 bbox: Defined by the upper left and lower right corner coordinates,

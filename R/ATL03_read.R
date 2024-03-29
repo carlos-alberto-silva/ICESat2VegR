@@ -12,19 +12,13 @@
 #' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
 #'
 #' @examples
-#' # Specifying the path to ICESat-2 ATL03 data (zip file)
-#' outdir <- tempdir()
-#' ATL03_fp_zip <- system.file("extdata",
-#'   "ATL0302_A_2019108080338_O01964_T05337_02_001_01_sub.zip",
+#' atl03_path <- system.file("extdata",
+#'   "atl03_clip.h5",
 #'   package = "ICESat2VegR"
 #' )
-#'
-#' # Unzipping ICESat-2 ATL03 data
-#' atl03_path <- unzip(ATL03_fp_zip, exdir = outdir)
-#'
+#' 
 #' # Reading ICESat-2 ATL03 data (h5 file)
 #' ATL03 <- ATL03_read(atl03_path = atl03_path)
-#'
 #' close(ATL03)
 #' @import hdf5r
 #' @export

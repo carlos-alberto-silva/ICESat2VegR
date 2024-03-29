@@ -1,4 +1,4 @@
-#' @include class.icesat2.h5ds_local.R
+#' @include class.icesat2.h5ds_local.R class-ICESat2.h5.R
 #' @import R6 reticulate hdf5r
 #' @export
 ICESat2.h5_local <- R6::R6Class("ICESat2.h5_local", list(
