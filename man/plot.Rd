@@ -9,10 +9,8 @@
 \S4method{plot}{icesat2.atl03atl08_dt,character}(
   x,
   y = "h_ph",
-  beam = "gt1l",
-  colors = c("gray", "#bd8421", "forestgreen", "green"),
-  xlim = NULL,
-  ylim = NULL,
+  beam = NULL,
+  colors = c("gray", "goldenrod", "forestgreen", "green"),
   ...
 )
 

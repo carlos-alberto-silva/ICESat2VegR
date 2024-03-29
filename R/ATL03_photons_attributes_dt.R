@@ -75,29 +75,32 @@ ATL03_photons_attributes_dt <- function(atl03_h5,
     i_s <- i_s + 1
     message(i)
     n_segments <- atl03_h5[[paste0(i, "/geolocation/segment_length")]]$dims
+    if (n_segments == 0) {
+      next
+    }
     segment_ph_cnt <- atl03_h5[[paste0(i, "/geolocation/segment_ph_cnt")]][]
     segment_length <- c(0, cumsum(atl03_h5[[paste0(i, "/geolocation/segment_length")]][1:(n_segments - 1)]))
     segment_lengths <- rep(segment_length, segment_ph_cnt)
 
-    if ("solar_elevation"  %in% atl03_h5[[paste0(i, "/geolocation/")]]$dt_datasets()$name){
+    if ("solar_elevation" %in% atl03_h5[[paste0(i, "/geolocation/")]]$dt_datasets()$name) {
       segment_solar_elevation <- atl03_h5[[paste0(i, "/geolocation/solar_elevation")]][]
     } else {
-      segment_solar_elevation<-rep(NA,n_segments)
+      segment_solar_elevation <- rep(NA, n_segments)
     }
     ph_solar_elev <- rep(segment_solar_elevation, segment_ph_cnt)
 
 
-    if ( "quality_ph" %in% atl03_h5[[paste0(i,"/heights/")]]$dt_datasets()$name){
+    if ("quality_ph" %in% atl03_h5[[paste0(i, "/heights/")]]$dt_datasets()$name) {
       quality_ph <- atl03_h5[[paste0(i, "/heights/quality_ph")]][]
-     } else {
-      quality_ph <-rep(NA,length(atl03_h5[[paste0(i, "/heights/lon_ph")]][]))
-     }
-
-
-    if ("dist_ph_along" %in%  atl03_h5[[paste0(i,"/heights/")]]$dt_datasets()$name){
-      dist_ph_along <- atl03_h5[[paste0(i, "/heights/dist_ph_along")]][]+ segment_lengths
     } else {
-      dist_ph_along <-rep(NA,length(atl03_h5[[paste0(i, "/heights/lon_ph")]][] + segment_lengths))
+      quality_ph <- rep(NA, length(atl03_h5[[paste0(i, "/heights/lon_ph")]][]))
+    }
+
+
+    if ("dist_ph_along" %in% atl03_h5[[paste0(i, "/heights/")]]$dt_datasets()$name) {
+      dist_ph_along <- atl03_h5[[paste0(i, "/heights/dist_ph_along")]][] + segment_lengths
+    } else {
+      dist_ph_along <- rep(NA, length(atl03_h5[[paste0(i, "/heights/lon_ph")]][] + segment_lengths))
     }
 
 

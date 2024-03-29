@@ -109,7 +109,13 @@ ATL03_rgt_extract <- function(atl03_h5, output, beam = c("gt1r", "gt2r", "gt1l",
 
     tail[n_mask] <- center[n_mask] + ((center[n_mask] - head[n_mask]) * dist_tail[n_mask] / dist_head[n_mask])
 
-    pts <- data.table::rbindlist(list(head[, list(object = .I, .SD)], tail[, list(object = .I, .SD)]))
+    pts <- data.table::rbindlist(
+      list(
+        head[, list(object = .I, .SD)],
+        tail[, list(object = .I, .SD)]
+      ),
+      fill = TRUE
+    )
     pts <- pts[order(object), list(
       object,
       x = .SD.lon,
@@ -127,8 +133,8 @@ ATL03_rgt_extract <- function(atl03_h5, output, beam = c("gt1r", "gt2r", "gt1l",
     utils::setTxtProgressBar(pb, i_s)
   }
 
-  all_pts2 <- data.table::rbindlist(all_pts)
-  all_attr2 <- data.table::rbindlist(all_attr)
+  all_pts2 <- data.table::rbindlist(all_pts, fill = TRUE)
+  all_attr2 <- data.table::rbindlist(all_attr, fill = TRUE)
 
   v <- terra::vect(
     as.matrix(all_pts2),

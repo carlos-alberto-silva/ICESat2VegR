@@ -203,8 +203,13 @@ ATL08_seg_attributes_dt <- function(atl08_h5,
     for (i in beam) {
       i_s <- i_s + 1
       utils::setTxtProgressBar(pb, i_s)
-      lat_i <- atl08_h5[[paste0(i, "/land_segments/latitude")]][]
-      lon_i <- atl08_h5[[paste0(i, "/land_segments/longitude")]][]
+      atl08_h5_beam <- atl08_h5[[i]]
+
+      if (!atl08_h5_beam$exists("land_segments/latitude")) {
+        next
+      }
+      lat_i <- atl08_h5_beam[["land_segments/latitude"]][]
+      lon_i <- atl08_h5_beam[["land_segments/longitude"]][]
 
       m <- data.table::data.table(latitude = lat_i, longitude = lon_i, beam = i)
 

@@ -110,48 +110,50 @@ ATL03.seg.map[["yaw"]] <- "/geolocation/yaw"
 #' close(ATL03_h5)
 #' @export
 ATL03_seg_attributes_dt <- function(atl03_h5,
-                                        beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
-                                        attributes = c(
-                                          "altitude_sc",
-                                          "bounce_time_offset",
-                                          "delta_time",
-                                          "full_sat_fract",
-                                          "near_sat_fract",
-                                          "neutat_delay_derivative",
-                                          "neutat_delay_total",
-                                          "neutat_ht",
-                                          "ph_index_beg",
-                                          "pitch",
-                                          "podppd_flag",
-                                          "range_bias_corr",
-                                          "ref_azimuth",
-                                          "ref_elev",
-                                          "reference_photon_index",
-                                          "reference_photon_lat",
-                                          "reference_photon_lon",
-                                          "roll",
-                                          "segment_dist_x",
-                                          "segment_id",
-                                          "segment_length",
-                                          "segment_ph_cnt",
-                                          "sigma_across",
-                                          "sigma_along",
-                                          "sigma_h",
-                                          "sigma_lat",
-                                          "sigma_lon",
-                                          "solar_azimuth",
-                                          "solar_elevation",
-                                          "surf_type",
-                                          "tx_pulse_energy",
-                                          "tx_pulse_skew_est",
-                                          "tx_pulse_width_lower",
-                                          "tx_pulse_width_upper",
-                                          "yaw"
-                                        )) {
+                                    beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
+                                    attributes = c(
+                                      "altitude_sc",
+                                      "bounce_time_offset",
+                                      "delta_time",
+                                      "full_sat_fract",
+                                      "near_sat_fract",
+                                      "neutat_delay_derivative",
+                                      "neutat_delay_total",
+                                      "neutat_ht",
+                                      "ph_index_beg",
+                                      "pitch",
+                                      "podppd_flag",
+                                      "range_bias_corr",
+                                      "ref_azimuth",
+                                      "ref_elev",
+                                      "reference_photon_index",
+                                      "reference_photon_lat",
+                                      "reference_photon_lon",
+                                      "roll",
+                                      "segment_dist_x",
+                                      "segment_id",
+                                      "segment_length",
+                                      "segment_ph_cnt",
+                                      "sigma_across",
+                                      "sigma_along",
+                                      "sigma_h",
+                                      "sigma_lat",
+                                      "sigma_lon",
+                                      "solar_azimuth",
+                                      "solar_elevation",
+                                      "surf_type",
+                                      "tx_pulse_energy",
+                                      "tx_pulse_skew_est",
+                                      "tx_pulse_width_lower",
+                                      "tx_pulse_width_upper",
+                                      "yaw"
+                                    )) {
   # Check file input
   if (!inherits(atl03_h5, "icesat2.atl03_h5")) {
     stop("atl03_h5 must be an object of class 'icesat2.atl03_h5' - output of [ATL03_read()] function ")
   }
+
+  `:=` <- data.table::`:=`
 
   # Check beams to select
   groups_id <- atl03_h5$beams
@@ -166,22 +168,25 @@ ATL03_seg_attributes_dt <- function(atl03_h5,
   i_s <- 0
 
   mask_surf_type <- attributes == "surf_type"
-  has_surf_type = any(mask_surf_type)
-  attributes <- attributes[! mask_surf_type]
+  has_surf_type <- any(mask_surf_type)
+  attributes <- attributes[!mask_surf_type]
   for (i in beam) {
     i_s <- i_s + 1
 
-    
+
     dt <- data.table::data.table(sapply(attributes, function(x) {
-      dataset_name <- sprintf('%s/%s', i, ATL03.seg.map[[x]])
+      dataset_name <- sprintf("%s/%s", i, ATL03.seg.map[[x]])
       atl03_h5[[dataset_name]][]
     }))
-    
+    dt[, beam := i]
+
     seg.dt[[i_s]] <- dt
     utils::setTxtProgressBar(pb, i_s)
   }
 
-  seg.dt <- data.table::rbindlist(seg.dt)
+  seg.dt <- data.table::rbindlist(seg.dt, fill = TRUE)
+  seg.dt <- na.omit(seg.dt)
+  seg.dt[, V1 := NULL]
   prepend_class(seg.dt, "icesat2.atl03_seg_dt")
 
 
