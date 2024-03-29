@@ -42,13 +42,17 @@ atl03_path <- unzip(atl03_zip, exdir = outdir)
 atl03_photons_dt <- ATL03_photons_attributes_dt(atl03_h5 = atl03_h5)
 
 # Bounding rectangle coordinates
-xmin <- -107.7
-xmax <- -106.5
-ymin <- 32.75
-ymax <- 42.75
+lower_left_lon=-107.7
+lower_left_lat=42.75
+upper_right_lon=-106.5
+upper_right_lat=32.75
 
-# Clipping ATL03 photons  by boundary box extent
-atl03_photons_dt_clip <- ATL03_photons_attributes_dt_clipBox(atl03_photons_dt, xmin, xmax, ymin, ymax)
+# Clipping ATL08-derived canopy metrics by boundary box extent
+atl03_photons_dt_clip <- ATL03_photons_attributes_dt_clipBox(atl03_photons_dt,
+                                                               lower_left_lon,
+                                                               upper_right_lon,
+                                                               upper_right_lat,
+                                                               lower_left_lat)
 
 close(atl03_h5)
 }

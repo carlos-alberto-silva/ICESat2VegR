@@ -10,13 +10,12 @@ ATL03_photons_attributes_dt_clipGeometry(atl03_photons_dt, xmin, xmax, ymin, yma
 \item{atl03_photons_dt}{A atl03_photons_dt object (output of \code{\link[=atl03_photons_attributes_dt]{atl03_photons_attributes_dt()}} function).
 An S4 object of class \link{icesat2.atl03_dt}}
 
-\item{xmin}{Numeric. West longitude (x) coordinate of bounding rectangle, in decimal degrees.}
+\item{sppoly}{Spatial Polygon. An object of class \code{\link[terra:SpatVector-class]{terra::SpatVector}},
+which can be loaded as an ESRI shapefile using \link[terra:vect]{terra::vect} function in the
+\emph{sf} package.}
 
-\item{xmax}{Numeric. East longitude (x) coordinate of bounding rectangle, in decimal degrees.}
-
-\item{ymin}{Numeric. South latitude (y) coordinate of bounding rectangle, in decimal degrees.}
-
-\item{ymax}{Numeric. North latitude (y) coordinate of bounding rectangle, in decimal degrees.}
+\item{split_by}{Polygon id. If defined, GEDI data will be clipped by each polygon using
+the polygon id from table of attribute defined by the user}
 }
 \value{
 Returns an S4 object of class \link{icesat2.atl03_dt}
@@ -44,10 +43,10 @@ atl03_photons_dt<-ATL03_photons_attributes_dt(atl03_h5=atl03_h5)
 polygon_filepath <- system.file("extdata", "polygon.shp", package = "ICESat2VegR")
 
 # Reading shapefile as sf object
-polygon <- terra::vect(polygon_filepath)
+sppoly <- terra::vect(polygon_filepath)
 
 # Clipping ATL03 photons attributes by Geometry
-atl03_photons_dt_clip <- ATL03_photons_attributes_dt_clipGeometry(atl03_photons_dt, polygon, split_by = "FID")
+atl03_photons_dt_clip <- ATL03_photons_attributes_dt_clipGeometry(atl03_photons_dt, sppoly, split_by = "FID")
 head(atl03_photons_dt_clip)
 
 close(atl03_h5)

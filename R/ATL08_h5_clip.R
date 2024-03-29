@@ -58,7 +58,7 @@ ATL08_h5_clip <- function(atl08, output, clip_obj, landSegmentsMask_fn) {
 
     # Create mask for photons
     photonsMask <- unlist(
-      Vectorize(seq.default, vectorize.args = c("from", "to"))(from = ph_ndx_beg, to = ph_ndx_beg + n_seg_ph)
+      Vectorize(seq.default, vectorize.args = c("from", "to"))(from = ph_ndx_beg, to = ph_ndx_beg + n_seg_ph - 1)
     )
 
     # Get sizes of clipping datasets
@@ -84,7 +84,11 @@ ATL08_h5_clip <- function(atl08, output, clip_obj, landSegmentsMask_fn) {
     pb <- utils::txtProgressBar(min = 0, max = qty, style = 3)
 
     # Do clipping and copying
-
+    if (length(landSegmentsMask) == 0) {
+      utils::setTxtProgressBar(pb, qty)
+      close(pb)
+      next
+    }
 
     clipByMask(beam, updateBeam, segmentsCut, landSegmentsMask, pb)
     clipByMask2D(beam, updateBeam, segmentsCut2D, landSegmentsMask, pb)

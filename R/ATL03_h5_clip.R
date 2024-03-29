@@ -119,14 +119,24 @@ ATL03_h5_clip <- function(atl03, output, clipObj, mask_fn) {
     pb <- utils::txtProgressBar(min = 0, max = qty, style = 3)
 
     # Do clipping and copying
-
-    clipByMask(beam, updateBeam, segmentsCut, segmentsMask, pb)
-    clipByMask2D(beam, updateBeam, segmentsCut2D, segmentsMask, pb)
+    if (length(segmentsMask) == 0) {
+      utils::setTxtProgressBar(pb, qty)
+      close(pb)
+      next
+    }
     clipByMask(beam, updateBeam, photonsCut, photonsMask, pb)
     clipByMask2D(beam, updateBeam, photonsCut2D, photonsMask, pb)
+    clipByMask(beam, updateBeam, segmentsCut, segmentsMask, pb)
+    clipByMask2D(beam, updateBeam, segmentsCut2D, segmentsMask, pb)
 
     photons_per_segment <- beam[["geolocation/segment_ph_cnt"]][segmentsMask]
-    copyDataset(beam, updateBeam, "geolocation/ph_index_beg", cumsum(photons_per_segment), pb)
+    copyDataset(
+      beam,
+      updateBeam,
+      "geolocation/ph_index_beg",
+      c(1, cumsum(photons_per_segment)[-length(photons_per_segment)]),
+      pb
+    )
 
     for (dataset in nonCuts) {
       copyDataset(beam, updateBeam, dataset, beam[[dataset]][], pb)
@@ -150,13 +160,13 @@ ATL03_h5_clip <- function(atl03, output, clipObj, mask_fn) {
 #'
 #' @return Returns the clipped S4 object of the same class as input
 #'
-#' @details 
+#' @details
 #' This function clips ATL03 and ATL08 HDF5 file within beam groups,
 #' but keeps metada and ancillary data the same.
-#' 
+#'
 #' The clipping process will keep the entire segments if the reference
 #' photon is within the clip_obj.
-#' 
+#'
 #' This function will dispatch to one of the specifics functions for clipping.
 #'
 #' @seealso
@@ -294,5 +304,3 @@ setMethod(
 ATL03_h5_clipBox <- function(atl03, output, bbox) {
   ATL03_h5_clip(atl03, output, bbox, ATL03_segments_mask)
 }
-
-

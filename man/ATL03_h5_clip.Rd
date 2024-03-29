@@ -4,17 +4,17 @@
 \alias{ATL03_h5_clip}
 \title{Clips ICESat-2 ATL03 H5 data}
 \usage{
-ATL03_h5_clip(atl03, output, bbox, mask_fn)
+ATL03_h5_clip(atl03, output, clipObj, mask_fn)
 }
 \arguments{
 \item{output}{character. Path to the output h5 file.}
 
+\item{x}{\code{\linkS4class{icesat2.atl03_h5}} object,
+obtained through \code{\link[=ATL03_read]{ATL03_read()}} for clipping}
+
 \item{bbox}{\code{\linkS4class{numeric}} or \code{\link[terra:SpatExtent-class]{terra::SpatExtent}} for clipping, the
 order of the bbox is the default from NASA's ICESat-2 CMS searching:
 \link{ul_lat, ul_lon, lr_lat, lr_lon}.}
-
-\item{x}{\code{\linkS4class{icesat2.atl03_h5}} object,
-obtained through \code{\link[=ATL03_read]{ATL03_read()}} for clipping}
 }
 \value{
 Returns the clipped S4 object of class \code{\linkS4class{icesat2.atl03_h5}}

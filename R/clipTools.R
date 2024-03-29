@@ -3,9 +3,11 @@ clipByMask <- function(beam, updateBeam, datasets, mask, pb) {
 
   for (dataset in datasets) {
     h5_pl <- beam[[dataset]]$get_creation_property_list()
+    robj <- beam[[dataset]][mask]
+
     updateBeam$create_dataset(
       name = dataset,
-      robj = beam[[dataset]][mask],
+      robj = robj,
       dims = c(maskSize),
       dtype = beam[[dataset]]$get_type(),
       dataset_create_pl = h5_pl,
@@ -19,9 +21,10 @@ clipByMask2D <- function(beam, updateBeam, datasets, mask, pb) {
   maskSize <- length(mask)
   for (dataset in datasets) {
     h5_pl <- beam[[dataset]]$get_creation_property_list()
+    robj <- beam[[dataset]][, mask]
     updateBeam$create_dataset(
       name = dataset,
-      robj = beam[[dataset]][, mask],
+      robj = robj,
       dims = c(beam[[dataset]]$dims[1], maskSize),
       dtype = beam[[dataset]]$get_type(),
       dataset_create_pl = h5_pl,
@@ -45,24 +48,6 @@ copyDataset <- function(beam, updateBeam, dataset, data, pb) {
 
   utils::setTxtProgressBar(pb, utils::getTxtProgressBar(pb) + exp(sum(log(beam[[dataset]]$dims))))
 }
-
-clipByMask2D <- function(beam, updateBeam, datasets, mask, pb) {
-  maskSize <- length(mask)
-  for (dataset in datasets) {
-    h5_pl <- beam[[dataset]]$get_creation_property_list()
-    updateBeam$create_dataset(
-      name = dataset,
-      robj = beam[[dataset]][, mask],
-      dims = c(beam[[dataset]]$dims[1], length(mask)),
-      dtype = beam[[dataset]]$get_type(),
-      dataset_create_pl = h5_pl,
-      chunk_dim = beam[[dataset]]$chunk_dims
-    )
-
-    utils::setTxtProgressBar(pb, utils::getTxtProgressBar(pb) + exp(sum(log(beam[[dataset]]$dims))))
-  }
-}
-
 
 ATL03_photons_mask <- function(beam, bbox) {
   x <- y <- 0
@@ -142,12 +127,25 @@ ATL03_photons_mask_geometry <- function(beam, geom) {
   return(res$row)
 }
 
-seq_lens <- Vectorize(function(from, length.out) {seq.int(from, length.out = length.out)}, vectorize.args = c("from", "length.out"), SIMPLIFY = TRUE)
-seq_lens_simplify <- function(from, length.out) {
-  unlist(seq_lens(from, length.out))
+
+seq_lens_simplify <- Rcpp::cppFunction("
+IntegerVector seq_lens_simplify(IntegerVector from, IntegerVector length_out) {
+  IntegerVector output(sum(length_out));
+  int pos = 0;
+  for (int ii = 0; ii < from.length(); ii++) {
+    for (int jj: Rcpp::seq(from[ii], from[ii] + length_out[ii] - 1)) {
+      output[pos++] = jj;
+    }
+  }
+  return output;
 }
+")
+
 
 ATL03_photons_segment_mask <- function(beam, segmentsMask) {
+  if (is.null(segmentsMask)) {
+    return(integer(0))
+  }
   seg_indices <- beam[["geolocation/ph_index_beg"]][segmentsMask]
   ph_cnt <- beam[["geolocation/segment_ph_cnt"]][segmentsMask]
   photons_mask <- seq_lens_simplify(seg_indices, ph_cnt)

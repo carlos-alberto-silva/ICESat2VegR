@@ -2,10 +2,8 @@
 % Please edit documentation in R/ATL03_h5_clip.R, R/clip.R
 \name{clip}
 \alias{clip}
-\title{Clips ICESat-2 ATL03 and ATL08 H5 data}
+\title{Generic function for clipping ICESat-2 ATL03 and ATL08 H5 data}
 \usage{
-clip(x, output, clip_obj, ...)
-
 clip(x, output, clip_obj, ...)
 
 clip(x, output, clip_obj, ...)
@@ -17,80 +15,30 @@ obtained through \code{\link[=ATL03_read]{ATL03_read()}} or \code{\link[=ATL08_r
 \item{output}{character. Path to the output h5 file.}
 
 \item{clip_obj}{\code{\linkS4class{numeric}}, \code{\link[terra:SpatExtent-class]{terra::SpatExtent}} or \code{\link[terra:SpatVector-class]{terra::SpatVector}}
-object for clipping. The bbox order is the default from NASA's ICESat-2 CMS searching:
+object for clipping. The bbox order is the default from NASA's ICESat-2 data searching:
 \link{ul_lat, ul_lon, lr_lat, lr_lon}.}
 
-\item{bbox}{\code{\linkS4class{numeric}} or \code{\link[terra:SpatExtent-class]{terra::SpatExtent}} for clipping, the
-order of the bbox is the default from NASA's ICESat-2 CMS searching:
-\link{ul_lat, ul_lon, lr_lat, lr_lon}.}
+\item{...}{For making it compatible with passing ul_lat, ul_lon, lr_lat, lr_lon.}
 }
 \value{
-Returns the clipped S4 object of class \code{\linkS4class{icesat2.atl03_h5}}
-
 Returns the clipped S4 object of the same class as input
 
-Returns the clipped S4 object of the same class as input
+Returns the clipped S4 object of the same class as the input file
 }
 \description{
 This function clips ATL03 and ATL08 HDF5 file within beam groups,
 but keeps metada and ancillary data the same.
-
+}
+\details{
 This function clips ATL03 and ATL08 HDF5 file within beam groups,
 but keeps metada and ancillary data the same.
-This function will dispatch to one of the specifics functions for clipping.
 
-This function clips ATL03 and ATL08 HDF5 file within beam groups,
-but keeps metada and ancillary data the same.
+The clipping process will keep the entire segments if the reference
+photon is within the clip_obj.
+
 This function will dispatch to one of the specifics functions for clipping.
 }
 \examples{
-# Specifying the path to ATL03 file (zip file)
-outdir <- tempdir()
-atl03_zip <- system.file("extdata",
-  "atl03_20220401221822_01501506_005_01.zip",
-  package = "rICESat2Veg"
-)
-
-# Unzipping ATL03 file
-atl03_path <- unzip(atl03_zip, exdir = outdir)
-
-# Reading ATL03 data (h5 file)
-atl03_h5 <- atl03_read(atl03_path = atl03_path)
-
-
-# Bounding rectangle coordinates
-xmin <- -107.7
-xmax <- -106.5
-ymin <- 32.75
-ymax <- 42.75
-
-# Clipping ATL03 photons  by boundary box extent
-atl03_photons_dt_clip <- clip(atl03_h5, outdir, xmin, xmax, ymin, ymax)
-
-close(atl03_h5)
-
-#' outdir <- tempdir()
-atl08_zip <- system.file("extdata",
-  "ATL08_20220401221822_01501506_005_01.zip",
-  package = "rICESat2Veg"
-)
-
-# Unzipping ATL08 file
-atl08_path <- unzip(atl08_zip, exdir = outdir)
-
-# Reading ATL08 data (h5 file)
-atl08_h5 <- ATL08_read(atl08_path = atl08_path)
-
-# Bounding rectangle coordinates
-xmin <- -107.7
-xmax <- -106.5
-ymin <- 32.75
-ymax <- 42.75
-
-# Clipping ATL08 terrain and canopy attributes by boundary box
-atl08_seg_att_dt_clip <- clip(atl08_h5, outdir, xmin, xmax, ymin, ymax)
-
-close(atl08_h5)
 # Specifying the path to ATL03 file (zip file)
 outdir <- tempdir()
 atl03_zip <- system.file("extdata",
