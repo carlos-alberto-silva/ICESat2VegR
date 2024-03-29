@@ -34,21 +34,18 @@ creation of the	data products.
 \examples{
 
 # Specifying the path to ATL08 file (zip file)
-outdir <- tempdir()
-atl08_zip <- system.file("extdata",
-  "ATL08_20220401221822_01501506_005_01.zip",
+atl08_path <- system.file("extdata",
+  "atl08_clip.h5",
   package = "ICESat2VegR"
 )
 
-# Unzipping ATL08 file
-atl08_path <- unzip(atl08_zip, exdir = outdir)
-
 # Reading ATL08 data (h5 file)
+atl08_h5 <- ATL08_read(atl08_path)
 
 # Extracting ATL08 classified photons and heights
 atl08_photons <- ATL08_photons_attributes_dt(atl08_h5 = atl08_h5)
-head(atl08_photons)
 
+head(atl08_photons)
 close(atl08_h5)
 }
 \seealso{

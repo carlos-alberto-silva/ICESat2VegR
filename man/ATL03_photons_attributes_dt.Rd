@@ -42,22 +42,19 @@ conditions: 0=day, 1=night. Night flag is set when solar elevation is below 0.0 
 \examples{
 
 # Specifying the path to ATL03 file (zip file)
-outdir <- tempdir()
-atl03_zip <- system.file("extdata",
-  "ATL03_20220401221822_01501506_005_01.zip",
+atl03_path <- system.file("extdata",
+  "atl03_clip.h5",
   package = "ICESat2VegR"
 )
 
-# Unzipping ATL03 file
-atl03_path <- unzip(atl03_zip, exdir = outdir)
-
 # Reading ATL03 data (h5 file)
+atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 
 # Extracting ATL03 photons attributes
 atl03_photons_dt <- ATL03_photons_attributes_dt(atl03_h5 = atl03_h5)
-head(ATL03_photons_dt)
 
-close(ATL03_h5)
+head(atl03_photons_dt)
+close(atl03_h5)
 }
 \seealso{
 \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
