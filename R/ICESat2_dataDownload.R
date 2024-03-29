@@ -39,11 +39,11 @@
 #' close(netrc_conn)
 #'
 #' #' Downloading ICEsat-2 data
-#' ATLAS_dataDownload(url, outdir)
+#' ICESat2_dataDownload(url, outdir)
 #' }
 #' @import curl
 #' @export
-ATLAS_dataDownload <- function(url, outdir = NULL, overwrite = FALSE, buffer_size = 512, timeout = 10) {
+ICESat2_dataDownload <- function(url, outdir = NULL, overwrite = FALSE, buffer_size = 512, timeout = 10) {
   if (is.null(outdir)) {
     outdir <- tempdir()
   }

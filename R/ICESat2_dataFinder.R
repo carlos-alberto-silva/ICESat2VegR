@@ -1,0 +1,101 @@
+#' @include class.icesat2.R
+PAGE_SIZE <- 2000
+
+#' ICESat-2 ATL03 and ATL08 data finder for either direct download or cloud computing
+#'
+#' @description This function finds the exact granule(s) that contain ICESat-2 ATLAS data
+#' for a given region of interest and date range
+#'
+#' @param short_name ICESat-2 ATLAS data level short_name; Options: "ATL03", "ATL08",
+#' @param lower_left_lon Numeric. Minimum longitude in
+#' (decimal degrees) for the bounding box of the area of interest.
+#' @param lower_left_lat Numeric. Minimum latitude in
+#' (decimal degrees) for the bounding box of the area of interest.
+#' @param upper_right_lon Numeric. Maximum longitude in lon
+#' (decimal degrees) for the bounding box of the area of interest.
+#' @param upper_right_lat Numeric. Maximum latitude in
+#' (decimal degrees) for the bounding box of the area of interest.
+
+#' @param version Character. The version of the ICESat-2 ATLAS product files to be
+#' returned (only V005 or V006). Default "006".
+#' @param daterange Vector. Date range. Specify your start and end dates
+#' using ISO 8601 \[YYYY\]-\[MM\]-\[DD\]T\[hh\]:\[mm\]:\[ss\]Z. Ex.:
+#' c("2019-07-01T00:00:00Z","2020-05-22T23:59:59Z"). If NULL (default),
+#' the date range filter will be not applied.
+#' @param persist Logical. If TRUE, it will create the .netrc
+#' @param cloud_hosted Logical. Flag to indicate use of cloud hosted collections.To be used when the cloud computing
+#' parameter is FALSE.
+#' @param cloud_computing Logical. If TRUE, it will return granules for cloud computing directly, otherwise
+#' it will return links to be passed in the function [ICESat2VegR::ICESat2_dataDownload] for data download.
+#'
+#' @return Return either a vector object pointing out the path to
+#' ICESat-2 ATLAS data found within the boundary box coordinates provided for data download or a vector 
+#' object containing the granules hosted on the cloud for cloud computing directly.
+#'
+#' @seealso bbox: Defined by the upper left and lower right corner coordinates,
+#' in lat,lon ordering, for the bounding box of the area of interest
+#' (e.g. lower_left_lon,lower_left_lat,upper_right_lon,upper_right_lat)
+#'
+#' This function relies on the existing CMR tool:
+#' \url{https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html}
+#'
+#' @examples
+#' # ICESat-2 data finder is a web service provided by NASA
+#' # usually the request takes more than 5 seconds
+#'
+#' # Specifying bounding box coordinates
+#' lower_left_lon <- -96.0
+#' lower_left_lat <- 40.0
+#' upper_right_lon <- -96.5
+#' upper_right_lat <- 40.5
+#'
+#' # Specifying the date range
+#' daterange <- c("2022-05-01", "2022-05-02")
+#'
+#' # Extracting the path to ICESat-2 ATLAS data for the specified boundary box coordinates
+#' # for data download
+#' ATLAS02b_list <- ICESat2_dataFinder(
+#'   short_name = "ATL08",
+#'   lower_left_lon,
+#'   lower_left_lat,
+#'   upper_right_lon,
+#'   upper_right_lat,
+#'   version = "006",
+#'   daterange = daterange
+#' )
+#' @import jsonlite curl magrittr reticulate
+#' @export
+ICESat2_dataFinder <- function(short_name,
+                               lower_left_lon,
+                               lower_left_lat,
+                               upper_right_lon,
+                               upper_right_lat,
+                               version = "006",
+                               daterange = NULL,
+                               persist = TRUE,
+                               cloud_hosted = TRUE,
+                               cloud_computing = FALSE) {
+  if (cloud_computing == TRUE) {
+    ICESat2_dataFinder_cloud(
+      short_name,
+      lower_left_lon,
+      lower_left_lat,
+      upper_right_lon,
+      upper_right_lat,
+      version,
+      daterange,
+      persist
+    )
+  } else {
+    ICESat2_dataFinder_direct(
+      short_name,
+      lower_left_lon,
+      lower_left_lat,
+      upper_right_lon,
+      upper_right_lat,
+      version,
+      daterange,
+      cloud_hosted
+    )
+  }
+}
