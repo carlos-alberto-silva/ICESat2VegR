@@ -51,7 +51,14 @@ ICESat2.h5_local <- R6::R6Class("ICESat2.h5_local", list(
   close_all = function() {
     if (self$isOpen) {
       self$isOpen <- FALSE
-      self$h5$close_all()
+      try(
+        {
+          self$h5$close_all()
+        },
+        error = function(err) {
+          self$h5$close()
+        }
+      )
     }
   }
 ))

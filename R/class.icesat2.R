@@ -212,7 +212,7 @@ setRefClass("icesat2.atl03atl08_dt")
 
 
 h5closeall <- function(con, ...) {
-  try(con@h5$close_all(), silent = TRUE)
+  try(con$h5$close_all(), silent = TRUE)
 }
 
 
@@ -228,7 +228,7 @@ h5closeall <- function(con, ...) {
 #' @export
 #' @rdname close
 #' @method close icesat2.atl03_h5
-setMethod("close", signature = c("icesat2.atl03_h5"), h5closeall)
+setMethod("close", signature = c("ICESat2.h5"), h5closeall)
 
 
 #' Safely closes the [`ICESat2VegR::icesat2.atl08_h5-class`]
@@ -303,50 +303,53 @@ setMethod("close", signature = c("icesat2.atl08_h5"), h5closeall)
 setMethod(
   f = "plot",
   signature("icesat2.atl03atl08_dt", y = "character"),
-  definition = function(x, y = "h_ph", beam = "gt1l",
-                        colors = c("gray", "#bd8421", "forestgreen", "green"),
-                        xlim = NULL,
-                        ylim = NULL, ...) {
-    if (!inherits(x, "icesat2.atl03atl08_dt")) {
-      print("Invalid input file. It should be an object of class 'icesat2.atl03atl08_dt' ")
+  definition = function(x, y = "h_ph", beam = NULL,
+                        colors = c("gray", "goldenrod", "forestgreen", "green"), ...) {
+    .SD <- data.table::.SD
+    if (is.null(beam)) {
+      the_beam <- unique(x$beam)[1]
     } else {
-      xdt <- x[x$beam == beam, c("dist_ph_along", y, "classed_pc_flag"), with = FALSE]
-
-      if (is.null(xlim)) {
-        xlim <- range(xdt$dist_ph_along)
-      }
-      if (is.null(ylim)) {
-        ylim <- range(xdt[, get(y)], na.rm = TRUE)
-      }
-
-      mask <- xdt$dist_ph_along >= xlim[1] &
-        xdt$dist_ph_along <= xlim[2] &
-        xdt[, 2] >= ylim[1] &
-        xdt[, 2] <= ylim[2]
-
-      mask[!stats::complete.cases(mask)] <- FALSE
-      mask <- (seq_along(xdt$dist_ph_along))[mask]
-      newFile <- xdt[mask, ]
-
-      colorMap <- colors[newFile$classed_pc_flag + 1]
-
-
-      suppressWarnings({
-        plot(
-          x = newFile$dist_ph_along,
-          y = newFile[, get(y)],
-          col = colorMap, xlim = xlim, ylim = ylim, xlab = "Distance along-track (m)", ylab = paste(y, "(m)"), ...
-        )
-        legend("topleft",
-          legend = c(
-            "ATL03 unclassified",
-            "ATL03 Terrain",
-            "ATL03 Vegetation",
-            "ATL03 Top canopy"
-          ), pch = 16, col = colors, bty = "n"
-        )
-      })
+      the_beam <- beam
     }
+    
+    xdt <- x[beam %in% the_beam, .SD, .SDcols = c("dist_ph_along", y, "classed_pc_flag")]
+    params <- list(...)
+
+    if (is.null(params$xlim)) {
+      params$xlim <- range(xdt$dist_ph_along)
+    }
+    if (is.null(params$ylim)) {
+      params$ylim <- range(xdt[, get(y)], na.rm = TRUE)
+    }
+
+    mask <- xdt$dist_ph_along >= params$xlim[1] &
+      xdt$dist_ph_along <= params$xlim[2] &
+      xdt[, 2] >= params$ylim[1] &
+      xdt[, 2] <= params$ylim[2]
+
+    mask[!stats::complete.cases(mask)] <- FALSE
+    mask <- (seq_along(xdt$dist_ph_along))[mask]
+    newFile <- xdt[mask]
+
+    colorMap <- colors[newFile$classed_pc_flag + 1]
+
+
+    suppressWarnings({
+      plot(
+        x = newFile$dist_ph_along,
+        y = newFile[, get(y)],
+        col = colorMap, xlab = "Distance along-track (m)", ylab = paste(y, "(m)"),
+        ...
+      )
+      legend("topleft",
+        legend = c(
+          "ATL03 unclassified",
+          "ATL03 Terrain",
+          "ATL03 Vegetation",
+          "ATL03 Top canopy"
+        ), pch = 16, col = colors, bty = "n"
+      )
+    })
   }
 )
 
@@ -516,3 +519,25 @@ genericICESatC <- function(classname, x, ...) {
 "c.icesat2.atl03_seg_dt" <- genericICESatC("icesat2.atl03_seg_dt")
 #' @export
 "c.icesat2.atl08_dt" <- genericICESatC("icesat2.atl08_dt")
+
+#' @export
+vect = terra::vect
+
+#' @export
+setMethod(
+    "vect", 
+    "icesat2.atl03atl08_dt", 
+    function(x, ...) {
+        terra::vect(as.data.frame(x), ...)
+    }
+)
+
+
+#' @export
+setMethod(
+    "vect", 
+    "icesat2.atl08_dt", 
+    function(x, ...) {
+        terra::vect(as.data.frame(x), ...)
+    }
+)
