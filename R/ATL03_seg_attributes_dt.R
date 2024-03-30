@@ -96,9 +96,9 @@ ATL03.seg.map[["yaw"]] <- "geolocation/yaw"
 #' )
 #' # Reading ATL03 data (h5 file)
 #' atl03_h5 <- ATL03_read(atl03_path = atl03_path)
-#' # Extracting ATL03 photons attributes
-#' atl03_photons_dt <- ATL03_seg_attributes_dt(atl03_h5 = atl03_h5)
-#' head(atl03_photons_dt)
+#' # Extracting ATL03 segment attributes
+#' atl03_segment_dt <- ATL03_seg_attributes_dt(atl03_h5 = atl03_h5)
+#' head(atl03_segment_dt)
 #' close(ATL03_h5)
 #' @export
 ATL03_seg_attributes_dt <- function(atl03_h5,

@@ -26,29 +26,26 @@ containing the clipped ATL08 terrain and canopy attributes.
 This function clips ATL08 Terrain and Canopy Attributes within a given bounding box coordinates
 }
 \examples{
-# Specifying the path to ATL08 file (zip file)
-outdir <- tempdir()
-atl08_zip <- system.file("extdata",
-  "ATL08_20220401221822_01501506_005_01.zip",
+# Specifying the path to ATL08 file
+atl08_path <- system.file("extdata",
+  "atl08_clip.h5",
   package = "ICESat2VegR"
 )
 
-# Unzipping ATL08 file
-atl08_path <- unzip(atl08_zip, exdir = outdir)
-
 # Reading ATL08 data (h5 file)
+atl08_h5 <- ATL08_read(atl08_path)
 
 # Extracting ATL08-derived Canopy Metrics
 atl08_seg_att_dt <- ATL08_seg_attributes_dt(atl08_h5 = atl08_h5)
 
 # Bounding rectangle coordinates
-xmin <- -107.7
-xmax <- -106.5
-ymin <- 32.75
-ymax <- 42.75
+xmin <- -104
+xmax <- -103
+ymin <- 59.466
+ymax <- 59.468
 
 # Clipping ATL08 terrain and canopy attributes by boundary box
-atl08_seg_att_dt_clip <- ATL08_seg_attributes_dt_gridStat(atl08_seg_att_dt, xmin, xmax, ymin, ymax)
+atl08_seg_att_dt_clip <- ATL08_seg_attributes_dt_clipBox(atl08_seg_att_dt, xmin, xmax, ymin, ymax)
 
 close(atl08_h5)
 }

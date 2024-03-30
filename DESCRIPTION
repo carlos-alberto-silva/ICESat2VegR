@@ -99,6 +99,7 @@ Collate:
     'predict.R'
     'sample.R'
     'stat_model.R'
+    'to_vect.R'
     'var_select.R'
 Suggests: 
     testthat (>= 3.0.0)
