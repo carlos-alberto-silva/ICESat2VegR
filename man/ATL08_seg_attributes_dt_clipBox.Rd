@@ -10,13 +10,13 @@ ATL08_seg_attributes_dt_gridStat(atl08_seg_att_dt, xmin, xmax, ymin, ymax)
 \item{atl08_seg_att_dt}{A atl08_seg_att_dt object (output of \code{\link[=ATL08_seg_attributes_dt]{ATL08_seg_attributes_dt()}} function).
 An S4 object of class \link{icesat2.atl08_dt}}
 
-\item{xmin}{Numeric. West longitude (x) coordinate of bounding rectangle, in decimal degrees.}
+\item{lower_left_lon}{Numeric. West longitude (x) coordinate of bounding rectangle, in decimal degrees.}
 
-\item{xmax}{Numeric. East longitude (x) coordinate of bounding rectangle, in decimal degrees.}
+\item{upper_right_lon}{Numeric. East longitude (x) coordinate of bounding rectangle, in decimal degrees.}
 
-\item{ymin}{Numeric. South latitude (y) coordinate of bounding rectangle, in decimal degrees.}
+\item{lower_left_lat}{Numeric. South latitude (y) coordinate of bounding rectangle, in decimal degrees.}
 
-\item{ymax}{Numeric. North latitude (y) coordinate of bounding rectangle, in decimal degrees.}
+\item{upper_right_lat}{Numeric. North latitude (y) coordinate of bounding rectangle, in decimal degrees.}
 }
 \value{
 Returns an S4 object of class \link{icesat2.atl08_dt}
@@ -39,13 +39,13 @@ atl08_h5 <- ATL08_read(atl08_path)
 atl08_seg_att_dt <- ATL08_seg_attributes_dt(atl08_h5 = atl08_h5)
 
 # Bounding rectangle coordinates
-xmin <- -104
-xmax <- -103
-ymin <- 59.466
-ymax <- 59.468
+lower_left_lon <- -103.7604
+lower_left_lat <- 59.4672
+upper_right_lon <- -103.7600
+upper_right_lat <- 59.4680
 
 # Clipping ATL08 terrain and canopy attributes by boundary box
-atl08_seg_att_dt_clip <- ATL08_seg_attributes_dt_clipBox(atl08_seg_att_dt, xmin, xmax, ymin, ymax)
+atl08_seg_att_dt_clip <- ATL08_seg_attributes_dt_clipBox(atl08_seg_att_dt, lower_left_lon, upper_right_lon, lower_left_lat, upper_right_lat)
 
 close(atl08_h5)
 }

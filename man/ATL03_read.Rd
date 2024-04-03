@@ -17,6 +17,7 @@ Returns an S4 object of class \code{\link{icesat2.atl03_dt}} containing ICESat-2
 This function reads the ICESat-2 Global Geolocated Photons (ATL03) Product (ATL03) as h5 file.
 }
 \examples{
+# Specifying the path to ATL03 file
 atl03_path <- system.file("extdata",
   "atl03_clip.h5",
   package = "ICESat2VegR"

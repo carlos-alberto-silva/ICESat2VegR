@@ -72,6 +72,7 @@ ATL08 terrain attributes:
 }
 }
 \examples{
+# Specifying the path to ATL08 file
 atl08_path <- system.file("extdata",
   "atl08_clip.h5",
   package = "ICESat2VegR"

@@ -18,8 +18,8 @@ atl08_granules <- ATLAS_dataFinder(
 output_dir <- tempdir()
 setwd(output_dir)
 
-ATLAS_dataDownload(atl03_granules[1], ".")
-ATLAS_dataDownload(atl08_granules[1], ".")
+ICESat2_dataDownload(atl03_granules[1], ".")
+ICESat2_dataDownload(atl08_granules[1], ".")
 
 atl03_path <- list.files(pattern = "^ATL03")[1]
 atl08_path <- list.files(pattern = "^ATL08")[1]

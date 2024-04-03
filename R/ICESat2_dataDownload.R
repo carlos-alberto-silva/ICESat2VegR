@@ -43,7 +43,7 @@
 #' }
 #' @import curl
 #' @export
-ICESat2_dataDownload <- function(url, outdir = NULL, overwrite = FALSE, buffer_size = 512, timeout = 10) {
+ATLAS_dataDownload <- function(url, outdir = NULL, overwrite = FALSE, buffer_size = 512, timeout = 10) {
   if (is.null(outdir)) {
     outdir <- tempdir()
   }

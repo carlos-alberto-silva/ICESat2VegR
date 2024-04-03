@@ -82,7 +82,7 @@ ATL08_seg_attributes_dt_polyStat <- function(atl08_seg_att_dt, func, poly_id = N
   # Add data.table operator
   `:=` <- data.table::`:=`
 
-  call <- lazy_call(func)
+  call <- substitute(func)
 
   if (is.null(poly_id)) {
     metrics <- lazy_apply_dt_call(dt = atl08_seg_att_dt@dt, call = call)

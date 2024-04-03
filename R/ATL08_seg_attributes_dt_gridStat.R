@@ -13,47 +13,41 @@
 #' @return Return a SpatRast raster layer(s) of selected ATL08 terrain and canopy attribute(s)
 #'
 #' @examples
-#'
-#' # Specifying the path to ATL08 file (zip file)
-#' outdir <- tempdir()
-#'
-#' atl08_zip <- system.file("extdata",
-#'   "ATL08_20220401221822_01501506_005_01.zip",
+#' # Specifying the path to ATL08 file
+#' atl08_path <- system.file("extdata",
+#'   "atl08_clip.h5",
 #'   package = "ICESat2VegR"
 #' )
 #'
-#' # Unzipping ATL08 file
-#' atl08_path <- unzip(atl08_zip, exdir = outdir)
-#'
 #' # Reading ATL08 data (h5 file)
-# atl08_h5<-ATL08_read(atl08_path=atl08_path)
+#' atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 #'
-#' # Extracting ATL08 terrain and canopy attributes
-#' atl08_seg_att_dt <- ATL08_seg_attributes_dt(atl08_h5)
-#' head(atl08_seg_att_dt)
+#' # Extracting ATL08-derived terrain and canopy attributes
+#' atl08_seg_att_dt <- ATL08_seg_attributes_dt(atl08_h5 = atl08_h5)
 #'
 #' # Computing the top h_canopy at 0.05 degree grid cell
-#' max_h_canopy <- ATL08_seg_attributes_dt_gridStat(atl08_seg_att_dt, func = max(h_canopy), res = 0.5)
+#' res <- 0.0001
+#' mean_h_canopy <- ATL08_seg_attributes_dt_gridStat(atl08_seg_att_dt, func = mean(h_canopy), res = res)
 #'
-#' plot(max_h_canopy, xlim = c(-107.5, -106.5), ylim = c(38, 39))
+#' plot(mean_h_canopy)
 #'
 #' # Define your own function
 #' mySetOfMetrics <- function(x) {
 #'   metrics <- list(
-#'     min = min(x), # Min of x
-#'     max = max(x), # Max of x
-#'     mean = mean(x), # Mean of x
-#'     sd = sd(x) # Sd of x
+#'     min = min(x, na.rm = TRUE), # Min of x
+#'     max = max(x, na.rm = TRUE), # Max of x
+#'     mean = mean(x, na.rm = TRUE), # Mean of x
+#'     sd = sd(x, na.rm = TRUE) # Sd of x
 #'   )
 #'   return(metrics)
 #' }
 #'
+#' res <- 0.05
 #' # Computing a series of h_canopy statistics at 0.05 degree grid cell from customized function
-#' h_canopy_metrics <- ATL08_seg_attributes_dt_gridStat(atl08_seg_att_dt, func = mySetOfMetrics(h_canopy), res = 0.05)
+#' h_canopy_metrics <- ATL08_seg_attributes_dt_gridStat(atl08_seg_att_dt, func = ~ mySetOfMetrics(h_canopy), res = res)
 #'
-#' plot(h_canopy_metrics, xlim = c(-107.5, -106.5), ylim = c(38, 39))
+#' plot(h_canopy_metrics)
 #'
-#' close(atl03_h5)
 #' close(atl08_h5)
 #' @import data.table lazyeval
 #' @export
@@ -78,22 +72,13 @@ ATL08_seg_attributes_dt_gridStat <- function(atl08_seg_att_dt, func, res = 0.5) 
   # Add data.table operator
   `:=` <- data.table::`:=`
 
-  call <- lazy_call(func)
-  setattr(atl08_seg_att_dt2, "class", c("data.table", "data.frame"))
+  call <- substitute(func)
 
-  vect <- terra::vect(
-    atl08_seg_att_dt2,
-    geom = c("longitude", "latitude"),
-    crs = "epsg:4326"
-  )
+  vect <- to_vect(atl08_seg_att_dt2)
   layout <- terra::rast(terra::ext(vect), resolution = res, vals = NA, crs = "epsg:4326")
 
-  atl08_seg_att_dt2[, cells := terra::cells(layout, vect)[, 2]]
+  suppressWarnings(atl08_seg_att_dt2[, cells := terra::cells(layout, vect)[, 2]])
   metrics <- lazy_apply_dt_call(atl08_seg_att_dt2, call, group.by = "by = cells")
-
-  if (any(is.na(metrics))) {
-    metrics <- na.omit(metrics)
-  }
 
   n_metrics <- ncol(metrics) - 1
   bbox <- terra::ext(vect)
@@ -106,12 +91,12 @@ ATL08_seg_attributes_dt_gridStat <- function(atl08_seg_att_dt, func, res = 0.5) 
     )
 
 
-
+  names(output) <- names(metrics)[-1]
+  metrics <- metrics[!is.nan(cells)]
+  
   for (metric in 1:n_metrics) {
     output[[metric]][metrics$cells] <- metrics[[metric + 1]]
   }
-
-  names(output) <- paste0(paste0(call)[2], "_", names(metrics)[-1])
 
   return(output)
 }

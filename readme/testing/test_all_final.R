@@ -77,8 +77,8 @@ devtools::load_all()
  setwd(output_dir)
 
  # download ATL03 and ATL04 data
- ATLAS_dataDownload(atl03_granules_list_d[1], ".")
- ATLAS_dataDownload(atl08_granules_list_d[1], ".")
+ ICESat2_dataDownload(atl03_granules_list_d[1], ".")
+ ICESat2_dataDownload(atl08_granules_list_d[1], ".")
 
  # List ATL03 and ATL08 data in the directory
  atl03_path <- list.files(pattern = "^ATL03")[1]

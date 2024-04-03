@@ -90,7 +90,7 @@ ATL03_ATL08_photons_attributes_dt_polyStat <- function(atl03_atl08_dt, func, pol
   # Add data.table operator
   `:=` <- data.table::`:=`
 
-  call <- lazy_call(func)
+  call <- substitute(func)
 
   if (is.null(poly_id)) {
     metrics <- lazy_apply_dt_call(dt = atl03_atl08_dt, call = call)

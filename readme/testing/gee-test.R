@@ -15,11 +15,9 @@ source("R/gee-class.R")
 #   )
 # )
 
-# # reticulate::py_install("openssl")
-# reticulate::py_install("earthengine-api")
-# # reticulate::py_run_string("import ssl")
-# reticulate::py_install(c("geemap", "pandas", "scikit-learn", "numpy"))
-# reticulate::use_condaenv("r-reticulate")
+# reticulate::install_miniconda()
+# reticulate::py_install(c("earthengine-api", "earthaccess", "h5py"))
+
 
 ee <- reticulate::import("ee")
 geemap <- reticulate::import("geemap")

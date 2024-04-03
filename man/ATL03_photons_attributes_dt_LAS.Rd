@@ -4,7 +4,7 @@
 \alias{ATL03_photons_attributes_dt_LAS}
 \title{Converts ATL03 photon cloud to LAS}
 \usage{
-ATL03_photons_attributes_dt_LAS(atl03_dt, output)
+ATL03_photons_attributes_dt_LAS(atl03_dt, output, normalized = TRUE)
 }
 \arguments{
 \item{atl03_dt}{An S4 object of class \link{icesat2.atl03_dt}
@@ -12,12 +12,22 @@ ATL03_photons_attributes_dt_LAS(atl03_dt, output)
 
 \item{output}{character. The output path of for the LAS(Z) file(s)
 The function will create one LAS file per UTM Zone in WGS84 datum.}
+
+\item{normalized}{logical. Whether we should use normalized height
+or elevation for the photons, default TRUE.}
 }
 \value{
 Nothing, it just saves outputs as LAS file in disk
 }
 \description{
 Converts ATL03 photon cloud to LAS
+}
+\details{
+As the las format expects a metric coordinate reference system (CRS)
+we use helper functions to define UTM zones to which the original
+ICESat-2 data will be converted.
+
+The function credits go to Chuck Gantz- chuck.gantz@globalstar.com.
 }
 \examples{
 
@@ -43,4 +53,7 @@ ATL03_photons_attributes_dt_LAS(
 )
 
 close(atl03_h5)
+}
+\seealso{
+https://oceancolor.gsfc.nasa.gov/docs/ocssw/LatLong-UTMconversion_8cpp_source.html
 }

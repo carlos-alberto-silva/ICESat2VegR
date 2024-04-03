@@ -5,7 +5,7 @@
 #'
 #' @param atl03_atl08_seg_dt  An S4 object of class [`icesat2.atl03_atl08_seg_dt-class`] containing ATL03 and ATL08 data
 #' (output of [ATL03_ATL08_photons_attributes_dt_join()] function).
-#' @param func The function to be applied for computing the defined statistics
+#' @param list_expr The function to be applied for computing the defined statistics
 #' @param seg_length Segment length. Default is 30 m
 #' @param ph_class Character vector indicating photons to process based
 #' on the classification (1=ground, 2=canopy, 3=top canopy),
@@ -21,91 +21,92 @@
 #' Containing Statistics of ATL03 and ATL08 labeled photons
 #'
 #' @examples
-#' # Specifying the path to ATL03 and ATL08 file (zip file)
-#' outdir = tempdir()
-#' atl03_zip <- system.file("extdata",
-#'                   "ATL03_20220401221822_01501506_005_01.zip",
-#'                   package="ICESat2VegR")
-#'
-#' atl08_zip <- system.file("extdata",
-#'                   "ATL08_20220401221822_01501506_005_01.zip",
-#'                   package="ICESat2VegR")
-#'
-#' # Unzipping ATL03 file
-#' atl03_path <- unzip(atl03_zip,exdir = outdir)
+# Specifying ATL03 and ATL08 file path
+#' atl03_path <- system.file("extdata",
+#'   "atl03_clip.h5",
+#'   package = "ICESat2VegR"
+#' )
 #'
 #' # Unzipping ATL08 file
-#' atl08_path <- unzip(atl08_zip,exdir = outdir)
+#' atl08_path <- system.file("extdata",
+#'   "atl08_clip.h5",
+#'   package = "ICESat2VegR"
+#' )
+#'
 #'
 #' # Reading ATL03 data (h5 file)
-#' atl03_h5<-ATL08_read(atl03_path=atl03_path)
+#' atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 #'
 #' # Reading ATL08 data (h5 file)
-#' atl08_h5<-ATL08_read(atl08_path=atl08_path)
+#' atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 #'
 #' # Extracting ATL03 and ATL08 labeled photons
-#' atl03_atl08_dt<-ATL03_ATL08_photons_attributes_dt_join(atl03_h5,atl08_h5)
-#' head(atl03_atl08_dt)
+#' atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
 #'
 #' # Computing the max canopy height at 30 m segments
-#' max_canopy <-ATL03_ATL08_compute_seg_attributes_dt_segStat(atl03_atl08_dt, func=max(ph_h),
-#'                                seg_length = 30,
-#'                                ph_class=c(2,3),
-#'                                beam=c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
-#'                                quality_ph=0,
-#'                                night_flag=1)
+#' atl03_atl08_dt_seg <- ATL03_ATL08_segment_create(atl03_atl08_dt, segment_length = 30)
+#'
+#' max_canopy <- ATL03_ATL08_compute_seg_attributes_dt_segStat(atl03_atl08_dt_seg,
+#'   list_expr = max(ph_h),
+#'   ph_class = c(2, 3),
+#'   beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
+#'   quality_ph = 0,
+#'   night_flag = 0
+#' )
 #'
 #' head(max_canopy)
 #'
-#' # Define your own function
-#' mySetOfMetrics <- function(x) {
-#'   metrics <- list(
-#'     min = min(x), # Min of x
-#'     max = max(x), # Max of x
-#'     mean = mean(x), # Mean of x
-#'     sd = sd(x) # Sd of x
-#'     h_canopy = quantile(x,0.98)
-#'   )
-#'   return(metrics)
-#' }
-#'
 #' # Computing a series of canopy height statistics from customized function
-#' canopy_metrics <- ATL03_ATL08_compute_seg_attributes_dt_segStat(atl03_atl08_dt, func=mySetOfMetrics(ph_h),
-#'                                seg_length = 30, # 30 m
-#'                                ph_class=c(2,3),
-#'                                beam=c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
-#'                                quality_ph=0,
-#'                                night_flag=1)
+#' canopy_metrics <- ATL03_ATL08_compute_seg_attributes_dt_segStat(atl03_atl08_dt_seg,
+#'   list_expr = list(
+#'     max_ph_elevation = max(h_ph),
+#'     h_canopy = quantile(ph_h, 0.98),
+#'     n_canopy = sum(classed_pc_flag == 2),
+#'     n_top_canopy = sum(classed_pc_flag == 3)
+#'   ),
+#'   ph_class = c(2, 3),
+#'   beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
+#'   quality_ph = 0,
+#'   night_flag = 0 # there are no night photons in this dataset
+#' )
 #'
 #' head(canopy_metrics)
 #'
 #' close(atl03_h5)
 #' close(atl08_h5)
+#' @include lazy_applier.R
 #' @import data.table lazyeval
 #' @export
 ATL03_ATL08_compute_seg_attributes_dt_segStat <- function(
     atl03_atl08_seg_dt,
-    func,
+    list_expr,
     ph_class = c(2, 3),
     beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
     quality_ph = 0,
     night_flag = 1) {
-
   if (!inherits(atl03_atl08_seg_dt, "icesat2.atl03atl08_dt")) {
     stop("atl03_atl08_dt needs to be an object of class 'icesat2.atl03atl08_dt' ")
   }
+  
+  selected_quality_ph <- quality_ph
+  selected_night_flag <- night_flag
+  selected_beams <- beam
+  classed_pc_flag <- NA
 
-  atl03_atl08_dt2 <- atl03_atl08_seg_dt[
+  atl03_atl08_seg_dt2 <- atl03_atl08_seg_dt[
     classed_pc_flag %in% ph_class &
       quality_ph == selected_quality_ph &
       beam %in% selected_beams &
       night_flag == selected_night_flag,
   ]
 
-  expr <- as.character(substitute(func))
+  args <- substitute(list_expr)
 
-  metrics <- eval.parent(parse(text=gettextf("atl03_atl08_dt2[, %s(%s), by = .(
-    segment_id, beam, longitude = centroid_x, latitude = centroid_y)]", expr[1], expr[2])))
+  metrics <- lazy_apply_dt_call(
+    atl03_atl08_seg_dt2,
+    args,
+    "by = .(segment_id, beam, longitude = centroid_x, latitude = centroid_y)"
+  )
 
   
   return(metrics)

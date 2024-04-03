@@ -10,13 +10,13 @@ ATL03_photons_attributes_dt_clipBox(atl03_photons_dt, xmin, xmax, ymin, ymax)
 \item{atl03_photons_dt}{A atl03_photons_dt object (output of \code{\link[=atl03_photons_attributes_dt]{atl03_photons_attributes_dt()}} function).
 An S4 object of class \link{icesat2.atl03_dt}}
 
-\item{xmin}{Numeric. West longitude (x) coordinate of bounding rectangle, in decimal degrees.}
+\item{lower_left_lon}{Numeric. West longitude (x) coordinate of bounding rectangle, in decimal degrees.}
 
-\item{xmax}{Numeric. East longitude (x) coordinate of bounding rectangle, in decimal degrees.}
+\item{upper_right_lon}{Numeric. East longitude (x) coordinate of bounding rectangle, in decimal degrees.}
 
-\item{ymin}{Numeric. South latitude (y) coordinate of bounding rectangle, in decimal degrees.}
+\item{upper_right_lat}{Numeric. North latitude (y) coordinate of bounding rectangle, in decimal degrees.}
 
-\item{ymax}{Numeric. North latitude (y) coordinate of bounding rectangle, in decimal degrees.}
+\item{lower_left_lat}{Numeric. South latitude (y) coordinate of bounding rectangle, in decimal degrees.}
 }
 \value{
 Returns an S4 object of class \link{icesat2.atl03_dt}
@@ -26,33 +26,34 @@ containing the ATL03 photons attributes.
 This function clips ATL03 photons attributes within a given bounding coordinates
 }
 \examples{
-# Specifying the path to ATL03 file (zip file)
-outdir <- tempdir()
-atl03_zip <- system.file("extdata",
-  "atl03_20220401221822_01501506_005_01.zip",
+# Specifying the path to ATL03 file
+atl03_path <- system.file("extdata",
+  "atl03_clip.h5",
   package = "ICESat2VegR"
 )
 
-# Unzipping ATL03 file
-atl03_path <- unzip(atl03_zip, exdir = outdir)
-
 # Reading ATL03 data (h5 file)
+atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 
 # Extracting ATL03 photons attributes
 atl03_photons_dt <- ATL03_photons_attributes_dt(atl03_h5 = atl03_h5)
 
 # Bounding rectangle coordinates
-lower_left_lon=-107.7
-lower_left_lat=42.75
-upper_right_lon=-106.5
-upper_right_lat=32.75
+lower_left_lon <- -103.7604
+lower_left_lat <- 59.4672
+upper_right_lon <- -103.7600
+upper_right_lat <- 59.4680
 
 # Clipping ATL08-derived canopy metrics by boundary box extent
-atl03_photons_dt_clip <- ATL03_photons_attributes_dt_clipBox(atl03_photons_dt,
-                                                               lower_left_lon,
-                                                               upper_right_lon,
-                                                               upper_right_lat,
-                                                               lower_left_lat)
+atl03_photons_dt_clip <- ATL03_photons_attributes_dt_clipBox(
+  atl03_photons_dt,
+  lower_left_lon,
+  upper_right_lon,
+  upper_right_lat,
+  lower_left_lat
+)
+
+head(atl03_photons_dt_clip)
 
 close(atl03_h5)
 }

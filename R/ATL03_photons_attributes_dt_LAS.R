@@ -4,8 +4,20 @@
 #' (output of [`ATL03_photons_attributes_dt()`] function).
 #' @param output character. The output path of for the LAS(Z) file(s)
 #' The function will create one LAS file per UTM Zone in WGS84 datum.
+#' @param normalized logical. Whether we should use normalized height
+#' or elevation for the photons, default TRUE.
 #'
 #' @return Nothing, it just saves outputs as LAS file in disk
+#'
+#' @details
+#' As the las format expects a metric coordinate reference system (CRS)
+#' we use helper functions to define UTM zones to which the original
+#' ICESat-2 data will be converted.
+#'
+#' The function credits go to Chuck Gantz- chuck.gantz@globalstar.com.
+#'
+#' @seealso
+#' https://oceancolor.gsfc.nasa.gov/docs/ocssw/LatLong-UTMconversion_8cpp_source.html
 #'
 #' @examples
 #'
@@ -31,45 +43,17 @@
 #' )
 #'
 #' close(atl03_h5)
-#' @include utmTools.R
+#' @include utmTools.R lasTools.R
 #' @importFrom data.table as.data.table
 #' @export
-ATL03_photons_attributes_dt_LAS <- function(atl03_dt, output) {
-  lon_ph <- lat_ph <- ph_h <- mask <- NA
+ATL03_photons_attributes_dt_LAS <- function(atl03_dt, output, normalized = TRUE) {
+  lon_ph <- lat_ph <- ph_h <- h_ph <- mask <- NA
 
   dt <- data.table::as.data.table(atl03_dt[, list(
     X = lon_ph,
     Y = lat_ph,
-    Z =  h_ph
+    Z = ifelse(normalized, ph_h, h_ph)
   )])
-  # inherits(dt2, "data.table")
 
-  names(dt) <- c("X", "Y", "Z")
-
-
-  maskZones <- latLongToUtmMask(dt$Y, dt$X)
-
-  message("====================================================")
-  message(sprintf("The provided data will be splitted into %s UTM zones", nrow(maskZones)))
-  message("====================================================")
-
-  for (ii in seq_along(maskZones)) {
-    dtLocal <- dt[maskZones[ii, mask][[1]]]
-    epsgCode <- maskZones[ii, epsg]
-    epsg <- sprintf("epsg:%s", epsgCode)
-    coordinates <- terra::project(as.matrix(dtLocal[, list(X, Y)]), from = "epsg:4326", to = epsg)
-    dtLocal$X <- coordinates[, 1]
-    dtLocal$Y <- coordinates[, 2]
-
-    header <- suppressWarnings(lidR::LASheader(dtLocal))
-    lidR::epsg(header) <- epsgCode
-    header@PHB[["X scale factor"]] <- 0.01
-    header@PHB[["Y scale factor"]] <- 0.01
-    header@PHB[["Z scale factor"]] <- 0.01
-    las <- suppressWarnings(lidR::LAS(dtLocal, header))
-
-    localOutput <- gsub("(\\.la[sz])", sprintf("_%s\\1", epsgCode), output)
-    message(sprintf("EPSG: %s - saved as %s", epsgCode, localOutput))
-    lidR::writeLAS(las, localOutput)
-  }
+  dt_to_las(dt, output)
 }

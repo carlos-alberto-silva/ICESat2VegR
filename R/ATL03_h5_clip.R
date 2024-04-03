@@ -40,7 +40,7 @@
 #' @import hdf5r
 #' @export
 ATL03_h5_clip <- function(atl03, output, clipObj, mask_fn) {
-  dataset.rank <- dataset.dims <- obj_type <- name <- NA
+  dataset.rank <- dataset.dims <- name <- NA
 
   # Create a new HDF5 file
   newFile <- hdf5r::H5File$new(output, mode = "w")

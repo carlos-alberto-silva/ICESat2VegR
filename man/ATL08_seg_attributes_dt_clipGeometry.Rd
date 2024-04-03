@@ -25,46 +25,49 @@ containing the clipped ATL08 Terrain and Canopy Attributes.
 This function clips ATL08 Terrain and Canopy Attributes within a given geometry
 }
 \examples{
-# Specifying the path to ATL08 file (zip file)
-outdir <- tempdir()
-atl08_zip <- system.file("extdata",
-  "ATL08_20220401221822_01501506_005_01.zip",
+# Specifying the path to ATL08 file
+atl08_path <- system.file("extdata",
+  "atl08_clip.h5",
   package = "ICESat2VegR"
 )
 
-# Unzipping ATL08 file
-atl08_path <- unzip(atl08_zip, exdir = outdir)
-
 # Reading ATL08 data (h5 file)
+atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 
-# Extracting ATL08-derived Canopy Metrics
+# Extracting ATL08-derived terrain and canopy attributes
 atl08_seg_att_dt <- ATL08_seg_attributes_dt(atl08_h5 = atl08_h5)
 
-# Specifying the path to shapefile
-polygon_filepath <- system.file("extdata", "polygon.shp", package = "ICESat2VegR")
+polygon_path <- system.file("extdata",
+  "clip_geom.shp",
+  package = "ICESat2VegR"
+)
 
-# Reading shapefile as sf object
-polygon <- terra::vect(polygon_filepath)
+if (require(terra)) {
+  polygon <- vect(polygon_path)
 
-# Clipping ATL08 Terrain and Canopy Attributes by Geometry
-atl08_seg_att_dt_clip <- ATL08_seg_attributes_dt_clipGeometry(atl08_seg_att_dt, polygon, split_by = "FID")
+  head(atl08_seg_att_dt)
+  # Clipping ATL08 Terrain and Canopy Attributes by Geometry
+  atl08_seg_att_dt_clip <- ATL08_seg_attributes_dt_clipGeometry(atl08_seg_att_dt, polygon, split_by = "id")
 
-hasLeaflet <- require(leaflet)
+  hasLeaflet <- require(leaflet)
 
-if (hasLeaflet) {
-  leaflet() \%>\%
-    addCircleMarkers(atl08_seg_att_dt_clip$longitude,
-      atl08_seg_att_dt_clip$latitude,
-      radius = 1,
-      opacity = 1,
-      color = "red"
-    ) \%>\%
-    addScaleBar(options = list(imperial = FALSE)) \%>\%
-    addPolygons(
-      data = polygon, weight = 1, col = "white",
-      opacity = 1, fillOpacity = 0
-    ) \%>\%
-    addProviderTiles(providers$Esri.WorldImagery)
+  if (hasLeaflet) {
+    leaflet() \%>\%
+      addCircleMarkers(atl08_seg_att_dt_clip$longitude,
+        atl08_seg_att_dt_clip$latitude,
+        radius = 1,
+        opacity = 1,
+        color = "red"
+      ) \%>\%
+      addScaleBar(options = list(imperial = FALSE)) \%>\%
+      addPolygons(
+        data = polygon, weight = 1, col = "white",
+        opacity = 1, fillOpacity = 0
+      ) \%>\%
+      addProviderTiles(providers$Esri.WorldImagery,
+        options = providerTileOptions(minZoom = 3, maxZoom = 17)
+      )
+  }
 }
 close(atl08_h5)
 }

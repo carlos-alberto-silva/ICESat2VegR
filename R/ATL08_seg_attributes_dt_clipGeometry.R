@@ -70,10 +70,10 @@ ATL08_seg_attributes_dt_clipGeometry <- function(atl08_seg_att_dt, polygon, spli
 
   atl08_seg_att_dtdt <- ATL08_seg_attributes_dt_clipBox(
     atl08_seg_att_dt,
-    xmin = exshp$xmin,
-    xmax = exshp$xmax,
-    ymin = exshp$ymin,
-    ymax = exshp$ymax
+    lower_left_lon = exshp$xmin,
+    upper_right_lon = exshp$xmax,
+    lower_left_lat = exshp$ymin,
+    upper_right_lat = exshp$ymax
   )
 
   if (any(is.na(atl08_seg_att_dtdt))) {

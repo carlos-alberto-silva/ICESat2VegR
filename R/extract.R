@@ -9,7 +9,7 @@
 #' from the ee images.
 #'
 #' @export
-seg_gee_ancillary_dt_extract <- function(stack, geom, scale = 30, chunk_size = 10) {
+seg_gee_ancillary_dt_extract <- function(stack, geom, scale = 30, chunk_size = 1000) {
   n <- nrow(geom)
   dts <- list()
   for (ii in seq(1, n, chunk_size)) {

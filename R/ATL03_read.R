@@ -12,11 +12,12 @@
 #' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
 #'
 #' @examples
+#' # Specifying the path to ATL03 file
 #' atl03_path <- system.file("extdata",
 #'   "atl03_clip.h5",
 #'   package = "ICESat2VegR"
 #' )
-#' 
+#'
 #' # Reading ICESat-2 ATL03 data (h5 file)
 #' ATL03 <- ATL03_read(atl03_path = atl03_path)
 #' close(ATL03)

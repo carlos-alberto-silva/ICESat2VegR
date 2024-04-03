@@ -146,9 +146,11 @@ ATL03_photons_segment_mask <- function(beam, segmentsMask) {
   if (is.null(segmentsMask)) {
     return(integer(0))
   }
+  
   seg_indices <- beam[["geolocation/ph_index_beg"]][segmentsMask]
   ph_cnt <- beam[["geolocation/segment_ph_cnt"]][segmentsMask]
-  photons_mask <- seq_lens_simplify(seg_indices, ph_cnt)
+  mask2 <- seg_indices > 0
+  photons_mask <- seq_lens_simplify(seg_indices[mask2], ph_cnt[mask2])
   photons_mask
 }
 

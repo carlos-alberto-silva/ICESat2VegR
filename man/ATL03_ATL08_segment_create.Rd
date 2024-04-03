@@ -7,7 +7,8 @@
 ATL08_read(atl08_path)
 }
 \arguments{
-\item{atl03_atl08_dt}{\code{\linkS4class{icesat2.atl03_atl08_dt}}. The output of the \code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}}.}
+\item{atl03_atl08_dt}{\code{\linkS4class{icesat2.atl03_atl08_dt}}.
+The output of the \code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}}.}
 
 \item{segment_length}{\code{\linkS4class{numeric}}. The desired segment length to split the photons.}
 
@@ -37,20 +38,33 @@ the segment. This will give a better representation of the segment true mid-poin
 }
 }
 \examples{
-# Specifying the path to ICESat-2 ATL08 data (zip file)
-outdir <- tempdir()
-atl08_fp_zip <- system.file("extdata",
-  "ATL0802_A_2019108080338_O01964_T05337_02_001_01_sub.zip",
+atl03_path <- system.file("extdata",
+  "atl03_clip.h5",
   package = "ICESat2VegR"
 )
 
-# Unzipping ICESat-2 ATL08 data
-atl08_path <- unzip(atl08_fp_zip, exdir = outdir)
+atl08_path <- system.file("extdata",
+  "atl08_clip.h5",
+  package = "ICESat2VegR"
+)
 
 # Reading ICESat-2 ATL08 data (h5 file)
-atl08 <- ATL08_read(atl08_path = atl08_path)
+atl03_h5 <- ATL03_read(atl03_path = atl03_path)
+atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 
-close(atl08)
+atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
+
+atl03_atl08_dt_seg <- ATL03_ATL08_segment_create(atl03_atl08_dt,
+  segment_length = 30,
+  centroid = "mean",
+  output = NA,
+  overwrite = FALSE
+)
+
+head(atl03_atl08_dt_seg)
+
+close(atl03_h5)
+close(atl08_h5)
 }
 \seealso{
 \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}

@@ -30,38 +30,42 @@ containing the clipped ATL08 Terrain attributes.
 This function clips joined ATL03 and ATL08 photon attributes within a given geometry
 }
 \examples{
-# Specifying the path to ATL03 and ATL08 file (zip file)
-outdir = tempdir()
-atl03_zip <- system.file("extdata",
-                  "ATL03_20220401221822_01501506_005_01.zip",
-                  package="ICESat2VegR")
+atl03_path <- system.file("extdata",
+  "atl03_clip.h5",
+  package = "ICESat2VegR"
+)
 
-atl08_zip <- system.file("extdata",
-                  "ATL08_20220401221822_01501506_005_01.zip",
-                  package="ICESat2VegR")
-
-# Unzipping ATL03 file
-atl03_path <- unzip(atl03_zip,exdir = outdir)
-
-# Unzipping ATL08 file
-atl08_path <- unzip(atl08_zip,exdir = outdir)
+atl08_path <- system.file("extdata",
+  "atl08_clip.h5",
+  package = "ICESat2VegR"
+)
 
 # Reading ATL03 data (h5 file)
+atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 
 # Reading ATL08 data (h5 file)
+atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 
 # Joining ATL03 and ATL08 photons attributes
-atl03_atl08_dt<-ATL03_ATL08_join(atl03_h5,atl08_h5)
+atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
 head(atl03_atl08_dt)
 
 # Specifying the path to shapefile
-polygon_filepath <- system.file("extdata", "polygon.shp", package = "ICESat2VegR")
+polygon_filepath <- system.file("extdata",
+  "clip_geom.shp",
+  package = "ICESat2VegR"
+)
 
 # Reading shapefile as sf object
 polygon <- terra::vect(polygon_filepath)
 
 # Clipping ATL08 terrain attributes by Geometry
-atl03_atl08_dt_clip <- ATL03_ATL08_photons_attributes_dt_clipGeometry(atl03_atl08_dt, polygon, split_by = "FID")
+atl03_atl08_dt_clip <- ATL03_ATL08_photons_attributes_dt_clipGeometry(
+  atl03_atl08_dt,
+  polygon,
+  split_by = "id"
+)
+
 head(atl03_atl08_dt_clip)
 
 close(atl03_h5)

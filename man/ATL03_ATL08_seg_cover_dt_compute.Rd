@@ -118,7 +118,7 @@ mySetOfMetrics <- function(x) {
     min = min(x), # Min of x
     max = max(x), # Max of x
     mean = mean(x), # Mean of x
-    sd = sd(x) # Sd of x
+    sd = sd(x), # Sd of x
     h_canopy = quantile(x,0.98)
   )
   return(metrics)

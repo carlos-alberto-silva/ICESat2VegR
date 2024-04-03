@@ -212,7 +212,7 @@ setRefClass("icesat2.atl03atl08_dt")
 
 
 h5closeall <- function(con, ...) {
-  try(con$h5$close_all(), silent = TRUE)
+  con$close_all()
 }
 
 
@@ -284,9 +284,9 @@ setMethod("close", signature = c("icesat2.h5"), h5closeall)
 #'
 #' close(atl03_h5)
 #' close(atl08_h5)
-#' @export
 #' @method plot icesat2.atl03atl08_dt
 #' @rdname plot
+#' @export
 setMethod(
   f = "plot",
   signature("icesat2.atl03atl08_dt", y = "character"),
@@ -298,7 +298,6 @@ setMethod(
     } else {
       the_beam <- beam
     }
-    
     xdt <- x[beam %in% the_beam, .SD, .SDcols = c("dist_ph_along", y, "classed_pc_flag")]
     params <- list(...)
 
@@ -306,7 +305,7 @@ setMethod(
       params$xlim <- range(xdt$dist_ph_along)
     }
     if (is.null(params$ylim)) {
-      params$ylim <- range(xdt[, get(y)], na.rm = TRUE)
+      params$ylim <- range(xdt[[y]])
     }
 
     mask <- xdt$dist_ph_along >= params$xlim[1] &
@@ -339,6 +338,16 @@ setMethod(
     })
   }
 )
+
+#' @export
+setMethod(
+  f = "plot",
+  signature("icesat2.atl03atl08_dt", "missing"),
+  definition = function(x, ...) {
+    plot(x, y = "ph_h", ...)
+  }
+)
+
 
 #' Plot ATL08 photons
 #'

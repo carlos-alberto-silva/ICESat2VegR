@@ -20,36 +20,31 @@
 #'
 #' @examples
 #' outdir <- tempdir()
-#' atl03_zip <- system.file("extdata",
-#'   "ATL03_20220401221822_01501506_005_01.zip",
-#'   package = "ICESat2VegR"
-#' )
-#'
-#' atl08_zip <- system.file("extdata",
-#'   "ATL08_20220401221822_01501506_005_01.zip",
-#'   package = "ICESat2VegR"
-#' )
 #'
 #' # Unzipping ATL03 file
-#' atl03_path <- unzip(atl03_zip, exdir = outdir)
+#' atl03_path <- system.file("extdata",
+#'   "atl03_clip.h5",
+#'   package = "ICESat2VegR"
+#' )
 #'
 #' # Unzipping ATL08 file
-#' atl08_path <- unzip(atl08_zip, exdir = outdir)
-
+#' atl08_path <- system.file("extdata",
+#'   "atl08_clip.h5",
+#'   package = "ICESat2VegR"
+#' )
 #' # Reading ATL03 data (h5 file)
-#' atl03_h5 <- ATL08_read(atl03_path = atl03_path)
+#' atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 #'
 #' # Reading ATL08 data (h5 file)
 #' atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 #'
 #' # # Extracting ATL03 and ATL08 photons and heights
 #' atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
-#' head(atl03_atl08_dt)
 #'
-#' # Computing the mean of ph_h attribute at 0.05 degree grid cell
-#' mean_ph_h <- ATL03_ATL08_photons_attributes_dt_gridStat(atl03_atl08_dt, func = mean(ph_h), res = 0.005)
+#' # Computing the mean of ph_h attribute at 0.0002 degree grid cell
+#' mean_ph_h <- ATL03_ATL08_photons_attributes_dt_gridStat(atl03_atl08_dt, func = mean(ph_h), res = 0.0002)
 #'
-#' plot(mean_ph_h, xlim=c(-107.5,-106.5),ylim=c(38,39))
+#' plot(mean_ph_h)
 #'
 #' # Define your own function
 #' mySetOfMetrics <- function(x) {
@@ -62,29 +57,27 @@
 #'   return(metrics)
 #' }
 #'
-#' # Computing a series of ph_h stats at 0.05 degree grid cell from customized function
-#' ph_h_metrics <- ATL03_ATL08_photons_attributes_dt_gridStat(atl03_atl08_dt, func = mySetOfMetrics(ph_h), res = 0.005)
+#' # Computing a series of ph_h stats at 0.0002 degree grid cell from customized function
+#' ph_h_metrics <- ATL03_ATL08_photons_attributes_dt_gridStat(atl03_atl08_dt, func = mySetOfMetrics(ph_h), res = 0.0002)
 #'
-#' plot(ph_h_metrics, xlim=c(-107.5,-106.5),ylim=c(38,39))
+#' plot(ph_h_metrics)
 #'
 #' close(atl03_h5)
 #' close(atl08_h5)
 #' @import data.table lazyeval
 #' @export
 ATL03_ATL08_photons_attributes_dt_gridStat <- function(atl03_atl08_dt,
-                                           func,
-                                           res = 0.5,
-                                           ph_class = c(2, 3),
-                                           beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
-                                           quality_ph = 0,
-                                           night_flag = 1) {
+                                                       func,
+                                                       res = 0.5,
+                                                       ph_class = c(2, 3),
+                                                       beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
+                                                       quality_ph = 0,
+                                                       night_flag = 1) {
   if (!inherits(atl03_atl08_dt, "icesat2.atl03atl08_dt")) {
     stop("atl03_atl08_dt needs to be an object of class 'icesat2.atl03atl08_dt' ")
   }
 
-  if (any(is.na(atl03_atl08_dt))) {
-    atl03_atl08_dt2 <- na.omit(atl03_atl08_dt)
-  }
+  atl03_atl08_dt2 <- na.omit(atl03_atl08_dt)
 
   atl03_atl08_dt2 <- atl03_atl08_dt2[
     atl03_atl08_dt2$classed_pc_flag %in% ph_class &
@@ -104,12 +97,7 @@ ATL03_ATL08_photons_attributes_dt_gridStat <- function(atl03_atl08_dt,
 
   call <- substitute(func)
 
-  vect <- terra::vect(
-    data.table(lon_ph=atl03_atl08_dt$lon_ph,
-               lat_ph=atl03_atl08_dt$lat_ph),
-    geom = c("lon_ph", "lat_ph"),
-    crs = "epsg:4326"
-  )
+  vect <- to_vect(atl03_atl08_dt2)
   layout <- terra::rast(terra::ext(vect), resolution = res, vals = NA, crs = "epsg:4326")
 
   atl03_atl08_dt2[, cells := terra::cells(layout, vect)[, 2]]
@@ -131,9 +119,9 @@ ATL03_ATL08_photons_attributes_dt_gridStat <- function(atl03_atl08_dt,
 
 
   for (metric in 1:n_metrics) {
-    output[[metric]][metrics$cells] <- metrics[[metric+1]]
+    output[[metric]][metrics$cells] <- metrics[[metric + 1]]
   }
 
-  names(output)<-paste0(paste0(call)[2],"_",names(metrics)[-1])
+  names(output) <- names(metrics)[-1]
   return(output)
 }

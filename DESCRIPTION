@@ -32,6 +32,7 @@ RdMacros:
     Rdpack
 Collate: 
     'ANNIndex.R'
+    'lazy_applier.R'
     'ATL03_ATL08_compute_attributes_dt_segStat.R'
     'utmTools.R'
     'ATL03_ATL08_photons_attributes_dt_LAS.R'
@@ -55,6 +56,7 @@ Collate:
     'ATL03_h5_clip.R'
     'ATL03_h5_clipGeometry.R'
     'ATL03_photons_attributes_dt.R'
+    'lasTools.R'
     'ATL03_photons_attributes_dt_LAS.R'
     'ATL03_photons_attributes_dt_clipBox.R'
     'ATL03_photons_attributes_dt_clipGeometry.R'
@@ -92,7 +94,6 @@ Collate:
     'gee-base.R'
     'gee-filterBounds.R'
     'gee-search.R'
-    'lazy_applier.R'
     'map_create.R'
     'model_tools.R'
     'model_fit.R'

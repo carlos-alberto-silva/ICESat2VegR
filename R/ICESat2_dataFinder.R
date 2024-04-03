@@ -29,7 +29,7 @@ PAGE_SIZE <- 2000
 #' it will return links to be passed in the function [ICESat2VegR::ICESat2_dataDownload] for data download.
 #'
 #' @return Return either a vector object pointing out the path to
-#' ICESat-2 ATLAS data found within the boundary box coordinates provided for data download or a vector 
+#' ICESat-2 ATLAS data found within the boundary box coordinates provided for data download or a vector
 #' object containing the granules hosted on the cloud for cloud computing directly.
 #'
 #' @seealso bbox: Defined by the upper left and lower right corner coordinates,
@@ -54,7 +54,7 @@ PAGE_SIZE <- 2000
 #'
 #' # Extracting the path to ICESat-2 ATLAS data for the specified boundary box coordinates
 #' # for data download
-#' ATLAS02b_list <- ICESat2_dataFinder(
+#' ATLAS02b_list <- ATLAS_dataFinder(
 #'   short_name = "ATL08",
 #'   lower_left_lon,
 #'   lower_left_lat,
@@ -65,18 +65,18 @@ PAGE_SIZE <- 2000
 #' )
 #' @import jsonlite curl magrittr reticulate
 #' @export
-ICESat2_dataFinder <- function(short_name,
-                               lower_left_lon,
-                               lower_left_lat,
-                               upper_right_lon,
-                               upper_right_lat,
-                               version = "006",
-                               daterange = NULL,
-                               persist = TRUE,
-                               cloud_hosted = TRUE,
-                               cloud_computing = FALSE) {
+ATLAS_dataFinder <- function(short_name,
+                             lower_left_lon,
+                             lower_left_lat,
+                             upper_right_lon,
+                             upper_right_lat,
+                             version = "006",
+                             daterange = NULL,
+                             persist = TRUE,
+                             cloud_hosted = TRUE,
+                             cloud_computing = FALSE) {
   if (cloud_computing == TRUE) {
-    ICESat2_dataFinder_cloud(
+    ATLAS_dataFinder_cloud(
       short_name,
       lower_left_lon,
       lower_left_lat,
@@ -87,7 +87,7 @@ ICESat2_dataFinder <- function(short_name,
       persist
     )
   } else {
-    ICESat2_dataFinder_direct(
+    ATLAS_dataFinder_direct(
       short_name,
       lower_left_lon,
       lower_left_lat,

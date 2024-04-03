@@ -63,7 +63,7 @@
 #'     min = min(x), # Min of x
 #'     max = max(x), # Max of x
 #'     mean = mean(x), # Mean of x
-#'     sd = sd(x) # Sd of x
+#'     sd = sd(x), # Sd of x
 #'     h_canopy = quantile(x,0.98)
 #'   )
 #'   return(metrics)
@@ -107,9 +107,9 @@ ATL03_ATL08_seg_cover_dt_compute <- function(
 
 
   # Add data.table operator
-  call <- lazy_call(func)
+  call <- substitute(func)
 
-  call2 <- lazy_call(seg_position(lon_ph, lat_ph))
+  call2 <- substitute(seg_position(lon_ph, lat_ph))
 
   if (is.null(segment)) {
     metrics <- lazy_apply_dt_call(dt = atl03_atl08_dt2, call = call)

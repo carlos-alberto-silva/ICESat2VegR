@@ -1,7 +1,7 @@
 #' @include class.icesat2.R ATL08_read.R
 #' @import data.table hdf5r
 ATL08_h5_clip <- function(atl08, output, clip_obj, landSegmentsMask_fn) {
-  obj_type <- dataset.rank <- dataset.dims <- NA
+  dataset.rank <- dataset.dims <- name <- NA
 
   # Create a new HDF5 file
   newFile <- hdf5r::H5File$new(output, mode = "w")
@@ -78,6 +78,13 @@ ATL08_h5_clip <- function(atl08, output, clip_obj, landSegmentsMask_fn) {
       grepl(segmentsSize, dataset.dims) & dataset.rank == 2
     ]$name
 
+    allCuts <- c(photonsCut, segmentsCut, segmentsCut2D)
+
+    nonCuts <- datasets_dt[
+      !name %in% allCuts
+    ]$name
+
+
     qtyList <- lapply(datasets_dt$dataset.dims, function(x) eval(parse(text = gsub("x", "*", x))))
     qty <- sum(unlist(qtyList))
 
@@ -94,6 +101,10 @@ ATL08_h5_clip <- function(atl08, output, clip_obj, landSegmentsMask_fn) {
     clipByMask2D(beam, updateBeam, segmentsCut2D, landSegmentsMask, pb)
     clipByMask(beam, updateBeam, photonsCut, photonsMask, pb)
     updateBeam[["land_segments/ph_ndx_beg"]][] <- c(1, cumsum(updateBeam[["land_segments/n_seg_ph"]][])[-1])
+
+    for (dataset in nonCuts) {
+      copyDataset(beam, updateBeam, dataset, beam[[dataset]][], pb)
+    }
 
     close(pb)
   }

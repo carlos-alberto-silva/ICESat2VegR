@@ -8,7 +8,8 @@ setRefClass("icesat2.atl03_atl08_seg_dt")
 #'
 #' @usage ATL08_read(atl08_path)
 #'
-#' @param atl03_atl08_dt [`icesat2.atl03_atl08_dt-class`]. The output of the [`ATL03_ATL08_photons_attributes_dt_join()`].
+#' @param atl03_atl08_dt [`icesat2.atl03_atl08_dt-class`].
+#' The output of the [`ATL03_ATL08_photons_attributes_dt_join()`].
 #' @param segment_length [`numeric-class`]. The desired segment length to split the photons.
 #' @param centroid character. Method used to calculate the segment centroid, either "mean" or "midpoint",
 #' see details. Default 'mean'.
@@ -29,38 +30,56 @@ setRefClass("icesat2.atl03_atl08_seg_dt")
 #' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
 #'
 #' @examples
-#' # Specifying the path to ICESat-2 ATL08 data (zip file)
-#' outdir <- tempdir()
-#' atl08_fp_zip <- system.file("extdata",
-#'   "ATL0802_A_2019108080338_O01964_T05337_02_001_01_sub.zip",
+# Specifying the path to ICESat-2 ATL03 and ATL08 data
+#' atl03_path <- system.file("extdata",
+#'   "atl03_clip.h5",
 #'   package = "ICESat2VegR"
 #' )
 #'
-#' # Unzipping ICESat-2 ATL08 data
-#' atl08_path <- unzip(atl08_fp_zip, exdir = outdir)
+#' atl08_path <- system.file("extdata",
+#'   "atl08_clip.h5",
+#'   package = "ICESat2VegR"
+#' )
 #'
 #' # Reading ICESat-2 ATL08 data (h5 file)
-#' atl08 <- ATL08_read(atl08_path = atl08_path)
+#' atl03_h5 <- ATL03_read(atl03_path = atl03_path)
+#' atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 #'
-#' close(atl08)
+#' atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
+#'
+#' atl03_atl08_dt_seg <- ATL03_ATL08_segment_create(atl03_atl08_dt,
+#'   segment_length = 30,
+#'   centroid = "mean",
+#'   output = NA,
+#'   overwrite = FALSE
+#' )
+#'
+#' head(atl03_atl08_dt_seg)
+#'
+#' close(atl03_h5)
+#' close(atl08_h5)
 #' @import hdf5r
 #' @export
-ATL03_ATL08_segment_create <- function(atl03_atl08_dt, segment_length, centroid = "mean", output = NA, overwrite = FALSE) {
+ATL03_ATL08_segment_create <- function(
+    atl03_atl08_dt,
+    segment_length,
+    centroid = "mean",
+    output = NA,
+    overwrite = FALSE) {
   stopifnot(
     "Object atl03_atl08_dt is not from the icesat2.atl03atl08_dt class" =
       inherits(atl03_atl08_dt, "icesat2.atl03atl08_dt")
   )
 
-  .SD <- data.table::.SD
   `:=` <- data.table::`:=`
 
-  lat_ph <- lon_ph <- dist_ph_along <-
+  beam <- lat_ph <- lon_ph <- dist_ph_along <-
     centroid_x <- centroid_y <- segment_id <- NA
 
-  atl03_atl08_dt[
+  suppressWarnings(atl03_atl08_dt[
     ,
     segment_id := floor(dist_ph_along / segment_length) + 1,
-  ]
+  ])
 
   dt <- atl03_atl08_dt
 

@@ -6,10 +6,10 @@
 #'
 #' @param atl08_terrain_dt A atl08_terrain_dt object (output of [ICESat2VegR::ATL08_terrain_attributes_dt()] function).
 #' An S4 object of class [ICESat2VegR::icesat2.atl08_dt]
-#' @param xmin Numeric. West longitude (x) coordinate of bounding rectangle, in decimal degrees.
-#' @param xmax Numeric. East longitude (x) coordinate of bounding rectangle, in decimal degrees.
-#' @param ymin Numeric. South latitude (y) coordinate of bounding rectangle, in decimal degrees.
-#' @param ymax Numeric. North latitude (y) coordinate of bounding rectangle, in decimal degrees.
+#' @param lower_left_lon Numeric. West longitude (x) coordinate of bounding rectangle, in decimal degrees.
+#' @param upper_right_lon Numeric. East longitude (x) coordinate of bounding rectangle, in decimal degrees.
+#' @param lower_left_lat Numeric. South latitude (y) coordinate of bounding rectangle, in decimal degrees.
+#' @param upper_right_lat Numeric. North latitude (y) coordinate of bounding rectangle, in decimal degrees.
 #'
 #' @return Returns an S4 object of class [ICESat2VegR::icesat2.atl08_dt]
 #' containing the ATL08 Terrain attributes.
@@ -28,7 +28,7 @@
 #' atl08_path <- unzip(atl08_zip, exdir = outdir)
 #'
 #' # Reading ATL08 data (h5 file)
-# atl08_h5<-ATL08_read(atl08_path=atl08_path)
+#' atl08_h5 <- ATL08_read(atl08_path=atl08_path)
 #'
 #' # Extracting ATL08-derived terrain Metrics
 #' atl08_terrain_dt <- ATL08_terrain_attributes(atl08_h5 = atl08_h5)

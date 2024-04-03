@@ -48,18 +48,25 @@ ICESat2.h5_local <- R6::R6Class("ICESat2.h5_local", list(
   attr = function(attribute) {
     hdf5r::h5attr(self$h5, attribute)
   },
-  close_all = function() {
+  close_all = function(silent = TRUE) {
     if (self$isOpen) {
       self$isOpen <- FALSE
-      try(
+      tryCatch(
         {
           self$h5$close_all()
         },
         error = function(err) {
           self$h5$close()
-        }
+        },
+        silent = TRUE
       )
     }
+  },
+  print = function(...) {
+    cat("Class: ICESat2.h5_local\n")
+    cat("=============================\n")
+    cat(paste0(self$ls(), collapse = "\n"))
+    cat("\n")
   }
 ))
 

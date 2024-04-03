@@ -11,32 +11,32 @@ bbox <- terra::ext(geom)
 ##################################
 ## RETRIEVE ICESAT-2 DATA
 ##################################
-years <- c(2019:2022)
+years <- c(2022)
 aprilPlaceholder <- "%s-04-01"
 mayPlaceholder <- "%s-05-31"
 
 all_granules <- c()
 
 for (year in years) {
-    granules <- ICESat2VegR::ICESat2_finder(
-        short_name = "ATL08",
-        version = "006",
-        daterange = c(gettextf(aprilPlaceholder, year), gettextf(mayPlaceholder, year)),
-        lower_left_lon = bbox$xmin,
-        lower_left_lat = bbox$ymin,
-        upper_right_lon = bbox$xmax,
-        upper_right_lat = bbox$ymax
-    )
-    all_granules <- c(all_granules, granules)
+  granules <- ICESat2VegR::ATLAS_dataFinder(
+    short_name = "ATL08",
+    version = "006",
+    daterange = c(gettextf(aprilPlaceholder, year), gettextf(mayPlaceholder, year)),
+    lower_left_lon = bbox$xmin,
+    lower_left_lat = bbox$ymin,
+    upper_right_lon = bbox$xmax,
+    upper_right_lat = bbox$ymax
+  )
+  all_granules <- c(all_granules, granules)
 }
 
-ICESat2_download(all_granules, "Z:\\01_Projects\\04_NASA_ICESat2\\00_data\\04_ICESat2_datasets\\StudySite")
+ATLAS_dataDownload(all_granules, "Z:\\01_Projects\\04_NASA_ICESat2\\00_data\\04_ICESat2_datasets\\StudySite")
 granules <- list.files("Z:\\01_Projects\\04_NASA_ICESat2\\00_data\\04_ICESat2_datasets\\StudySite", "ATL08.*h5", full.names = TRUE)
 
 power_beams <- c(
-    "gt1r",
-    "gt2r",
-    "gt3r"
+  "gt1r",
+  "gt2r",
+  "gt3r"
 )
 
 target_attributes <- c("h_canopy")
@@ -44,9 +44,9 @@ target_attributes <- c("h_canopy")
 all_dt <- list()
 ii <- 1
 for (granule in granules) {
-    atl08 <- ATL08_read(granule)
-    all_dt[[ii]] <- ATL08_seg_attributes_dt(atl08, beam = power_beams, attribute = target_attributes)[h_canopy < 100]
-    ii <- ii + 1
+  atl08 <- ATL08_read(granule)
+  all_dt[[ii]] <- ATL08_seg_attributes_dt(atl08, beam = power_beams, attribute = target_attributes)[h_canopy < 100]
+  ii <- ii + 1
 }
 dt <- data.table::rbindlist(all_dt)
 dt
@@ -60,45 +60,44 @@ nrow(dt2)
 ## GET EARTH ENGINE STACK
 ################################
 aoi <- ee$Geometry$BBox(
-    west = bbox$xmin,
-    south = bbox$ymin,
-    east = bbox$xmax,
-    north = bbox$ymax
+  west = bbox$xmin,
+  south = bbox$ymin,
+  east = bbox$xmax,
+  north = bbox$ymax
 )
 
 aoi <- aoi$buffer(30)
 
-search <- search_datasets("hls", "landsat")
+search <- search_datasets("hls")
 id <- get_catalog_id(search)
 collection <- ee$ImageCollection(id)
 
 
-cloudMask <-
-    2^0 +
-    2^1 +
-    2^2
+cloudMask <- 2^0 +
+  2^1 +
+  2^2
 
 hlsMask <- function(image) {
-    image$updateMask(
-        !(image[["Fmask"]] & cloudMask)
-    )
+  image$updateMask(
+    !(image[["Fmask"]] & cloudMask)
+  )
 }
 
 waterMask <- function(image) {
-    image$updateMask(
-        image[["B5"]] >= 0.2
-    )
+  image$updateMask(
+    image[["B5"]] >= 0.2
+  )
 }
 
 
 hls <- collection$
-    filterBounds(aoi)$
-    filterDate("2020-02-01", "2020-05-31")$
-    filter("CLOUD_COVERAGE < 10")$
-    map(hlsMask)$
-    map(waterMask)$
-    median()$
-    clip(aoi)
+  filterBounds(aoi)$
+  filterDate("2020-02-01", "2020-05-31")$
+  filter("CLOUD_COVERAGE < 10")$
+  map(hlsMask)$
+  map(waterMask)$
+  median()$
+  clip(aoi)
 
 
 
@@ -116,11 +115,11 @@ degree_to_meter_factor <- 111139
 sampled <- sample(dt2, method = spacedSampling(100, radius = 30 / degree_to_meter_factor))
 
 sampled_vect <- terra::vect(
-    as.data.frame(sampled[, .SD, .SDcols = c("beam", "longitude", "latitude", "h_canopy")]),
-    geom = c("longitude", "latitude")
+  as.data.frame(sampled[, .SD, .SDcols = c("beam", "longitude", "latitude", "h_canopy")]),
+  geom = c("longitude", "latitude")
 )
 
-out_dt <- seg_gee_ancillary_dt_extract(fullStack, sampled_vect, scale = 30)
+out_dt <- seg_gee_ancillary_dt_extract(fullStack, sampled_vect, scale = 30, chunk_size = 1000)
 
 x <- out_dt[, .SD, .SDcols = names(fullStack)]
 y <- out_dt[, "h_canopy"]
@@ -148,22 +147,22 @@ forest_height_palette <- c("#ffffff", "#8b4513", "#99cc99", "#006600", "#004d00"
 
 
 vis <- result$visualize(
-    bands = "classification",
-    min = 0,
-    max = 30,
-    palette = forest_height_palette
+  bands = "classification",
+  min = 0,
+  max = 30,
+  palette = forest_height_palette
 )
 url <- vis$getMapId()$tile_fetcher$url_format
 
 library(leaflet)
-center = apply(matrix(bbox, nrow = 2), 2, mean)
+center <- apply(matrix(bbox, nrow = 2), 2, mean)
 coords <- terra::geom(sampled_vect)
 leaflet_map <- leaflet::leaflet() %>%
   addProviderTiles(providers$Esri.WorldImagery, group = "Other") %>%
   leaflet::addTiles(
     urlTemplate = url,
     options = leaflet::tileOptions(opacity = 1),
-    group = "Landsat"
+    group = "h_canopy"
   ) %>%
   leaflet::addCircleMarkers(
     lng = coords[, "x"],
@@ -173,9 +172,17 @@ leaflet_map <- leaflet::leaflet() %>%
     fillOpacity = 1,
     fillColor = "yellow"
   ) %>%
+  leaflet::addLegend(
+    position = "bottomright",
+    pal = colorNumeric(forest_height_palette, 0:30),
+    values = seq(0, 30, length = 3),
+    opacity = 1,
+    title = "H_canopy"
+  ) %>%
   addLayersControl(
-    overlayGroups = c("Landsat"),
+    overlayGroups = c("h_canopy"),
     options = layersControlOptions(collapsed = FALSE)
   ) %>%
   leaflet::setView(lng = center[1], lat = center[2], zoom = 11)
 leaflet_map
+
