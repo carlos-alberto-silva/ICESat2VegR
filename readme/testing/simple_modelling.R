@@ -1,9 +1,12 @@
 # devtools::install_deps()
+# devtools::document()
 # devtools::install()
 
 library(ICESat2VegR)
-library(terra)
-library(magrittr)
+#library(terra)
+#library(magrittr)
+
+# ICESat2VegR_configure()
 
 geom <- terra::vect("Z:/01_Projects/04_NASA_ICESat2/00_data/01_SHPs/all_boundary.shp")
 bbox <- terra::ext(geom)
@@ -114,10 +117,8 @@ set.seed(47289143)
 degree_to_meter_factor <- 111139
 sampled <- sample(dt2, method = spacedSampling(100, radius = 30 / degree_to_meter_factor))
 
-sampled_vect <- terra::vect(
-  as.data.frame(sampled[, .SD, .SDcols = c("beam", "longitude", "latitude", "h_canopy")]),
-  geom = c("longitude", "latitude")
-)
+
+sampled_vect <- to_vect(sampled)
 
 out_dt <- seg_gee_ancillary_dt_extract(fullStack, sampled_vect, scale = 30, chunk_size = 1000)
 
@@ -131,9 +132,10 @@ selected_properties <- res$properties[-nrow(res)]
 x_selected <- x[, .SD, .SDcols = selected_properties]
 
 rf_model <- model_fit(x_selected, y, method = "randomForest")
-predicted <- rf_model %>% predict(x)
+class(rf_model)
 
-stat_model(y[[1]], predicted)
+predicted <- predict(rf_model, x)
+stats_model(y[[1]], predicted, xlim = c(0, 35), ylim = c(0, 35))
 
 
 result <- map_create(rf_model, fullStack)

@@ -10,7 +10,6 @@ License: GPL (>= 3)
 Imports:
   dplyr, 
   e1071,
-  formattable,
   gdalBindings,
   getPass,
   hdf5r,
@@ -99,7 +98,7 @@ Collate:
     'model_fit.R'
     'predict.R'
     'sample.R'
-    'stat_model.R'
+    'stats_model.R'
     'to_vect.R'
     'var_select.R'
 Suggests: 
