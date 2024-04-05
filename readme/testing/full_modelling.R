@@ -14,6 +14,7 @@ aprilPlaceholder <- "%s-04-01"
 mayPlaceholder <- "%s-05-31"
 
 all_granules <- c()
+year <- 2022
 
 for (year in years) {
   granules <- ICESat2VegR::ICESat2_finder(
@@ -58,6 +59,9 @@ dt2 <- ATL08_seg_attributes_dt_clipGeometry(dt, polygon = geom, split_by = "laye
 nrow(dt2)
 
 
+geom <- terra::vect("Z:/01_Projects/04_NASA_ICESat2/00_data/01_SHPs/all_boundary.shp")
+bbox <- terra::ext(geom)
+
 aoi <- ee$Geometry$BBox(
   west = bbox$xmin,
   south = bbox$ymin,
@@ -67,7 +71,7 @@ aoi <- ee$Geometry$BBox(
 
 aoi <- aoi$buffer(30)
 
-search <- search_datasets("hls", "landsat")
+search <- search_datasets("hls")
 
 # get_catalog_id <- get_catalog_path
 id <- get_catalog_id(search)
@@ -91,14 +95,13 @@ waterMask <- function(image) {
   )
 }
 
-
 hls <- collection$
   filterBounds(aoi)$
-  filterDate("2020-02-01", "2020-05-31")$
+  filterDate(gettextf(aprilPlaceholder, year), gettextf(mayPlaceholder, year))$
   filter("CLOUD_COVERAGE < 10")$
   map(hlsMask)$
   map(waterMask)$
-  median() $
+  median()$
   clip(aoi)
 
 
@@ -199,30 +202,30 @@ stackDem <- c(elevation, the_slope, the_aspect)$clip(aoi)
 ## SENTINEL 1C
 #############################
 
-s1c = ee$ImageCollection("COPERNICUS/S1_GRD")$
+s1c <- ee$ImageCollection("COPERNICUS/S1_GRD")$
   filterBounds(aoi)$
-  filterDate("2020-02-01", "2020-05-31")$
-  filter(ee$Filter$listContains('transmitterReceiverPolarisation', 'VV'))$
-  filter(ee$Filter$listContains('transmitterReceiverPolarisation', 'VH'))$
-  filter(ee$Filter$eq('instrumentMode', 'IW'))
+  filterDate(gettextf(aprilPlaceholder, year), gettextf(mayPlaceholder, year))$
+  filter(ee$Filter$listContains("transmitterReceiverPolarisation", "VV"))$
+  filter(ee$Filter$listContains("transmitterReceiverPolarisation", "VH"))$
+  filter(ee$Filter$eq("instrumentMode", "IW"))
 
-s1c = s1c$sort('system:time_start', FALSE)
-s1c = s1c$reduce(ee$Reducer$firstNonNull())
-s1c = s1c[['VV_first', 'VH_first']]
-names(s1c) = c('vv', 'vh')
-s1c = as.integer(s1c * 100)
+s1c <- s1c$sort("system:time_start", FALSE)
+s1c <- s1c$reduce(ee$Reducer$firstNonNull())
+s1c <- s1c[["VV_first", "VH_first"]]
+names(s1c) <- c("vv", "vh")
+s1c <- as.integer(s1c * 100)
 
 # Radar vegetation index
-vv = s1c[["vv"]]
-vh = s1c[["vh"]]
+vv <- s1c[["vv"]]
+vh <- s1c[["vh"]]
 
 # RVI
-s1c[["rvi"]] = as.integer(sqrt(vv/(vv+vh))*(vv/vh) * 10000)
+s1c[["rvi"]] <- as.integer(sqrt(vv / (vv + vh)) * (vv / vh) * 10000)
 
 # COPOLs
-s1c[["copol"]] = as.integer((vv / vh) * 10000)
-s1c[["copol2"]] = as.integer(((vv-vh)/(vv+vh)) * 10000)
-s1c[["copol3"]] = as.integer(vh / vv) * 10000)
+s1c[["copol"]] <- as.integer((vv / vh) * 10000)
+s1c[["copol2"]] <- as.integer(((vv - vh) / (vv + vh)) * 10000)
+s1c[["copol3"]] <- as.integer((vh / vv) * 10000
 
 
 
@@ -321,44 +324,44 @@ nrow(sampled)
 
 
 sampled_vect <- terra::vect(
-  as.data.frame(sampled[,.SD,.SDcols=c("beam","longitude","latitude","h_canopy")]),
+  as.data.frame(sampled[, .SD, .SDcols = c("beam", "longitude", "latitude", "h_canopy")]),
   geom = c("longitude", "latitude")
 )
 
 names(sampled_vect)
 
-ii = 1
+ii <- 1
 
 # fullStack = hls
 ee_sampled <- extract(fullStack, sampled_vect, 30)
 
-INT_MAX = 2147483647
+INT_MAX <- 2147483647
 
 
 
-#### INPUT ################ 
-x = ee_sampled
-y_name = "h_canopy"
-nTrees = 100
-train_split = 0.7
+#### INPUT ################
+x <- ee_sampled
+y_name <- "h_canopy"
+nTrees <- 100
+train_split <- 0.7
 ###########################
 
-selected_properties = ee$List(list())
+selected_properties <- ee$List(list())
 ee_bandNames <- x$first()$propertyNames()
 ee_bandNames <- ee_bandNames$remove("system:index")$remove("h_canopy")$remove("beam")
 n <- ee_sampled$size()
 train_size <- n$multiply(train_split)$round()$int()
-validation_size = n$subtract(train_size)
+validation_size <- n$subtract(train_size)
 
-result = list(
-    property = ee$List(list()),
-    rmse = ee$List(list())
-  )
+result <- list(
+  property = ee$List(list()),
+  rmse = ee$List(list())
+)
 
 set.seed(47289143)
 for (band in ee_bandNames$getInfo()) {
   current <- selected_properties$add(band)
-  
+
   rmseList <- ee$List(list())
   message(gettextf("Testing %s", current$getInfo()), appendLF = TRUE)
   for (i in 1:100) {
@@ -366,20 +369,20 @@ for (band in ee_bandNames$getInfo()) {
     x <- x$randomColumn(seed = floor(runif(1) * INT_MAX))
     train_sample <- x$limit(train_size, "random")$select(current$add(y_name))
     validation_sample <- x$limit(validation_size, "random", ascending = FALSE)$select(current$add(y_name))
-    
-    
+
+
     randomForestClassifier <- randomForestRegression(train_sample, property_name = y_name, train_properties = current, nTrees = nTrees)
     classification <- validation_sample$classify(randomForestClassifier)
     classification2 <- classification$map(function(f) {
       sqerror <- f$getNumber("h_canopy")$subtract(f$getNumber("classification"))$pow(2)
       f <- f$set(list(sqerror = sqerror))
-      return (f)
+      return(f)
     })
     rmse <- classification2$aggregate_mean("sqerror")$sqrt()
     rmseList <- rmseList$add(rmse)
   }
   message(appendLF = TRUE)
-  
+
   meanRmse <- rmseList$reduce(ee$Reducer$mean())
   result$rmse <- result$rmse$add(meanRmse)
   result$property <- result$property$add(band)
@@ -390,7 +393,7 @@ ee$Dictionary(result)$getInfo()
 result$property$getString(minIdx)$getInfo()
 
 
-pymain = reticulate::import_main()
+pymain <- reticulate::import_main()
 
 
 

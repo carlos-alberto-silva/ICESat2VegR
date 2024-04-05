@@ -43,6 +43,8 @@ ATL03.seg.map[["yaw"]] <- "geolocation/yaw"
 #' @param ATL03_h5 A ICESat-2 ATL03 object (output of [ATL03_read()] function).
 #' An S4 object of class [ICESat2VegR::icesat2.atl03_dt].
 #' @param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
+#' @param power_beam_filter Logical. If true will only get power beams, if FALSE will only
+#' retrieve weak beams, if NULL or default won't filter the beams.
 #' @param attributes Character vector indicating the attrivutes
 #'
 #' @return Returns an S4 object of class [data.table::data.table]
@@ -103,6 +105,7 @@ ATL03.seg.map[["yaw"]] <- "geolocation/yaw"
 #' @export
 ATL03_seg_attributes_dt <- function(atl03_h5,
                                     beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
+                                    power_beam_filter = NULL,
                                     attributes = c(
                                       "altitude_sc",
                                       "bounce_time_offset",
@@ -148,10 +151,14 @@ ATL03_seg_attributes_dt <- function(atl03_h5,
   `:=` <- data.table::`:=`
 
   # Check beams to select
-  groups_id <- atl03_h5$beams
-
-  check_beams <- groups_id %in% beam
-  beam <- groups_id[check_beams]
+  beam <- intersect(atl03_h5$beams, beam)
+  if (!is.null(power_beam_filter)) {
+    if (power_beam_filter == TRUE) {
+      beam <- intersect(beam, atl03_h5$power_beams)
+    } else if (power_beam_filter == FALSE) {
+      beam <- intersect(beam, atl03_h5$weak_beams)
+    }
+  }  
 
   seg.dt <- list()
 

@@ -9,6 +9,8 @@
 #' @param atl08_h5 A ICESat-2 ATL08 object (output of [ATL08_read()] function).
 #' An S4 object of class [ICESat2VegR::icesat2.atl08_dt].
 #' @param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
+#' @param power_beam_filter Logical. If true will only get power beams, if FALSE will only
+#' retrieve weak beams, if NULL or default won't filter the beams.
 #'
 #' @return Returns an S4 object of class [`icesat2.atl03atl08_dt-class`]
 #' containing the ATL08 computed photons attributes.
@@ -66,7 +68,7 @@
 #' @export
 ATL03_ATL08_photons_attributes_dt_join <- function(atl03_h5, atl08_h5,
                                                    beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
-                                                   na.rm = TRUE) {
+                                                   power_beam_filter = NULL) {
   night_flag <-
     ph_segment_id <-
     classed_pc_indx <-
@@ -91,11 +93,16 @@ ATL03_ATL08_photons_attributes_dt_join <- function(atl03_h5, atl08_h5,
   beam_atl08 <- intersect(beam, atl08_h5$beams)
 
   beam <- intersect(beam_atl03, beam_atl08)
-
+  if (!is.null(power_beam_filter)) {
+    if (power_beam_filter == TRUE) {
+      beam <- intersect(beam, atl03_h5$power_beams)
+    } else if (power_beam_filter == FALSE) {
+      beam <- intersect(beam, atl03_h5$weak_beams)
+    }
+  }
+  
   photon.dt <- list()
-
   pb <- utils::txtProgressBar(min = 0, max = length(beam), style = 3)
-
 
   i_s <- 0
   # i <- beam[2]

@@ -5,6 +5,8 @@ ICESat2.h5_cloud <- R6::R6Class("ICESat2.h5_cloud", list(
   inherit = "ICESat2.h5",
   h5 = NULL,
   beams = NULL,
+  power_beams = NULL,
+  weak_beams = NULL,
   initialize = function(h5) {
     if (inherits(h5, "icesat2.granules_cloud")) {
       stop("For now the package only works with one granule at a time
@@ -16,6 +18,17 @@ try with only one granule [i].")
       self$h5 <- h5file
       groups <- self$ls()
       self$beams <- grep("gt[1-3][lr]", groups, value = TRUE)
+      separated_beams <- list(
+        grep("l$", self$beams, value = TRUE),
+        grep("r$", self$beams, value = TRUE)
+      )
+
+      sc_orient <- self[["orbit_info/sc_orient"]][]
+      if (sc_orient == 2) {
+        warning("Cannot determine the power and weak beams from sc_orient == 2")
+      }
+      self$weak_beams <- separated_beams[[sc_orient + 1]]
+      self$power_beams <- setdiff(self$beams, self$weak_beams)
     } else {
       self$h5 <- h5
     }
@@ -29,7 +42,7 @@ try with only one granule [i].")
       pymain <- reticulate::import_main()
       pymain$keys <- list()
       pymain$h5 <- self$h5
-      
+
       reticulate::py_run_string("
       import h5py
       h5.visit(lambda key: keys.append(key) if isinstance(h5[key], h5py.Group) else None)")

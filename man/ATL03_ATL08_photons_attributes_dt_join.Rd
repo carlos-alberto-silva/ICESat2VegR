@@ -14,6 +14,9 @@ An S4 object of class \code{\linkS4class{icesat2.atl03_dt}}.}
 An S4 object of class \link{icesat2.atl08_dt}.}
 
 \item{beam}{Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")}
+
+\item{power_beam_filter}{Logical. If true will only get power beams, if FALSE will only
+retrieve weak beams, if NULL or default won't filter the beams.}
 }
 \value{
 Returns an S4 object of class \code{\linkS4class{icesat2.atl03atl08_dt}}

@@ -50,8 +50,7 @@ ATL08_seg_attributes_dt_clipBox <- function(atl08_seg_att_dt, lower_left_lon, up
     atl08_seg_att_dt <- atl08_seg_att_dt
   }
 
-  # xmin ymin xmax ymax
-  mask <-
+    mask <-
     atl08_seg_att_dt$longitude >= lower_left_lon &
       atl08_seg_att_dt$longitude <= upper_right_lon &
       atl08_seg_att_dt$latitude >= lower_left_lat &

@@ -7,7 +7,7 @@
 ATL03_ATL08_compute_seg_attributes_dt_segStat(
   atl03_atl08_seg_dt,
   list_expr,
-  ph_class = c(2, 3),
+  ph_class = c(0, 1, 2, 3),
   beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
   quality_ph = 0,
   night_flag = 1

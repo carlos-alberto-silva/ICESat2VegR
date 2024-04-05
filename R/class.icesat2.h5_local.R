@@ -5,23 +5,25 @@ ICESat2.h5_local <- R6::R6Class("ICESat2.h5_local", list(
   inherit = "ICESat2.h5",
   h5 = NULL,
   beams = NULL,
+  power_beams = NULL,
+  weak_beams = NULL,
   isOpen = TRUE,
   initialize = function(h5) {
     if (inherits(h5, "character")) {
       self$h5 <- H5File$new(h5, mode = "r")
       groups <- self$ls()
-      if (self$attr("short_name") == "ATL03") {
-        beams <- grep("gt[1-3][lr]", groups, value = TRUE)
-        beamsList <- list()
-        for (beam in beams) {
-          if ("geolocation" %in% self[[beam]]$ls()) {
-            beamsList[[""]] <- beam
-          }
-        }
-        self$beams <- as.character(beamsList)
-      } else {
-        self$beams <- grep("gt[1-3][lr]", groups, value = TRUE)
+      self$beams <- grep("gt[1-3][lr]", groups, value = TRUE)
+      separated_beams <- list(
+        grep("l$", self$beams, value = TRUE),
+        grep("r$", self$beams, value = TRUE)
+      )
+
+      sc_orient <- self[["orbit_info/sc_orient"]][]
+      if (sc_orient == 2) {
+        warning("Cannot determine the power and weak beams from sc_orient == 2")
       }
+      self$weak_beams <- separated_beams[[sc_orient + 1]]
+      self$power_beams <- setdiff(self$beams, self$weak_beams)
     } else {
       self$h5 <- h5
     }

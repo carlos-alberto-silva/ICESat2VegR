@@ -384,7 +384,7 @@ ATL08_seg_attributes_h5_gridStat <- function(
       atl08_h5 <- ATL08_read(atl08_path = atl08_path)
       vals <- ATL08_seg_attributes_dt(atl08_h5, attribute = cols[-c(1:2)])
 
-      vals <- ATL08_seg_attributes_dt_clipBox(vals, xmin = ul_lon, xmax = lr_lon, ymin = lr_lat, ymax = ul_lat)
+      vals <- ATL08_seg_attributes_dt_clipBox(vals, lower_left_lon = ul_lon, upper_right_lon =  lr_lon, lower_left_lon = lr_lat, upper_right_lat = ul_lat)
       # Use only night photons
       # cols_night_flag = c(setdiff(cols, "night_flag"))
       # vals = vals[night_flag == 1, cols_night_flag, with = FALSE]

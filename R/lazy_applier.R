@@ -11,9 +11,7 @@ lazy_apply_dt_call <- function(dt, call, group.by = "") {
   }
 
   call_string <-  as.character(list(call))
-  print(call_string)
   entire_call <-  paste0(dt.name, "[, ", call_string, ", ", group.by, "]")
-  print(entire_call)
 
   inner.env[[dt.name]] <- as.data.table(dt)
   result <- eval(parse(text = entire_call), inner.env)

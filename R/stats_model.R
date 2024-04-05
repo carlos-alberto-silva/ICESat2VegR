@@ -22,30 +22,32 @@
 #'            ylab="Predicted AGBD (Mg/ha)", pch=16)
 #'
 #' @export
-stats_model <- function(observed, predicted , plotstat=TRUE, legend="topleft", unit=" Mg/ha", ...)
-{
+stats_model <- function(observed, predicted, plotstat = TRUE, legend = "topleft", unit = " Mg/ha", ...) {
+  rmse <- sqrt(sum((predicted - observed)^2) / length(observed)) # Root mean square error
+  bias <- mean(predicted - observed) # bias
+  rmseR <- 100 * sqrt(sum((predicted - observed)^2) / length(observed)) / mean(observed)
+  biasR <- 100 * mean(predicted - observed) / mean(observed)
 
-  rmse <- sqrt( sum(( predicted - observed )^2)/length(observed) ) # Root mean square error
-  bias <- mean( predicted - observed ) # bias
-  rmseR <- 100 * sqrt( sum(( predicted - observed )^2)/length(observed) ) / mean( observed )
-  biasR <- 100 * mean( predicted - observed ) / mean( observed )
+  r <- cor(predicted, observed)
+  r2 <- summary(lm(observed ~ predicted))$r.squared
+  StatInfo <- data.frame(
+    Stat = c("rmse", "rmseR", "bias", "biasR", "r", "r2"),
+    Values = round(c(rmse, rmseR, bias, biasR, r, r2), 10)
+  )
 
-  r <- cor(predicted,observed)
-  r2<-summary(lm(observed~predicted))$r.squared
-  StatInfo<-data.frame( Stat=c("rmse","rmseR","bias","biasR","r","r2"),
-                        Values=round(c(rmse,rmseR,bias,biasR,r,r2),10))
-
-  #StatInfo2<-StatInfo
-  #StatInfo2$Values<-round(StatInfo2$Values,2)
-  if (plotstat==TRUE) {
-    plot(observed, predicted,...)
-    abline(0,1, col="red", lwd=2)
-    abline(lm(predicted~observed), col="black", lwd=2)
-    legend("topleft",c(gettextf("RMSE=%.4f %s",StatInfo[1,2],unit),
-                       paste0("RMSE=",StatInfo[2,2]," %"),
-                       paste0("Bias=",StatInfo[3,2],unit),
-                       paste0("Bias=",StatInfo[4,2]," %"),
-                       paste0("adj.R2=",StatInfo[6,2])),bty="n")
+  # StatInfo2<-StatInfo
+  # StatInfo2$Values<-round(StatInfo2$Values,2)
+  if (plotstat == TRUE) {
+    plot(observed, predicted, ...)
+    abline(0, 1, col = "red", lwd = 2)
+    abline(lm(predicted ~ observed), col = "black", lwd = 2)
+    legend("topleft", c(
+      gettextf("RMSE=%.4f %s", StatInfo[1, 2], unit),
+      paste0("RMSE=", StatInfo[2, 2], " %"),
+      paste0("Bias=", StatInfo[3, 2], unit),
+      paste0("Bias=", StatInfo[4, 2], " %"),
+      paste0("adj.R2=", StatInfo[6, 2])
+    ), bty = "n")
   }
 
   return(StatInfo)

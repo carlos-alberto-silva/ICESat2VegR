@@ -84,3 +84,12 @@ setMethod(
     generic_to_vect(x, "lon_ph", "lat_ph")
   }
 )
+
+#' @export
+setMethod(
+  "to_vect",
+  "icesat2.atl03_atl08_seg_dt",
+  function(x, ...) {
+    generic_to_vect(x, "longitude", "latitude")
+  }
+)

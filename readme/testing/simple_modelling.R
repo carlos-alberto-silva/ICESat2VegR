@@ -1,15 +1,19 @@
+# devtools::load_all()
 # devtools::install_deps()
 # devtools::document()
 # devtools::install()
 
+
 library(ICESat2VegR)
-#library(terra)
-#library(magrittr)
+# library(terra)
+# library(magrittr)
 
 # ICESat2VegR_configure()
 
 geom <- terra::vect("Z:/01_Projects/04_NASA_ICESat2/00_data/01_SHPs/all_boundary.shp")
 bbox <- terra::ext(geom)
+project_data_dir <- "Z:\\01_Projects\\04_NASA_ICESat2\\00_data\\04_ICESat2_datasets\\StudySite"
+year <- 2022
 
 ##################################
 ## RETRIEVE ICESAT-2 DATA
@@ -18,7 +22,7 @@ years <- c(2022)
 aprilPlaceholder <- "%s-04-01"
 mayPlaceholder <- "%s-05-31"
 
-all_granules <- c()
+all_granules_atl08 <- c()
 
 for (year in years) {
   granules <- ICESat2VegR::ATLAS_dataFinder(
@@ -30,34 +34,115 @@ for (year in years) {
     upper_right_lon = bbox$xmax,
     upper_right_lat = bbox$ymax
   )
-  all_granules <- c(all_granules, granules)
+  all_granules_atl08 <- c(all_granules_atl08, granules)
 }
 
-ATLAS_dataDownload(all_granules, "Z:\\01_Projects\\04_NASA_ICESat2\\00_data\\04_ICESat2_datasets\\StudySite")
-granules <- list.files("Z:\\01_Projects\\04_NASA_ICESat2\\00_data\\04_ICESat2_datasets\\StudySite", "ATL08.*h5", full.names = TRUE)
+ATLAS_dataDownload(all_granules_atl08, project_data_dir)
 
-power_beams <- c(
-  "gt1r",
-  "gt2r",
-  "gt3r"
+library(parallel)
+library(foreach)
+# install.packages("doParallel")
+library(doParallel)
+
+
+all_granules_atl03 <- c()
+for (year in years) {
+  granules <- ICESat2VegR::ATLAS_dataFinder(
+    short_name = "ATL03",
+    version = "006",
+    daterange = c(gettextf(aprilPlaceholder, year), gettextf(mayPlaceholder, year)),
+    lower_left_lon = bbox$xmin,
+    lower_left_lat = bbox$ymin,
+    upper_right_lon = bbox$xmax,
+    upper_right_lat = bbox$ymax
+  )
+  all_granules_atl03 <- c(all_granules_atl03, granules)
+}
+
+my.cluster <- parallel::makeCluster(
+  4
 )
+doParallel::registerDoParallel(cl = my.cluster)
+foreach::getDoParRegistered()
+foreach::getDoParWorkers()
+parallel::clusterCall(my.cluster, function() {
+  devtools::load_all()
+})
+
+foreach(granule = all_granules_atl03) %dopar% {
+  ATLAS_dataDownload(granule, project_data_dir)
+}
+
+
+
+
+granules03 <- normalizePath(file.path(project_data_dir, basename(all_granules_atl03)))
+granules08 <- normalizePath(file.path(project_data_dir, basename(all_granules_atl08)))
+granules03 <- intersect(granules03, gsub("ATL08", "ATL03", granules08))
+granules08 <- intersect(granules08, gsub("ATL03", "ATL08", granules03))
+
+if (!all(granules03 == gsub("ATL08", "ATL03", granules08))) {
+  stop("Wait, something not right!")
+}
 
 target_attributes <- c("h_canopy")
+all_data <- list()
 
-all_dt <- list()
-ii <- 1
-for (granule in granules) {
-  atl08 <- ATL08_read(granule)
-  all_dt[[ii]] <- ATL08_seg_attributes_dt(atl08, beam = power_beams, attribute = target_attributes)[h_canopy < 100]
-  ii <- ii + 1
+
+# stop(my.cluster)
+
+foreach(ii = seq_along(granules03), .export = c("granules03", "granules08")) %do% {
+  atl03_h5 <- ATL03_read(granules03[ii])
+  atl08_h5 <- ATL08_read(granules08[ii])
+  atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5, power_beam_filter = TRUE)
+  out_name <- gsub("ATL03", "ATL03_ATL08", basename(granules03[ii]))
+
+  atl03_atl08_dt <- atl03_atl08_dt[
+    ph_h < 100 & 
+    night_flag == 1 & 
+    ph_h >= 0 
+    ]
+  if (nrow(atl03_atl08_dt) > 0) {
+    atl03_atl08_dt_seg <- ATL03_ATL08_segment_create(
+      atl03_atl08_dt,
+      segment_length = 30
+    )
+
+    atl03_atl08_seg_dt <- ATL03_ATL08_compute_seg_attributes_dt_segStat(
+      atl03_atl08_dt_seg,
+      list(
+        h_canopy_ge0 = quantile(ph_h, 0.98),
+        h_canopy_gt0 = quantile(ph_h[ph_h > 0], 0.98),
+        n_ground = sum(classed_pc_flag == 1),
+        n_mid_canopy = sum(classed_pc_flag == 2),
+        n_top_canopy = sum(classed_pc_flag == 3),
+        n_canopy_total = sum(classed_pc_flag >= 2)
+      ),
+      ph_class = c(1, 2, 3)
+    )
+
+    prepend_class(atl03_atl08_seg_dt, "icesat2.atl08_dt")
+    atl03_atl08_seg_dt <- ATL08_seg_attributes_dt_clipGeometry(atl03_atl08_seg_dt, geom)
+    atl03_atl08_seg_dt$nid <- NULL
+
+    if (nrow(atl03_atl08_seg_dt) > 0) {
+      all_data[[out_name]] <- atl03_atl08_seg_dt
+    }
+  }
+
+  close(atl03_h5)
+  close(atl08_h5)
 }
-dt <- data.table::rbindlist(all_dt)
-dt
-prepend_class(dt, "icesat2.atl08_dt")
 
-dt2 <- ATL08_seg_attributes_dt_clipGeometry(dt, polygon = geom)
-nrow(dt2)
+# parallel::stopCluster(my.cluster)
+all_data_dt <- data.table::rbindlist(all_data)
 
+# saveRDS(all_data_dt, file = file.path(project_data_dir, "2022atl03_atl08_seg_30m.rds"))
+
+all_data_dt <- readRDS(file.path(project_data_dir, "2022atl03_atl08_seg_30m.rds"))
+nrow(all_data_dt)
+all_data_dt[h_canopy_ge0 != h_canopy_gt0]
+prepend_class(all_data_dt, "icesat2.atl08_dt")
 
 ################################
 ## GET EARTH ENGINE STACK
@@ -95,7 +180,7 @@ waterMask <- function(image) {
 
 hls <- collection$
   filterBounds(aoi)$
-  filterDate("2020-02-01", "2020-05-31")$
+  filterDate(gettextf(aprilPlaceholder, year), gettextf(mayPlaceholder, year))$
   filter("CLOUD_COVERAGE < 10")$
   map(hlsMask)$
   map(waterMask)$
@@ -115,12 +200,39 @@ fullStack <- hls
 ###########################
 set.seed(47289143)
 degree_to_meter_factor <- 111139
-sampled <- sample(dt2, method = spacedSampling(100, radius = 30 / degree_to_meter_factor))
 
-
-sampled_vect <- to_vect(sampled)
-
+sampled_vect <- to_vect(all_data_dt)
+sampled_vect$I <- seq_along(sampled_vect)
 out_dt <- seg_gee_ancillary_dt_extract(fullStack, sampled_vect, scale = 30, chunk_size = 1000)
+
+cols_add <- setdiff(colnames(all_data_dt), colnames(out_dt))
+out_dt[, I(cols_add) := all_data_dt[out_dt$I, .SD, .SDcols = cols_add]]
+prepend_class(out_dt, "icesat2.atl03_atl08_seg_dt")
+class(out_dt)
+saveRDS(out_dt, file.path(project_data_dir, "2022extracted_dt.rds"))
+
+index <- ANNIndex$new(out_dt$longitude, out_dt$latitude)
+
+nrow(all_data_dt)
+nrow(out_dt)
+
+
+out_dt2 <- out_dt[n_canopy_total > 3 & n_ground > 3]
+{
+sampled <- sample(out_dt2, method = spacedSampling(0.99999999, radius = 30 / degree_to_meter_factor, spatialIndex  = index))
+sampled2 <- sample(all_data_dt[sampled[, I]], stratifiedSampling(0.7, "h_canopy_ge0", breaks = c(0, 10, 20, 999)))
+
+library(ggplot2)
+
+ggplot() + 
+  geom_point(data = sampled2, aes(longitude, latitude, color = h_canopy_ge0)) +
+  scale_color_gradientn(colours=c("red", "yellow", "forestgreen", "forestgreen", "forestgreen", "forestgreen", "forestgreen", "forestgreen"), breaks = c(0, 15, 30, 99), limits = c(0, 99))
+}
+
+set.seed(47289143)
+bandNames <- names(fullStack)
+x <- out_dt2[, .SD, .SDcols = bandNames]
+y <- out_dt2[["h_canopy_ge0"]]
 
 x <- out_dt[, .SD, .SDcols = names(fullStack)]
 y <- out_dt[, "h_canopy"]
@@ -187,4 +299,3 @@ leaflet_map <- leaflet::leaflet() %>%
   ) %>%
   leaflet::setView(lng = center[1], lat = center[2], zoom = 11)
 leaflet_map
-
