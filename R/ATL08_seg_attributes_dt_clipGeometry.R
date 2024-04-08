@@ -66,6 +66,7 @@ ATL08_seg_attributes_dt_clipGeometry <- function(atl08_seg_att_dt, polygon, spli
   if (!inherits(atl08_seg_att_dt, "icesat2.atl08_dt")) {
     stop("atl08_seg_att_dt needs to be an object of class 'icesat2.atl08_dt' ")
   }
+  newFile <- data.table::data.table()
   exshp <- terra::ext(polygon)
 
   atl08_seg_att_dtdt <- ATL08_seg_attributes_dt_clipBox(
@@ -85,7 +86,7 @@ ATL08_seg_attributes_dt_clipGeometry <- function(atl08_seg_att_dt, polygon, spli
   atl08_seg_att_dtdt$nid <- 1:nrow(atl08_seg_att_dtdt)
 
   if (nrow(atl08_seg_att_dtdt) == 0) {
-    print("The polygon does not overlap the ATL08 data")
+    message("The polygon does not overlap the ATL08 data")
   } else {
     points <- terra::vect(
       as.data.frame(atl08_seg_att_dtdt),
@@ -110,8 +111,6 @@ ATL08_seg_attributes_dt_clipGeometry <- function(atl08_seg_att_dt, polygon, spli
 
     prepend_class(newFile, "icesat2.atl08_dt")
 
-
-
-    return(newFile)
   }
+  return(newFile)
 }
