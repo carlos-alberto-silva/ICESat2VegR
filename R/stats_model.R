@@ -43,10 +43,10 @@ stats_model <- function(observed, predicted, plotstat = TRUE, legend = "topleft"
     abline(lm(predicted ~ observed), col = "black", lwd = 2)
     legend("topleft", c(
       gettextf("RMSE=%.4f %s", StatInfo[1, 2], unit),
-      paste0("RMSE=", StatInfo[2, 2], " %"),
-      paste0("Bias=", StatInfo[3, 2], unit),
-      paste0("Bias=", StatInfo[4, 2], " %"),
-      paste0("adj.R2=", StatInfo[6, 2])
+      gettextf("RMSE=%.4f%s", StatInfo[2, 2], " %"),
+      gettextf("Bias=%.4f%s", StatInfo[3, 2], unit),
+      gettextf("Bias=%.4f%s", StatInfo[4, 2], " %"),
+      gettextf("adj.R2=%.4f", StatInfo[6, 2])
     ), bty = "n")
   }
 
