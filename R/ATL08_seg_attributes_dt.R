@@ -97,6 +97,8 @@ ATL08.var.map[["night_flag"]] <- "/land_segments/night_flag"
 #' @param atl08_h5 A ICESat-2 ATL08 object (output of [ATL08_read()] function).
 #' An S4 object of class [ICESat2VegR::icesat2.atl08_dt].
 #' @param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
+#' @param power_beam_filter Logical. If true will only get power beams, if FALSE will only
+#' retrieve weak beams, if NULL or default won't filter the beams.
 #' @param attribute A character vector containing the list of terrain and canopy attributes to be extracted.
 #' Default is attribute = c("h_canopy","canopy_h_metrics","canopy_openness","h_te_mean","h_te_median","terrain_slope")
 #' @return Returns an S4 object of class [ICESat2VegR::icesat2.atl08_dt]
@@ -170,6 +172,7 @@ ATL08.var.map[["night_flag"]] <- "/land_segments/night_flag"
 #' @export
 ATL08_seg_attributes_dt <- function(atl08_h5,
                                     beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
+                                    power_beam_filter = NULL, 
                                     attribute = c(
                                       "h_canopy",
                                       "canopy_openness",
@@ -187,6 +190,13 @@ ATL08_seg_attributes_dt <- function(atl08_h5,
 
   check_beams <- groups_id %in% beam
   beam <- groups_id[check_beams]
+  if (!is.null(power_beam_filter)) {
+    if (power_beam_filter == TRUE) {
+      beam <- intersect(beam, atl08_h5$power_beams)
+    } else if (power_beam_filter == FALSE) {
+      beam <- intersect(beam, atl08_h5$weak_beams)
+    }
+  }
 
   attribute.dt <- data.table::data.table()
 
