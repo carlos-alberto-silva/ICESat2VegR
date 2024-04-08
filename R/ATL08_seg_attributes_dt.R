@@ -246,11 +246,17 @@ ATL08_seg_attributes_dt <- function(atl08_h5,
         # base_addr <- gsub("^(.*)/.*", "\\1", metric_address)
         # atl08_h5$exists(base_addr) &&
         if (atl08_h5$exists(full_addr)) {
-          if (col %in% c("h_canopy_20m", "canopy_h_metrics_abs", "subset_can_flag", "canopy_h_metrics")) {
+          if (col %in% c("h_canopy_20m", "canopy_h_metrics_abs", "subset_can_flag", "canopy_h_metrics", "longitude_20m", "latitude_20m")) {
             m <- cbind(m, t(atl08_h5[[full_addr]][, ]))
 
             if (col == "h_canopy_20m") {
               colnames(m)[(ncol(m) - 4):ncol(m)] <- paste0("h_canopy_20m_geo_", 1:5)
+            }
+            if (col == "longitude_20m") {
+              colnames(m)[(ncol(m) - 4):ncol(m)] <- paste0("longitude_20m_", 1:5)
+            }
+            if (col == "latitude_20m") {
+              colnames(m)[(ncol(m) - 4):ncol(m)] <- paste0("latitude_20m_", 1:5)
             }
             if (col == "canopy_h_metrics_abs") {
               colnames(m)[(ncol(m) - 17):ncol(m)] <- paste0("AH", seq(10, 95, 5))
@@ -262,7 +268,7 @@ ATL08_seg_attributes_dt <- function(atl08_h5,
               colnames(m)[(ncol(m) - 17):ncol(m)] <- paste0("RH", seq(10, 95, 5))
             }
           } else {
-            m[, eval(col) := atl08_h5[[full_addr]][]]
+            set(m, j=col, value=atl08_h5[[full_addr]][]) 
           }
         }
       }
