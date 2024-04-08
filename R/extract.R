@@ -19,6 +19,9 @@ seg_gee_ancillary_dt_extract <- function(stack, geom, scale = 30, chunk_size = 1
     }
     message(gettextf("Processing %d-%d of %d", ii, tail, n))
     sampled <- extract(stack, geom[ii:tail], scale)
+    if (sampled$size()$getInfo() == 0) {
+      next
+    }
     dts[[""]] <- ee_to_dt(sampled)
   }
   dt <- data.table::rbindlist(dts)
