@@ -78,7 +78,7 @@ var_select <- function(x, y, method = "forward", nboots = 10, nTrees = 100, trai
 }
 
 degree_to_meter_factor <- 111139
-var_select_local <- function(x, y, method = "forward", nboots = 10, nTrees = 100, train_split = 0.7, delta = 0.0000000001, spacing = 30) {
+var_select_local <- function(x, y, xcols, method = "forward", nboots = 10, nTrees = 100, train_split = 0.7, delta = 0.0000000001, spacing = 30) {
   bandNames <- xcols
   n <- nrow(x)
   train_size <- as.integer(round(n * train_split))
@@ -89,7 +89,9 @@ var_select_local <- function(x, y, method = "forward", nboots = 10, nTrees = 100
   lastRmse <- 1e11
   selected_properties <- list()
   final_result <- list()
-  cl <- parallel::makeCluster(parallel::detectCores() - 1)
+  cl <- parallel::makeCluster(min(parallel::detectCores() - 1, nboots), ifelse(.Platform$OS.type == "unix", "FORK", "PSOCK"))
+  on.exit({parallel::stopCluster(cl)})
+  localEnv <- sys.frame(sys.nframe())
   parallel::clusterExport(cl, c(
     "selected_properties",
     "nboots",
@@ -99,23 +101,29 @@ var_select_local <- function(x, y, method = "forward", nboots = 10, nTrees = 100
     "nTrees",
     "train_split",
     "data.table"
-  ))
+  ), envir = localEnv)
+
+  parallel::clusterCall(cl, function(x) {
+    library(ICESat2VegR)
+  })
   while ((1 - minRmse / lastRmse) >= delta) {
     lastRmse <- minRmse
 
     # band = bandNames[1]
-    parallel::clusterExport(cl, c("selected_properties"))
+    parallel::clusterExport(cl, c("selected_properties"), envir = localEnv)
     bandNames <- setdiff(bandNames, unlist(selected_properties))
-    rmses <- parallel::parLapply(cl, bandNames, fun = function(band) {
+    rmses <- lapply(bandNames, function(band) {
       current <- c(selected_properties, band)
+      message(gettextf("Testing: (%s)", list(current)))
 
-      meanRmse <- lapply(1:nboots, function(i) {
+      meanRmse <- parallel::parLapply(cl, 1:nboots, function(i) {
         sample_i <- sample(x, spacedSampling(0.9999999, spacing / degree_to_meter_factor))
-        sample_ii <- sample(sample_i, stratifiedSampling(0.7, y, breaks = c(0, 10, 20, 999)))
+        sample_ii <- sample(sample_i, stratifiedSampling(20, y, breaks = c(0, 5, 10, 15, 20, 999)))[, I := .I]
+        train_i <- sample(sample_ii, randomSampling(train_split))
         
-        x_i <- sample_i[sample_ii$I, .SD, .SDcols = unlist(current)]
-        y_i <- sample_i[sample_ii$I][[y]]
-        validation_sample <- sample_i[-sample_ii$I]
+        x_i <- sample_ii[train_i$I, .SD, .SDcols = unlist(current)]
+        y_i <- sample_ii[train_i$I][[y]]
+        validation_sample <- sample_ii[-train_i$I]
 
 
         randomForestClassifier <- randomForest::randomForest(x_i, y_i, ntree = nTrees)
@@ -127,6 +135,7 @@ var_select_local <- function(x, y, method = "forward", nboots = 10, nTrees = 100
 
       finalRmse <- mean(unlist(meanRmse))
       sdRmse <- sd(unlist(meanRmse))
+      message(gettextf("Absolute RMSE: %.4f (%.4f)", finalRmse, sdRmse))
       list(property = list(current), rmse = finalRmse, sd = sdRmse)
     })
 
@@ -141,7 +150,6 @@ var_select_local <- function(x, y, method = "forward", nboots = 10, nTrees = 100
     message(gettextf("Absolute RMSE: %.4f ±(%.4f)", minRmse, bestVar$sd))
     final_result[[""]] <- bestVar
   }
-  parallel::stopCluster(cl)
 
   df <- data.table::rbindlist(final_result)
   return(df)
