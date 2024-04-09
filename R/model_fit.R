@@ -43,13 +43,15 @@ randomForestRegression <- function(
 
 #' Create ee random forest regression model
 #'
-#' @param x [`data.frame-class`]
-#'
+#' @param x [`data.frame-class`]. The input features [`data.frame-class`] to use in [`randomForest::randomForest()`].
+#' @param y [`numeric-class`]. The response vector to use in [`randomForest::randomForest()`]/
+#' @param ... Additional parameters to pass to [`randomForest::randomForest()`] model.
+#' @return A [`randomForest::randomForest`] object
+#' 
 #' @include model_tools.R
+#' @import randomForest
 #' @export
-model_fit <- function(x, y, method = "randomForest") {
-  fc <- build_fc(x, y)
-  result <- randomForestRegression(fc, as.list(names(y)), as.list(names(x)), nTrees = 100, nodesize = 1)
-  prepend_class(result, "ee.Classifier")
+model_fit <- function(x, y, ...) {
+  result <- randomForest::randomForest(x, y, ...)
   return(result)
 }
