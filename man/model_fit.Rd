@@ -4,10 +4,17 @@
 \alias{model_fit}
 \title{Create ee random forest regression model}
 \usage{
-model_fit(x, y, method = "randomForest")
+model_fit(x, y, ...)
 }
 \arguments{
-\item{x}{\code{\linkS4class{data.frame}}}
+\item{x}{\code{\linkS4class{data.frame}}. The input features \code{\linkS4class{data.frame}} to use in \code{\link[randomForest:randomForest]{randomForest::randomForest()}}.}
+
+\item{y}{\code{\linkS4class{numeric}}. The response vector to use in \code{\link[randomForest:randomForest]{randomForest::randomForest()}}/}
+
+\item{...}{Additional parameters to pass to \code{\link[randomForest:randomForest]{randomForest::randomForest()}} model.}
+}
+\value{
+A \code{\link[randomForest:randomForest]{randomForest::randomForest}} object
 }
 \description{
 Create ee random forest regression model

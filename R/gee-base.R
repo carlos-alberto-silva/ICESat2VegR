@@ -303,6 +303,17 @@ unmix <- function(x, ...) {
 
 
 #' @export
+"c.ee.imagecollection.ImageCollection" <- function(x, ...) {
+  args <- list(...)
+  result <- x
+  for (arg in args) {
+    result <- result$merge(arg)
+  }
+  return(invisible(result))
+}
+
+
+#' @export
 "c.ee.image.Image" <- function(x, ...) {
   return(invisible(ee$Image$cat(x, ...)))
 }

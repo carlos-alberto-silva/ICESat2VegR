@@ -1,7 +1,7 @@
 #' Applies the model in the input rasters to generate the
 #' modelled raster
 #'
-#' @param model [`randomForest::randomForest-class`]. The classifier (regression) model
+#' @param model [`randomForest::randomForest`]. The classifier (regression) model
 #' to use for the prediction.
 #' @param stack. A vector/list of ee.Image created using the ee API.
 #'

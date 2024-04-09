@@ -8,7 +8,7 @@ modelled raster}
 map_create(model, stack)
 }
 \arguments{
-\item{model}{ee.Classfier. The classifier (regression) model
+\item{model}{\code{\link[randomForest:randomForest]{randomForest::randomForest}}. The classifier (regression) model
 to use for the prediction.}
 
 \item{stack.}{A vector/list of ee.Image created using the ee API.}

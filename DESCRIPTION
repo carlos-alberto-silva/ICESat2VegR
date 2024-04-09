@@ -14,6 +14,7 @@ Imports:
   getPass,
   hdf5r,
   lazyeval,
+  leaflet,
   mathjaxr,
   Rcpp,
   Rdpack,
@@ -84,13 +85,14 @@ Collate:
     'ICESat2_dataFinder.R'
     'ICESat2_dataFinder_cloud.R'
     'ICESat2_dataFinder_direct.R'
+    'gee-base.R'
+    'addEEImage.R'
     'argParse.R'
     'clip.R'
     'extract.R'
     'gee-base-feature.R'
     'gee-base-list.R'
     'gee-base-number.R'
-    'gee-base.R'
     'gee-filterBounds.R'
     'gee-search.R'
     'map_create.R'
