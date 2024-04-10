@@ -66,8 +66,29 @@ ATL03_h5_clip <- function(atl03, output, clipObj, mask_fn) {
     hdf5r::h5attr(newFile, attribute) <- atl03$attr(attribute)
   }
 
+  non_beams_groups <- grep("^([^g][^t][^0-9][^rl])", atl03$ls_groups(recursive = TRUE), value = TRUE)
+
+  for (non_beam_group in non_beams_groups) {
+    datasets_dt <- atl03[[non_beam_group]]$dt_datasets()
+    for (dataset in datasets_dt$name) {
+      ds_dims <- length(atl03[[non_beam_group]][[dataset]]$dims)
+      args <- list(atl03[[non_beam_group]][[dataset]])
+      alist_text <- gettextf("alist(%s)", paste0(rep(",", max(0, ds_dims - 1)), collapse = ""))
+      args <- c(args, eval(parse(text = alist_text)))
+      ds_data <- do.call("[", args)
+      copyDataset(
+        beam = atl03[[non_beam_group]],
+        updateBeam = newFile[[non_beam_group]],
+        dataset = dataset,
+        data = ds_data,
+        NULL
+      )
+    }
+  }
+
   # Get all beams
   beams <- atl03$beams
+
 
   nBeam <- 0
   nBeams <- length(beams)
@@ -103,14 +124,14 @@ ATL03_h5_clip <- function(atl03, output, clipObj, mask_fn) {
     )
     segmentsCut <- datasets_dt[
       dataset.dims == segmentsSize &
-        !name %in% specialCuts
+        !(name %in% specialCuts)
     ]$name
     segmentsCut2D <- datasets_dt[
       grepl(segmentsSize, dataset.dims) & dataset.rank == 2
     ]$name
     allCuts <- c(photonsCut, photonsCut2D, segmentsCut, segmentsCut2D, specialCuts)
     nonCuts <- datasets_dt[
-      !name %in% allCuts
+      !(name %in% allCuts)
     ]$name
 
     qtyList <- lapply(datasets_dt$dataset.dims, function(x) eval(parse(text = gsub("x", "*", x))))
@@ -130,7 +151,7 @@ ATL03_h5_clip <- function(atl03, output, clipObj, mask_fn) {
     clipByMask2D(beam, updateBeam, segmentsCut2D, segmentsMask, pb)
 
     photons_per_segment <- beam[["geolocation/segment_ph_cnt"]][segmentsMask]
-    copyDataset(
+    createDatasetClip(
       beam,
       updateBeam,
       "geolocation/ph_index_beg",

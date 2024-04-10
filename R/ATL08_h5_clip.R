@@ -26,6 +26,25 @@ ATL08_h5_clip <- function(atl08, output, clip_obj, landSegmentsMask_fn) {
     hdf5r::h5attr(newFile, attribute) <- atl08$attr(attribute)
   }
 
+  non_beams_groups <- grep("^([^g][^t][^0-9][^rl])", atl08$ls_groups(recursive = TRUE), value = TRUE)
+
+  for (non_beam_group in non_beams_groups) {
+    datasets_dt <- atl08[[non_beam_group]]$dt_datasets()
+    for (dataset in datasets_dt$name) {
+      ds_dims <- length(atl08[[non_beam_group]][[dataset]]$dims)
+      args <- list(atl08[[non_beam_group]][[dataset]])
+      alist_text <- gettextf("alist(%s)", paste0(rep(",", max(0, ds_dims - 1)), collapse = ""))
+      args <- c(args, eval(parse(text = alist_text)))
+      ds_data <- do.call("[", args)
+      copyDataset(
+        beam = atl08[[non_beam_group]],
+        updateBeam = newFile[[non_beam_group]],
+        dataset = dataset,
+        data = ds_data,
+        NULL
+      )
+    }
+  }
   # Get all beams
   beams <- atl08$beams
 
@@ -103,7 +122,7 @@ ATL08_h5_clip <- function(atl08, output, clip_obj, landSegmentsMask_fn) {
     updateBeam[["land_segments/ph_ndx_beg"]][] <- c(1, cumsum(updateBeam[["land_segments/n_seg_ph"]][])[-1])
 
     for (dataset in nonCuts) {
-      copyDataset(beam, updateBeam, dataset, beam[[dataset]][], pb)
+      createDatasetClip(beam, updateBeam, dataset, beam[[dataset]][], pb)
     }
 
     close(pb)

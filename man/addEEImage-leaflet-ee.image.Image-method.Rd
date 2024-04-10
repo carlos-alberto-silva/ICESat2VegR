@@ -35,26 +35,26 @@ A \code{\linkS4class{leaflet}}/\code{\linkS4class{htmlwidget}} with the Earth En
 Adds Earth Engine Image class to leaflet
 }
 \examples{
-shp <- system.file("extdata/all_boudary.shp", package = "ICESat2VegR")
-
-geom <- terra::vect(shp)
-bbox <- terra::ext(geom)
-
-center <- terra::geom(terra::centroids(terra::vect(bbox)))
-
-aoi <- ee$Geometry$BBox(
-  west = bbox$xmin,
-  south = bbox$ymin,
-  east = bbox$xmax,
-  north = bbox$ymax
-)
-
 collection_id <- "NASA/HLS/HLSL30/v002"
 
 ee_collection <- ee$ImageCollection(collection_id)
 
-image <- c(ee_collection$filterDate("2019-04-01", "2019-07-31"),ee_collection$filterDate("2020-04-01", "2020-07-31"))
-)$median()
+cloudMask <-
+  2^1 +
+  2^2 +
+  2^3
+
+hlsMask <- function(image) {
+  image$updateMask(
+    !(image[["Fmask"]] & cloudMask)
+  )
+}
+
+image <- c(
+  ee_collection$filterDate("2020-04-01", "2020-07-31")$map(hlsMask),
+  ee_collection$filterDate("2021-04-01", "2021-07-31")$map(hlsMask)
+)$filter("CLOUD_COVERAGE < 30")$median()
+
 
 library(leaflet)
 leaflet() \%>\%
@@ -64,5 +64,5 @@ leaflet() \%>\%
     min_value = 0.001,
     max_value = 0.2
   ) \%>\%
-  setView(lng = center[, "x"][[1]], lat = center[, "y"][[1]], zoom = 8)
+  setView(lng = -82.2345, lat = 29.6552, zoom = 10)
 }

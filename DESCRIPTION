@@ -80,11 +80,11 @@ Collate:
     'ATL08_seg_attributes_dt_polyStat.R'
     'ATL08_seg_attributes_h5_gridStat.R'
     'ATL08_seg_cover_dt_compute.R'
+    'ATLAS_dataDownload.R'
+    'ATLAS_dataFinder.R'
+    'ATLAS_dataFinder_cloud.R'
+    'ATLAS_dataFinder_direct.R'
     'ICESat2VegR_configure.R'
-    'ICESat2_dataDownload.R'
-    'ICESat2_dataFinder.R'
-    'ICESat2_dataFinder_cloud.R'
-    'ICESat2_dataFinder_direct.R'
     'gee-base.R'
     'addEEImage.R'
     'argParse.R'
@@ -104,7 +104,10 @@ Collate:
     'to_vect.R'
     'var_select.R'
 Suggests: 
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 LinkingTo: 
     Rcpp
+VignetteBuilder: knitr
