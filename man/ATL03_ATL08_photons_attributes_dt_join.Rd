@@ -15,7 +15,7 @@ An S4 object of class \link{icesat2.atl08_dt}.}
 
 \item{beam}{Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")}
 
-\item{power_beam_filter}{Logical. If true will only get power beams, if FALSE will only
+\item{strong_beam_filter}{Logical. If true will only get strong beams, if FALSE will only
 retrieve weak beams, if NULL or default won't filter the beams.}
 }
 \value{

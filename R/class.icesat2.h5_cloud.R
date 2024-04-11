@@ -5,7 +5,7 @@ ICESat2.h5_cloud <- R6::R6Class("ICESat2.h5_cloud", list(
   inherit = "ICESat2.h5",
   h5 = NULL,
   beams = NULL,
-  power_beams = NULL,
+  strong_beams = NULL,
   weak_beams = NULL,
   initialize = function(h5) {
     if (inherits(h5, "icesat2.granules_cloud")) {
@@ -25,10 +25,10 @@ try with only one granule [i].")
 
       sc_orient <- self[["orbit_info/sc_orient"]][]
       if (sc_orient == 2) {
-        warning("Cannot determine the power and weak beams from sc_orient == 2")
+        warning("Cannot determine the strong and weak beams from sc_orient == 2")
       }
       self$weak_beams <- separated_beams[[sc_orient + 1]]
-      self$power_beams <- setdiff(self$beams, self$weak_beams)
+      self$strong_beams <- setdiff(self$beams, self$weak_beams)
     } else {
       self$h5 <- h5
     }

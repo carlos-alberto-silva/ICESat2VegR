@@ -36,7 +36,7 @@ ICESat2_download(all_granules, "../inst/extdata")
 current_year <- 2019
 granules <- list.files("../inst/extdata", "2019", full.names = TRUE)
 
-power_beams <- c(
+strong_beams <- c(
   "gt1r",
   "gt2r",
   "gt3r"
@@ -48,7 +48,7 @@ all_dt <- list()
 ii <- 1
 for (granule in granules) {
   atl08 <- ATL08_read(granule)
-  all_dt[[ii]] <- ATL08_seg_attributes_dt(atl08, beam = power_beams, attribute = target_attributes)[h_canopy < 100]
+  all_dt[[ii]] <- ATL08_seg_attributes_dt(atl08, beam = strong_beams, attribute = target_attributes)[h_canopy < 100]
   ii <- ii + 1
 }
 dt <- data.table::rbindlist(all_dt)

@@ -1,7 +1,7 @@
 all_data <- parallel::mclapply(seq_along(granules03), mc.cores = 4, function(ii) {
   atl03_h5 <- ATL03_read(granules03[ii])
   atl08_h5 <- ATL08_read(granules08[ii])
-  atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5, power_beam_filter = TRUE)
+  atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5, strong_beam_filter = TRUE)
   out_name <- gsub("ATL03", "ATL03_ATL08", basename(granules03[ii]))
 
   atl03_atl08_dt <- atl03_atl08_dt[

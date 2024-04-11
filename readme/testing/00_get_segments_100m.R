@@ -2,7 +2,7 @@
 all_data = list()
 all_data <- parallel::mclapply(seq_along(granules03), mc.cores = 4, function(ii) {
   atl08_h5 <- ATL08_read(granules08[ii])
-  atl08_dt <- ATL08_seg_attributes_dt(atl08_h5, power_beam_filter = TRUE, attribute = c(
+  atl08_dt <- ATL08_seg_attributes_dt(atl08_h5, strong_beam_filter = TRUE, attribute = c(
     "h_canopy",
     "night_flag",
     "n_ca_photons",

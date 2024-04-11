@@ -5,7 +5,7 @@ ICESat2.h5_local <- R6::R6Class("ICESat2.h5_local", list(
   inherit = "ICESat2.h5",
   h5 = NULL,
   beams = NULL,
-  power_beams = NULL,
+  strong_beams = NULL,
   weak_beams = NULL,
   isOpen = TRUE,
   initialize = function(h5) {
@@ -21,12 +21,12 @@ ICESat2.h5_local <- R6::R6Class("ICESat2.h5_local", list(
       if (self$exists("orbit_info/sc_orient")) {
         sc_orient <- self[["orbit_info/sc_orient"]][]
         if (sc_orient == 2) {
-          warning("Cannot determine the power and weak beams from sc_orient == 2")
+          warning("Cannot determine the strong and weak beams from sc_orient == 2")
         }
         self$weak_beams <- separated_beams[[sc_orient + 1]]
-        self$power_beams <- setdiff(self$beams, self$weak_beams)
+        self$strong_beams <- setdiff(self$beams, self$weak_beams)
       } else {
-        warning("Can't determine power and weak beams, no [['orbit_info/sc_orient']] information!")
+        warning("Can't determine strong and weak beams, no [['orbit_info/sc_orient']] information!")
       }
     } else {
       self$h5 <- h5

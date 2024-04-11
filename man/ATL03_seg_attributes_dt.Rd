@@ -7,7 +7,7 @@
 ATL03_seg_attributes_dt(
   atl03_h5,
   beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
-  power_beam_filter = NULL,
+  strong_beam_filter = NULL,
   attributes = c("altitude_sc", "bounce_time_offset", "delta_time", "full_sat_fract",
     "near_sat_fract", "neutat_delay_derivative", "neutat_delay_total", "neutat_ht",
     "ph_index_beg", "pitch", "podppd_flag", "range_bias_corr", "ref_azimuth", "ref_elev",
@@ -22,7 +22,7 @@ ATL03_seg_attributes_dt(
 \arguments{
 \item{beam}{Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")}
 
-\item{power_beam_filter}{Logical. If true will only get power beams, if FALSE will only
+\item{strong_beam_filter}{Logical. If true will only get strong beams, if FALSE will only
 retrieve weak beams, if NULL or default won't filter the beams.}
 
 \item{attributes}{Character vector indicating the attrivutes}
