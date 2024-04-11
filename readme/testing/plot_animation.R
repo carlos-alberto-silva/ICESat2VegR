@@ -15,8 +15,8 @@ dt <- dt[, classed_pc_flag := factor(classed_pc_flag)]
 
 
 init <- 1
-end <- 179
-view_width <- 60
+end <- 100000
+view_width <- 10000
 
 xmin <- seq(init, end - view_width, view_width)
 xmax <- seq(init + view_width, end, view_width)

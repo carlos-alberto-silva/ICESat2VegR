@@ -7,14 +7,14 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r opts, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 ```
 
-```{r, eval = FALSE}
+```{r installation, eval = FALSE}
 # The CRAN version
 install.packages("ICESat2VegR")
 
@@ -22,8 +22,7 @@ install.packages("ICESat2VegR")
 remotes::install_github("https://github.com/carlos-alberto-silva/ICESat2VegR")
 ```
 
-```{r setup, echo = TRUE, include = FALSE}
-library(ICESat2VegR)
+```{r child="basic/01load.Rmd"}
 ```
 
 ## Configuring the package
@@ -36,7 +35,7 @@ This package uses three Python packages through `reticulate`:
 
 For configuring the package you can use:
 
-```{r eval = FALSE}
+```{r configure, eval = FALSE}
 ICESat2VegR_configure()
 
 ```

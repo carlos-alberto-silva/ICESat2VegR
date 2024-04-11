@@ -1,0 +1,7 @@
+```{r Opening_files, eval = TRUE, echo = FALSE}
+atl03_path = system.file("extdata/atl03_clip.h5", package="ICESat2VegR")
+atl08_path = system.file("extdata/atl08_clip.h5", package="ICESat2VegR")
+
+atl03_h5 <- ATL03_read(atl03_path)
+atl08_h5 <- ATL08_read(atl08_path)
+```

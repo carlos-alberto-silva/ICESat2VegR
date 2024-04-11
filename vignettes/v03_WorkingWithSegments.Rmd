@@ -1,0 +1,24 @@
+---
+title: "Working with segments data from ATL03 and ATL08"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{v03_WorkingWithSegments}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r child="basic/01load.Rmd"}
+```
+
+```{r child="basic/02openFiles.Rmd"}
+```
+
+```{r child=ifelse("ICESat2VegR" %in% names(sessionInfo()$otherPkgs), "intermediate/03segment_attributes.Rmd", "")}
+```

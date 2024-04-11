@@ -1,0 +1,83 @@
+```{r child=ifelse("ICESat2VegR" %in% names(sessionInfo()$otherPkgs), "", "../basic/01load.Rmd")}
+```
+
+```{r child=ifelse(exists("atl03_h5"), "", "../basic/02openFiles.Rmd")}
+```
+
+## Extract attributes
+
+```{r seg_attribute_extract, eval = FALSE}
+# ATL03 seg attributes
+atl03_seg_dt <- ATL03_seg_attributes_dt(atl03_h5)
+
+# ATL08 seg attributes
+atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5)
+
+head(atl03_seg_dt)
+head(atl08_seg_dt)
+```
+
+```{r, results = 'hide'}
+# ATL03 seg attributes
+atl03_seg_dt <- ATL03_seg_attributes_dt(atl03_h5)
+
+# ATL08 seg attributes
+atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5)
+```
+
+```{r echo = FALSE}
+head(atl03_seg_dt)
+head(atl08_seg_dt)
+```
+
+Plot histograms:
+
+```{r}
+# ATL03 height histogram
+hist(atl03_seg_dt$ref_elev, col = "#bd8421", xlab = "Elevation (m)", main = "h_te_mean")
+
+hist(atl08_seg_dt$h_canopy, col = "green", xlab = "height (m)", main = "h_canopy")
+```
+
+## Export to vector
+The function `to_vect()` will return a terra::vect object.
+
+```{r export_vector03, message = FALSE}
+library(terra)
+
+atl03_seg_vect <- to_vect(atl03_seg_dt)
+
+# Plot with terra::plet
+terra::plet(
+  atl03_seg_vect, 
+  "ref_elev",
+  tiles=c("Esri.WorldImagery"), 
+  label = TRUE
+) |> leaflet::setView(zoom = 16, lat = 41.53545, lng =  -106.5703)
+```
+
+```{r export_vector08}
+atl08_seg_vect <- to_vect(atl08_seg_dt)
+
+# Plot with terra::plet
+terra::plet(
+  atl08_seg_vect, 
+  "h_canopy",
+  type = "interval",
+  breaks = 3,
+  tiles=c("Esri.WorldImagery"), 
+  label = TRUE
+) |> leaflet::setView(zoom = 16, lat = 41.53545, lng =  -106.5703)
+```
+
+Save vector as geopackage file. The formats supported are as from GDAL terra package.
+
+```{r write_vector, eval = FALSE}
+terra::writeVector(atl03_seg_vect, "atl03_seg.gpkg")
+terra::writeVector(atl08_seg_vect, "atl08_seg.gpkg")
+```
+
+
+```{r }
+
+```

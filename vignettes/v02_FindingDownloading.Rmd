@@ -1,0 +1,21 @@
+---
+title: "Find and Download data - local and cloud"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{v02_FindingDownloading}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r child="basic/01load.Rmd"}
+```
+
+```{r child=ifelse("ICESat2VegR" %in% names(sessionInfo()$otherPkgs), "intermediate/02find and download.Rmd", "")}
+```

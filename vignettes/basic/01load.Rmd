@@ -1,0 +1,9 @@
+## Load the package
+
+```{r loading, echo = FALSE, results = 'hide', message = FALSE, eval = !exists("ATL03_read")}
+devtools::load_all()
+```
+
+```{r load_echo, eval = FALSE}
+library(ICESat2VegR)
+```
