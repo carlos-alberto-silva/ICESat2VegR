@@ -6,6 +6,10 @@
 #' @param bbox [`numeric-class`] or [`terra::SpatExtent`] for clipping, the
 #' order of the bbox is the default from NASA's ICESat-2 CMS searching:
 #' [ul_lat, ul_lon, lr_lat, lr_lon].
+#' @param beam [`character-class`]. The vector of beams to include, default
+#' all c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")
+#' @param additional_groups [`character-class`]. Other addional groups that should be included, default
+#' c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")
 #'
 #' @return Returns the clipped S4 object of class [`icesat2.atl08_h5-class`]
 #'
@@ -39,8 +43,10 @@
 #' close(atl08_h5)
 #' @import hdf5r
 #' @export
-ATL08_h5_clipBox <- function(atl08, output, bbox) {
-  ATL08_h5_clip(atl08, output, bbox, landsegmentsMask_bbox)
+ATL08_h5_clipBox <- function(atl08, output, bbox,
+    beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
+    additional_groups = c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")) {
+  ATL08_h5_clip(atl08, output, bbox, landsegmentsMask_bbox, beam, additional_groups)
 }
 
 #' Clips ICESat-2 ATL08 data
@@ -51,6 +57,10 @@ ATL08_h5_clipBox <- function(atl08, output, bbox) {
 #' @param vect [`terra::SpatVector-class`] for clipping
 #' @param polygon_id [`character-class`]. The attribute name used for identifying
 #' the different polygons. Default is "id"
+#' @param beam [`character-class`]. The vector of beams to include, default
+#' all c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")
+#' @param additional_groups [`character-class`]. Other addional groups that should be included, default
+#' c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")
 #'
 #' @return Returns a list of clipped S4 object of class [`icesat2.atl08_h5-class`]
 #'
@@ -91,9 +101,11 @@ ATL08_h5_clipBox <- function(atl08, output, bbox) {
 #' close(atl08_h5)
 #' @import hdf5r
 #' @export
-ATL08_h5_clipGeometry <- function(atl08, output, vect, polygon_id = "id") {
+ATL08_h5_clipGeometry <- function(atl08, output, vect, polygon_id = "id",
+    beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
+    additional_groups = c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")) {
   geom <- terra::union(vect)
-  ATL08_h5_clip(atl08, output, clip_obj = geom, landSegmentsMask_fn = landsegmentsMask_geom)
+  ATL08_h5_clip(atl08, output, clip_obj = geom, landSegmentsMask_fn = landsegmentsMask_geom, beam, additional_groups)
 }
 
 landSegments_bbox <- function(beam, bbox) {

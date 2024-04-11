@@ -7,6 +7,10 @@
 #' @param vect [`terra::SpatVector-class`] for clipping
 #' @param polygon_id [`character-class`]. The attribute name used for identifying
 #' the different polygons. Default is "id"
+#' @param beam [`character-class`]. The vector of beams to include, default
+#' all c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")
+#' @param additional_groups [`character-class`]. Other addional groups that should be included, default
+#' c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")
 #'
 #' @return Returns a list of clipped S4 object of class [`icesat2.atl03_h5-class`]
 #'
@@ -48,8 +52,10 @@
 #' @import hdf5r
 #' @include clipTools.R
 #' @export
-ATL03_h5_clipGeometry <- function(atl03, output, vect, polygon_id = NULL) {
+ATL03_h5_clipGeometry <- function(
+    atl03, output, vect, polygon_id = NULL, beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
+    additional_groups = c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")) {
   geom <- terra::union(vect)
 
-  ATL03_h5_clip(atl03, output, geom, ATL03_segments_mask_geometry)
+  ATL03_h5_clip(atl03, output, geom, ATL03_segments_mask_geometry, beam, additional_groups)
 }

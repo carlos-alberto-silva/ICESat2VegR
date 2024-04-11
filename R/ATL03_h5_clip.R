@@ -6,6 +6,10 @@
 #' @param bbox [`numeric-class`] or [`terra::SpatExtent`] for clipping, the
 #' order of the bbox is the default from NASA's ICESat-2 CMS searching:
 #' [ul_lat, ul_lon, lr_lat, lr_lon].
+#' @param beam [`character-class`]. The vector of beams to include, default
+#' all c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")
+#' @param additional_groups [`character-class`]. Other addional groups that should be included, default
+#' c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")
 #'
 #' @return Returns the clipped S4 object of class [`icesat2.atl03_h5-class`]
 #'
@@ -39,16 +43,31 @@
 #' close(atl03_h5)
 #' @import hdf5r
 #' @export
-ATL03_h5_clip <- function(atl03, output, clipObj, mask_fn) {
+ATL03_h5_clip <- function(
+    atl03,
+    output,
+    clipObj,
+    mask_fn,
+    beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
+    additional_groups = c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")) {
   dataset.rank <- dataset.dims <- name <- NA
 
   # Create a new HDF5 file
   newFile <- hdf5r::H5File$new(output, mode = "w")
 
+  all_groups <- c(beam, additional_groups)
+  all_groups <- intersect(all_groups, atl03$ls_groups())
+  starts_with_regex <- paste0("^(", paste(all_groups, collapse="|"), ")")
 
   # Create all groups
-  groups <- atl03$ls_groups(recursive = TRUE)
+  groups <-  atl03$ls_groups(recursive = TRUE)
+  groups <- grep(starts_with_regex, groups, value = TRUE)
 
+  # Remove unselected beams groups
+  not_beam <- setdiff(atl03$beams, beam)
+  not_beam_regex <- paste(not_beam, collapse = "|")
+  
+  groups <- grep(not_beam_regex, groups, value = TRUE, invert = TRUE)
 
   for (group in groups) {
     grp <- newFile$create_group(group)
@@ -66,7 +85,7 @@ ATL03_h5_clip <- function(atl03, output, clipObj, mask_fn) {
     hdf5r::h5attr(newFile, attribute) <- atl03$attr(attribute)
   }
 
-  non_beams_groups <- grep("^([^g][^t][^0-9][^rl])", atl03$ls_groups(recursive = TRUE), value = TRUE)
+  non_beams_groups <- grep("^gt[1-3][rl]", groups, value = TRUE, invert = TRUE)
 
   for (non_beam_group in non_beams_groups) {
     datasets_dt <- atl03[[non_beam_group]]$dt_datasets()
@@ -87,7 +106,7 @@ ATL03_h5_clip <- function(atl03, output, clipObj, mask_fn) {
   }
 
   # Get all beams
-  beams <- atl03$beams
+  beams <- intersect(beam, atl03$beams)
 
 
   nBeam <- 0
@@ -288,6 +307,11 @@ setMethod(
 #' @param bbox [`numeric-class`] or [`terra::SpatExtent`] for clipping, the
 #' order of the bbox is the default from NASA's ICESat-2 CMS searching:
 #' [ul_lat, ul_lon, lr_lat, lr_lon].
+#' @param beam [`character-class`]. The vector of beams to include, default
+#' all c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")
+#' @param additional_groups [`character-class`]. Other addional groups that should be included, default
+#' c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")
+
 #'
 #' @return Returns the clipped S4 object of class [`icesat2.atl03_h5-class`]
 #'
@@ -322,6 +346,8 @@ setMethod(
 #' @import hdf5r
 #' @include clipTools.R
 #' @export
-ATL03_h5_clipBox <- function(atl03, output, bbox) {
-  ATL03_h5_clip(atl03, output, bbox, ATL03_segments_mask)
+ATL03_h5_clipBox <- function(
+    atl03, output, bbox, beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
+    additional_groups = c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")) {
+  ATL03_h5_clip(atl03, output, bbox, ATL03_segments_mask, beam, additional_groups)
 }
