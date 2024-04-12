@@ -25,7 +25,7 @@ daterange <- c("2021-10-02", "2021-10-03")
 
 First we need to find the granules:
 
-```{r local, cache=TRUE}
+```{r local, cache=FALSE}
 atl03_granules_local <- ATLAS_dataFinder(
   short_name = "ATL03",
   lower_left_lon,
@@ -68,7 +68,7 @@ atl03_h5$ls()
 ```
 
 ## Working in the cloud
-```{r cloud_find, cache=TRUE}
+```{r cloud_find, cache=FALSE}
 atl03_granules_cloud <- ATLAS_dataFinder(
   short_name = "ATL03",
   lower_left_lon,
@@ -87,7 +87,7 @@ head(atl03_granules_cloud)
 In cloud computing you don't need to download data, instead you can 
 read the data and start working with it.
 
-```{r, cache=TRUE}
+```{r, cache=FALSE}
 # Read the granule (the ATL03_read can only read one granule per read)
 atl03_h5 <- ATL03_read(atl03_granules_cloud[1])
 
@@ -95,12 +95,12 @@ atl03_h5 <- ATL03_read(atl03_granules_cloud[1])
 atl03_h5$ls()
 ```
 
-```{r, cache=TRUE}
+```{r, cache=FALSE}
 # Which are strong beams
 print(atl03_h5$strong_beams)
 ```
 
-```{r, cache=TRUE}
+```{r, cache=FALSE}
 # Orientation 0=forward, 1=backwards, 2=transition
 print(atl03_h5[["orbit_info/sc_orient"]][])
 ```

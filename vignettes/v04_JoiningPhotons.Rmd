@@ -1,8 +1,8 @@
 ---
-title: "Find and Download data - local and cloud"
+title: "Working with classified photons"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{v02_FindingDownloading}
+  %\VignetteIndexEntry{v04_JoiningPhotons}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -20,5 +20,9 @@ if (!exists("intermediate_path")) {
 ```{r child=file.path(basic_path, "01load.Rmd")}
 ```
 
-```{r child=ifelse("ICESat2VegR" %in% names(sessionInfo()$otherPkgs), file.path(intermediate_path, "02find and download.Rmd"), "")}
+```{r child=file.path(basic_path, "02openFiles.Rmd")}
+```
+
+
+```{r child=ifelse("ICESat2VegR" %in% names(sessionInfo()$otherPkgs), file.path(intermediate_path, "04joining_photons.Rmd"), "")}
 ```

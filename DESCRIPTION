@@ -15,6 +15,7 @@ Imports:
   hdf5r,
   lazyeval,
   leaflet,
+  leafsync,
   mathjaxr,
   Rcpp,
   Rdpack,

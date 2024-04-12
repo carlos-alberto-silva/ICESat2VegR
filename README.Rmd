@@ -1,0 +1,51 @@
+---
+output: github_document
+---
+
+![](https://github.com/carlos-alberto-silva/ICESat2VegR/blob/master/readme/cover.png)<br/>
+[![R-CMD-check](https://github.com/carlos-alberto-silva/ICESat2VegR/actions/workflows/r.yml/badge.svg?branch=master)](https://github.com/carlos-alberto-silva/ICESat2VegR/actions/workflows/r.yml)
+[![CRAN](https://www.r-pkg.org/badges/version/ICESat2VegR)](https://cran.r-project.org/package=ICESat2VegR)
+![Github](https://img.shields.io/badge/Github-0.1.12-green.svg)
+![licence](https://img.shields.io/badge/Licence-GPL--3-blue.svg) 
+![Downloads](https://cranlogs.r-pkg.org/badges/grand-total/ICESat2VegR)
+[![Build Status](https://travis-ci.com/carlos-alberto-silva/ICESat2VegR.svg?token=Jqizwyc6gBxNafNccTdU&branch=master)](https://travis-ci.com/carlos-alberto-silva/ICESat2VegR)
+
+**ICESat2VegR: An R Package for NASA's Ice, Cloud, and Elevation Satellite (ICESat-2) Data Processing and Visualization for Land and Vegetation Applications.**
+
+Authors: Carlos Alberto Silva and Caio Hamamura  
+
+The ICESat2VegR package provides functions for downloading, reading, visualizing, processing and exporting 
+NASA's ICESat-2 ATL03 (Global Geolocated Photon Data) and ATL08 (Land and Vegetation Height) 
+products for Land and Vegetation Applications in R environment.
+
+# Getting started
+
+```{r include = FALSE}
+basic_path = "vignettes/basic"
+intermediate_path = "vignettes/intermediate"
+```
+
+```{r child="vignettes/v01_Installation.Rmd"}
+```
+
+```{r child="vignettes/v02_FindingDownloading.Rmd"}
+```
+
+```{r child="vignettes/v03_WorkingWithSegments.Rmd"}
+```
+
+```{r child="vignettes/v04_JoiningPhotons.Rmd"}
+```
+
+# Acknowledgements
+We gratefully acknowledge funding from NASA’s ICESat-2 (ICESat-2, grant 22-ICESat2_22-0006), Carbon Monitoring System (CMS, grant 22-CMS22-0015) and Commercial Smallsat Data Scientific Analysis(CSDSA, grant 22-CSDSA22_2-0080). 
+
+# Reporting Issues 
+Please report any issue regarding the ICESat2VegR package to Dr. Silva (c.silva@ufl.edu)
+
+# Citing ICESat2VegR
+Silva,C.A; Hamamura,C.ICESat2VegR: An R Package for NASA's Ice, Cloud, and Elevation Satellite (ICESat-2) Data Processing and Visualization for Terrestrial Applications.version 0.0.1, accessed on November. 22 2023, available at: <https://CRAN.R-project.org/package=ICESat2VegR>
+
+# Disclaimer
+**ICESat2VegR package comes with no guarantee, expressed or implied, and the authors hold no responsibility for its use or reliability of its outputs.**
+

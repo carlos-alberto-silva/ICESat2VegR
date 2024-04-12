@@ -8,17 +8,20 @@ vignette: >
 ---
 
 ```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
+if (!exists("basic_path")) {
+  basic_path <- "basic"
+}
+
+if (!exists("intermediate_path")) {
+  intermediate_path <- "intermediate"
+}
 ```
 
-```{r child="basic/01load.Rmd"}
+```{r child=file.path(basic_path, "01load.Rmd")}
 ```
 
-```{r child="basic/02openFiles.Rmd"}
+```{r child=file.path(basic_path, "02openFiles.Rmd")}
 ```
 
-```{r child=ifelse("ICESat2VegR" %in% names(sessionInfo()$otherPkgs), "intermediate/03segment_attributes.Rmd", "")}
+```{r child=ifelse("ICESat2VegR" %in% names(sessionInfo()$otherPkgs), file.path(intermediate_path, "03segment_attributes.Rmd"), "")}
 ```

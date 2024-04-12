@@ -1,3 +1,13 @@
+<style>
+.html-widget {
+    margin: auto;
+}
+</style>
+
+```{r include = FALSE}
+knitr::opts_chunk$set(fig.align = 'center')
+```
+
 ```{r child=ifelse("ICESat2VegR" %in% names(sessionInfo()$otherPkgs), "", "../basic/01load.Rmd")}
 ```
 
@@ -33,6 +43,8 @@ head(atl08_seg_dt)
 Plot histograms:
 
 ```{r}
+layout(t(1:2))
+
 # ATL03 height histogram
 hist(atl03_seg_dt$ref_elev, col = "#bd8421", xlab = "Elevation (m)", main = "h_te_mean")
 
@@ -42,7 +54,8 @@ hist(atl08_seg_dt$h_canopy, col = "green", xlab = "height (m)", main = "h_canopy
 ## Export to vector
 The function `to_vect()` will return a terra::vect object.
 
-```{r export_vector03, message = FALSE}
+
+```{r export_vector03, message = FALSE, out.width='50%'}
 library(terra)
 
 atl03_seg_vect <- to_vect(atl03_seg_dt)
@@ -51,23 +64,27 @@ atl03_seg_vect <- to_vect(atl03_seg_dt)
 terra::plet(
   atl03_seg_vect, 
   "ref_elev",
-  tiles=c("Esri.WorldImagery"), 
-  label = TRUE
+  label = TRUE,
+  breaks = 3,
+  map = leaflet::leaflet() %>% leaflet::addProviderTiles("Esri.WorldImagery")
 ) |> leaflet::setView(zoom = 16, lat = 41.53545, lng =  -106.5703)
 ```
 
-```{r export_vector08}
+```{r export_vector08, out.width='50%', fig.align = 'center'}
 atl08_seg_vect <- to_vect(atl08_seg_dt)
 
 # Plot with terra::plet
-terra::plet(
+map_vect <- terra::plet(
   atl08_seg_vect, 
   "h_canopy",
+  col = grDevices::hcl.colors(100, "RdYlGn"),
   type = "interval",
   breaks = 3,
   tiles=c("Esri.WorldImagery"), 
   label = TRUE
-) |> leaflet::setView(zoom = 16, lat = 41.53545, lng =  -106.5703)
+) |> leaflet::setView(zoom = 15, lat = 41.53545, lng =  -106.5703)
+
+map_vect
 ```
 
 Save vector as geopackage file. The formats supported are as from GDAL terra package.
@@ -77,7 +94,56 @@ terra::writeVector(atl03_seg_vect, "atl03_seg.gpkg")
 terra::writeVector(atl08_seg_vect, "atl08_seg.gpkg")
 ```
 
+## View ATL08 segments as raster
 
-```{r }
+Single max_h_canopy:
 
+```{r, out.width='50%'}
+max_h_canopy <- ATL08_seg_attributes_dt_gridStat(atl08_seg_dt, func = max(h_canopy), res = 0.001)
+
+terra::plet(max_h_canopy,
+  main = "Max 'h_canopy'",
+  map = map_vect
+)
+```
+
+Multiple data:
+
+```{r out.width='50%', attr.source="style='display:inline-block;'"}
+library(leafsync)
+
+multiple_data <- ATL08_seg_attributes_dt_gridStat(atl08_seg_dt, func = list(
+  max_h_canopy = max(h_canopy),
+  min_h_canopy = min(h_canopy),
+  mean_canopy_openness = mean(canopy_openness),
+  mean_h_te_mean = mean(h_te_mean)
+  ), res = 0.002)
+
+map_vect_openness <- terra::plet(
+  atl08_seg_vect, 
+  "canopy_openness",
+  col = grDevices::hcl.colors(100, "RdYlGn"),
+  type = "interval",
+  breaks = 3,
+  tiles=c("Esri.WorldImagery"), 
+  label = TRUE
+) |> leaflet::setView(zoom = 15, lat = 41.53545, lng =  -106.5703)
+
+map_vect_terrain <- terra::plet(
+  atl08_seg_vect, 
+  "h_te_mean",
+  col = grDevices::hcl.colors(100, "RdYlBu", rev = TRUE),
+  type = "interval",
+  breaks = 3,
+  tiles=c("Esri.WorldImagery"), 
+  label = TRUE
+) |> leaflet::setView(zoom = 15, lat = 41.53545, lng =  -106.5703)
+
+
+map1 <- terra::plet(multiple_data[[1]], legend="bottomleft", map = map_vect)
+map2 <- terra::plet(multiple_data[[2]], legend="bottomleft", map = map_vect)
+map3 <- terra::plet(multiple_data[[3]], legend="bottomleft", map = map_vect_openness)
+map4 <- terra::plet(multiple_data[[4]], col = grDevices::hcl.colors(100, "RdYlBu", rev = TRUE), legend="bottomleft", map = map_vect_terrain)
+
+sync(map1, map2, map3, map4)
 ```
