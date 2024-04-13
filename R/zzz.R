@@ -70,9 +70,19 @@ ee_cache$search <- NULL
   }
   base::packageStartupMessage(
     paste("\n##----------------------------------------------------------------##\n",
-      "ICESat2VegR package, version ", info$Version, ", Released ", info$Date, "\n",
-      "This package is based upon work supported by the NASA ICESat-2 ",
-      "under grants No. ****. \n",
+      "##ICESat2VegR package, version ", info$Version, ", Released ", info$Date,
+       "     ##",
+      "\n##----------------------------------------------------------------##\n",
+      "\n",
+      "This package is developed by Carlos A. Silva (c.silva@ufl.edu) and \n",
+      "Caio Hamamura (caiohamamura@gmail.com) from the Forest Biometrics \n",
+      "Remote Sensing and AI Lab (SilvaLab) at the University of Florida. \n",
+      "ICESat2VegR is based upon work supported by NASA's Ice, Cloud, and \n",
+      "Land Elevation Satellite (ICESat2), Carbon Monitoring System (CMS), \n",
+      "and Commercial Smallsat Data Scientific Analysis (CSDSA) under \n",
+      "grants No. 80NSSC23K0941, 80NSSC23K1257, and 80NSSC24K0055. \n",
+      "\n",
+      "Have a fantastic day filled with positivity and productivity! :) \n",
       "##----------------------------------------------------------------##",
       sep = ""
     )
