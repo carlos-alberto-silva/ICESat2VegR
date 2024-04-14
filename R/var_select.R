@@ -1,8 +1,15 @@
-#' Uses Google Earth Engine for selecting the variables
+#' Variable selection
+#'
+#' @description Uses Google Earth Engine for variable selection
 #' based on a forward feature selection wrapper
 #'
 #' @param x [`data.frame-class`]. The vectors of features available for predicion
-#'
+#' @param method
+#' @param nboots
+#' @param name
+#' @param nTrees =
+#' @param train_split =
+#' @param delta =
 #' @return A [`data.frame-class`] containing the selected properties and the mean
 #' RMSEs from the bootstrapping runs for each variable selected.
 #'

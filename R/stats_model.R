@@ -1,11 +1,11 @@
-#' Model stats
+#' Model fit stats
 #'
 #' @description Computes absolute and relative root-mean-square error (RMSE) and bias, and adjusted coefficient of determination
 #' from a linear relationship between predicted and observed data
 #'
 #' @param observed  A vector containing observed data
 #' @param predicted A vector containing predicted data
-#' @param plotstat if TRUE, a plot showing the 1:1 figure will be ploted. Default is TRUE
+#' @param plotstat if TRUE, a plot showing the 1:1 figure will be displayed. Default is TRUE
 #' @param legend Character for legend position. Default is "topleft"
 #' @param unit Character indicating the unit for the observed and predicted data (e.g."Mg/ha")
 #'
@@ -22,7 +22,7 @@
 #'            ylab="Predicted AGBD (Mg/ha)", pch=16)
 #'
 #' @export
-stats_model <- function(observed, predicted, plotstat = TRUE, legend = "topleft", unit = " Mg/ha", ...) {
+stats_model <- function(observed, predicted, plotstat = TRUE, legend = "topleft", unit = " m", ...) {
   rmse <- sqrt(sum((predicted - observed)^2) / length(observed)) # Root mean square error
   bias <- mean(predicted - observed) # bias
   rmseR <- 100 * sqrt(sum((predicted - observed)^2) / length(observed)) / mean(observed)
