@@ -15,14 +15,13 @@ Imports:
   hdf5r,
   lazyeval,
   leaflet,
-  leafsync,
   mathjaxr,
   Rcpp,
   Rdpack,
   R6,
   randomForest,
   reticulate,
-  signal    
+  signal
 Encoding: UTF-8
 LazyData: true
 NeedsCompilation: yes
@@ -106,6 +105,7 @@ Collate:
     'var_select.R'
 Suggests: 
     knitr,
+    leafsync
     rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

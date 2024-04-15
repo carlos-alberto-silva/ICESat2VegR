@@ -4,7 +4,15 @@
 \alias{ATL03_h5_clipGeometry}
 \title{Clips ICESat-2 ATL03 H5 data}
 \usage{
-ATL03_h5_clipGeometry(atl03, output, vect, polygon_id = NULL)
+ATL03_h5_clipGeometry(
+  atl03,
+  output,
+  vect,
+  polygon_id = NULL,
+  beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
+  additional_groups = c("METADATA", "orbit_info", "quality_assessment",
+    "atlas_impulse_response", "ancillary_data")
+)
 }
 \arguments{
 \item{atl03}{\code{\linkS4class{icesat2.atl03_h5}} object,
@@ -17,6 +25,12 @@ will be appended to the file name.}
 
 \item{polygon_id}{\code{\linkS4class{character}}. The attribute name used for identifying
 the different polygons. Default is "id"}
+
+\item{beam}{\code{\linkS4class{character}}. The vector of beams to include, default
+all c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")}
+
+\item{additional_groups}{\code{\linkS4class{character}}. Other addional groups that should be included, default
+c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")}
 }
 \value{
 Returns a list of clipped S4 object of class \code{\linkS4class{icesat2.atl03_h5}}

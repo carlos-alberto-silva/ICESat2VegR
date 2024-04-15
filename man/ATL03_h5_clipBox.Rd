@@ -4,7 +4,14 @@
 \alias{ATL03_h5_clipBox}
 \title{Clips ICESat-2 ATL03 H5 data}
 \usage{
-ATL03_h5_clipBox(atl03, output, bbox)
+ATL03_h5_clipBox(
+  atl03,
+  output,
+  bbox,
+  beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
+  additional_groups = c("METADATA", "orbit_info", "quality_assessment",
+    "atlas_impulse_response", "ancillary_data")
+)
 }
 \arguments{
 \item{output}{character. Path to the output h5 file.}
@@ -12,6 +19,12 @@ ATL03_h5_clipBox(atl03, output, bbox)
 \item{bbox}{\code{\linkS4class{numeric}} or \code{\link[terra:SpatExtent-class]{terra::SpatExtent}} for clipping, the
 order of the bbox is the default from NASA's ICESat-2 CMS searching:
 \link{ul_lat, ul_lon, lr_lat, lr_lon}.}
+
+\item{beam}{\code{\linkS4class{character}}. The vector of beams to include, default
+all c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")}
+
+\item{additional_groups}{\code{\linkS4class{character}}. Other addional groups that should be included, default
+c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")}
 
 \item{x}{\code{\linkS4class{icesat2.atl03_h5}} object,
 obtained through \code{\link[=ATL03_read]{ATL03_read()}} for clipping}
