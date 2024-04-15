@@ -21,8 +21,8 @@ products for Land and Vegetation Applications in R environment.
 # Getting started
 
 ```{r include = FALSE}
-basic_path = "vignettes/basic"
-intermediate_path = "vignettes/intermediate"
+basic_path <- "basic"
+intermediate_path <- "intermediate"
 ```
 
 ```{r child="vignettes/v01_Installation.Rmd"}
@@ -35,6 +35,9 @@ intermediate_path = "vignettes/intermediate"
 ```
 
 ```{r child="vignettes/v04_JoiningPhotons.Rmd"}
+```
+
+```{r child="vignettes/v05_GeeModelling.Rmd"}
 ```
 
 # Acknowledgements
