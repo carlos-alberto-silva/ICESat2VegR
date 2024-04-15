@@ -122,8 +122,6 @@ ATL03_seg_attributes_dt <- function(atl03_h5,
                                       "ref_azimuth",
                                       "ref_elev",
                                       "reference_photon_index",
-                                      "reference_photon_lat",
-                                      "reference_photon_lon",
                                       "roll",
                                       "segment_dist_x",
                                       "segment_id",
@@ -168,7 +166,7 @@ ATL03_seg_attributes_dt <- function(atl03_h5,
 
   mask_surf_type <- attributes == "surf_type"
   has_surf_type <- any(mask_surf_type)
-  attributes <- attributes[!mask_surf_type]
+  attributes <- c(attributes[!mask_surf_type], c("reference_photon_lon", "reference_photon_lat"))
   for (i in beam) {
     i_s <- i_s + 1
     beam_group <- atl03_h5[[i]]
