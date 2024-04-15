@@ -15,7 +15,7 @@ An S4 object of class \link{icesat2.atl08_dt}.}
 \item{strong_beam_filter}{Logical. If true will only get strong beams, if FALSE will only
 retrieve weak beams, if NULL or default won't filter the beams.}
 
-\item{attribute}{A character vector containing the list of terrain and canopy attributes to be extracted.
+\item{attributes}{A character vector containing the list of terrain and canopy attributes to be extracted.
 Default is attribute = c("h_canopy","canopy_h_metrics","canopy_openness","h_te_mean","h_te_median","terrain_slope")}
 }
 \value{

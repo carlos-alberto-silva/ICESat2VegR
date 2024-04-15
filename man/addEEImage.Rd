@@ -19,6 +19,9 @@ addEEImage(
 
 \item{x}{Earth Engine Image open with \code{ee$Image}.}
 
+\item{bands}{define the bands that should be used for visualization, default NULL,
+will use the available bands from the Image.}
+
 \item{min_value}{The minimum value to represent for visualization purposes}
 
 \item{max_value}{The maximum value to represent for visualization purposes}

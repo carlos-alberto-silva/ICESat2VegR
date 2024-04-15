@@ -99,7 +99,7 @@ ATL08.var.map[["night_flag"]] <- "/land_segments/night_flag"
 #' @param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
 #' @param strong_beam_filter Logical. If true will only get strong beams, if FALSE will only
 #' retrieve weak beams, if NULL or default won't filter the beams.
-#' @param attribute A character vector containing the list of terrain and canopy attributes to be extracted.
+#' @param attributes A character vector containing the list of terrain and canopy attributes to be extracted.
 #' Default is attribute = c("h_canopy","canopy_h_metrics","canopy_openness","h_te_mean","h_te_median","terrain_slope")
 #' @return Returns an S4 object of class [ICESat2VegR::icesat2.atl08_dt]
 #' containing the ATL08-derived terrain and canopy attributes by segments.
@@ -173,7 +173,7 @@ ATL08.var.map[["night_flag"]] <- "/land_segments/night_flag"
 ATL08_seg_attributes_dt <- function(atl08_h5,
                                     beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
                                     strong_beam_filter = NULL, 
-                                    attribute = c(
+                                    attributes = c(
                                       "h_canopy",
                                       "canopy_openness",
                                       "h_te_mean",
@@ -204,7 +204,7 @@ ATL08_seg_attributes_dt <- function(atl08_h5,
 
   i_s <- 0
 
-  if (length(attribute) > 0) {
+  if (length(attributes > 0)) {
     for (i in beam) {
       i_s <- i_s + 1
       utils::setTxtProgressBar(pb, i_s)
@@ -218,7 +218,7 @@ ATL08_seg_attributes_dt <- function(atl08_h5,
 
       m <- data.table::data.table(latitude = lat_i, longitude = lon_i, beam = i)
 
-      for (col in attribute) {
+      for (col in attributes) {
         # print(col)
 
         metric_address <- ATL08.var.map[[col]]

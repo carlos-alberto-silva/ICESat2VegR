@@ -11,12 +11,11 @@ ATL03_seg_attributes_dt(
   attributes = c("altitude_sc", "bounce_time_offset", "delta_time", "full_sat_fract",
     "near_sat_fract", "neutat_delay_derivative", "neutat_delay_total", "neutat_ht",
     "ph_index_beg", "pitch", "podppd_flag", "range_bias_corr", "ref_azimuth", "ref_elev",
-    "reference_photon_index", "reference_photon_lat", "reference_photon_lon", "roll",
-    "segment_dist_x", "segment_id", "segment_length", "segment_ph_cnt", "sigma_across",
-    "sigma_along", "sigma_h", "sigma_lat", "sigma_lon", "solar_azimuth",
-    "solar_elevation", "surf_type", 
-     "tx_pulse_energy", "tx_pulse_skew_est",
-    "tx_pulse_width_lower", "tx_pulse_width_upper", "yaw")
+    "reference_photon_index", "roll", "segment_dist_x", "segment_id", "segment_length",
+    "segment_ph_cnt", "sigma_across", "sigma_along", "sigma_h", "sigma_lat", "sigma_lon",
+    "solar_azimuth", "solar_elevation", "surf_type", "tx_pulse_energy",
+    "tx_pulse_skew_est", "tx_pulse_width_lower", 
+     "tx_pulse_width_upper", "yaw")
 )
 }
 \arguments{
