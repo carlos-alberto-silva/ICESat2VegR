@@ -1,17 +1,9 @@
-#' @export
-setGeneric(
-  "addEEImage",
-  def = function(map, x, bands, min_value = 0, max_value = 1, palette = c("red", "green"), ...) {
-    standardGeneric("addEEImage")
-  }
-)
-
-
-setRefClass("leaflet")
 #' Adds Earth Engine Image class to leaflet
 #'
 #' @param map [`leaflet-class`]. A leaflet class map.
 #' @param x Earth Engine Image open with `ee$Image`.
+#' @param bands define the bands that should be used for visualization, default NULL,
+#' will use the available bands from the Image.
 #' @param min_value The minimum value to represent for visualization purposes
 #' @param max_value The maximum value to represent for visualization purposes
 #' @param palette A [`character-class`] describing a list of colors in either
@@ -53,11 +45,29 @@ setRefClass("leaflet")
 #'   setView(lng = -82.2345, lat = 29.6552, zoom = 10)
 #' @include gee-base.R
 #' @export
+setGeneric(
+  "addEEImage",
+  def = function(map, x, bands, min_value = 0, max_value = 1, palette = c("red", "green"), ...) {
+    standardGeneric("addEEImage")
+  }
+)
+
+defaultPallete <- c("#d55e00", "#cc79a7", "#f0e442", "#0072b2", "#009e73")
+
+setRefClass("leaflet")
+#' @export
 setMethod(
   "addEEImage",
   c("leaflet", "ee.image.Image"),
-  function(map, x, bands, min_value = 0, max_value = 1, palette = c("#d55e00", "#cc79a7", "#f0e442", "#0072b2", "#009e73"), ...) {
-    stopifnot("`bands` list should be either one or three bands" = (length(bands) == 1 || length(bands) == 3))
+  function(map, x, bands = NULL, min_value = 0, max_value = 1, palette = defaultPallete, ...) {
+    if (is.null(bands)) {
+      bands <- names(x)
+    }
+
+    stopifnot(
+      "Image should have either one or three bands, if not define the `bands` parameter with either 1 or 3 bands" =
+        (length(bands) == 1 || length(bands) == 3)
+    )
 
     if (length(bands) == 3) {
       vis <- x[[bands]]$visualize(
@@ -74,7 +84,6 @@ setMethod(
 
 
     url <- vis$getMapId()$tile_fetcher$url_format
-    print(url)
 
     return(
       leaflet::addTiles(
