@@ -122,7 +122,7 @@ setMethod(
 }
 
 #' @export
-"!.ee.image.Image" <- function(e1) e1$bitwiseNot()
+"!.ee.image.Image" <- function(e1) e1$Not()
 
 #' @export
 "^.ee.image.Image" <- function(e1, e2) {
