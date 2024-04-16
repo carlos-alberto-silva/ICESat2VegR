@@ -1,0 +1,59 @@
+---
+title: "Installation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{v01_Installation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r opts, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+if (!exists("basic_path")) {
+  basic_path <- "basic"
+}
+```
+
+```{r installation, eval = FALSE}
+# The CRAN version
+install.packages("ICESat2VegR")
+
+# Development version
+remotes::install_github("https://github.com/carlos-alberto-silva/ICESat2VegR")
+```
+
+```{r child=file.path(basic_path,"01load.Rmd")}
+```
+
+## Load the package
+
+```{r eval = FALSE, echo = TRUE}
+library(ICESat2VegR)
+```
+
+
+## Configuring the package
+
+This package uses three Python packages through `reticulate`:
+
+1. [earthaccess](https://github.com/nsidc/earthaccess): allows reading directly from the cloud
+2. [h5py](https://github.com/h5py/h5py): for reading hdf5 content from the cloud
+3. [earthengine-api](https://github.com/google/earthengine-api): integration with Google Earth Engine for sampling and extracting raster data and upscalling models.
+
+For configuring the package you can use:
+
+```{r configure, eval = FALSE}
+ICESat2VegR_configure()
+
+```
+
+This will install miniconda if not available and the necessary packages.
+
+### Notes
+
+ - There are some issues regarding some Python packages not being compatible with the Python version. The above configure function will also try to update python version in that case. 
+ - The configure function will warn you about the need to restart R

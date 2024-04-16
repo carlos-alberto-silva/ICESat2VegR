@@ -3,3 +3,5 @@
 ^/inst/extdat$
 ^.vscode$
 ^readme$
+^figure$
+^README.Rmd$

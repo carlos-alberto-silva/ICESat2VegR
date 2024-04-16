@@ -20,25 +20,38 @@ products for Land and Vegetation Applications in R environment.
 
 # Getting started
 
-```{r include = FALSE}
+```{r include=FALSE}
 basic_path <- "basic"
 intermediate_path <- "intermediate"
+
+print.data.frame <- function(x, ...) print(knitr::kable(x))
+print.data.table <- function(x, ...) print(knitr::kable(x))
+
+print.icesat2.atl03_seg_dt <- function(x, ...) print(knitr::kable(x))
+print.icesat2.atl08_dt <- function(x, ...) print(knitr::kable(x))
+print.icesat2.atl03_dt <- function(x, ...) print(knitr::kable(x))
+print.icesat2.atl03atl08_dt <- function(x, ...) print(knitr::kable(x))
+
 ```
 
 ```{r child="vignettes/v01_Installation.Rmd"}
 ```
 
-```{r child="vignettes/v02_FindingDownloading.Rmd"}
+```{r child="vignettes/basic/02openFiles.Rmd"}
 ```
 
-```{r child="vignettes/v03_WorkingWithSegments.Rmd"}
+
+```{r child="vignettes/intermediate/03segment_attributes.Rmd"}
 ```
 
-```{r child="vignettes/v04_JoiningPhotons.Rmd"}
+```{r child="vignettes/intermediate/04joining_photons.Rmd"}
 ```
 
-```{r child="vignettes/v05_GeeModelling.Rmd"}
+
+```{r child="vignettes/intermediate/05gee_modelling.Rmd"}
 ```
+
+
 
 # Acknowledgements
 We gratefully acknowledge funding from NASA’s ICESat-2 (ICESat-2, grant 22-ICESat2_22-0006), Carbon Monitoring System (CMS, grant 22-CMS22-0015) and Commercial Smallsat Data Scientific Analysis(CSDSA, grant 22-CSDSA22_2-0080). 

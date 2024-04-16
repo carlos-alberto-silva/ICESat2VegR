@@ -105,9 +105,9 @@ Collate:
     'var_select.R'
 Suggests: 
     knitr,
-    leafsync
     rmarkdown,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    webshot
 Config/testthat/edition: 3
 LinkingTo: 
     Rcpp
