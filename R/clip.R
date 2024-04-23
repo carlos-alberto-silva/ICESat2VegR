@@ -9,6 +9,7 @@
 #' @param clip_obj [`numeric-class`], [`terra::SpatExtent`] or [`terra::SpatVector`]
 #' object for clipping. The bbox order is the default from NASA's ICESat-2 data searching:
 #' [ul_lat, ul_lon, lr_lat, lr_lon].
+#' @param ... Forwards to specific method implementation.
 #'
 #' @return Returns the clipped S4 object of the same class as the input file
 #'
@@ -74,8 +75,8 @@ setGeneric(
 setMethod(
   "clip",
   signature = c("icesat2.atl03_h5", "character", "SpatExtent"),
-  function(x, output, clip_obj) {
-    ATL03_h5_clipBox(x, output, clip_obj)
+  function(x, output, clip_obj, ...) {
+    ATL03_h5_clipBox(x, output, clip_obj, ...)
   }
 )
 
@@ -86,8 +87,8 @@ setMethod(
 setMethod(
   "clip",
   signature = c("icesat2.atl03_h5", "character", "SpatVector"),
-  function(x, output, clip_obj, polygon_id = "id") {
-    ATL03_h5_clipGeometry(x, output, clip_obj, polygon_id)
+  function(x, output, clip_obj, polygon_id = "id", ...) {
+    ATL03_h5_clipGeometry(x, output, clip_obj, polygon_id, ...)
   }
 )
 
@@ -98,10 +99,10 @@ setMethod(
 setMethod(
   "clip",
   signature = c("icesat2.atl03_h5", "character", "numeric"),
-  function(x, output, clip_obj) {
+  function(x, output, clip_obj, ...) {
     print("clipping by bbox")
     bbox_ext <- terra::ext(clip_obj[c(2, 4, 3, 1)])
-    ATL03_h5_clipBox(x, output, bbox_ext)
+    ATL03_h5_clipBox(x, output, bbox_ext, ...)
   }
 )
 
@@ -110,18 +111,18 @@ setMethod(
 setMethod(
   "clip",
   signature = c("icesat2.atl08_h5", "character", "SpatExtent"),
-  function(x, output, clip_obj) {
-    ATL08_h5_clipBox(x, output, clip_obj)
+  function(x, output, clip_obj, ...) {
+    ATL08_h5_clipBox(x, output, clip_obj, ...)
   }
 )
 
 setMethod(
   "clip",
   signature = c("icesat2.atl08_h5", "character", "numeric"),
-  function(x, output, clip_obj) {
+  function(x, output, clip_obj, ...) {
     print("clipping by bbox")
     bbox_ext <- terra::ext(clip_obj[c(2, 4, 3, 1)])
-    ATL08_h5_clipBox(x, output, bbox_ext)
+    ATL08_h5_clipBox(x, output, bbox_ext, ...)
   }
 )
 
@@ -131,7 +132,7 @@ setMethod(
 setMethod(
   "clip",
   signature = c("icesat2.atl08_h5", "character", "SpatVector"),
-  function(x, output, clip_obj, polygon_id = "id") {
-    ATL08_h5_clipGeometry(x, output, clip_obj, polygon_id)
+  function(x, output, clip_obj, polygon_id = "id", ...) {
+    ATL08_h5_clipGeometry(x, output, clip_obj, polygon_id, ...)
   }
 )
