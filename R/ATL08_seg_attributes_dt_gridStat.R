@@ -75,21 +75,20 @@ ATL08_seg_attributes_dt_gridStat <- function(atl08_seg_att_dt, func, res = 0.5) 
   call <- substitute(func)
 
   vect <- to_vect(atl08_seg_att_dt2)
-  layout <- terra::rast(terra::ext(vect), resolution = res, vals = NA, crs = "epsg:4326")
+  extent_buffer <- terra::vect(terra::ext(vect) + (res / 4), crs = "epsg:4326")
+  layout <- terra::rast(extent_buffer, resolution = res, vals = NA, crs = "epsg:4326")
 
   suppressWarnings(atl08_seg_att_dt2[, cells := terra::cells(layout, vect)[, 2]])
   metrics <- lazy_apply_dt_call(atl08_seg_att_dt2, call, group.by = "by = cells")
 
   n_metrics <- ncol(metrics) - 1
-  bbox <- terra::ext(vect)
   output <-
     terra::rast(
-      bbox,
+      extent_buffer,
       resolution = res,
       nlyrs = n_metrics,
       crs = "epsg:4326"
     )
-
 
   names(output) <- names(metrics)[-1]
   metrics <- metrics[!is.nan(cells)]

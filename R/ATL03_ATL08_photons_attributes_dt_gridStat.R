@@ -98,7 +98,7 @@ ATL03_ATL08_photons_attributes_dt_gridStat <- function(atl03_atl08_dt,
   call <- substitute(func)
 
   vect <- to_vect(atl03_atl08_dt2)
-  layout <- terra::rast(terra::ext(vect), resolution = res, vals = NA, crs = "epsg:4326")
+  layout <- terra::rast(terra::ext(vect) + res/4, resolution = res, vals = NA, crs = "epsg:4326")
 
   atl03_atl08_dt2[, cells := terra::cells(layout, vect)[, 2]]
   metrics <- atl03_atl08_dt2[, eval(call), by = cells]
@@ -108,7 +108,7 @@ ATL03_ATL08_photons_attributes_dt_gridStat <- function(atl03_atl08_dt,
   }
 
   n_metrics <- ncol(metrics) - 1
-  bbox <- terra::ext(vect)
+  bbox <- terra::ext(vect) + res/4
   output <-
     terra::rast(
       bbox,
