@@ -1,6 +1,8 @@
 #include <Rcpp.h>
 #include <random>
 #include <ANNIndex.h>
+#include <random_forest_to_strings.h>
+#include <seq_lens_simplify.h>
 
 using namespace Rcpp;
 
@@ -51,9 +53,12 @@ IntegerVector sampleMinDistanceRcpp(NumericVector &x, NumericVector &y, const do
   return final;
 }
 
+
 RCPP_MODULE(icesat2_module)
 {
   function("sampleMinDistanceRcpp", &sampleMinDistanceRcpp);
+  function("buildForest", &build_forest);
+  function("seq_lens_simplify", &seq_lens_simplify);
 
   class_<ANNIndex>("ANNIndex")
 

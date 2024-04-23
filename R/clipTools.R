@@ -182,19 +182,6 @@ ATL03_photons_mask_geometry <- function(beam, geom) {
 }
 
 
-seq_lens_simplify <- Rcpp::cppFunction("
-IntegerVector seq_lens_simplify(IntegerVector from, IntegerVector length_out) {
-  IntegerVector output(sum(length_out));
-  int pos = 0;
-  for (int ii = 0; ii < from.length(); ii++) {
-    for (int jj: Rcpp::seq(from[ii], from[ii] + length_out[ii] - 1)) {
-      output[pos++] = jj;
-    }
-  }
-  return output;
-}
-")
-
 
 ATL03_photons_segment_mask <- function(beam, segmentsMask) {
   if (is.null(segmentsMask)) {
@@ -204,7 +191,7 @@ ATL03_photons_segment_mask <- function(beam, segmentsMask) {
   seg_indices <- beam[["geolocation/ph_index_beg"]][segmentsMask]
   ph_cnt <- beam[["geolocation/segment_ph_cnt"]][segmentsMask]
   mask2 <- seg_indices > 0
-  photons_mask <- seq_lens_simplify(seg_indices[mask2], ph_cnt[mask2])
+  photons_mask <- pkg_module$seq_lens_simplify(seg_indices[mask2], ph_cnt[mask2])
   photons_mask
 }
 
