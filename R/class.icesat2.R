@@ -537,3 +537,23 @@ setMethod(
         terra::vect(as.data.frame(x), ...)
     }
 )
+
+
+#' Wraps around [`data.table::rbindlist()`] function
+#' 
+#' @param l A list containing data.table, data.frame or list objects. ... is the same but you pass the objects by name separately.
+#' @param ... pass directly to [`data.table::rbindlist()`]
+#' 
+#' @return The data.table with the same class as the input
+#' 
+#' @export 
+rbindlist2 <- function(l, ...) {
+  classes <- unique(lapply(l, class))
+  n_classes <- length(classes)
+
+  stopifnot("All elements should belong to the same class(es)!" = n_classes == 1)
+
+  result <- rbindlist(l)
+  result <- set_attr(result, "class", classes[[1]])
+  result
+}
