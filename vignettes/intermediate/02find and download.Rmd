@@ -2,8 +2,17 @@
 
 There are two different ways of working with the ICESat-2 data. Locally or using cloud computing. Common users should work locally, unless they are working within an AWS cloud computing within zone us-west-2.
 
+```{r include = FALSE}
+hide_close08 <- TRUE
+if (!exists("vignettes_path")) {
+  vignettes_path <- ".."
+}
 
-```{r child=ifelse("ICESat2VegR" %in% names(sessionInfo()$otherPkgs), "", "../basic/01load.Rmd")}
+child_setup <- file.path("../basic/00setup.Rmd")
+child_close <- file.path("../basic/01close.Rmd")
+```
+
+```{r child=child_setup}
 ```
 
 
@@ -58,13 +67,9 @@ atl03_h5 <- ATL03_read("/the/directory/to/save/name_of_granule.h5")
 atl03_h5$ls()
 ```
 
-```{r read, echo = FALSE, warning = FALSE}
-atl03_path = system.file("extdata/atl03_clip.h5", package="ICESat2VegR")
-
-atl03_h5 <- ATL03_read(atl03_path)
-
+```{r read, echo = FALSE}
 # List groups within atl03_h5
-atl03_h5$ls()
+atl03_h5[[1]]$ls()
 ```
 
 ## Working in the cloud
@@ -89,18 +94,25 @@ read the data and start working with it.
 
 ```{r, cache=FALSE}
 # Read the granule (the ATL03_read can only read one granule per read)
-atl03_h5 <- ATL03_read(atl03_granules_cloud[1])
+atl03_h5_cloud <- ATL03_read(atl03_granules_cloud[1])
 
 # List groups within the h5 in cloud
-atl03_h5$ls()
+atl03_h5_cloud$ls()
 ```
 
 ```{r, cache=FALSE}
 # Which are strong beams
-print(atl03_h5$strong_beams)
+print(atl03_h5_cloud$strong_beams)
 ```
 
 ```{r, cache=FALSE}
 # Orientation 0=forward, 1=backwards, 2=transition
-print(atl03_h5[["orbit_info/sc_orient"]][])
+print(atl03_h5_cloud[["orbit_info/sc_orient"]][])
+```
+
+```{r child=child_close}
+```
+
+```{r}
+close(atl03_h5_cloud)
 ```

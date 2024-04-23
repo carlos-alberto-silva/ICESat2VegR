@@ -1,9 +1,0 @@
-```{r echo=FALSE, results='hide', message=FALSE}
-if (!exists("ATL03_read")) {
-  library(ICESat2VegR)
-}
-```
-
-```{r}
-
-```

@@ -1,25 +1,23 @@
 ```{r include = FALSE}
-child_setup <- file.path("../basic/00setup.Rmd")
-child_close <- file.path("../basic/01close.Rmd")
+if (!exists("basic_path")) {
+  basic_path <- "../basic"
+}
 ```
 
-
-```{r child=child_setup}
+```{r child=file.path(basic_path, "01load.Rmd")}
 ```
 
-```{r include = !exists("is_readme"), echo = !exists("is_readme")}
-# Define output dir
-outdir <- tempdir()
-
-
+```{r child=file.path(basic_path, "02openFiles.Rmd")}
 ```
 
-## Extract attributes
+```{r, include = FALSE}
+if (!exists("atl03_atl08_dt")) {
+  atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5, beam = "gt1r")
+}
+```
 
-```{r, eval = FALSE}
+```{r, echo = FALSE, results = 'hide'}
 atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5, beam = "gt1r")
-
-head(atl03_atl08_dt)
 ```
 
 <div align="center" style="overflow-x: scroll;">
@@ -37,11 +35,12 @@ par(oma = c(0, 0, 0, 0))
 par(mar = c(2, 3, 1, 1))
 layout(matrix(c(1, 2), ncol = 1))
 plot(
-  atl03_atl08_dt[rgt == 233],
+  atl03_atl08_dt,
   y = "h_ph",
   colors = c("gray", "#bd8421", "forestgreen", "green"),
-  xlim = c(25500, 28500),
-  beam = "gt2r",
+  xlim = range(atl03_atl08_dt$dist_ph_along),
+  ylim = range(atl03_atl08_dt$h_ph),
+  beam = "gt1r",
   cex = 0.5,
   pch = 16
 )
@@ -49,14 +48,14 @@ plot(
 par(mar = c(3, 3, 1, 1))
 
 plot(
-  atl03_atl08_dt[rgt == 233],
+  atl03_atl08_dt,
   y = "ph_h",
   colors = c("gray", "#bd8421", "forestgreen", "green"),
-  xlim = c(25500, 28500),
-  beam = "gt2r",
+  xlim = range(atl03_atl08_dt$dist_ph_along),
+  ylim = range(atl03_atl08_dt$ph_h),
+  beam = "gt1r",
   cex = 0.5,
-  pch = 16,
-  legend = FALSE
+  pch = 16
 )
 
 par(
@@ -72,11 +71,12 @@ par(oma = c(0, 0, 0, 0))
 par(mar = c(2, 3, 1, 1))
 layout(matrix(c(1, 2), ncol = 1))
 plot(
-  atl03_atl08_dt[rgt == 233],
+  atl03_atl08_dt,
   y = "h_ph",
   colors = c("gray", "#bd8421", "forestgreen", "green"),
-  xlim = c(25500, 28500),
-  beam = "gt2r",
+  xlim = range(atl03_atl08_dt$dist_ph_along),
+  ylim = range(atl03_atl08_dt$h_ph),
+  beam = "gt1r",
   cex = 0.5,
   pch = 16
 )
@@ -84,14 +84,14 @@ plot(
 par(mar = c(3, 3, 1, 1))
 
 plot(
-  atl03_atl08_dt[rgt == 233],
+  atl03_atl08_dt,
   y = "ph_h",
   colors = c("gray", "#bd8421", "forestgreen", "green"),
-  xlim = c(25500, 28500),
-  beam = "gt2r",
+  xlim = range(atl03_atl08_dt$dist_ph_along),
+  ylim = range(atl03_atl08_dt$ph_h),
+  beam = "gt1r",
   cex = 0.5,
-  pch = 16,
-  legend = FALSE
+  pch = 16
 )
 
 par(
@@ -105,19 +105,15 @@ par(
 
 ```{r, eval = FALSE}
 h_canopy <- ATL03_ATL08_photons_attributes_dt_gridStat(
-  atl03_atl08_dt[ph_h < 50 & ph_h > 0],
-  func = list(
-    h_canopy = quantile(ph_h, 0.98),
-    count = .N
-  ),
-  res = 0.01
+  atl03_atl08_dt,
+  func = list(h_canopy = quantile(ph_h, 0.98), count = .N),
+  res = 0.0001
 )
 
 plot(h_canopy,
   col = viridis::inferno(100),
   xlab = "Langitude (degree)",
-  ylab = "Latitude (degree)",
-  ylim = c(32.1, 32.4)
+  ylab = "Latitude (degree)"
 )
 ```
 
@@ -125,23 +121,16 @@ plot(h_canopy,
 
 ```{r, echo = FALSE, fig.align = 'center', fig.cap = 'Rasterized ATL03_ATL08 data for canopy height (h_canopy) and number of photons (n)', echo = FALSE, fig.width=5, fig.height=4}
 h_canopy <- ATL03_ATL08_photons_attributes_dt_gridStat(
-  atl03_atl08_dt[ph_h < 50 & ph_h > 0],
-  func = list(
-    h_canopy = quantile(ph_h, 0.98),
-    count = .N
-  ),
-  res = 0.01
+  atl03_atl08_dt,
+  func = list(h_canopy = quantile(ph_h, 0.98), count = .N),
+  res = 0.0001
 )
 
 plot(h_canopy,
-  col = c(viridis::inferno(100)),
+  col = viridis::inferno(100),
   xlab = "Langitude (degree)",
-  ylab = "Latitude (degree)",
-  ylim = c(32.1, 32.4)
+  ylab = "Latitude (degree)"
 )
 ```
 
 </div>
-
-```{r child=child_close}
-```

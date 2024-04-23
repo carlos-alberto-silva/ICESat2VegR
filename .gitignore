@@ -7,3 +7,5 @@
 .vscode
 inst/doc
 .idea
+vignettes/*.html
+*/.ipynb_checkpoints/*

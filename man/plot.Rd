@@ -11,6 +11,7 @@
   y = "h_ph",
   beam = NULL,
   colors = c("gray", "goldenrod", "forestgreen", "green"),
+  legend = "topleft",
   ...
 )
 
@@ -36,6 +37,8 @@ Default is "gt1r"}
 
 \item{colors}{A vector containing colors for plotting noise, terrain, vegetation and top canopy photons
 (e.g. c("gray", "#bd8421", "forestgreen", "green")}
+
+\item{legend}{the position of the legend. 'bottomleft', 'bottomright', 'topleft', 'topright' or FALSE to omit}
 
 \item{...}{will be passed to the main plot}
 

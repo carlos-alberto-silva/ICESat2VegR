@@ -1,60 +1,72 @@
-```{r child=ifelse("ICESat2VegR" %in% names(sessionInfo()$otherPkgs), "", "../basic/01load.Rmd")}
+```{r include = FALSE}
+child_setup <- file.path("../basic/00setup.Rmd")
+child_close <- file.path("../basic/01close.Rmd")
 ```
 
-```{r child=ifelse(exists("atl03_h5"), "", "../basic/02openFiles.Rmd")}
+```{r child=child_setup}
 ```
 
 ## Extract attributes
 
-```{r, results = 'hide'}
+```{r, results = 'hide', eval = FALSE}
 # ATL03 seg attributes
-atl03_seg_dt <- ATL03_seg_attributes_dt(atl03_h5, attributes = c("delta_time", "solar_elevation", "pitch", "h_ph", "ref_elev"))
+atl03_seg_att_ls <- lapply(
+  atl03_h5,
+  ATL03_seg_attributes_dt,
+  attributes = c("delta_time", "solar_elevation", "pitch", "h_ph", "ref_elev")
+)
+atl03_seg_dt <- rbindlist2(atl03_seg_att_ls)
+
+# Remove segments above 20km
+atl03_seg_dt <- atl03_seg_dt[h_ph < 20000]
 
 head(atl03_seg_dt)
 ```
 
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, results = 'asis'}
 print(head(atl03_seg_dt))
 ```
 
 
-```{r, results = 'hide'}
+```{r, eval = FALSE}
 # ATL08 seg attributes
-atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5, attributes = c("h_canopy", "h_te_mean", "terrain_slope", "canopy_openness"))
+atl08_seg_att_ls <- lapply(
+  atl08_h5,
+  ATL08_seg_attributes_dt,
+  attributes = c("h_canopy", "h_te_mean", "terrain_slope", "canopy_openness", "night_flag")
+)
+atl08_seg_dt <- rbindlist2(atl08_seg_att_ls)
+
+# Consider only segment with h_canopy < 100 and terrain height < 20000
+atl08_seg_dt <- atl08_seg_dt[h_canopy < 100 & h_te_mean < 20000]
 
 head(atl08_seg_dt)
 ```
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, results = 'asis'}
 head(atl08_seg_dt)
 ```
 
-```{r, echo = FALSE, results = 'hide'}
-# ATL08 seg attributes
-atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5, attributes = c("h_canopy", "h_te_mean", "terrain_slope", "canopy_openness"))
 
-head(atl08_seg_dt)
-```
-
-Plot histograms:
+### Plot histograms:
 
 ```{r, eval = FALSE}
 layout(t(1:2))
 
 # ATL03 height histogram
-hist(atl03_seg_dt$ref_elev, col = "#bd8421", xlab = "Elevation (m)", main = "h_te_mean")
-hist(atl08_seg_dt$h_canopy, col = "green", xlab = "height (m)", main = "h_canopy")
+hist(atl03_seg_dt$h_ph, col = "#bd8421", xlab = "Elevation (m)", main = "ATL03 h_ph")
+hist(atl08_seg_dt$h_canopy, col = "green", xlab = "Height (m)", main = "ATL08 h_canopy")
 ```
 
 <div align="center">
 
-```{r echo = FALSE, fig.cap = 'Histograms for ATL03 elevation and ATL08 h_canopy', fig.align="center"}
+```{r echo = FALSE, fig.cap = 'Histograms for ATL03 elevation and ATL08 h_canopy', fig.align="center", fig.width=5, fig.height=4}
 layout(t(1:2))
 
 # ATL03 height histogram
-hist(atl03_seg_dt$ref_elev, col = "#bd8421", xlab = "Elevation (m)", main = "h_te_mean")
-hist(atl08_seg_dt$h_canopy, col = "green", xlab = "height (m)", main = "h_canopy")
+hist(atl03_seg_dt$h_ph, col = "#bd8421", xlab = "Elevation (m)", main = "ATL03 h_ph")
+hist(atl08_seg_dt$h_canopy, col = "green", xlab = "Height (m)", main = "ATL08 h_canopy")
 ```
 
 </div>
@@ -62,39 +74,151 @@ hist(atl08_seg_dt$h_canopy, col = "green", xlab = "height (m)", main = "h_canopy
 ## Export to vector
 The function `to_vect()` will return a `terra::vect` object.
 
+```{r include = FALSE}
+require(mapview)
+```
 
-```{r export_vector03, message = FALSE, out.width='50%', fig.cap="ATL03 segments elevation preview on leaflet map."}
+```{r export_vector03, message = FALSE, eval = FALSE}
 library(terra)
 
+blueYellowRed <- function(n) grDevices::hcl.colors(n, "RdYlBu")
+
+set.seed(123)
+mask <- sample(seq_len(nrow(atl03_seg_dt)), 50)
 atl03_seg_vect <- to_vect(atl03_seg_dt)
 
 # Plot with terra::plet
-terra::plet(
-  atl03_seg_vect,
-  "ref_elev",
-  label = TRUE,
+mapview::mapView(
+  atl03_seg_vect[mask],
+  zcol = "h_ph",
+  layer.name = "h_ph",
   breaks = 3,
-  tiles = c("Esri.WorldImagery")
-) |> leaflet::setView(zoom = 16, lat = 41.53545, lng = -106.5703)
+  col.regions = blueYellowRed,
+  map.types = c("Esri.WorldImagery")
+)
 ```
 
-```{r export_vector08, out.width='50%', fig.cap='ATL08 segments preview on leaflet map.'}
-atl08_seg_vect <- to_vect(atl08_seg_dt)
+<div align="center">
+
+```{r, echo = FALSE, include = FALSE}
+greenYellowRed <- function(n) {
+  grDevices::hcl.colors(n, "RdYlGn")
+}
+blueYellowRed <- function(n) grDevices::hcl.colors(n, "RdYlBu")
+
+
+if (!exists("is_readme")) {
+  printMapView <- function(mapviewObj, name, output = TRUE, delay = 0.2, full = FALSE) {
+    mapviewObj
+  }
+} else {
+  library(chromote)
+  chromeSession <- ChromoteSession$new(width = 800, height = 800)
+
+  printMapView <- function(mapviewObj, name, output = TRUE, delay = 1, full = FALSE, width = "500") {
+    html_temp <- tempfile(fileext = ".html")
+    if (inherits(mapviewObj, "mapview")) {
+      htmlwidgets::saveWidget(mapviewObj@map, html_temp)
+    } else if (inherits(mapviewObj, "htmlwidgets")) {
+      htmlwidgets::saveWidget(mapviewObj, html_temp)
+    } else {
+      stop("printMapView don't know how to handle this!")
+    }
+
+    chromeSession$Page$navigate(html_temp)
+
+    Sys.sleep(delay)
+    if (full == TRUE) {
+      chromeSession$screenshot(name)
+    } else {
+      name <- gsub("\\.png$", "", name)
+      full_path <- file.path("../..", gettextf("figure/%s.png", name))
+
+      chromeSession$screenshot(full_path)
+    }
+    if (output == TRUE) {
+      if (width != "") {
+        width <- gettextf("width=%s ", width)
+      }
+
+      result <- knitr::asis_output(gettextf('<img src="figure/%s.png" %s/>\n', name, width))
+      return(result)
+    }
+  }
+}
+
+library(terra)
+library(mapview)
+
+set.seed(123)
+mask <- sample(seq_len(nrow(atl03_seg_dt)), 50)
+atl03_seg_vect <- to_vect(atl03_seg_dt)
+
 
 # Plot with terra::plet
-map_vect <- terra::plet(
-  atl08_seg_vect,
-  "h_canopy",
-  col = grDevices::hcl.colors(100, "RdYlGn", rev = TRUE),
-  type = "interval",
+map_temp <- mapview::mapView(
+  atl03_seg_vect[mask],
+  zcol = "h_ph",
+  layer.name = "h_ph",
+  col.regions = blueYellowRed,
   breaks = 3,
-  tiles = c("Esri.WorldImagery"),
-  label = TRUE,
-  decreasing = TRUE
-) |> leaflet::setView(zoom = 15, lat = 41.53545, lng = -106.5703)
+  map.types = c("Esri.WorldImagery")
+)
+```
+```{r, echo = FALSE, fig.cap = 'Vectorized ATL03 segments', out.width="500", out.height="400", cache = FALSE}
+printMapView(map_temp, "atl03_seg_vect")
+```
+
+</div>
+
+```{r export_vector08, eval = FALSE}
+greenYellowRed <- function(n) {
+  grDevices::hcl.colors(n, "RdYlGn")
+}
+
+# Plot with mapview
+map_vect <- mapview::mapView(
+  atl08_seg_vect,
+  layer.name = "h_canopy",
+  zcol = "h_canopy",
+  col.regions = greenYellowRed,
+  map.types = c("Esri.WorldImagery")
+)
 
 map_vect
 ```
+
+<div align="center">
+
+```{r, echo = FALSE, fig.cap = "ATL08 Segments h_canopy", out.width="500", out.height="400"}
+atl08_seg_vect <- to_vect(atl08_seg_dt)
+
+greenYellowRed <- function(n) {
+  grDevices::hcl.colors(n, "RdYlGn")
+}
+
+# Plot with mapview::mapView
+map_vect <- mapview::mapView(
+  atl08_seg_vect,
+  layer.name = "h_canopy",
+  zcol = "h_canopy",
+  col.regions = greenYellowRed,
+  map.types = c("Esri.WorldImagery")
+)
+
+
+atl03_geom <- terra::geom(atl03_seg_vect)
+mid_x <- mean(atl03_geom[, "x"])
+mid_y <- mean(atl03_geom[, "y"])
+
+
+map_vect@map <- map_vect@map |> leaflet::setView(lng = mid_x, lat = mid_y, zoom = 12)
+
+printMapView(map_vect, "atl08_seg_vect")
+```
+
+
+</div>
 
 Save vector as geopackage file. The formats supported are as from GDAL terra package.
 
@@ -107,68 +231,183 @@ terra::writeVector(atl08_seg_vect, "atl08_seg.gpkg")
 
 Single max_h_canopy:
 
-```{r, out.width='50%', fig.cap='ATL08 rasterized segments preview on leaflet map.'}
-max_h_canopy <- ATL08_seg_attributes_dt_gridStat(atl08_seg_dt, func = max(h_canopy), res = 0.001)
-red_yellow_green_palette <- grDevices::hcl.colors(100, "RdYlGn")
+```{r, eval = FALSE}
+redYellowGreen <- function(n) grDevices::hcl.colors(n, "RdYlGn")
+max_h_canopy <- ATL08_seg_attributes_dt_gridStat(atl08_seg_dt, func = max(h_canopy), res = 0.01)
 
-terra::plet(max_h_canopy,
-  legend = "bottomleft",
-  main = "Max 'h_canopy'",
+mapview::mapView(
+  max_h_canopy,
   map = map_vect,
-  col = red_yellow_green_palette
+  col.regions = redYellowGreen
 )
 ```
 
-Multiple data:
+<div align="center">
 
-```{r out.width='50%'}
+```{r, out.width='500', out.height='400', fig.cap='ATL08 segments preview on leaflet map.', echo = FALSE, message = FALSE, warning = FALSE}
+redYellowGreen <- function(n) grDevices::hcl.colors(n, "RdYlGn")
+max_h_canopy <- ATL08_seg_attributes_dt_gridStat(atl08_seg_dt, func = max(h_canopy), res = 0.01)
+
+mapTemp <- mapview::mapView(
+  max_h_canopy,
+  map = map_vect,
+  col.regions = redYellowGreen,
+  label = FALSE
+)
+
+mapTemp@map <- mapTemp@map |> leaflet::setView(lng = mid_x, lat = mid_y, zoom = 12)
+
+printMapView(mapTemp, "atl08_max_h_canopy")
+```
+
+</div>
+
+### Multiple data:
+
+```{r, eval = FALSE}
 multiple_data <- ATL08_seg_attributes_dt_gridStat(atl08_seg_dt, func = list(
   max_h_canopy = max(h_canopy),
   min_h_canopy = min(h_canopy),
   mean_canopy_openness = mean(canopy_openness),
   mean_h_te_mean = mean(h_te_mean)
-), res = 0.002)
+), res = 0.01)
 
-map_vect_openness <- terra::plet(
+map_vect_openness <- mapview::mapView(
   atl08_seg_vect,
-  "canopy_openness",
-  col = red_yellow_green_palette,
-  type = "interval",
-  breaks = 3,
-  tiles = c("Esri.WorldImagery"),
-  label = TRUE
-) |> leaflet::setView(zoom = 15, lat = 41.53545, lng = -106.5703)
+  zcol = "canopy_openness",
+  layer.name = "canopy_openness",
+  col.regions = redYellowGreen,
+  map.types = c("Esri.WorldImagery")
+)
 
-map_vect_terrain <- terra::plet(
+blueYellowRed <- function(n) grDevices::hcl.colors(n, "RdYlBu", rev = TRUE)
+
+map_vect_terrain <- mapview::mapView(
   atl08_seg_vect,
-  "h_te_mean",
-  col = grDevices::hcl.colors(100, "RdYlBu", rev = TRUE),
-  type = "interval",
-  breaks = 3,
-  tiles = c("Esri.WorldImagery"),
-  label = TRUE
-) |> leaflet::setView(zoom = 15, lat = 41.53545, lng = -106.5703)
+  zcol = "h_te_mean",
+  layer.name = "h_te_mean",
+  col.regions = blueYellowRed,
+  map.types = c("Esri.WorldImagery")
+)
 
 
-map1 <- terra::plet(multiple_data[[1]], legend = "bottomleft", map = map_vect, col = red_yellow_green_palette)
-map2 <- terra::plet(multiple_data[[2]], legend = "bottomleft", map = map_vect, col = red_yellow_green_palette)
-map3 <- terra::plet(multiple_data[[3]], legend = "bottomleft", map = map_vect_openness, col = red_yellow_green_palette)
-map4 <- terra::plet(multiple_data[[4]], col = grDevices::hcl.colors(100, "RdYlBu", rev = TRUE), legend = "bottomleft", map = map_vect_terrain)
+m1 <- mapview::mapView(multiple_data[[1]], layer.name = "Max h_canopy", map = map_vect, col.regions = redYellowGreen)
+m2 <- mapview::mapView(multiple_data[[2]], layer.name = "Min h_canopy", map = map_vect, col.regions = redYellowGreen)
+m3 <- mapview::mapView(multiple_data[[3]], layer.name = "Mean canopy openness", map = map_vect_openness, col.regions = redYellowGreen)
+m4 <- mapview::mapView(multiple_data[[4]], layer.name = "Mean h_te_mean", col.regions = blueYellowRed, map = map_vect_terrain)
+
+leafsync::sync(m1, m2, m3, m4)
 ```
 
+<div align="center" style="width:100%;">
+```{r, fig.cap = '', echo = FALSE, warning = FALSE}
+multiple_data <- ATL08_seg_attributes_dt_gridStat(atl08_seg_dt, func = list(
+  max_h_canopy = max(h_canopy, na.rm = TRUE),
+  min_h_canopy = min(h_canopy, na.rm = TRUE),
+  mean_canopy_openness = mean(canopy_openness, na.rm = TRUE),
+  mean_h_te_mean = mean(h_te_mean, na.rm = TRUE)
+), res = 0.01)
 
-```{r, fig.cap = 'Rasterized maximum h_canopy', out.width = '50%'}
-map1
+map_vect <- mapview::mapView(
+  atl08_seg_vect,
+  layer.name = "h_canopy",
+  zcol = "h_canopy",
+  col.regions = greenYellowRed,
+  map.types = c("Esri.WorldImagery"),
+  legend = FALSE
+)
+
+map_vect@map <- map_vect@map |> leaflet::setView(lng = mid_x, lat = mid_y, zoom = 12)
+
+mapTemp <- mapview::mapView(
+  max_h_canopy,
+  map = map_vect,
+  col.regions = redYellowGreen,
+  label = FALSE,
+  legend = FALSE
+)
+
+mapTemp@map <- mapTemp@map |> leaflet::setView(lng = mid_x, lat = mid_y, zoom = 12)
+
+map_vect_openness <- mapview::mapView(
+  atl08_seg_vect,
+  zcol = "canopy_openness",
+  layer.name = "canopy_openness",
+  col.regions = redYellowGreen,
+  legend = FALSE,
+  map.types = c("Esri.WorldImagery")
+)
+
+map_vect_openness@map <- map_vect_openness@map |> leaflet::setView(lng = mid_x, lat = mid_y, zoom = 12)
+
+
+map_vect_terrain <- mapview::mapView(
+  atl08_seg_vect,
+  zcol = "h_te_mean",
+  layer.name = "h_te_mean",
+  col.regions = blueYellowRed,
+  legend = FALSE,
+  map.types = c("Esri.WorldImagery")
+)
+
+map_vect_terrain@map <- map_vect_terrain@map |> leaflet::setView(lng = mid_x, lat = mid_y, zoom = 12)
+
+maps <- list()
+maps[[""]] <- mapview::mapView(multiple_data[[1]], label = FALSE, layer.name = "Max h_canopy", map = map_vect, col.regions = redYellowGreen)
+maps[[""]] <- mapview::mapView(multiple_data[[2]], label = FALSE, layer.name = "Min h_canopy", map = map_vect, col.regions = redYellowGreen)
+maps[[""]] <- mapview::mapView(multiple_data[[3]], label = FALSE, layer.name = "Mean canopy openness", map = map_vect_openness, col.regions = redYellowGreen)
+maps[[""]] <- mapview::mapView(multiple_data[[4]], label = FALSE, layer.name = "Mean h_te_mean", col.regions = blueYellowRed, map = map_vect_terrain)
+
+
+if (!exists("is_readme")) {
+  leafsync::sync(maps)
+}
 ```
 
-```{r, fig.cap = 'Rasterized minimum h_canopy', out.width = '50%'}
-map2
+```{r eval = (exists("is_readme")), include = FALSE}
+library(png)
+library(grid)
+library(gridExtra)
 ```
 
-```{r, fig.cap = 'Rasterized mean canopy openness', out.width = '50%'}
-map3
+```{r eval = (exists("is_readme")), echo = FALSE, message = FALSE, warning = FALSE, include = FALSE}
+png_files <- c(
+  tempfile(fileext = ".png"),
+  tempfile(fileext = ".png"),
+  tempfile(fileext = ".png"),
+  tempfile(fileext = ".png")
+)
+ii <- 1
+for (png_file in png_files) {
+  printMapView(maps[[ii]], png_file, output = FALSE, full = TRUE)
+  ii <- ii + 1
+}
+# Read the PNG images
+png_images <- lapply(png_files, readPNG)
+
+# Create plots for each PNG image
+plots <- lapply(png_images, function(img) {
+  grid::rasterGrob(img, interpolate = TRUE)
+})
+
+# Arrange the plots in a 2x2 grid
+pngoutput <- file.path("../../figure", "output_multi.png")
+# stop(gettextf("The path of the file is:%s", pngoutput))
+png(pngoutput, height = 800 * 2, width = 800 * 2)
+res <- grid.arrange(grobs = plots, ncol = 2)
+dev.off()
+
+chromeSession$close()
 ```
 
-```{r, fig.cap = 'Rasterized mean terrain height', out.width = '50%'}
-map4
+```{r eval = (exists("is_readme")), echo = FALSE}
+knitr::asis_output("![multi](figure/output_multi.png)\n\n")
+```
+
+</div>
+
+
+
+
+```{r child=child_close}
 ```

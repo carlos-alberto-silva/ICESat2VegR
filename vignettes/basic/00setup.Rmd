@@ -1,0 +1,101 @@
+```{r include = FALSE}
+if (!exists("kable_defined")) {
+  kable_defined <- TRUE
+  type <- "pipe"
+  if (!exists("is_readme")) {
+    type <- "html"
+    if (knitr::is_latex_output()) {
+      type <- "latex"
+    }
+  }
+
+  if (!exists("first_setup_run")) {
+    first_setup_run <- FALSE
+  }
+
+  print.data.frame <- function(x, ...) print(knitr::kable(x, type))
+  print.data.table <- function(x, ...) print(knitr::kable(x, type))
+
+  print.icesat2.atl03_seg_dt <- function(x, ...) print(knitr::kable(x, type))
+  print.icesat2.atl08_dt <- function(x, ...) print(knitr::kable(x, type))
+  print.icesat2.atl03_dt <- function(x, ...) print(knitr::kable(x, type))
+  print.icesat2.atl03atl08_dt <- function(x, ...) print(knitr::kable(x, type))
+}
+
+if (!exists("do_close")) {
+  do_close <- TRUE
+}
+```
+
+```{r include = FALSE}
+if (!exists("ATL03_read")) {
+  devtools::load_all()
+}
+```
+
+```{r, echo = FALSE, eval = !exists("first_setup_run")}
+knitr::asis_output("## Opening the example dataset")
+knitr::asis_output("")
+knitr::asis_output("As we will be working with multiple h5 granules, we will be using `lapply` for reading
+and extracting information from the granules.")
+```
+
+```{r, echo = !exists("first_setup_run"), eval = FALSE}
+# Download example dataset
+ATLAS_dataDownload(
+  "https://github.com/carlos-alberto-silva/ICESat2VegR/releases/download/example_datasets/Study_Site.zip",
+  outdir
+)
+
+# Unzip the example dataset
+unzip(file.path(outdir, "Study_Site.zip"), exdir = outdir)
+```
+
+```{r, echo = FALSE, eval = !exists("first_setup_run")}
+first_setup_run <- FALSE
+```
+
+
+```{r, echo = !exists("first_setup_run") && exists("use_atl03_h5"), eval = FALSE}
+# Find and read ATL03 dataset
+atl03_files <- list.files(outdir, "ATL03.*h5", full.names = TRUE)
+atl03_h5 <- lapply(atl03_files, ATL03_read)
+```
+
+```{r, echo = !exists("first_setup_run") && exists("use_atl08_h5"), eval = FALSE}
+# Find and read ATL08 dataset
+atl08_files <- list.files(outdir, "ATL08.*h5", full.names = TRUE)
+atl08_h5 <- lapply(atl08_files, ATL08_read)
+```
+
+```{r, include = FALSE}
+if (!exists("atl03_h5")) {
+  outdir <- tempdir()
+  if (Sys.getenv("ICESAT2VEG_STUDYSITE") == "") {
+    ATLAS_dataDownload("https://github.com/carlos-alberto-silva/ICESat2VegR/releases/download/example_datasets/Study_Site.zip", outdir)
+  } else {
+    file.copy(Sys.getenv("ICESAT2VEG_STUDYSITE"), file.path(outdir, "Study_Site.zip"))
+  }
+  unzip(file.path(outdir, "Study_Site.zip"), exdir = outdir)
+  atl03_files <- list.files(outdir, "ATL03.*h5", full.names = TRUE)
+  atl08_files <- list.files(outdir, "ATL08.*h5", full.names = TRUE)
+
+  atl03_h5 <- lapply(atl03_files, ATL03_read)
+  atl08_h5 <- lapply(atl08_files, ATL08_read)
+
+  atl03_seg_att_ls <- lapply(atl03_h5, ATL03_seg_attributes_dt, attributes = c("delta_time", "solar_elevation", "pitch", "h_ph", "ref_elev"))
+  atl03_seg_dt <- rbindlist2(atl03_seg_att_ls)
+  atl03_seg_dt <- atl03_seg_dt[h_ph > 0 & h_ph < 20000]
+
+  atl08_seg_att_ls <- lapply(atl08_h5, ATL08_seg_attributes_dt, attributes = c("h_canopy", "h_te_mean", "terrain_slope", "canopy_openness", "night_flag"))
+  atl08_seg_dt <- rbindlist2(atl08_seg_att_ls)
+  atl08_seg_dt <- atl08_seg_dt[h_canopy < 100 & h_te_mean < 20000]
+
+  atl03_atl08_ls <- lapply(seq_along(atl03_h5), function(ii) {
+    dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5[[ii]], atl08_h5[[ii]])
+    dt[["rgt"]] <- atl03_h5[[ii]][["orbit_info/rgt"]][]
+    dt
+  })
+  atl03_atl08_dt <- rbindlist2(atl03_atl08_ls)
+}
+```

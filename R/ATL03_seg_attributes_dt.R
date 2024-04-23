@@ -147,6 +147,7 @@ ATL03_seg_attributes_dt <- function(atl03_h5,
   }
 
   `:=` <- data.table::`:=`
+  h_ph <- NA
 
   # Check beams to select
   beam <- intersect(atl03_h5$beams, beam)
@@ -187,6 +188,11 @@ ATL03_seg_attributes_dt <- function(atl03_h5,
         if (beam_group$exists(attr)) {
           dt[, eval(attr) := beam_group[[attr]][]]
         }
+      }
+      if (attr == "h_ph") {
+        ref_idx <- beam_group[["geolocation/reference_photon_index"]][]
+        idx_mask <- seq_along(ref_idx)[ref_idx > 0]
+        dt[idx_mask, h_ph := beam_group[["heights/h_ph"]][ref_idx[idx_mask]]]
       }
     }
     dt[, beam := i]

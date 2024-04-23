@@ -21,8 +21,10 @@ products for Land and Vegetation Applications in R environment.
 # Getting started
 
 ```{r include=FALSE}
-basic_path <- "basic"
-intermediate_path <- "intermediate"
+vignettes_path <- ".."
+
+kable_defined <- TRUE
+is_readme <- TRUE
 
 print.data.frame <- function(x, ...) print(knitr::kable(x))
 print.data.table <- function(x, ...) print(knitr::kable(x))
@@ -32,14 +34,14 @@ print.icesat2.atl08_dt <- function(x, ...) print(knitr::kable(x))
 print.icesat2.atl03_dt <- function(x, ...) print(knitr::kable(x))
 print.icesat2.atl03atl08_dt <- function(x, ...) print(knitr::kable(x))
 
+do_close <- FALSE
 ```
 
 ```{r child="vignettes/v01_Installation.Rmd"}
 ```
 
-```{r child="vignettes/basic/02openFiles.Rmd"}
+```{r child="vignettes/intermediate/02find and download.Rmd"}
 ```
-
 
 ```{r child="vignettes/intermediate/03segment_attributes.Rmd"}
 ```
@@ -51,6 +53,11 @@ print.icesat2.atl03atl08_dt <- function(x, ...) print(knitr::kable(x))
 ```{r child="vignettes/intermediate/05gee_modelling.Rmd"}
 ```
 
+```{r include=FALSE}
+do_close <- TRUE
+hide_close03 <- FALSE
+hide_close08 <- FALSE
+```
 
 
 # Acknowledgements

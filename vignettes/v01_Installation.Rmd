@@ -2,7 +2,7 @@
 title: "Installation"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{v01_Installation}
+  %\VignetteIndexEntry{Installation}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -13,8 +13,8 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-if (!exists("basic_path")) {
-  basic_path <- "basic"
+if (!exists("vignettes_path")) {
+  vignettes_path <- "."
 }
 ```
 
@@ -24,9 +24,6 @@ install.packages("ICESat2VegR")
 
 # Development version
 remotes::install_github("https://github.com/carlos-alberto-silva/ICESat2VegR")
-```
-
-```{r child=file.path(basic_path,"01load.Rmd")}
 ```
 
 ## Load the package

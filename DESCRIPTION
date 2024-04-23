@@ -8,20 +8,25 @@ Authors@R: c(
 Description: Set of tools for downloading, reading, visualizing, processing and exporting NASA's ICESat-2 ATL03 (Global Geolocated Photon Data) and ATL08 (Land and Vegetation Height) products for Land and Vegetation Applications. 
 License: GPL (>= 3)
 Imports:
-  dplyr, 
+  curl,
+  data.table,
   e1071,
   gdalBindings,
   getPass,
+  jsonlite,
   hdf5r,
+  httr2,
   lazyeval,
   leaflet,
-  mathjaxr,
+  lidR,
+  magrittr,
+  methods,
   Rcpp,
-  Rdpack,
   R6,
   randomForest,
   reticulate,
-  signal
+  terra,
+  xml2
 Encoding: UTF-8
 LazyData: true
 NeedsCompilation: yes
@@ -104,8 +109,19 @@ Collate:
     'to_vect.R'
     'var_select.R'
 Suggests: 
+    chromote,
+    ggplot2,
+    grid,
+    gridExtra,
     knitr,
+    lidR,
+    mapview,
+    mathjaxr,
+    png,
+    Rdpack,
     rmarkdown,
+    rstudioapi,
+    signal,
     testthat (>= 3.0.0),
     webshot
 Config/testthat/edition: 3

@@ -1,11 +1,52 @@
 ```{r include = FALSE}
-knitr::opts_chunk$set(fig.align = "center")
+hide_close08 <- TRUE
+
+child_setup <- file.path("../basic/00setup.Rmd")
+child_close <- file.path("../basic/01close.Rmd")
+
+if (!exists("is_readme")) {
+  printMapView <- function(mapviewObj, name, output = TRUE, delay = 0.2, full = FALSE) {
+    mapviewObj
+  }
+} else {
+  library(chromote)
+  chromeSession <- ChromoteSession$new(width = 800, height = 800)
+
+
+  printMapView <- function(mapviewObj, name, output = TRUE, delay = 5, full = FALSE, width = "500") {
+    html_temp <- tempfile(fileext = ".html")
+    if (inherits(mapviewObj, "mapview")) {
+      htmlwidgets::saveWidget(mapviewObj@map, html_temp)
+    } else if (inherits(mapviewObj, "htmlwidget")) {
+      htmlwidgets::saveWidget(mapviewObj, html_temp)
+    } else {
+      stop("printMapView don't know how to handle this!")
+    }
+
+    chromeSession$Page$navigate(html_temp)
+
+    Sys.sleep(delay)
+    if (full == TRUE) {
+      chromeSession$screenshot(name)
+    } else {
+      name <- gsub("\\.png$", "", name)
+      full_path <- file.path("../..", gettextf("figure/%s.png", name))
+
+      chromeSession$screenshot(full_path)
+    }
+    if (output == TRUE) {
+      if (width != "") {
+        width <- gettextf("width=%s ", width)
+      }
+
+      result <- knitr::asis_output(gettextf('<img src="figure/%s.png" %s/>\n', name, width))
+      return(result)
+    }
+  }
+}
 ```
 
-```{r child=ifelse("ICESat2VegR" %in% names(sessionInfo()$otherPkgs), "", "../basic/01load.Rmd")}
-```
-
-```{r child=ifelse(exists("atl03_h5"), "", "../basic/02openFiles.Rmd")}
+```{r child=child_setup}
 ```
 
 In this example we will model the `h_canopy` of the ICESat-2 using only the Harmonized Landsat Sentinel-2 dataset (hls).
@@ -18,26 +59,36 @@ atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5, attribute = "h_canopy")
 head(atl08_seg_dt)
 ```
 
-```{r, eval = TRUE, results = 'hide'}
-atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5, attribute = "h_canopy")
-```
-
-```{r, echo = FALSE}
+```{r, results = "asis"}
 head(atl08_seg_dt)
 ```
 
 
 
-Visualizing the 'h_canopy' for the ATL08 dataset.
+### Visualizing the 'h_canopy' for the ATL08 dataset.
 
-```{r, out.width = '50%'}
+```{r, out.width = '400', fig.align="center", eval = FALSE}
 library(terra)
 
 atl08_seg_vect <- to_vect(atl08_seg_dt)
 terra::plet(atl08_seg_vect, "h_canopy", col = grDevices::hcl.colors(9, "RdYlGn"), tiles = c("Esri.WorldImagery"))
 ```
 
-Querying the GEEs datasets for Harmonized Landsat Sentinel-2
+<div align="center" style="display:flex;justify-content:center">
+
+```{r include = FALSE}
+library(terra)
+```
+
+```{r, echo = FALSE, fig.cap = "Leaflet preview for segments h_canopy", out.height='400', out.width='500', fig.align = "center"}
+atl08_seg_vect <- to_vect(atl08_seg_dt)
+map <- terra::plet(atl08_seg_vect, "h_canopy", col = grDevices::hcl.colors(9, "RdYlGn"), tiles = c("Esri.WorldImagery"))
+printMapView(map, "atl08_seg_vect_gee_modelling")
+```
+
+</div>
+
+### Querying the GEEs datasets for Harmonized Landsat Sentinel-2
 
 ```{r}
 hls_search <- search_datasets("Harmonized", "Landsat")
@@ -49,14 +100,14 @@ hls_id <- get_catalog_id(hls_search$id)
 hls_id
 ```
 
-Open the Google Earth Engine HLS catalog and get band names
+### Open the Google Earth Engine HLS catalog and get band names
 
 ```{r}
 hls_collection <- ee$ImageCollection(hls_id)
 names(hls_collection)
 ```
 
-Define area of interest (aoi) clip boundaries and time and cloud mask for filtering.
+### Define area of interest (aoi) clip boundaries and time and cloud mask for filtering.
 
 ```{r}
 bbox <- terra::ext(atl08_seg_vect)
@@ -69,21 +120,19 @@ aoi <- ee$Geometry$BBox(
 )
 
 hls <- hls_collection$
-  filterDate("2022-04-01", "2022-04-30")$
+  filterDate("2019-04-01", "2019-05-31")$
   filterBounds(aoi)$
   map(function(x) x$updateMask(!(x[["Fmask"]] & 14)))$
   median()
 
 
 hls_unmasked <- hls_collection$
-  filterDate("2022-04-01", "2022-04-30")$
+  filterDate("2019-04-01", "2019-05-31")$
   filterBounds(aoi)$
   median()
 ```
 
-Visualize the resulting image
-
-Calculate EVI:
+### Calculate EVI:
 
 ```{r}
 # Rename bands
@@ -102,10 +151,12 @@ hls[["evi"]] <- (2.5 * (nir - red)) / (nir + 6 * red - 7.5 * blue + 1)
 print(hls)
 ```
 
-```{r}
+## Visualize the resulting image
+
+```{r, eval = FALSE}
 library(leaflet)
 
-forest_height_palette <- c("#ffffff", "#8b4513", "#99cc99", "#006600", "#004d00")
+forest_height_palette <- c("#ffffff", "#99cc99", "#006600", "#004d00")
 palette_colors <- colorNumeric(forest_height_palette, range(atl08_seg_dt$h_canopy))(atl08_seg_dt[order(h_canopy), h_canopy])
 
 centroid <- mean(bbox)
@@ -114,22 +165,50 @@ map <- leaflet::leaflet() |>
   addEEImage(hls_unmasked, bands = list("red", "green", "blue"), group = "unmasked", max = 0.6) |>
   setView(lng = centroid[1], lat = centroid[2], zoom = 13) |>
   addLayersControl(
-    baseGroups = c("masked", "unmasked"),
+    baseGroups = c("unmasked", "masked"),
     options = layersControlOptions(collapsed = FALSE)
   )
 
 map
 ```
 
+<div align="center" style="display:flex;justify-content:center">
+
+```{r echo = FALSE, fig.cap = 'Mask and unmasked image difference', out.height='400', out.width='500', fig.align = "center"}
+library(leaflet)
+
+forest_height_palette <- c("#ffffff", "#99cc99", "#006600", "#004d00")
+palette_colors <- colorNumeric(forest_height_palette, range(atl08_seg_dt$h_canopy))(atl08_seg_dt[order(h_canopy), h_canopy])
+
+centroid <- mean(bbox)
+map <- leaflet::leaflet() |>
+  addEEImage(hls, bands = list("red", "green", "blue"), group = "masked", max = 0.6) |>
+  addEEImage(hls_unmasked, bands = list("red", "green", "blue"), group = "unmasked", max = 0.6) |>
+  setView(lng = centroid[1], lat = centroid[2], zoom = 13) |>
+  addLayersControl(
+    baseGroups = c("unmasked", "masked"),
+    options = layersControlOptions(collapsed = FALSE)
+  )
+
+printMapView(map, "mask_unmasked_hls")
+```
+
+</div>
+
 ## Extracting GEE data for segments
 
 For each segment extract the hls data:
 
-```{r}
+```{r, results = 'hide'}
 extracted_dt <- seg_gee_ancillary_dt_extract(hls, atl08_seg_vect)
 
 head(extracted_dt)
 ```
+
+```{r, results = 'asis', echo = FALSE}
+knitr::kable(head(extracted_dt))
+```
+
 
 ## Fit the randomForest model
 
@@ -142,25 +221,34 @@ rf_model <- model_fit(x, y, ntree = 500, mtry = 1)
 print(rf_model)
 ```
 
-```{r}
+```{r, eval = FALSE}
 library(randomForest)
 
 rf_importance <- importance(rf_model)
-
-barplot(rf_importance[, "IncNodePurity"], ylim = c(0, 3), main = "Variable importance (Increase Node Purity)")
+barplot(rf_importance[, "IncNodePurity"], main = "Variable importance (Increase Node Purity)")
 ```
 
+<div align="center">
+
+```{r echo = FALSE, fig.cap = 'Random forests variable importance (increase node impurity).', message = FALSE, warning = FALSE, fig.width = 7, fig.height = 5.6, out.width = '500', fig.align="center"}
+library(randomForest)
+rf_importance <- importance(rf_model)
+
+barplot(as.matrix(rf_importance)[, "IncNodePurity"], main = "Variable importance (Increase Node Purity)")
+```
+
+</div>
 
 ## Apply the model to Google Earth Engine WorldImagery
 
-```{r, out.width = '50%'}
+```{r, out.width = '400', fig.width = 4, fig.align="center", eval = FALSE}
 gee_model <- build_ee_forest(rf_model)
 result <- hls$classify(gee_model)
 min_hcanopy <- min(atl08_seg_dt$h_canopy)
-max_hcanopy <- max(atl08_seg_dt$h_canopy)
+max_hcanopy <- 20
 atl08_seg_vect$h_canopy <- round(atl08_seg_vect$h_canopy, 3) # Round off to 3 decimal places
 
-terra::plet(
+modelled_map <- terra::plet(
   atl08_seg_vect,
   "h_canopy",
   palette_colors,
@@ -170,7 +258,7 @@ terra::plet(
     hls,
     bands = c("red", "green", "blue"),
     group = "hls",
-    min = 0, 
+    min = min_hcanopy,
     max = 0.6
   ) |>
   addEEImage(
@@ -188,9 +276,64 @@ terra::plet(
     title = "h_canopy",
     position = "bottomleft",
   ) |>
-  setView(lng = centroid[1], lat = centroid[2], zoom = 13) |>
+  setView(lng = centroid[1], lat = centroid[2], zoom = 12) |>
   addLayersControl(
     overlayGroups = c("classification"),
     options = layersControlOptions(collapsed = FALSE)
   )
+
+modelled_map
+```
+
+<div align="center" style="display:flex;justify-content:center">
+
+```{r echo = FALSE, fig.cap = 'Upscalling of ICESat-2 ATL08 h_canopy data', message = FALSE, warning = FALSE, out.height='400', out.width='500', fig.align="center"}
+gee_model <- build_ee_forest(rf_model)
+result <- hls$classify(gee_model)
+min_hcanopy <- min(atl08_seg_dt$h_canopy)
+max_hcanopy <- 20
+atl08_seg_vect$h_canopy <- ifelse(atl08_seg_vect$h_canopy > max_hcanopy, max_hcanopy, round(atl08_seg_vect$h_canopy, 3)) # Round off to 3 decimal places
+
+modelled_map <- terra::plet(
+  atl08_seg_vect,
+  "h_canopy",
+  palette_colors,
+  tiles = ""
+) |>
+  addEEImage(
+    hls,
+    bands = c("red", "green", "blue"),
+    group = "hls",
+    min = 0,
+    max = 0.6
+  ) |>
+  addEEImage(
+    result,
+    bands = "classification",
+    group = "classification",
+    min = min_hcanopy,
+    max = max_hcanopy,
+    palette = forest_height_palette
+  ) |>
+  leaflet::addLegend(
+    pal = colorNumeric(forest_height_palette, seq(min_hcanopy, max_hcanopy)),
+    values = seq(min_hcanopy, max_hcanopy, length = 3),
+    opacity = 1,
+    title = "h_canopy",
+    position = "bottomleft",
+  ) |>
+  setView(lng = centroid[1], lat = centroid[2], zoom = 12) |>
+  addLayersControl(
+    overlayGroups = c("classification"),
+    options = layersControlOptions(collapsed = FALSE)
+  )
+
+
+printMapView(modelled_map, "upscalled_gee_map", delay = 45)
+```
+
+</div>
+
+
+```{r child=child_close}
 ```

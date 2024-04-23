@@ -18,7 +18,7 @@ obtained through \code{\link[=ATL03_read]{ATL03_read()}} or \code{\link[=ATL08_r
 object for clipping. The bbox order is the default from NASA's ICESat-2 data searching:
 \link{ul_lat, ul_lon, lr_lat, lr_lon}.}
 
-\item{...}{For making it compatible with passing ul_lat, ul_lon, lr_lat, lr_lon.}
+\item{...}{Forwards to specific method implementation.}
 }
 \value{
 Returns the clipped S4 object of the same class as input

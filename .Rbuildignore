@@ -2,6 +2,8 @@
 ^\.Rproj\.user$
 ^/inst/extdat$
 ^.vscode$
+^.idea$
 ^readme$
 ^figure$
 ^README.Rmd$
+.*\.ipynb_checkpoints$

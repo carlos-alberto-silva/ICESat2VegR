@@ -7,18 +7,12 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
-if (!exists("basic_path")) {
-  basic_path <- "basic"
-}
 
-if (!exists("intermediate_path")) {
-  intermediate_path <- "intermediate"
-}
+```{r include = FALSE}
+children_run <- file.path(vignettes_path, c(
+  "intermediate/02find and download.Rmd"
+))
 ```
 
-```{r child=file.path(basic_path, "01load.Rmd")}
-```
-
-```{r child=ifelse("ICESat2VegR" %in% names(sessionInfo()$otherPkgs), file.path(intermediate_path, "02find and download.Rmd"), "")}
+```{r child=children_run}
 ```
