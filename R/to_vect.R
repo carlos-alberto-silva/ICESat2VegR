@@ -40,11 +40,13 @@ setGeneric(
 
 generic_to_vect <- function(x, lon, lat) {
   df <- as.data.frame(x)
-  terra::vect(
-    df,
-    geom = c(lon, lat),
-    crs = "epsg:4326"
-  )
+  if (nrow(df)) {
+    return(terra::vect(
+      df,
+      geom = c(lon, lat),
+      crs = "epsg:4326"
+    ))
+  }
 }
 
 
