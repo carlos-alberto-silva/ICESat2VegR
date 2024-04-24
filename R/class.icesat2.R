@@ -242,6 +242,7 @@ setMethod("close", signature = c("icesat2.h5"), h5closeall)
 #' Default is "gt1r"
 #' @param colors A vector containing colors for plotting noise, terrain, vegetation and top canopy photons
 #' (e.g. c("gray", "#bd8421", "forestgreen", "green")
+#' @param legend the position of the legend. 'bottomleft', 'bottomright', 'topleft', 'topright' or FALSE to omit
 #' @param ... will be passed to the main plot
 #'
 #' @return No return value
@@ -291,7 +292,7 @@ setMethod(
   f = "plot",
   signature("icesat2.atl03atl08_dt", y = "character"),
   definition = function(x, y = "h_ph", beam = NULL,
-                        colors = c("gray", "goldenrod", "forestgreen", "green"), ...) {
+                        colors = c("gray", "goldenrod", "forestgreen", "green"), legend = 'topleft', ...) {
     .SD <- data.table::.SD
     if (is.null(beam)) {
       the_beam <- unique(x$beam)[1]
@@ -327,7 +328,7 @@ setMethod(
         col = colorMap, xlab = "Distance along-track (m)", ylab = paste(y, "(m)"),
         ...
       )
-      legend("topleft",
+      legend(legend,
         legend = c(
           "ATL03 unclassified",
           "ATL03 Terrain",
