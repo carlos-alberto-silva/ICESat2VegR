@@ -1,5 +1,6 @@
 #' @include utmTools.R
 dt_to_las <- function(dt, output) {
+  stopifnot("lidR is not available" = require(lidR))
   mask <- NA
 
   names(dt) <- c("X", "Y", "Z")

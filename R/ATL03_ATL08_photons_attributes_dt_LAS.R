@@ -49,6 +49,8 @@
 #' @importFrom data.table as.data.table
 #' @export
 ATL03_ATL08_photons_attributes_dt_LAS <- function(atl03_atl08_dt, output, normalized = TRUE) {
+  stopifnot("lidR is not available" = require(lidR))
+  
   lon_ph <- lat_ph <- classed_pc_flag <- mask <- NA
 
   atl03_atl08_dt <- na.omit(atl03_atl08_dt)
