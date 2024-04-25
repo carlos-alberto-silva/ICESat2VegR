@@ -3,14 +3,12 @@
 #' @description Computes a series of statistics of ATL08 terrain and canopy attributes within
 #' area defined by a polygon
 #'
-#' @usage ATL08_seg_attributes_dt_polyStat(atl08_seg_att_dt, func, poly_id)
-#'
-#' @param atl08_seg_att_dt  An S4 object of class [`icesat2.atl08_dt-class`] containing
+#' @param atl08_seg_att_dt  An S4 object of class [`ICESat2VegR::icesat2.atl08_dt-class`] containing
 #' ATL08 terrain and canopy attributes (output of [`ICESat2VegR::ATL08_seg_attributes_dt()`] function).
 #' @param func The function to be applied for computing the defined statistics
 #' @param poly_id Polygon id. If defined, statistics will be computed for each polygon
 #'
-#' @return Returns an S4 object of class [ICESat2VegR::icesat2.atl08_dt]
+#' @return Returns an S4 object of class [`ICESat2VegR::icesat2.atl08_dt-class`]
 #' Containing Statistics of ATL08 terrain and canopy attributes
 #'
 #' @examples

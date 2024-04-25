@@ -7,7 +7,7 @@
 ATL03_photons_attributes_dt_LAS(atl03_dt, output, normalized = TRUE)
 }
 \arguments{
-\item{atl03_dt}{An S4 object of class \link{icesat2.atl03_dt}
+\item{atl03_dt}{An S4 object of class \code{\linkS4class{icesat2.atl03_dt}}
 (output of \code{\link[=ATL03_photons_attributes_dt]{ATL03_photons_attributes_dt()}} function).}
 
 \item{output}{character. The output path of for the LAS(Z) file(s)

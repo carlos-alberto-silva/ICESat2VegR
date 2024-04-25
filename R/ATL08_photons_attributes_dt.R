@@ -6,16 +6,19 @@ ATL08_photon.var.map[["classed_pc_flag"]] <- "classed_pc_flag"
 ATL08_photon.var.map[["ph_h"]] <- "ph_h"
 ATL08_photon.var.map[["d_flag"]] <- "d_flag"
 ATL08_photon.var.map[["delta_time"]] <- "delta_time"
+
+
+
 #'
 #' ATL08 computed photons attributes
 #'
 #' @description This function extracts computed photons attributes from ICESat-2 ATL08 data
 #'
-#' @usage ATL08_photons_attributes_dt(atl08_h5, beam)
-#'
 #' @param atl08_h5 A ICESat-2 ATL08 object (output of [`ATL08_read()`] function).
-#' An S4 object of class [`ICESat2VegR::icesat2.atl08_dt`].
+#' An S4 object of class [`icesat2.atl08_dt-class`].
 #' @param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
+#' @param photon_attributes [character-class] vector indicating the attributes to extract from the ATL08 photons.
+#' Default all `c("ph_segment_id", "classed_pc_indx", "classed_pc_flag", "ph_h", "d_flag", "delta_time")`.
 #'
 #' @return Returns an S4 object of class [data.table::data.table]
 #' containing the ATL08 computed photons attributes.
@@ -32,7 +35,6 @@ ATL08_photon.var.map[["delta_time"]] <- "delta_time"
 #' }
 #'
 #' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
-#'
 #'
 #' @examples
 #'
@@ -54,7 +56,7 @@ ATL08_photon.var.map[["delta_time"]] <- "delta_time"
 ATL08_photons_attributes_dt <- function(
     atl08_h5,
     beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
-    photon_attribute = c("ph_segment_id", "classed_pc_indx", "classed_pc_flag", "ph_h", "d_flag", "delta_time")) {
+    photon_attributes = c("ph_segment_id", "classed_pc_indx", "classed_pc_flag", "ph_h", "d_flag", "delta_time")) {
   # Check file input
   if (!inherits(atl08_h5, "icesat2.atl08_h5")) {
     stop("atl08_h5 must be an object of class 'icesat2.atl08_h5' - output of [ATL08_read()] function ")
@@ -69,7 +71,7 @@ ATL08_photons_attributes_dt <- function(
   pb <- utils::txtProgressBar(min = 0, max = length(beam), style = 3)
   i_s <- 0
 
-  if (length(photon_attribute) > 1) {
+  if (length(photon_attributes) > 1) {
     # i = beam[2]
     for (i in beam) {
       i_s <- i_s + 1
@@ -78,8 +80,7 @@ ATL08_photons_attributes_dt <- function(
 
       m <- data.table::data.table()
 
-      for (col in photon_attribute) {
-        # col = photon_attribute[1]
+      for (col in photon_attributes) {
         metric_address <- ATL08_photon.var.map[[col]]
 
         if (is.null(metric_address)) {

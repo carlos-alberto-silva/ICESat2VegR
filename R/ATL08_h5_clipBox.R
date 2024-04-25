@@ -1,17 +1,17 @@
 #' Clips ICESat-2 ATL08 data
 #'
-#' @param atl08 [`icesat2.atl08_h5-class`] object, obtained through [`ATL08_read()`]
+#' @param atl08 [`ICESat2VegR::icesat2.atl08_h5-class`] object, obtained through [`ATL08_read()`]
 #' for clipping
 #' @param output character. Path to the output h5 file.
 #' @param bbox [`numeric-class`] or [`terra::SpatExtent`] for clipping, the
 #' order of the bbox is the default from NASA's ICESat-2 CMS searching:
-#' [ul_lat, ul_lon, lr_lat, lr_lon].
+#' (ul_lat, ul_lon, lr_lat, lr_lon).
 #' @param beam [`character-class`]. The vector of beams to include, default
 #' all c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")
 #' @param additional_groups [`character-class`]. Other addional groups that should be included, default
 #' c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")
 #'
-#' @return Returns the clipped S4 object of class [`icesat2.atl08_h5-class`]
+#' @return Returns the clipped S4 object of class [`ICESat2VegR::icesat2.atl08_h5-class`]
 #'
 #' @description This function clips the ATl08 HDF5 file. This function
 #' will only clip the beam groups within hdf5, it won't change metadata
@@ -51,7 +51,7 @@ ATL08_h5_clipBox <- function(atl08, output, bbox,
 
 #' Clips ICESat-2 ATL08 data
 #'
-#' @param atl08 [`icesat2.atl08_h5-class`] object, obtained through [`ATL08_read()`]
+#' @param atl08 [`ICESat2VegR::icesat2.atl08_h5-class`] object, obtained through [`ATL08_read()`]
 #' for clipping
 #' @param output character. Path to the output h5 file.
 #' @param vect [`terra::SpatVector-class`] for clipping
@@ -62,7 +62,7 @@ ATL08_h5_clipBox <- function(atl08, output, bbox,
 #' @param additional_groups [`character-class`]. Other addional groups that should be included, default
 #' c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")
 #'
-#' @return Returns a list of clipped S4 object of class [`icesat2.atl08_h5-class`]
+#' @return Returns a list of clipped S4 object of class [`ICESat2VegR::icesat2.atl08_h5-class`]
 #'
 #' @description This function clips ATL08 HDF5 file within beam groups,
 #' but keeps metada and ancillary data the same.

@@ -19,15 +19,15 @@ ATL03_seg_attributes_dt(
 )
 }
 \arguments{
+\item{atl03_h5}{A ICESat-2 ATL03 object (output of \code{\link[=ATL03_read]{ATL03_read()}} function).
+An S4 object of class \code{\linkS4class{icesat2.atl03_dt}}.}
+
 \item{beam}{Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")}
 
 \item{strong_beam_filter}{Logical. If true will only get strong beams, if FALSE will only
 retrieve weak beams, if NULL or default won't filter the beams.}
 
 \item{attributes}{Character vector indicating the attrivutes}
-
-\item{ATL03_h5}{A ICESat-2 ATL03 object (output of \code{\link[=ATL03_read]{ATL03_read()}} function).
-An S4 object of class \link{icesat2.atl03_dt}.}
 }
 \value{
 Returns an S4 object of class \link[data.table:data.table]{data.table::data.table}

@@ -4,11 +4,17 @@
 \alias{ATL08_seg_attributes_dt_clipBox}
 \title{Clip ATL08 Terrain and Canopy Attributes by Bounding Box}
 \usage{
-ATL08_seg_attributes_dt_gridStat(atl08_seg_att_dt, xmin, xmax, ymin, ymax)
+ATL08_seg_attributes_dt_clipBox(
+  atl08_seg_att_dt,
+  lower_left_lon,
+  upper_right_lon,
+  lower_left_lat,
+  upper_right_lat
+)
 }
 \arguments{
 \item{atl08_seg_att_dt}{A atl08_seg_att_dt object (output of \code{\link[=ATL08_seg_attributes_dt]{ATL08_seg_attributes_dt()}} function).
-An S4 object of class \link{icesat2.atl08_dt}}
+An S4 object of class \code{\linkS4class{icesat2.atl08_dt}}}
 
 \item{lower_left_lon}{Numeric. West longitude (x) coordinate of bounding rectangle, in decimal degrees.}
 
@@ -19,7 +25,7 @@ An S4 object of class \link{icesat2.atl08_dt}}
 \item{upper_right_lat}{Numeric. North latitude (y) coordinate of bounding rectangle, in decimal degrees.}
 }
 \value{
-Returns an S4 object of class \link{icesat2.atl08_dt}
+Returns an S4 object of class \code{\linkS4class{icesat2.atl08_dt}}
 containing the clipped ATL08 terrain and canopy attributes.
 }
 \description{

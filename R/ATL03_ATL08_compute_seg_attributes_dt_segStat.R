@@ -3,7 +3,7 @@
 #' @description Computes a series of statistics from ATL03 and ATL08 labeled photons
 #' within a given segment length.
 #'
-#' @param atl03_atl08_seg_dt  An S4 object of class [`icesat2.atl03_atl08_seg_dt-class`] containing ATL03 and ATL08 data
+#' @param atl03_atl08_seg_dt  An S4 object of class [`ICESat2VegR::icesat2.atl03_atl08_seg_dt-class`] containing ATL03 and ATL08 data
 #' (output of [ATL03_ATL08_photons_attributes_dt_join()] function).
 #' @param list_expr The function to be applied for computing the defined statistics
 #' @param seg_length Segment length. Default is 30 m
@@ -32,7 +32,6 @@
 #'   "atl08_clip.h5",
 #'   package = "ICESat2VegR"
 #' )
-#'
 #'
 #' # Reading ATL03 data (h5 file)
 #' atl03_h5 <- ATL03_read(atl03_path = atl03_path)
@@ -84,8 +83,8 @@ ATL03_ATL08_compute_seg_attributes_dt_segStat <- function(
     beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
     quality_ph = 0,
     night_flag = 1) {
-  if (!inherits(atl03_atl08_seg_dt, "icesat2.atl03atl08_dt")) {
-    stop("atl03_atl08_dt needs to be an object of class 'icesat2.atl03atl08_dt' ")
+  if (!inherits(atl03_atl08_seg_dt, "icesat2.atl03_atl08_seg_dt")) {
+    stop("atl03_atl08_dt needs to be an object of class 'icesat2.atl03_atl08_seg_dt' ")
   }
   
   selected_quality_ph <- quality_ph

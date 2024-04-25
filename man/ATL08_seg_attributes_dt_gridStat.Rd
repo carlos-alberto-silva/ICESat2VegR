@@ -4,10 +4,10 @@
 \alias{ATL08_seg_attributes_dt_gridStat}
 \title{Statistics of ATL08 Terrain and Canopy Attributes at grid level}
 \usage{
-ATL08_seg_attributes_dt_gridStat(atl08_seg_att_dt, func, res)
+ATL08_seg_attributes_dt_gridStat(atl08_seg_att_dt, func, res = 0.5)
 }
 \arguments{
-\item{atl08_seg_att_dt}{An S4 object of class \link{icesat2.atl08_dt} containing ATL08 data
+\item{atl08_seg_att_dt}{An S4 object of class \code{\linkS4class{icesat2.atl08_dt}} containing ATL08 data
 (output of \code{\link[=ATL08_seg_attributes_dt]{ATL08_seg_attributes_dt()}} functions).}
 
 \item{func}{The function to be applied for computing the defined statistics}

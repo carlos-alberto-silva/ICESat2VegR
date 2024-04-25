@@ -202,8 +202,6 @@ groups_id<-grep("BEAM\\d{4}$",gsub("/","",
 #'@description This function extracts land elevation and vegetation heights from ICESat-2 ATL08 data
 #'and convert to data.table [data.table::data.table]
 #'
-#'@usage getATL08(atl08_class)
-#'
 #'@param atl08_class A ICESat-2 ATL08 object (output of [ATL08_read()] function).
 #'An S4 object of class "icesat2.atl08".
 #' @param beam Character vector indicating beams to process

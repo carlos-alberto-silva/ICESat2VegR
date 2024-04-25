@@ -4,14 +4,19 @@
 \alias{ATL03_ATL08_photons_attributes_dt_join}
 \title{Join ATL03 and ATL08 photons attributes}
 \usage{
-ATL03_ATL08_photons_attributes_dt_join(atl08_h5, beam)
+ATL03_ATL08_photons_attributes_dt_join(
+  atl03_h5,
+  atl08_h5,
+  beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
+  strong_beam_filter = NULL
+)
 }
 \arguments{
 \item{atl03_h5}{A ICESat-2 ATL03 object (output of \code{\link[=ATL03_read]{ATL03_read()}} function).
 An S4 object of class \code{\linkS4class{icesat2.atl03_dt}}.}
 
 \item{atl08_h5}{A ICESat-2 ATL08 object (output of \code{\link[=ATL08_read]{ATL08_read()}} function).
-An S4 object of class \link{icesat2.atl08_dt}.}
+An S4 object of class \code{\linkS4class{icesat2.atl08_dt}}.}
 
 \item{beam}{Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")}
 
@@ -53,7 +58,6 @@ atl03_path <- system.file("extdata",
   "atl03_clip.h5",
   package = "ICESat2VegR"
 )
-
 
 # Specifying the path to ATL08 file
 atl08_path <- system.file("extdata",

@@ -42,6 +42,10 @@ Default is "gt1r"}
 
 \item{...}{will be passed to the main plot}
 
+\item{xlim}{The x limits to use for the plot}
+
+\item{ylim}{the y limits to use for the plot}
+
 \item{col}{Color for plotting the photons. Default is "gray"}
 }
 \value{

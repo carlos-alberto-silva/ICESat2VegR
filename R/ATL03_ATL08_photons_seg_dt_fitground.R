@@ -5,7 +5,7 @@
 #' Function to estimate ground elevation using smoothing and
 #' interpolation functions
 #'
-#' @param atl03_atl08_seg_dt An S4 object of class [`icesat2.atl03_atl08_seg_dt-class`] containing ATL03 and ATL08 data
+#' @param atl03_atl08_seg_dt An S4 object of class [`ICESat2VegR::icesat2.atl03_atl08_seg_dt-class`] containing ATL03 and ATL08 data
 #' (output of [ATL03_ATL08_photons_attributes_dt_join()] function).
 #' @param smoothing_window numeric. The smoothing window size in meters for smoothing the photon cloud.
 #' Default is NA, see details for more information.

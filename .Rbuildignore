@@ -7,3 +7,5 @@
 ^figure$
 ^README.Rmd$
 .*\.ipynb_checkpoints$
+^.lintr$
+^src/COPYRIGHT$

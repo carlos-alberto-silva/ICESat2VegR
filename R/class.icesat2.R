@@ -1,7 +1,4 @@
-#' @include class.icesat2.h5_local.R
-#' @include class.icesat2.h5_cloud.R
 #' @include class_tools.R
-
 .datatable.aware <- TRUE
 
 # Base class for icesat H5 files
@@ -43,11 +40,13 @@ setMethod(
 #' @importFrom hdf5r H5File
 setRefClass("icesat2.hdf5r")
 
-# Base class for icesat H5 files
+#' Base class for all ICESat2VegR package's H5 files for generic functions
+#' that can be run on any H5
 setClass(
   Class = "icesat2.h5",
   slots = list(h5 = "ANY")
 )
+icesat2.h5 <- new("icesat2.h5")
 
 #' Class for ICESat-2 ATL03
 #'
@@ -86,83 +85,6 @@ icesat2.h5_dataset <- setClass(
 )
 
 setRefClass("icesat2.h5_cloud")
-
-#' Dispatches the `[[` function to h5
-#'
-#' @param x An object of class `[icesat2.h5-class]`
-#' @param path The path for the dataset which to open
-#'
-#' @export
-setMethod(
-  "[[",
-  signature = c("icesat2.h5"),
-  definition = function(x, i, j, ...) {
-    res <- x@h5[[i]]
-    try(expr = {
-      res[1]
-      return(new("icesat2.h5_dataset", ds = res))
-    }, silent = TRUE)
-
-    new("icesat2.h5", h5 = res)
-  }
-)
-
-setMethod(
-  "[",
-  signature = c("icesat2.h5_dataset"),
-  definition = function(x, i = NULL, ...) {
-    try(
-      {
-        if (inherits(x@ds, "h5py._hl.dataset.Dataset")) {
-          if (is.numeric(i)) {
-            return(x@ds[i - 1])
-          }
-        }
-        return(x@ds[i])
-      },
-      silent = TRUE
-    )
-
-    x@ds[]
-  }
-)
-
-#' List H5 contents using any [`icesat2.h5-class`]
-#' @export
-setGeneric("icesat2.h5_list", function(x) {
-  standardGeneric("icesat2.h5_list")
-})
-
-
-#' @export
-setMethod(
-"icesat2.h5_list",
-signature = c("icesat2.h5"),
-function(x) {
-   icesat2.h5_list(x@h5)
-}
-)
-
-#' @export
-setMethod(
-"icesat2.h5_list",
-signature = c("icesat2.h5_cloud"),
-function(x) {
-  pymain <- reticulate::import_main()
-  pymain$temp_keys <- x$keys()
-  reticulate::py_run_string("res = list(temp_keys)")
-  pymain$res
-}
-)
-
-#' @export
-setMethod(
-"icesat2.h5_list",
-signature = c("icesat2.hdf5r"),
-function(x) {
-  x$ls()$name
-}
-)
 
 #' Class for ATL08 attributes
 #'
@@ -225,7 +147,6 @@ h5closeall <- function(con, ...) {
 #' @param ... Inherited from base
 #'
 #' @rdname close
-#' @include class-ICESat2.h5.R
 #' @export
 setMethod("close", signature = c("icesat2.h5"), h5closeall)
 
@@ -360,6 +281,8 @@ setMethod(
 #' Default is "gt1r"
 #' @param colors A vector containing colors for plotting noise, terrain, vegetation and top canopy photons
 #' (e.g. c("gray", "#bd8421", "forestgreen", "green")
+#' @param xlim The x limits to use for the plot
+#' @param ylim the y limits to use for the plot
 #' @param ... will be passed to the main plot
 #'
 #' @return No return value

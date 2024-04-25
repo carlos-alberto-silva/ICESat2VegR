@@ -4,11 +4,17 @@
 \alias{ATL03_photons_attributes_dt_clipBox}
 \title{Clip ATL03 photons by Coordinates}
 \usage{
-ATL03_photons_attributes_dt_clipBox(atl03_photons_dt, xmin, xmax, ymin, ymax)
+ATL03_photons_attributes_dt_clipBox(
+  atl03_photons_dt,
+  lower_left_lon,
+  upper_right_lon,
+  upper_right_lat,
+  lower_left_lat
+)
 }
 \arguments{
-\item{atl03_photons_dt}{A atl03_photons_dt object (output of \code{\link[=atl03_photons_attributes_dt]{atl03_photons_attributes_dt()}} function).
-An S4 object of class \link{icesat2.atl03_dt}}
+\item{atl03_photons_dt}{A atl03_photons_dt object (output of \code{\link[=ATL03_photons_attributes_dt]{ATL03_photons_attributes_dt()}} function).
+An S4 object of class \code{\linkS4class{icesat2.atl03_dt}}}
 
 \item{lower_left_lon}{Numeric. West longitude (x) coordinate of bounding rectangle, in decimal degrees.}
 
@@ -19,7 +25,7 @@ An S4 object of class \link{icesat2.atl03_dt}}
 \item{lower_left_lat}{Numeric. South latitude (y) coordinate of bounding rectangle, in decimal degrees.}
 }
 \value{
-Returns an S4 object of class \link{icesat2.atl03_dt}
+Returns an S4 object of class \code{\linkS4class{icesat2.atl03_dt}}
 containing the ATL03 photons attributes.
 }
 \description{

@@ -2,17 +2,15 @@
 #'
 #' @description This function joins ATL03 and ATL08 computed photons attributes
 #'
-#' @usage ATL03_ATL08_photons_attributes_dt_join(atl08_h5, beam)
-#'
 #' @param atl03_h5 A ICESat-2 ATL03 object (output of [ATL03_read()] function).
-#' An S4 object of class [`icesat2.atl03_dt-class`].
+#' An S4 object of class [`ICESat2VegR::icesat2.atl03_dt-class`].
 #' @param atl08_h5 A ICESat-2 ATL08 object (output of [ATL08_read()] function).
-#' An S4 object of class [ICESat2VegR::icesat2.atl08_dt].
+#' An S4 object of class [`ICESat2VegR::icesat2.atl08_dt-class`].
 #' @param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
 #' @param strong_beam_filter Logical. If true will only get strong beams, if FALSE will only
 #' retrieve weak beams, if NULL or default won't filter the beams.
 #'
-#' @return Returns an S4 object of class [`icesat2.atl03atl08_dt-class`]
+#' @return Returns an S4 object of class [`ICESat2VegR::icesat2.atl03atl08_dt-class`]
 #' containing the ATL08 computed photons attributes.
 #'
 #' @details These are the photons attributes extracted by default:
@@ -38,14 +36,12 @@
 #'
 #' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
 #'
-#'
 #' @examples
 #' # Specifying the path to ATL03 file
 #' atl03_path <- system.file("extdata",
 #'   "atl03_clip.h5",
 #'   package = "ICESat2VegR"
 #' )
-#'
 #'
 #' # Specifying the path to ATL08 file
 #' atl08_path <- system.file("extdata",

@@ -8,10 +8,10 @@ ATL03_read(atl03_path)
 }
 \arguments{
 \item{atl03_path}{Either file path pointing to ICESat-2 ATL03 h5 data
-or a granule resulting from \code{\link[=ATLAS_dataFinder_cloud]{ATLAS_dataFinder_cloud()}}.}
+or a granule resulting from \code{\link[=ATLAS_dataFinder]{ATLAS_dataFinder()}} with \code{cloud_computing = TRUE}.}
 }
 \value{
-Returns an S4 object of class \code{\link{icesat2.atl03_dt}} containing ICESat-2 ATL03 data.
+Returns an S4 object of class \code{\linkS4class{icesat2.atl03_dt}} containing ICESat-2 ATL03 data.
 }
 \description{
 This function reads the ICESat-2 Global Geolocated Photons (ATL03) Product (ATL03) as h5 file.

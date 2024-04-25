@@ -35,11 +35,11 @@ ee_to_dt <- function(sampled) {
 
 
 #' Given an R [`randomForest::randomForest()`] model, transform to a Google Earth Engine randomForest model
-#' 
+#'
 #' @param rf the [`randomForest::randomForest()`] model object.
-#' 
+#'
 #' @return The Google Earth Engine classifier
-#' 
+#'
 #' @export
 build_ee_forest <- function(rf) {
   rf_strings <- pkg_module$buildForest(rf)

@@ -8,6 +8,7 @@
 #' @param plotstat if TRUE, a plot showing the 1:1 figure will be displayed. Default is TRUE
 #' @param legend Character for legend position. Default is "topleft"
 #' @param unit Character indicating the unit for the observed and predicted data (e.g."Mg/ha")
+#' @param ... Other params to be redirected to the plot.
 #'
 #' @return Returns an data.frame object containing the list of stats
 #'

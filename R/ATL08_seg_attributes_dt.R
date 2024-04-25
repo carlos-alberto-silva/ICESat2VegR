@@ -92,16 +92,14 @@ ATL08.var.map[["night_flag"]] <- "/land_segments/night_flag"
 #'
 #' @description This function extracts terrain and canopy attributes by segments from ICESat-2 ATL08 data
 #'
-#' @usage ATL08_seg_attributes_dt(atl08_h5, beam)
-#'
 #' @param atl08_h5 A ICESat-2 ATL08 object (output of [ATL08_read()] function).
-#' An S4 object of class [ICESat2VegR::icesat2.atl08_dt].
+#' An S4 object of class [`ICESat2VegR::icesat2.atl08_dt-class`].
 #' @param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
 #' @param strong_beam_filter Logical. If true will only get strong beams, if FALSE will only
 #' retrieve weak beams, if NULL or default won't filter the beams.
 #' @param attributes A character vector containing the list of terrain and canopy attributes to be extracted.
 #' Default is attribute = c("h_canopy","canopy_h_metrics","canopy_openness","h_te_mean","h_te_median","terrain_slope")
-#' @return Returns an S4 object of class [ICESat2VegR::icesat2.atl08_dt]
+#' @return Returns an S4 object of class [`ICESat2VegR::icesat2.atl08_dt-class`]
 #' containing the ATL08-derived terrain and canopy attributes by segments.
 #'
 #' @details ATL08 canopy attributes:
@@ -153,26 +151,25 @@ ATL08.var.map[["night_flag"]] <- "/land_segments/night_flag"
 #'
 #' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
 #'
-#'
 #' @examples
 #' # Specifying the path to ATL08 file
 #' atl08_path <- system.file("extdata",
 #'   "atl08_clip.h5",
 #'   package = "ICESat2VegR"
 #' )
-#' 
+#'
 #' # Reading ATL08 data (h5 file)
 #' atl08_h5 <- ATL08_read(atl08_path = atl08_path)
-#' 
+#'
 #' # Extracting ATL08-derived terrain and canopy attributes
 #' atl08_seg_att_dt <- ATL08_seg_attributes_dt(atl08_h5 = atl08_h5)
 #' head(atl08_seg_att_dt)
-#' 
+#'
 #' close(atl08_h5)
 #' @export
 ATL08_seg_attributes_dt <- function(atl08_h5,
                                     beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
-                                    strong_beam_filter = NULL, 
+                                    strong_beam_filter = NULL,
                                     attributes = c(
                                       "h_canopy",
                                       "canopy_openness",
@@ -268,7 +265,7 @@ ATL08_seg_attributes_dt <- function(atl08_h5,
               colnames(m)[(ncol(m) - 17):ncol(m)] <- paste0("RH", seq(10, 95, 5))
             }
           } else {
-            set(m, j=col, value=atl08_h5[[full_addr]][]) 
+            set(m, j = col, value = atl08_h5[[full_addr]][])
           }
         }
       }

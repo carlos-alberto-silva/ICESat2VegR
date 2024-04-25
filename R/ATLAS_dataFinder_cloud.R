@@ -17,7 +17,6 @@ PAGE_SIZE <- 2000
 # #' (decimal degrees) for the bounding box of the area of interest.
 # #' @param upper_right_lat Numeric. Maximum latitude in
 # #' (decimal degrees) for the bounding box of the area of interest.
-
 # #' @param version Character. The version of the ICESat-2 ATLAS product files to be
 # #' returned (only V005 or V006). Default "006".
 # #' @param daterange Vector. Date range. Specify your start and end dates

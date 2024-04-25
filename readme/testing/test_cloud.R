@@ -10,7 +10,7 @@ persist <- TRUE
 daterange <- c("2019-08-19", "2019-08-20")
 
 # devtools::load_all()
-res <- ICESat2_finder_cloud(
+res <- ATLAS_dataFinder_cloud(
   short_name,
   lower_left_lon,
   lower_left_lat,
@@ -104,8 +104,8 @@ atl08_granules <- ATLAS_dataFinder(
 output_dir <- tempdir()
 setwd(output_dir)
 
-ICESat2_dataDownload(atl03_granules[1], ".")
-ICESat2_dataDownload(atl08_granules[1], ".")
+ATLAS_dataDownload(atl03_granules[1], ".")
+ATLAS_dataDownload(atl08_granules[1], ".")
 
 atl03_path <- list.files(pattern = "^ATL03")[1]
 atl08_path <- list.files(pattern = "^ATL08")[1]

@@ -1,3 +1,10 @@
+#' Creates an `Earth Engine` server number
+#'
+#' @param x the number to convert to Earth Engine's number.
+#' 
+#' @return The Earth Engine number
+#' 
+#' @seealso https://developers.google.com/earth-engine/apidocs/ee-number
 #' @export
 ee_number <- function(x) {
   UseMethod("ee_number")
@@ -90,6 +97,13 @@ ee_number <- function(x) {
     e1$atan()
   }
 }
+
+#' Calculates the angle formed by the 2D vector x, y.
+#'
+#' @param e1 The number to calculate the `atan2` on.
+#'
+#' @return The resulting ee.Number with the results from `atan2`.
+#'
 #' @export
 `atan2.ee.ee_number.Number` <- function(e1) {
   if (!is.null(ee)) {
@@ -420,4 +434,3 @@ ee_number <- function(x) {
     e1$trigamma()
   }
 }
-

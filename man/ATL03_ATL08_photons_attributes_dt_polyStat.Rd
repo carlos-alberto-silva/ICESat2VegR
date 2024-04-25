@@ -4,10 +4,14 @@
 \alias{ATL03_ATL08_photons_attributes_dt_polyStat}
 \title{Statistics of ATL03 and ATL08 joined photons attributes within a given area}
 \usage{
-ATL03_ATL08_photons_attributes_dt_polyStat(atl03_atl08_dt, func, seg_length,ph_class,beam,quality_ph,night_flag)
+ATL03_ATL08_photons_attributes_dt_polyStat(
+  atl03_atl08_dt,
+  func,
+  poly_id = NULL
+)
 }
 \arguments{
-\item{atl03_atl08_dt}{An S4 object of class \link{icesat2.atl08_dt} containing ATL03 and ATL08 data
+\item{atl03_atl08_dt}{An S4 object of class \code{\linkS4class{icesat2.atl08_dt}} containing ATL03 and ATL08 data
 (output of \code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}} function).}
 
 \item{func}{The function to be applied for computing the defined statistics}
@@ -15,7 +19,7 @@ ATL03_ATL08_photons_attributes_dt_polyStat(atl03_atl08_dt, func, seg_length,ph_c
 \item{poly_id}{Polygon id. If defined, statistics will be computed for each polygon}
 }
 \value{
-Returns an S4 object of class \link{icesat2.atl08_dt}
+Returns an S4 object of class \code{\linkS4class{icesat2.atl08_dt}}
 Containing Statistics of ATL08 classified canopy photons
 }
 \description{

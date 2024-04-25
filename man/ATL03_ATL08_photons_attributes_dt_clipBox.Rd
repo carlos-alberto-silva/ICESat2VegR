@@ -4,10 +4,16 @@
 \alias{ATL03_ATL08_photons_attributes_dt_clipBox}
 \title{Clip joined ATL03 and ATL08 photons by Bounding Box}
 \usage{
-ATL03_ATL08_photons_attributes_dt_clipBox(atl03_atl08_dt, xmin, xmax, ymin, ymax)
+ATL03_ATL08_photons_attributes_dt_clipBox(
+  atl03_atl08_dt,
+  lower_left_lon,
+  upper_right_lon,
+  upper_right_lat,
+  lower_left_lat
+)
 }
 \arguments{
-\item{atl03_atl08_dt}{An S4 object of class \link{icesat2.atl03atl08_dt} containing ATL03 and ATL08 data
+\item{atl03_atl08_dt}{An S4 object of class \code{\linkS4class{icesat2.atl03atl08_dt}} containing ATL03 and ATL08 data
 (output of \code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}} function).}
 
 \item{lower_left_lon}{Numeric. West longitude (x) coordinate of bounding rectangle, in decimal degrees.}
@@ -19,7 +25,7 @@ ATL03_ATL08_photons_attributes_dt_clipBox(atl03_atl08_dt, xmin, xmax, ymin, ymax
 \item{lower_left_lat}{Numeric. South latitude (y) coordinate of bounding rectangle, in decimal degrees.}
 }
 \value{
-Returns an S4 object of class \link{icesat2.atl03atl08_dt}
+Returns an S4 object of class \code{\linkS4class{icesat2.atl03atl08_dt}}
 containing a subset of the ATL03 and ATL08 photon attributes.
 }
 \description{

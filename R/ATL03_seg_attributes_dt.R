@@ -40,8 +40,8 @@ ATL03.seg.map[["yaw"]] <- "geolocation/yaw"
 #'
 #' @description This function extracts segment attributes from ICESat-2 ATL03 data
 #'
-#' @param ATL03_h5 A ICESat-2 ATL03 object (output of [ATL03_read()] function).
-#' An S4 object of class [ICESat2VegR::icesat2.atl03_dt].
+#' @param atl03_h5 A ICESat-2 ATL03 object (output of [ATL03_read()] function).
+#' An S4 object of class [`ICESat2VegR::icesat2.atl03_dt-class`].
 #' @param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
 #' @param strong_beam_filter Logical. If true will only get strong beams, if FALSE will only
 #' retrieve weak beams, if NULL or default won't filter the beams.

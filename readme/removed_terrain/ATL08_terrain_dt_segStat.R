@@ -3,8 +3,6 @@
 #' @description Computes a series of statistics from ATL08 classified terrain photons
 #' within a given segment length
 #'
-#' @usage ATL08_terrain_dt_segStat(atl03_atl08_dt, func, seg_length,ph_class,beam,quality_ph,night_flag)
-#'
 #' @param atl03_atl08_dt  An S4 object of class "data.table" containing ATL03 and ATL08 data
 #' (output of [ICESat2VegR::ATL03_ATL08_join_dt()] function).
 #' @param func The function to be applied for computing the defined statistics

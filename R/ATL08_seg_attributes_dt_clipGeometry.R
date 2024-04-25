@@ -2,17 +2,15 @@
 #'
 #' @description This function clips ATL08 Terrain and Canopy Attributes within a given geometry
 #'
-#' @usage ATL08_seg_attributes_dt_clipGeometry(atl08_seg_att_dt, xmin, xmax, ymin, ymax)
-#'
-#' @param atl08_seg_att_dt A atl08_seg_att_dt object (output of [ICESat2VegR::ATL08_seg_attribute_dt()] function).
-#' An S4 object of class [ICESat2VegR::icesat2.atl08_dt]
+#' @param atl08_seg_att_dt A atl08_seg_att_dt object (output of [`ATL08_seg_attributes_dt()`] function).
+#' An S4 object of class [`ICESat2VegR::icesat2.atl08_dt-class`]
 #' @param polygon Polygon. An object of class [`terra::SpatVector`],
 #' which can be loaded as an ESRI shapefile using [terra::vect] function in the
 #' \emph{sf} package.
 #' @param split_by Polygon id. If defined, ATL08 data will be clipped by each polygon using
 #' the polygon id from table of attribute defined by the user
 #'
-#' @return Returns an S4 object of class [ICESat2VegR::icesat2.atl08_dt]
+#' @return Returns an S4 object of class [`ICESat2VegR::icesat2.atl08_dt-class`]
 #' containing the clipped ATL08 Terrain and Canopy Attributes.
 #'
 #' @examples

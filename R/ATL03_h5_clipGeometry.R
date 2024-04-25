@@ -1,6 +1,6 @@
 #' Clips ICESat-2 ATL03 H5 data
 #'
-#' @param atl03 [`icesat2.atl03_h5-class`] object,
+#' @param atl03 [`ICESat2VegR::icesat2.atl03_h5-class`] object,
 #' obtained through [`ATL03_read()`] for clipping
 #' @param output character. Path to the output h5 file, the attribute for polygons
 #' will be appended to the file name.
@@ -12,7 +12,7 @@
 #' @param additional_groups [`character-class`]. Other addional groups that should be included, default
 #' c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")
 #'
-#' @return Returns a list of clipped S4 object of class [`icesat2.atl03_h5-class`]
+#' @return Returns a list of clipped S4 object of class [`ICESat2VegR::icesat2.atl03_h5-class`]
 #'
 #' @description This function clips ATL03 HDF5 file within beam groups,
 #' but keeps metada and ancillary data the same.

@@ -1,3 +1,11 @@
+#' Class that represent custom segments created from ATL03 and ATL08 joined data
+#'
+#' @details
+#' This class is actually just a wrap around the [`data.table-class`], but it indicates
+#' the output from [`ATL03_ATL08_segment_create()`], which means the dataset will contain
+#' the needed structure for computing value for the computing the stats with
+#' [`ATL03_ATL08_compute_seg_attributes_dt_segStat()`]
+
 setRefClass("icesat2.atl03_atl08_seg_dt")
 
 #' Compute segments id for a given segment length
@@ -5,10 +13,7 @@ setRefClass("icesat2.atl03_atl08_seg_dt")
 #' @description This function reads the ICESat-2 Land and
 #' Vegetation Along-Track Products (ATL08) as h5 file.
 #'
-#'
-#' @usage ATL08_read(atl08_path)
-#'
-#' @param atl03_atl08_dt [`icesat2.atl03_atl08_dt-class`].
+#' @param atl03_atl08_dt [`ICESat2VegR::icesat2.atl03atl08_dt-class`].
 #' The output of the [`ATL03_ATL08_photons_attributes_dt_join()`].
 #' @param segment_length [`numeric-class`]. The desired segment length to split the photons.
 #' @param centroid character. Method used to calculate the segment centroid, either "mean" or "midpoint",
@@ -25,7 +30,7 @@ setRefClass("icesat2.atl03_atl08_seg_dt")
 #' - "mid-point": the minimum and maximum coordinates will be averaged to calculate a midpoint within
 #' the segment. This will give a better representation of the segment true mid-point
 #'
-#' @return Returns an S4 object of class ["icesat2.atl03_atl08_dt-class"] containing ICESat-2 ATL08 data.
+#' @return Returns an S4 object of class [`icesat2.atl03atl08_dt-class`] containing ICESat-2 ATL08 data.
 #'
 #' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
 #'

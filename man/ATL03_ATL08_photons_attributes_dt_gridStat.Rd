@@ -4,10 +4,18 @@
 \alias{ATL03_ATL08_photons_attributes_dt_gridStat}
 \title{Statistics of ATL03 and ATL08 photon attributes}
 \usage{
-ATL03_ATL08_photons_attributes_dt_gridStat(atl03_atl08_dt, func, res)
+ATL03_ATL08_photons_attributes_dt_gridStat(
+  atl03_atl08_dt,
+  func,
+  res = 0.5,
+  ph_class = c(2, 3),
+  beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
+  quality_ph = 0,
+  night_flag = 1
+)
 }
 \arguments{
-\item{atl03_atl08_dt}{An S4 object of class \link{icesat2.atl03_atl08_dt} containing ATL03 and ATL08  attributes
+\item{atl03_atl08_dt}{An S4 object of class \code{\linkS4class{icesat2.atl03atl08_dt}} containing ATL03 and ATL08  attributes
 (output of the \code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}} function).}
 
 \item{func}{The function to be applied for computing the defined statistics}

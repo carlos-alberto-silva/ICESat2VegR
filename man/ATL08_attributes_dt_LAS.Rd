@@ -4,13 +4,13 @@
 \alias{ATL08_attributes_dt_LAS}
 \title{Read ICESat-2 ATL08 data}
 \usage{
-ATL08_read(atl08_path)
+ATL08_attributes_dt_LAS(atl08_path)
 }
 \arguments{
 \item{atl08_path}{File path pointing to ICESat-2 ATL08 data. Data in HDF5 Hierarchical Data Format (.h5).}
 }
 \value{
-Returns an S4 object of class \link{"icesat2.atl08_dt"} containing ICESat-2 ATL08 data.
+Returns an S4 object of class \code{\linkS4class{icesat2.atl08_dt}} containing ICESat-2 ATL08 data.
 }
 \description{
 This function reads the ICESat-2 Land and

@@ -13,7 +13,7 @@ ATLAS_dataDownload(
 )
 }
 \arguments{
-\item{url}{character vector object; url to ATL03 or ALT08 data, or both (output of \code{\link[=ICESat2_finder]{ICESat2_finder()}})}
+\item{url}{character vector object; url to ATL03 or ALT08 data, or both (output of \code{\link[=ATLAS_dataFinder]{ATLAS_dataFinder()}})}
 
 \item{outdir}{Vector object, output directory for downloading GEDI data, default \code{\link[=tempdir]{tempdir()}}}
 
@@ -57,7 +57,7 @@ writeLines(c(
 close(netrc_conn)
 
 #' Downloading ICEsat-2 data
-ICESat2_dataDownload(url, outdir)
+ATLAS_dataDownload(url, outdir)
 }
 }
 \references{

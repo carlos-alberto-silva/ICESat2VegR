@@ -11,14 +11,14 @@ spacedSampling(size, radius, spatialIndex = NULL, chainSampling = NULL)
 if it is between (0, 1) it will sample a percentage relative to the number of
 available observations within the group.}
 
+\item{radius}{the minimum radius between samples.}
+
 \item{spatialIndex}{optional parameter. You can create a spatial index for accelerating
-the search space with \code{\linkS4class{ANNIndex}} and reuse that if needed elsewhere. It will create
+the search space with \code{\link{ANNIndex}} and reuse that if needed elsewhere. It will create
 one automatically everytime if you don't specify one.}
 
 \item{chainSampling}{chains different methods of sampling by providing the result
 of another samplingMethod \code{\link[=randomSampling]{randomSampling()}}, \code{\link[=spacedSampling]{spacedSampling()}}, \code{\link[=stratifiedSampling]{stratifiedSampling()}}.}
-
-\item{variable}{Variable name used for the stratification}
 }
 \value{
 A \code{\linkS4class{icesat2_sampling_method}} for defining the method used in \code{\link[=sample]{sample()}}

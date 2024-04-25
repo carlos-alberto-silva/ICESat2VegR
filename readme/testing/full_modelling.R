@@ -17,7 +17,7 @@ all_granules <- c()
 year <- 2019
 
 for (year in years) {
-  granules <- ICESat2VegR::ICESat2_finder(
+  granules <- ICESat2VegR::ATLAS_dataFinder(
     short_name = "ATL08",
     version = "006",
     daterange = c(gettextf(aprilPlaceholder, year), gettextf(mayPlaceholder, year)),

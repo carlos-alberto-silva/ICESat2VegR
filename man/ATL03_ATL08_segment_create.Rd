@@ -4,10 +4,16 @@
 \alias{ATL03_ATL08_segment_create}
 \title{Compute segments id for a given segment length}
 \usage{
-ATL08_read(atl08_path)
+ATL03_ATL08_segment_create(
+  atl03_atl08_dt,
+  segment_length,
+  centroid = "mean",
+  output = NA,
+  overwrite = FALSE
+)
 }
 \arguments{
-\item{atl03_atl08_dt}{\code{\linkS4class{icesat2.atl03_atl08_dt}}.
+\item{atl03_atl08_dt}{\code{\linkS4class{icesat2.atl03atl08_dt}}.
 The output of the \code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}}.}
 
 \item{segment_length}{\code{\linkS4class{numeric}}. The desired segment length to split the photons.}
@@ -22,7 +28,7 @@ will be inferred by the file extension using \code{\link[terra:writeVector]{terr
 Default FALSE.}
 }
 \value{
-Returns an S4 object of class \link{"icesat2.atl03_atl08_dt-class"} containing ICESat-2 ATL08 data.
+Returns an S4 object of class \code{\linkS4class{icesat2.atl03atl08_dt}} containing ICESat-2 ATL08 data.
 }
 \description{
 This function reads the ICESat-2 Land and

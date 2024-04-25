@@ -2,63 +2,69 @@
 #'
 #' @param x the generic input data to be sampled
 #' @param ... generic params to pass ahead to the specific sampling function
+#' @param method the sampling method to use.
+#'
+#' @details
+#' It is expected that the user pass a `method` parameter within `...`
 #'
 #' @seealso
 #' [`randomSampling()`], [`spacedSampling()`], [`gridSampling()`],
 #' [`stratifiedSampling()`], [`geomSampling()`], [`rasterSampling()`]
 #' @export
-sample <- function(x, ...) {
+sample <- function(x, ..., method) {
   UseMethod("sample")
 }
 
 #' @export
 sample.default <- function(x, ...) base::sample(x, ...)
 
-#' Sampling function which accepts a method for sampling
-#'
-#' @param dt [`icesat2.atl08_dt-class`] data.table. Which can be extracted using
-#' [`ATL08_seg_attributes_dt()`]
-#' @param method the sampling method, either one of the sampling methods
-#' provided [`randomSampling()`], [`spacedSampling()`], [`gridSampling()`],
-#' [`stratifiedSampling()`]
-#'
-#' @return a subset sample of the input [`icesat2.atl08_dt-class`] plus addiotional
-#' columns regarding the grouping
-#'
-#' @seealso
-#' [`randomSampling()`], [`spacedSampling()`], [`gridSampling()`],
-#' [`stratifiedSampling()`], [`geomSampling()`], [`rasterSampling()`]
-#'
+# #' Sampling function which accepts a method for sampling
+# #'
+# #' @param x [`ICESat2VegR::icesat2.atl08_dt-class`] data.table. Which can be extracted using
+# #' [`ATL08_seg_attributes_dt()`]
+# #' @param method the sampling method, either one of the sampling methods
+# #' provided [`randomSampling()`], [`spacedSampling()`], [`gridSampling()`],
+# #' [`stratifiedSampling()`]
+# #'
+# #' @return a subset sample of the input [`ICESat2VegR::icesat2.atl08_dt-class`] plus addiotional
+# #' columns regarding the grouping
+# #'
+# #' @seealso
+# #' [`randomSampling()`], [`spacedSampling()`], [`gridSampling()`],
+# #' [`stratifiedSampling()`], [`geomSampling()`], [`rasterSampling()`]
+# #'
 #' @export
-`sample.icesat2.atl08_dt` <- function(dt, method, ...) {
-  do.call(method$fn, c(list(dt), method$params))
+`sample.icesat2.atl08_dt` <- function(x, ..., method) {
+  do.call(method$fn, c(list(x), method$params))
 }
 
-#' Sampling function which accepts a method for sampling
-#'
-#' @param dt [`icesat2.atl03_seg_dt-class`] data.table. Which can be extracted using
-#' [`ATL08_seg_attributes_dt()`]
-#' @param method the sampling method, either one or a combination of the sampling methods
-#' provided [`randomSampling()`], [`spacedSampling()`], [`gridSampling()`],
-#' [`stratifiedSampling()`], [`geomSampling()`], [`rasterSampling()`]
-#'
-#' @return a subset sample of the input [`icesat2.atl03_seg_dt-class`]
-#'
-#' @seealso
-#' [`randomSampling()`], [`spacedSampling()`], [`gridSampling()`],
-#' [`stratifiedSampling()`], [`geomSampling()`], [`rasterSampling()`]
-#'
+# #' Sampling function which accepts a method for sampling
+# #'
+# #' @param x [`ICESat2VegR::icesat2.atl03_seg_dt-class`] data.table. Which can be extracted using
+# #' [`ATL08_seg_attributes_dt()`]
+# #' @param ... Not used, only for compatibility with generic method.
+# #' @param method The sampling method, either one or a combination of the sampling methods
+# #' provided [`randomSampling()`], [`spacedSampling()`], [`gridSampling()`],
+# #' [`stratifiedSampling()`], [`geomSampling()`], [`rasterSampling()`]
+# #'
+# #' @return a subset sample of the input [`ICESat2VegR::icesat2.atl03_seg_dt-class`]
+# #'
+# #' @seealso
+# #' [`randomSampling()`], [`spacedSampling()`], [`gridSampling()`],
+# #' [`stratifiedSampling()`], [`geomSampling()`], [`rasterSampling()`]
+# #'
 #' @export
-`sample.icesat2.atl03_seg_dt` <- function(dt, method, ...) {
-  do.call(method$fn, c(list(dt), method$params))
+`sample.icesat2.atl03_seg_dt` <- function(x, ..., method) {
+  method <- list(...)[["method"]]
+  do.call(method$fn, c(list(x), method$params))
 }
 
 #' @export
-`sample.icesat2.atl03_atl08_seg_dt` <- function(dt, method, ...) {
-  do.call(method$fn, c(list(dt), method$params))
+`sample.icesat2.atl03_atl08_seg_dt` <- function(x, ..., method) {
+  do.call(method$fn, c(list(x), method$params))
 }
 
-
+#' Class for sampling methods to be passed on for the sample function
 setRefClass("icesat2_sampling_method")
 
 #' @export
@@ -249,14 +255,11 @@ genericSamplingMethod <- function(fn) {
 ##########################################################
 #' Pure random sampling method
 #'
-#' @param dt [`icesat2.atl03_seg_dt-class`] data.table. Which can be extracted using
-#' [`ATL08_seg_attributes_dt()`]
 #' @param size the sample size. Either an integer of absolute number of samples or
 #' if it is between (0, 1) it will sample a percentage relative to the number of
 #' available observations within the group.
-#' @param ... generic params not used by randomSampling
 #'
-#' @return A [`icesat2_sampling_method-class`] for defining the method used in [`sample()`]
+#' @return A [`ICESat2VegR::icesat2_sampling_method-class`] for defining the method used in [`sample()`]
 #'
 #' @export
 randomSampling <- genericSamplingMethod(randomSamplingWorker)
@@ -272,7 +275,7 @@ randomSampling <- genericSamplingMethod(randomSamplingWorker)
 #' of another samplingMethod [`randomSampling()`], [`spacedSampling()`], [`stratifiedSampling()`].
 
 #'
-#' @return A [`icesat2_sampling_method-class`] for defining the method used in [`sample()`]
+#' @return A [`ICESat2VegR::icesat2_sampling_method-class`] for defining the method used in [`sample()`]
 #'
 #' @export
 gridSampling <- genericSamplingMethod(gridSamplingWorker)
@@ -290,7 +293,7 @@ gridSampling <- genericSamplingMethod(gridSamplingWorker)
 #' @param ...
 #' forward to the [`graphics::hist()`], where you can manually define the breaks.
 #'
-#' @return A [`icesat2_sampling_method-class`] for defining the method used in [`sample()`]
+#' @return A [`ICESat2VegR::icesat2_sampling_method-class`] for defining the method used in [`sample()`]
 #'
 #' @export
 stratifiedSampling <- genericSamplingMethod(stratifiedSamplingWorker)
@@ -300,15 +303,15 @@ stratifiedSampling <- genericSamplingMethod(stratifiedSamplingWorker)
 #' @param size the sample size. Either an integer of absolute number of samples or
 #' if it is between (0, 1) it will sample a percentage relative to the number of
 #' available observations within the group.
-#' @param variable Variable name used for the stratification
+#' @param radius the minimum radius between samples.
 #' @param spatialIndex optional parameter. You can create a spatial index for accelerating
-#' the search space with [`ANNIndex-class`] and reuse that if needed elsewhere. It will create
+#' the search space with [`ANNIndex`] and reuse that if needed elsewhere. It will create
 #' one automatically everytime if you don't specify one.
 #' @param chainSampling chains different methods of sampling by providing the result
 #' of another samplingMethod [`randomSampling()`], [`spacedSampling()`], [`stratifiedSampling()`].
-#' 
-#' @return A [`icesat2_sampling_method-class`] for defining the method used in [`sample()`]
-#' 
+#'
+#' @return A [`ICESat2VegR::icesat2_sampling_method-class`] for defining the method used in [`sample()`]
+#'
 #' @include ANNIndex.R
 #' @export
 spacedSampling <- genericSamplingMethod(spacedSamplingWorker)
@@ -323,10 +326,8 @@ spacedSampling <- genericSamplingMethod(spacedSamplingWorker)
 #' for sampling
 #' @param chainSampling chains different methods of sampling by providing the result
 #' of another samplingMethod [`randomSampling()`], [`spacedSampling()`], [`stratifiedSampling()`].
-#' @param ...
-#' forward to the [`graphics::hist()`], where you can manually define the breaks.
 #'
-#' @return A [`icesat2_sampling_method-class`] for defining the method used in [`sample()`]
+#' @return A [`ICESat2VegR::icesat2_sampling_method-class`] for defining the method used in [`sample()`]
 #'
 #' @export
 geomSampling <- genericSamplingMethod(geomSamplingWorker)
@@ -339,10 +340,8 @@ geomSampling <- genericSamplingMethod(geomSamplingWorker)
 #' @param raster a [`terra::SpatRaster-class`] object opened with [`terra::rast()`]
 #' @param chainSampling chains different methods of sampling by providing the result
 #' of another samplingMethod [`randomSampling()`], [`spacedSampling()`], [`stratifiedSampling()`].
-#' @param ...
-#' forward to the [`graphics::hist()`], where you can manually define the breaks.
 #'
-#' @return A [`icesat2_sampling_method-class`] for defining the method used in [`sample()`]
+#' @return A [`ICESat2VegR::icesat2_sampling_method-class`] for defining the method used in [`sample()`]
 #'
 #' @export
 rasterSampling <- genericSamplingMethod(rasterSamplingWorker)

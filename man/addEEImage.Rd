@@ -15,7 +15,7 @@ addEEImage(
 )
 }
 \arguments{
-\item{map}{\code{\linkS4class{leaflet}}. A leaflet class map.}
+\item{map}{\code{\link[leaflet:leaflet]{leaflet::leaflet}}. A leaflet class map.}
 
 \item{x}{Earth Engine Image open with \code{ee$Image}.}
 
@@ -32,12 +32,13 @@ hexadecimal or valid CSS color names.}
 \item{...}{Other parameters to be passed to \code{\link[leaflet:map-layers]{leaflet::addTiles()}} function.}
 }
 \value{
-A \code{\linkS4class{leaflet}}/\code{\linkS4class{htmlwidget}} with the Earth Engine image added.
+A \code{\link[leaflet:leaflet]{leaflet::leaflet}}/\code{htmlwidget} with the Earth Engine image added.
 }
 \description{
 Adds Earth Engine Image class to leaflet
 }
 \examples{
+\dontrun{
 collection_id <- "NASA/HLS/HLSL30/v002"
 
 ee_collection <- ee$ImageCollection(collection_id)
@@ -58,7 +59,6 @@ image <- c(
   ee_collection$filterDate("2021-04-01", "2021-07-31")$map(hlsMask)
 )$filter("CLOUD_COVERAGE < 30")$median()
 
-
 library(leaflet)
 leaflet() \%>\%
   addEEImage(
@@ -68,4 +68,5 @@ leaflet() \%>\%
     max_value = 0.2
   ) \%>\%
   setView(lng = -82.2345, lat = 29.6552, zoom = 10)
+}
 }

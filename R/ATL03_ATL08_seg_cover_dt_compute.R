@@ -3,10 +3,7 @@
 #' @description This function reads the ICESat-2 Land and
 #' Vegetation Along-Track Products (ATL08) as h5 file.
 #'
-#'
-#' @usage ATL08_read(atl08_path)
-#'
-#' @param atl03_atl08_seg_dt [`icesat2.atl03_atl08_dt-class`].
+#' @param atl03_atl08_dt [`ICESat2VegR::icesat2.atl03atl08_dt-class`].
 #' The output of the [`ATL03_ATL08_photons_attributes_dt_join()`].
 #' @param reflectance_ratio Numeric. The reflectance ratio to use to compute the coverage metric.
 #' \mjseqn{\rho_v / \rho_g}, where \mjseqn{\rho_v} is the vegetation reflectance
@@ -38,7 +35,7 @@
 #' @import hdf5r
 #' @export
 ATL03_ATL08_seg_cover_dt_compute <- function(
-    atl03_atl08_dt, atl08_dt,
+    atl03_atl08_dt,
     reflectance_ratio = 1) {
   segment_id <-
     classed_pc_flag <- NA

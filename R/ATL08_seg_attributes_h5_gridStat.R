@@ -66,6 +66,9 @@ default_agg_join <- function(x1, x2) {
 #' @param atl08_path CharacterVector. The directory paths where the ATL08 H5 files are stored;
 #' @param metrics CharacterVector. A vector of canopy attributes available from ATL08 product (e.g. "h_canopy")
 #' @param out_root Character. The root name for the raster output files, the pattern is {out_root}_{metric}_{count/m1/m2/m3/m4}.tif. This should include the full path for the file.
+#' @param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
+#' @param strong_beam_filter Logical. If true will only get strong beams, if FALSE will only
+#' retrieve weak beams, if NULL or default won't filter the beams.
 #' @param ul_lat Numeric. Upper left latitude for the bounding box
 #' @param ul_lon Numeric. Upper left longitude for the bounding box
 #' @param lr_lat Numeric. Lower right latitude for the bounding box
@@ -75,8 +78,6 @@ default_agg_join <- function(x1, x2) {
 #' @param agg_function Formula function-like. An aggregate function which should return a data.table with the aggregate statistics
 #' @param agg_join Function. A function to merge two different agg objects.
 #' @param finalizer List<name, formula>. A list with the final raster names and the formula which uses the base statistics.
-#' @param filter Formula character "x" based. You can use either the column names available in `metrics`
-#' for performing the filter and "x" to denote the target variable. e.g. "x < 200 && h_canopy_uncertainty < 0.5"
 #'
 #' @details
 #' This function will create seven different aggregate statistics
@@ -282,6 +283,7 @@ ATL08_seg_attributes_h5_gridStat <- function(
       "segment_cover"
     ),
     beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
+    strong_beam_filter = NULL,
     out_root,
     ul_lat,
     ul_lon,
@@ -382,9 +384,9 @@ ATL08_seg_attributes_h5_gridStat <- function(
 
       # read H5
       atl08_h5 <- ATL08_read(atl08_path = atl08_path)
-      vals <- ATL08_seg_attributes_dt(atl08_h5, attribute = cols[-c(1:2)])
 
-      vals <- ATL08_seg_attributes_dt_clipBox(vals, lower_left_lon = ul_lon, upper_right_lon =  lr_lon, lower_left_lat = lr_lat, upper_right_lat = ul_lat)
+      vals <- ATL08_seg_attributes_dt(atl08_h5, beam = beam, strong_beam_filter = strong_beam_filter, attributes = cols[-c(1:2)])
+      vals <- ATL08_seg_attributes_dt_clipBox(vals, lower_left_lon = ul_lon, upper_right_lon = lr_lon, lower_left_lat = lr_lat, upper_right_lat = ul_lat)
       # Use only night photons
       # cols_night_flag = c(setdiff(cols, "night_flag"))
       # vals = vals[night_flag == 1, cols_night_flag, with = FALSE]

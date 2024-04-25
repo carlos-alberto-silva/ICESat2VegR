@@ -4,14 +4,14 @@
 \alias{predict.ee.Classifier}
 \title{\code{predict} method for generating predictions for the ee.Classifier.}
 \usage{
-\method{predict}{ee.Classifier}(x, data, ...)
+\method{predict}{ee.Classifier}(x, data)
 }
 \arguments{
+\item{x}{The ee.Classifier generated either by using the regular
+\code{ee} API functions or using the package's \code{\link[=build_ee_forest]{build_ee_forest()}} function.}
+
 \item{data}{\code{\linkS4class{data.frame}} or \code{ee.FeatureCollection} with the
 features input to be used for the prediction.}
-
-\item{x.}{The ee.Classifier generated either by using the regular
-\code{ee} API functions or using the package's \code{\link[=model_fit]{model_fit()}} function.}
 }
 \value{
 A \code{\linkS4class{numeric}} with the predicted values

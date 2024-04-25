@@ -26,7 +26,7 @@ PAGE_SIZE <- 2000
 #' @param cloud_hosted Logical. Flag to indicate use of cloud hosted collections.To be used when the cloud computing
 #' parameter is FALSE.
 #' @param cloud_computing Logical. If TRUE, it will return granules for cloud computing directly, otherwise
-#' it will return links to be passed in the function [ICESat2VegR::ICESat2_dataDownload] for data download.
+#' it will return links to be passed in the function [ICESat2VegR::ATLAS_dataDownload] for data download.
 #'
 #' @return Return either a vector object pointing out the path to
 #' ICESat-2 ATLAS data found within the boundary box coordinates provided for data download or a vector

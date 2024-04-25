@@ -4,6 +4,9 @@
 #' @param stack A single image or a vector/list of images from Earth Engine.
 #' @param geom A geometry from [`terra::SpatVector-class`] read with [`terra::vect`].
 #' @param scale The scale in meters for the extraction (image resolution).
+#' @param chunk_size If the number of observations is greater than 1000, it is recommended
+#' to chunk the results for not running out of memory within GEE server, default is chunk by
+#' 1000.
 #' 
 #' @return A [data.table::data.table-class] with the properties extracted
 #' from the ee images.

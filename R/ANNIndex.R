@@ -14,7 +14,7 @@ ANNIndex <- R6::R6Class("ANNIndex",
     #' @field tree The C++ pointer for the built tree
     tree = NULL,
     #' @description
-    #' Creates a new instance of the [`ANNIndex-class`] class.
+    #' Creates a new instance of the [`ANNIndex`] class.
     #'
     #' @param x NumericVector of x/longitude
     #' @param y NumericVector of y/latitude

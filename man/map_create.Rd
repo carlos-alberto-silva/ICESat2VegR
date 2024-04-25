@@ -11,10 +11,10 @@ map_create(model, stack)
 \item{model}{\code{\link[randomForest:randomForest]{randomForest::randomForest}}. The classifier (regression) model
 to use for the prediction.}
 
-\item{stack.}{A vector/list of ee.Image created using the ee API.}
+\item{stack}{A vector/list of ee.Image created using the ee API.}
 }
 \value{
-An ee.Image resulting from the model.
+An \code{ee.Image} resulting from the model.
 }
 \description{
 Applies the model in the input rasters to generate the

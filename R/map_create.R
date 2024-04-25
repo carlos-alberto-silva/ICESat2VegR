@@ -5,13 +5,13 @@
 #'
 #' @param model [`randomForest::randomForest`]. The classifier (regression) model
 #' to use for the prediction.
-#' @param stack. A vector/list of ee.Image created using the ee API.
+#' @param stack A vector/list of ee.Image created using the ee API.
 #'
-#' @return An ee.Image resulting from applying the fitted model.
+#' @return An `ee.Image` resulting from applying the fitted model.
 #'
 #' @export
 map_create <- function(model, stack) {
-  trees <- build_forest(model)
+  trees <- build_ee_forest(model)
   gee_rf <- ee$Classifier$decisionTreeEnsemble(trees)
   result <- stack$classify(gee_rf)
   result

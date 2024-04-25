@@ -21,10 +21,8 @@ ATL08_terrain.var.map[["terrain_slope"]] <- "terrain_slope"
 #'
 #' @description This function extracts terrain metrics from ICESat-2 ATL08 data
 #'
-#' @usage ATL08_terrain_attributes_dt(atl08_h5, beam)
-#'
-#' @param atl08_h5 A ICESat-2 ATL08 object (output of [ATL08_read()] function). An S4 object of class [ICESat2VegR::icesat2.atl08_dt].
-#' An S4 object of class [ICESat2VegR::icesat2.atl08_dt].
+#' @param atl08_h5 A ICESat-2 ATL08 object (output of [ATL08_read()] function). An S4 object of class [`ICESat2VegR::icesat2.atl08_dt-class`].
+#' An S4 object of class [`ICESat2VegR::icesat2.atl08_dt-class`].
 #' @param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
 #' @param terrain_attribute A character vector containing the list of metrics to be extracted. See the default columns in the description.
 #'
@@ -32,7 +30,6 @@ ATL08_terrain.var.map[["terrain_slope"]] <- "terrain_slope"
 #' containing the ATL08-derived terrain metrics.
 #'
 #' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
-#'
 #'
 #' @examples
 #'

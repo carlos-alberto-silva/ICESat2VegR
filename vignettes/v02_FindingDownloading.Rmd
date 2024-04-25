@@ -10,7 +10,7 @@ vignette: >
 
 ```{r include = FALSE}
 children_run <- file.path(vignettes_path, c(
-  "intermediate/02find and download.Rmd"
+  "intermediate/02find_and_download.Rmd"
 ))
 ```
 

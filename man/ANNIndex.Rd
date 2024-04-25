@@ -29,7 +29,7 @@ available in \url{https://www.cs.umd.edu/~mount/ANN/}
 \if{html}{\out{<a id="method-ANNIndex-new"></a>}}
 \if{latex}{\out{\hypertarget{method-ANNIndex-new}{}}}
 \subsection{Method \code{new()}}{
-Creates a new instance of the \code{\linkS4class{ANNIndex}} class.
+Creates a new instance of the \code{\link{ANNIndex}} class.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{ANNIndex$new(x, y)}\if{html}{\out{</div>}}
 }

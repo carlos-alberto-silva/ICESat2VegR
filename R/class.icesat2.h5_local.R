@@ -1,8 +1,18 @@
-#' @include class.icesat2.h5ds_local.R class-ICESat2.h5.R
+#' The class representing the h5 file opened from local files.
+#'
+#' @details
+#' The variants `_cloud` and `_local` allows all the other functions
+#' to use generic calls using the same interface, with each class
+#' implementation is provided accordingly.
+#'
+#' The regular usage does not require the user to work with those classes
+#' as most other provided functions will actually give access to the most
+#' common necessities for working with ICESat-2 data.
+#'
+#' @include class.icesat2.R class.icesat2.h5ds_local.R
 #' @import R6 reticulate hdf5r
 #' @export
 ICESat2.h5_local <- R6::R6Class("ICESat2.h5_local", list(
-  inherit = "ICESat2.h5",
   h5 = NULL,
   beams = NULL,
   strong_beams = NULL,
@@ -31,6 +41,7 @@ ICESat2.h5_local <- R6::R6Class("ICESat2.h5_local", list(
     } else {
       self$h5 <- h5
     }
+    prepend_class(self, "icesat2.h5")
   },
   ls = function() {
     self$h5$ls()$name

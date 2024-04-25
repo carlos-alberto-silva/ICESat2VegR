@@ -20,8 +20,10 @@ Imports:
   leaflet,
   lidR,
   magrittr,
+  mathjaxr,
   methods,
   Rcpp,
+  Rdpack,
   R6,
   randomForest,
   reticulate,
@@ -38,7 +40,7 @@ RdMacros:
 Collate: 
     'ANNIndex.R'
     'lazy_applier.R'
-    'ATL03_ATL08_compute_attributes_dt_segStat.R'
+    'ATL03_ATL08_compute_seg_attributes_dt_segStat.R'
     'utmTools.R'
     'ATL03_ATL08_photons_attributes_dt_LAS.R'
     'ATL03_ATL08_photons_attributes_dt_clipBox.R'
@@ -50,15 +52,9 @@ Collate:
     'ATL03_ATL08_photons_seg_dt_height_normalize.R'
     'ATL03_ATL08_seg_cover_dt_compute.R'
     'ATL03_ATL08_segment_create.R'
-    'clipTools.R'
-    'class-ICESat2.h5.R'
-    'class_tools.R'
-    'class.icesat2.h5ds_cloud.R'
-    'class.icesat2.h5_cloud.R'
-    'class.icesat2.h5ds_local.R'
-    'class.icesat2.h5_local.R'
-    'class.icesat2.R'
     'ATL03_h5_clip.R'
+    'clipTools.R'
+    'ATL03_h5_clipBox.R'
     'ATL03_h5_clipGeometry.R'
     'ATL03_photons_attributes_dt.R'
     'lasTools.R'
@@ -68,9 +64,10 @@ Collate:
     'ATL03_photons_dt_classify.R'
     'ATL03_photons_plot.R'
     'ATL03_photons_simulator.R'
+    'class_tools.R'
+    'class.icesat2.R'
     'zzz.R'
     'ATL03_read.R'
-    'ATL03_rgt_extract.R'
     'ATL03_seg_attributes_dt.R'
     'ATL08_read.R'
     'ATL08_h5_clip.R'
@@ -84,7 +81,6 @@ Collate:
     'ATL08_seg_attributes_dt_gridStat.R'
     'ATL08_seg_attributes_dt_polyStat.R'
     'ATL08_seg_attributes_h5_gridStat.R'
-    'ATL08_seg_cover_dt_compute.R'
     'ATLAS_dataDownload.R'
     'ATLAS_dataFinder.R'
     'ATLAS_dataFinder_cloud.R'
@@ -93,17 +89,21 @@ Collate:
     'gee-base.R'
     'addEEImage.R'
     'argParse.R'
+    'class.icesat2.h5ds_cloud.R'
+    'class.icesat2.h5_cloud.R'
+    'class.icesat2.h5ds_local.R'
+    'class.icesat2.h5_local.R'
     'clip.R'
     'extract.R'
     'gee-base-feature.R'
     'gee-base-list.R'
     'gee-base-number.R'
-    'gee-filterBounds.R'
     'gee-search.R'
     'map_create.R'
-    'model_tools.R'
     'model_fit.R'
+    'model_tools.R'
     'predict.R'
+    'rgt_extract.R'
     'sample.R'
     'stats_model.R'
     'to_vect.R'
@@ -116,9 +116,7 @@ Suggests:
     knitr,
     lidR,
     mapview,
-    mathjaxr,
     png,
-    Rdpack,
     rmarkdown,
     rstudioapi,
     signal,

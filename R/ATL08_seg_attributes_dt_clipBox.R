@@ -2,16 +2,14 @@
 #'
 #' @description This function clips ATL08 Terrain and Canopy Attributes within a given bounding box coordinates
 #'
-#' @usage ATL08_seg_attributes_dt_gridStat(atl08_seg_att_dt, xmin, xmax, ymin, ymax)
-#'
 #' @param atl08_seg_att_dt A atl08_seg_att_dt object (output of [ICESat2VegR::ATL08_seg_attributes_dt()] function).
-#' An S4 object of class [ICESat2VegR::icesat2.atl08_dt]
+#' An S4 object of class [`ICESat2VegR::icesat2.atl08_dt-class`]
 #' @param lower_left_lon Numeric. West longitude (x) coordinate of bounding rectangle, in decimal degrees.
 #' @param upper_right_lon Numeric. East longitude (x) coordinate of bounding rectangle, in decimal degrees.
 #' @param lower_left_lat Numeric. South latitude (y) coordinate of bounding rectangle, in decimal degrees.
 #' @param upper_right_lat Numeric. North latitude (y) coordinate of bounding rectangle, in decimal degrees.
 #'
-#' @return Returns an S4 object of class [ICESat2VegR::icesat2.atl08_dt]
+#' @return Returns an S4 object of class [`ICESat2VegR::icesat2.atl08_dt-class`]
 #' containing the clipped ATL08 terrain and canopy attributes.
 #'
 #' @examples

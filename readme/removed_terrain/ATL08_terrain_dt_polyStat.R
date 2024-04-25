@@ -3,14 +3,12 @@
 #' @description Computes a series of statistics ATL03 and ATL08 joined photons attributes within
 #' area defined by a polygon
 #'
-#' @usage ATL08_terrain_dt_polyStat(atl08_terrain_dt, func, poly_id)
-#'
-#' @param atl08_terrain_dt  An S4 object of class [ICESat2VegR::icesat2.atl08_dt] containing ATL08 terrain attributes
+#' @param atl08_terrain_dt  An S4 object of class [`ICESat2VegR::icesat2.atl08_dt-class`] containing ATL08 terrain attributes
 #' (output of [ICESat2VegR::ATL08_terrain_attribute_dt()] function).
 #' @param func The function to be applied for computing the defined statistics
 #' @param poly_id Polygon id. If defined, statistics will be computed for each polygon
 #'
-#' @return Returns an S4 object of class [ICESat2VegR::icesat2.atl08_dt]
+#' @return Returns an S4 object of class [`ICESat2VegR::icesat2.atl08_dt-class`]
 #' Containing Statistics of ATL08 classified terrain photons
 #'
 #' @examples

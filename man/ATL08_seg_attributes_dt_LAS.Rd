@@ -7,7 +7,7 @@
 ATL08_seg_attributes_dt_LAS(atl08_dt, output)
 }
 \arguments{
-\item{atl08_dt}{An S4 object of class \link{icesat2.atl08_dt} containing ATL03 and ATL08 data
+\item{atl08_dt}{An S4 object of class \code{\linkS4class{icesat2.atl08_dt}} containing ATL03 and ATL08 data
 (output of \code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}} function).}
 
 \item{output}{character. The output path of for the LAS(Z) file(s)

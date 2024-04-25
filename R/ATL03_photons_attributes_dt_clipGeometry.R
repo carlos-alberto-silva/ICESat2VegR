@@ -2,17 +2,15 @@
 #'
 #' @description This function clips ATL03 photons attributes within a given bounding coordinates
 #'
-#' @usage ATL03_photons_attributes_dt_clipGeometry(atl03_photons_dt, xmin, xmax, ymin, ymax)
-#'
-#' @param atl03_photons_dt A atl03_photons_dt object (output of [atl03_photons_attributes_dt()] function).
-#' An S4 object of class [ICESat2VegR::icesat2.atl03_dt]
+#' @param atl03_photons_dt A atl03_photons_dt object (output of [ATL03_photons_attributes_dt()] function).
+#' An S4 object of class [`ICESat2VegR::icesat2.atl03_dt-class`]
 #' @param sppoly Spatial Polygon. An object of class [`terra::SpatVector`],
 #' which can be loaded as an ESRI shapefile using [terra::vect] function in the
 #' \emph{sf} package.
 #' @param split_by Polygon id. If defined, GEDI data will be clipped by each polygon using
 #' the polygon id from table of attribute defined by the user
 #'
-#' @return Returns an S4 object of class [ICESat2VegR::icesat2.atl03_dt]
+#' @return Returns an S4 object of class [`ICESat2VegR::icesat2.atl03_dt-class`]
 #' containing the ATL03 photons attributes.
 #'
 #'@seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_atl03_ATBD_r006.pdf}

@@ -2,12 +2,10 @@
 #'
 #' @description This function reads the ICESat-2 Global Geolocated Photons (ATL03) Product (ATL03) as h5 file.
 #'
-#' @usage ATL03_read(atl03_path)
-#'
 #' @param atl03_path Either file path pointing to ICESat-2 ATL03 h5 data
-#' or a granule resulting from [`ATLAS_dataFinder_cloud()`].
+#' or a granule resulting from [`ATLAS_dataFinder()`] with `cloud_computing = TRUE`.
 #'
-#' @return Returns an S4 object of class [`icesat2.atl03_dt`] containing ICESat-2 ATL03 data.
+#' @return Returns an S4 object of class [`icesat2.atl03_dt-class`] containing ICESat-2 ATL03 data.
 #'
 #' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
 #'

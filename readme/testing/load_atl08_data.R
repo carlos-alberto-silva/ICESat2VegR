@@ -11,7 +11,7 @@ fall_pre_michael_date_end <- "2018-10-09"
 fall_post_michael_date_start <- "2019-10-01"
 fall_post_michael_date_end <- "2019-10-31"
 
-granules <- ICESat2VegR::ICESat2_finder(
+granules <- ICESat2VegR::ATLAS_dataFinder(
   short_name = "ATL08",
   version = "006",
   daterange = c(fall_post_michael_date_start, fall_post_michael_date_end),

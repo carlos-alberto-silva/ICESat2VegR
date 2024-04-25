@@ -1,6 +1,6 @@
 #' Adds Earth Engine Image class to leaflet
 #'
-#' @param map [`leaflet-class`]. A leaflet class map.
+#' @param map [`leaflet::leaflet`]. A leaflet class map.
 #' @param x Earth Engine Image open with `ee$Image`.
 #' @param bands define the bands that should be used for visualization, default NULL,
 #' will use the available bands from the Image.
@@ -10,9 +10,10 @@
 #' hexadecimal or valid CSS color names.
 #' @param ... Other parameters to be passed to [`leaflet::addTiles()`] function.
 #'
-#' @return A [`leaflet-class`]/[`htmlwidget-class`] with the Earth Engine image added.
+#' @return A [`leaflet::leaflet`]/`htmlwidget` with the Earth Engine image added.
 #'
 #' @examples
+#' \dontrun{
 #' collection_id <- "NASA/HLS/HLSL30/v002"
 #'
 #' ee_collection <- ee$ImageCollection(collection_id)
@@ -33,7 +34,6 @@
 #'   ee_collection$filterDate("2021-04-01", "2021-07-31")$map(hlsMask)
 #' )$filter("CLOUD_COVERAGE < 30")$median()
 #'
-#'
 #' library(leaflet)
 #' leaflet() %>%
 #'   addEEImage(
@@ -43,6 +43,7 @@
 #'     max_value = 0.2
 #'   ) %>%
 #'   setView(lng = -82.2345, lat = 29.6552, zoom = 10)
+#' }
 #' @include gee-base.R
 #' @export
 setGeneric(

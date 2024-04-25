@@ -1,49 +1,48 @@
-#' Clips ICESat-2 ATL08 H5 data
-#'
-#' @param x [`icesat2.atl08_h5-class`] object,
-#' obtained through [`ATL08_read()`] for clipping
-#' @param output character. Path to the output h5 file.
-#' @param bbox [`numeric-class`] or [`terra::SpatExtent`] for clipping, the
-#' order of the bbox is the default from NASA's ICESat-2 CMS searching:
-#' [ul_lat, ul_lon, lr_lat, lr_lon].
-#' @param beam [`character-class`]. The vector of beams to include, default
-#' all c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")
-#' @param additional_groups [`character-class`]. Other addional groups that should be included, default
-#' c("METADATA", "orbit_info", "quality_assessment", "ancillary_data")
-#'
-#' @return Returns the clipped S4 object of class [`icesat2.atl08_h5-class`]
-#'
-#' @description This function clips ATL08 HDF5 file within beam groups,
-#' but keeps metada and ancillary data the same.
-#'
-#' @examples
-##' # Specifying the path to ATL08 file (zip file)
-#' outdir <- tempdir()
-#' atl08_zip <- system.file("extdata",
-#'   "atl08_20220401221822_01501506_005_01.zip",
-#'   package = "rICESat2Veg"
-#' )
-#'
-#' # Unzipping ATL08 file
-#' atl08_path <- unzip(atl08_zip, exdir = outdir)
-#'
-#' # Reading ATL08 data (h5 file)
-#' atl08_h5 <- atl08_read(atl08_path = atl08_path)
-#'
-#'
-#' # Bounding rectangle coordinates
-#' xmin <- -107.7
-#' xmax <- -106.5
-#' ymin <- 32.75
-#' ymax <- 42.75
-#'
-#' # Clipping ATL08 photons  by boundary box extent
-#' atl08_photons_dt_clip <- ATL08_h5_clipBox(atl08_h5, outdir, xmin, xmax, ymin, ymax)
-#'
-#' close(atl08_h5)
+# #' Clips ICESat-2 ATL08 H5 data
+# #'
+# #' @param x [`ICESat2VegR::icesat2.atl08_h5-class`] object,
+# #' obtained through [`ATL08_read()`] for clipping
+# #' @param output character. Path to the output h5 file.
+# #' @param bbox [`numeric-class`] or [`terra::SpatExtent`] for clipping, the
+# #' order of the bbox is the default from NASA's ICESat-2 CMS searching:
+# #' (ul_lat, ul_lon, lr_lat, lr_lon).
+# #' @param beam [`character-class`]. The vector of beams to include, default
+# #' all c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")
+# #' @param additional_groups [`character-class`]. Other addional groups that should be included, default
+# #' c("METADATA", "orbit_info", "quality_assessment", "ancillary_data")
+# #'
+# #' @return Returns the clipped S4 object of class [`ICESat2VegR::icesat2.atl08_h5-class`]
+# #'
+# #' @description This function clips ATL08 HDF5 file within beam groups,
+# #' but keeps metada and ancillary data the same.
+# #'
+# #' @examples
+# ##' # Specifying the path to ATL08 file (zip file)
+# #' outdir <- tempdir()
+# #' atl08_zip <- system.file("extdata",
+# #'   "atl08_20220401221822_01501506_005_01.zip",
+# #'   package = "rICESat2Veg"
+# #' )
+# #'
+# #' # Unzipping ATL08 file
+# #' atl08_path <- unzip(atl08_zip, exdir = outdir)
+# #'
+# #' # Reading ATL08 data (h5 file)
+# #' atl08_h5 <- atl08_read(atl08_path = atl08_path)
+# #'
+# #' # Bounding rectangle coordinates
+# #' xmin <- -107.7
+# #' xmax <- -106.5
+# #' ymin <- 32.75
+# #' ymax <- 42.75
+# #'
+# #' # Clipping ATL08 photons  by boundary box extent
+# #' atl08_photons_dt_clip <- ATL08_h5_clipBox(atl08_h5, outdir, xmin, xmax, ymin, ymax)
+# #'
+# #' close(atl08_h5)
+# #' @export
 #' @include class.icesat2.R ATL08_read.R
 #' @import data.table hdf5r
-#' @export
 ATL08_h5_clip <- function(
     atl08, output, clip_obj, landSegmentsMask_fn,
     beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),

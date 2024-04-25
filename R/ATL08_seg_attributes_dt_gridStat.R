@@ -3,9 +3,7 @@
 #' @description This function computes a series of user defined descriptive statistics within
 #' each grid cell for ATL08 Terrain and Canopy Attributes
 #'
-#' @usage ATL08_seg_attributes_dt_gridStat(atl08_seg_att_dt, func, res)
-#'
-#' @param atl08_seg_att_dt  An S4 object of class [ICESat2VegR::icesat2.atl08_dt] containing ATL08 data
+#' @param atl08_seg_att_dt  An S4 object of class [`ICESat2VegR::icesat2.atl08_dt-class`] containing ATL08 data
 #' (output of [ATL08_seg_attributes_dt()] functions).
 #' @param func The function to be applied for computing the defined statistics
 #' @param res Spatial resolution in decimal degrees for the output SpatRast raster layer. Default is 0.5.

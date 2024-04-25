@@ -3,14 +3,12 @@
 #' @description Computes a series of statistics ATL03 and ATL08 joined photons attributes within
 #' area defined by a polygon
 #'
-#' @usage ATL03_ATL08_photons_attributes_dt_polyStat(atl03_atl08_dt, func, seg_length,ph_class,beam,quality_ph,night_flag)
-#'
-#' @param atl03_atl08_dt  An S4 object of class [ICESat2VegR::icesat2.atl08_dt] containing ATL03 and ATL08 data
+#' @param atl03_atl08_dt  An S4 object of class [`ICESat2VegR::icesat2.atl08_dt-class`] containing ATL03 and ATL08 data
 #' (output of [ATL03_ATL08_photons_attributes_dt_join()] function).
 #' @param func The function to be applied for computing the defined statistics
 #' @param poly_id Polygon id. If defined, statistics will be computed for each polygon
 #'
-#' @return Returns an S4 object of class [ICESat2VegR::icesat2.atl08_dt]
+#' @return Returns an S4 object of class [`ICESat2VegR::icesat2.atl08_dt-class`]
 #' Containing Statistics of ATL08 classified canopy photons
 #'
 #' @examples

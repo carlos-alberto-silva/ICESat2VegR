@@ -21,7 +21,7 @@ for clipping}
 
 \item{bbox}{\code{\linkS4class{numeric}} or \code{\link[terra:SpatExtent-class]{terra::SpatExtent}} for clipping, the
 order of the bbox is the default from NASA's ICESat-2 CMS searching:
-\link{ul_lat, ul_lon, lr_lat, lr_lon}.}
+(ul_lat, ul_lon, lr_lat, lr_lon).}
 
 \item{beam}{\code{\linkS4class{character}}. The vector of beams to include, default
 all c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")}

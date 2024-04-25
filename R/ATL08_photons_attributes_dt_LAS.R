@@ -3,12 +3,9 @@
 #' @description This function reads the ICESat-2 Land and
 #' Vegetation Along-Track Products (ATL08) as h5 file.
 #'
-#'
-#' @usage ATL08_read(atl08_path)
-#'
 #' @param atl08_path File path pointing to ICESat-2 ATL08 data. Data in HDF5 Hierarchical Data Format (.h5).
 #'
-#' @return Returns an S4 object of class ["icesat2.atl08_dt"] containing ICESat-2 ATL08 data.
+#' @return Returns an S4 object of class [`icesat2.atl08_dt-class`] containing ICESat-2 ATL08 data.
 #'
 #' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
 #'

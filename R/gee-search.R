@@ -1,4 +1,3 @@
-#' @export
 ee_search_cache <- NULL
 
 # From https://stackoverflow.com/a/51828654/2548351
@@ -15,6 +14,7 @@ unescape_html2 <- function(str) {
 #' @param description logical. Whether should search within the description of the dataset, default TRUE.
 #' @param operator character. Should be either "OR" or "AND" to tell if the search needs to include
 #' all the queries "AND" or any of the queries "OR". Default "AND".
+#' @param refresh_cache flag indicating if the results cache should be refreshed, default FALSE.
 #' 
 #' @return A `data.table` containing the id, title and description of the datasets that matched
 #' the supplied query ordered by relevance.

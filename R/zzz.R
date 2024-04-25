@@ -1,8 +1,11 @@
+#' The pointer to the `earthaccess` python reticulate module
 #' @useDynLib ICESat2VegR
-
 #' @export
 earthaccess <- NULL
 
+#' The pointer to the `earth-engine-api` python reticulate module
+#'
+#' @seealso https://developers.google.com/earth-engine/apidocs
 #' @export
 ee <- NULL
 

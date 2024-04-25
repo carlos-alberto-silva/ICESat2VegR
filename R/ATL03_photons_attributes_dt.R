@@ -2,9 +2,7 @@
 #'
 #' @description This function extracts photons attributes from ICESat-2 ATL03 data
 #'
-#' @usage ATL03_photons_attributes_dt(ATL03_h5, beam)
-#'
-#' @param ATL03_h5 A ICESat-2 ATL03 object (output of [ATL03_read()] function).
+#' @param atl03_h5 A ICESat-2 ATL03 object (output of [ATL03_read()] function).
 #' An S4 object of class [`ICESat2VegR::icesat2.atl03_dt-class`].
 #' @param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
 #'
@@ -27,7 +25,6 @@
 #' to identify those photons that are likely noise or likely signal
 #' - \emph{night_flag}  Flag indicating the data were acquired in night
 #' conditions: 0=day, 1=night. Night flag is set when solar elevation is below 0.0 degrees.
-#'
 #'
 #' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
 #'

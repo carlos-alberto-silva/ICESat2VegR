@@ -21,6 +21,8 @@ search_datasets(
 
 \item{operator}{character. Should be either "OR" or "AND" to tell if the search needs to include
 all the queries "AND" or any of the queries "OR". Default "AND".}
+
+\item{refresh_cache}{flag indicating if the results cache should be refreshed, default FALSE.}
 }
 \value{
 A \code{data.table} containing the id, title and description of the datasets that matched

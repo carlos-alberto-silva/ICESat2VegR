@@ -13,6 +13,10 @@ seg_gee_ancillary_dt_extract(stack, geom, scale = 30, chunk_size = 1000)
 \item{geom}{A geometry from \code{\link[terra:SpatVector-class]{terra::SpatVector}} read with \code{\link[terra:vect]{terra::vect}}.}
 
 \item{scale}{The scale in meters for the extraction (image resolution).}
+
+\item{chunk_size}{If the number of observations is greater than 1000, it is recommended
+to chunk the results for not running out of memory within GEE server, default is chunk by
+1000.}
 }
 \value{
 A \link[data.table:data.table-class]{data.table::data.table} with the properties extracted

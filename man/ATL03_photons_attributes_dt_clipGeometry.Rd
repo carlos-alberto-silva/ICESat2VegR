@@ -4,11 +4,15 @@
 \alias{ATL03_photons_attributes_dt_clipGeometry}
 \title{Clip ATL03 photons by Coordinates}
 \usage{
-ATL03_photons_attributes_dt_clipGeometry(atl03_photons_dt, xmin, xmax, ymin, ymax)
+ATL03_photons_attributes_dt_clipGeometry(
+  atl03_photons_dt,
+  sppoly,
+  split_by = "id"
+)
 }
 \arguments{
-\item{atl03_photons_dt}{A atl03_photons_dt object (output of \code{\link[=atl03_photons_attributes_dt]{atl03_photons_attributes_dt()}} function).
-An S4 object of class \link{icesat2.atl03_dt}}
+\item{atl03_photons_dt}{A atl03_photons_dt object (output of \code{\link[=ATL03_photons_attributes_dt]{ATL03_photons_attributes_dt()}} function).
+An S4 object of class \code{\linkS4class{icesat2.atl03_dt}}}
 
 \item{sppoly}{Spatial Polygon. An object of class \code{\link[terra:SpatVector-class]{terra::SpatVector}},
 which can be loaded as an ESRI shapefile using \link[terra:vect]{terra::vect} function in the
@@ -18,7 +22,7 @@ which can be loaded as an ESRI shapefile using \link[terra:vect]{terra::vect} fu
 the polygon id from table of attribute defined by the user}
 }
 \value{
-Returns an S4 object of class \link{icesat2.atl03_dt}
+Returns an S4 object of class \code{\linkS4class{icesat2.atl03_dt}}
 containing the ATL03 photons attributes.
 }
 \description{

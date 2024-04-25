@@ -13,6 +13,7 @@ ATL08_seg_attributes_h5_gridStat(
     "subset_can_flag", "canopy_h_metrics", "n_toc_photons", "h_max_canopy_abs",
     "h_canopy_uncertainty", "canopy_openness", "h_max_canopy", "segment_cover"),
   beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
+  strong_beam_filter = NULL,
   out_root,
   ul_lat,
   ul_lon,
@@ -29,6 +30,11 @@ ATL08_seg_attributes_h5_gridStat(
 \item{atl08_path}{CharacterVector. The directory paths where the ATL08 H5 files are stored;}
 
 \item{metrics}{CharacterVector. A vector of canopy attributes available from ATL08 product (e.g. "h_canopy")}
+
+\item{beam}{Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")}
+
+\item{strong_beam_filter}{Logical. If true will only get strong beams, if FALSE will only
+retrieve weak beams, if NULL or default won't filter the beams.}
 
 \item{out_root}{Character. The root name for the raster output files, the pattern is {out_root}\emph{{metric}}{count/m1/m2/m3/m4}.tif. This should include the full path for the file.}
 
@@ -49,9 +55,6 @@ ATL08_seg_attributes_h5_gridStat(
 \item{agg_join}{Function. A function to merge two different agg objects.}
 
 \item{finalizer}{List<name, formula>. A list with the final raster names and the formula which uses the base statistics.}
-
-\item{filter}{Formula character "x" based. You can use either the column names available in \code{metrics}
-for performing the filter and "x" to denote the target variable. e.g. "x < 200 && h_canopy_uncertainty < 0.5"}
 }
 \value{
 Nothing. It outputs multiple raster tif files to the out_root specified path.

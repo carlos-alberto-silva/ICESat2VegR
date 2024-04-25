@@ -46,7 +46,7 @@ the date range filter will be not applied.}
 parameter is FALSE.}
 
 \item{cloud_computing}{Logical. If TRUE, it will return granules for cloud computing directly, otherwise
-it will return links to be passed in the function \link{ICESat2_dataDownload} for data download.}
+it will return links to be passed in the function \link{ATLAS_dataDownload} for data download.}
 }
 \value{
 Return either a vector object pointing out the path to

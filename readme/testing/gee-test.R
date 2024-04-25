@@ -68,7 +68,7 @@ map$search_loc_geom
 
 
 
-feature_list[[1]]$image$ $bandNames()$getInfo()
+feature_list[[1]]$image$bandNames()$getInfo()
 expression  = "landsat.B2"
 
 roi <- ee$Geometry$Rectangle(c(-87.6, 24.5, -79.8, 31))

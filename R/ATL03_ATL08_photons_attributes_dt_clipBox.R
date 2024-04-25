@@ -2,16 +2,14 @@
 #'
 #' @description This function clips joined ATL03 and ATL08 photon attributes within a given Bounding Box
 #'
-#' @usage ATL03_ATL08_photons_attributes_dt_clipBox(atl03_atl08_dt, xmin, xmax, ymin, ymax)
-#'
-#' @param atl03_atl08_dt  An S4 object of class [ICESat2VegR::icesat2.atl03atl08_dt] containing ATL03 and ATL08 data
+#' @param atl03_atl08_dt  An S4 object of class [`ICESat2VegR::icesat2.atl03atl08_dt-class`] containing ATL03 and ATL08 data
 #' (output of [ICESat2VegR::ATL03_ATL08_photons_attributes_dt_join()] function).
 #' @param lower_left_lon Numeric. West longitude (x) coordinate of bounding rectangle, in decimal degrees.
 #' @param upper_right_lon Numeric. East longitude (x) coordinate of bounding rectangle, in decimal degrees.
 #' @param lower_left_lat Numeric. South latitude (y) coordinate of bounding rectangle, in decimal degrees.
 #' @param upper_right_lat Numeric. North latitude (y) coordinate of bounding rectangle, in decimal degrees.
 #'
-#' @return Returns an S4 object of class [ICESat2VegR::icesat2.atl03atl08_dt]
+#' @return Returns an S4 object of class [`ICESat2VegR::icesat2.atl03atl08_dt-class`]
 #' containing a subset of the ATL03 and ATL08 photon attributes.
 #'
 #' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}

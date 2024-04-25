@@ -28,6 +28,8 @@ Default \code{\link[stats:approxfun]{stats::approx()}}.}
 
 \item{xout_parameter_name}{character. The parameter name used for the \code{interpolation_func} to
 which will be used to predict, default "xout".}
+
+\item{...}{parameters to be passed forward to \code{\link[=ATL03_ATL08_photons_seg_dt_fitground]{ATL03_ATL08_photons_seg_dt_fitground()}}.}
 }
 \description{
 Function to estimate ground elevation using smoothing and

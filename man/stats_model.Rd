@@ -23,6 +23,8 @@ stats_model(
 \item{legend}{Character for legend position. Default is "topleft"}
 
 \item{unit}{Character indicating the unit for the observed and predicted data (e.g."Mg/ha")}
+
+\item{...}{Other params to be redirected to the plot.}
 }
 \value{
 Returns an data.frame object containing the list of stats

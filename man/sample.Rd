@@ -4,15 +4,20 @@
 \alias{sample}
 \title{Sample method for applying multiple sampling methods}
 \usage{
-sample(x, ...)
+sample(x, ..., method)
 }
 \arguments{
 \item{x}{the generic input data to be sampled}
 
 \item{...}{generic params to pass ahead to the specific sampling function}
+
+\item{method}{the sampling method to use.}
 }
 \description{
 Sample method for applying multiple sampling methods
+}
+\details{
+It is expected that the user pass a \code{method} parameter within \code{...}
 }
 \seealso{
 \code{\link[=randomSampling]{randomSampling()}}, \code{\link[=spacedSampling]{spacedSampling()}}, \code{\link[=gridSampling]{gridSampling()}},

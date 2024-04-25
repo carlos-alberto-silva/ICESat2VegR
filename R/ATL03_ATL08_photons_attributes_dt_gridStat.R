@@ -3,9 +3,7 @@
 #' @description This function computes a series of user defined descriptive statistics within
 #' each given grid cell for ATL03 and ATL08 photon attributes
 #'
-#' @usage ATL03_ATL08_photons_attributes_dt_gridStat(atl03_atl08_dt, func, res)
-#'
-#' @param atl03_atl08_dt  An S4 object of class [ICESat2VegR::icesat2.atl03_atl08_dt] containing ATL03 and ATL08  attributes
+#' @param atl03_atl08_dt  An S4 object of class [`ICESat2VegR::icesat2.atl03atl08_dt-class`] containing ATL03 and ATL08  attributes
 #' (output of the [ATL03_ATL08_photons_attributes_dt_join()] function).
 #' @param func The function to be applied for computing the defined statistics
 #' @param res Spatial resolution in decimal degrees for the output SpatRast raster layer. Default is 0.5.

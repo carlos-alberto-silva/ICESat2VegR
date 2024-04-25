@@ -2,16 +2,14 @@
 #'
 #' @description This function clips ATL03 photons attributes within a given bounding coordinates
 #'
-#' @usage ATL03_photons_attributes_dt_clipBox(atl03_photons_dt, xmin, xmax, ymin, ymax)
-#'
-#' @param atl03_photons_dt A atl03_photons_dt object (output of [atl03_photons_attributes_dt()] function).
-#' An S4 object of class [ICESat2VegR::icesat2.atl03_dt]
+#' @param atl03_photons_dt A atl03_photons_dt object (output of [ATL03_photons_attributes_dt()] function).
+#' An S4 object of class [`ICESat2VegR::icesat2.atl03_dt-class`]
 #' @param lower_left_lon Numeric. West longitude (x) coordinate of bounding rectangle, in decimal degrees.
 #' @param upper_right_lon Numeric. East longitude (x) coordinate of bounding rectangle, in decimal degrees.
 #' @param lower_left_lat Numeric. South latitude (y) coordinate of bounding rectangle, in decimal degrees.
 #' @param upper_right_lat Numeric. North latitude (y) coordinate of bounding rectangle, in decimal degrees.
 #'
-#' @return Returns an S4 object of class [ICESat2VegR::icesat2.atl03_dt]
+#' @return Returns an S4 object of class [`ICESat2VegR::icesat2.atl03_dt-class`]
 #' containing the ATL03 photons attributes.
 #'
 #' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_atl03_ATBD_r006.pdf}
