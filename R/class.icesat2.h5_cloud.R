@@ -1,7 +1,15 @@
-#' The class representing the h5 file opened from the cloud
-#' for cloud computing.
+#' The class representing the h5 file opened from the cloud for cloud computing.
+#'
+#' @field h5 A pointer to `h5py` in case the user wants to access features not
+#' implemented yet
+#' @field beams The [`character-class`] vector of beams available for the granule.
+#' @field strong_beams The [`character-class`] vector of strong beams calculated using orbit_info
+#' @field weak_beams The [`character-class`] vector of weak beams calculated using orbit_info
 #'
 #' @details
+#' Besides representing h5 files, it is also used to represent groups
+#' opened with `[[]]`.
+#'
 #' The variants `_cloud` and `_local` allows all the other functions
 #' to use generic calls using the same interface, with each class
 #' implementation is provided accordingly.
@@ -18,6 +26,12 @@ ICESat2.h5_cloud <- R6::R6Class("ICESat2.h5_cloud", list(
   beams = NULL,
   strong_beams = NULL,
   weak_beams = NULL,
+  #' @description
+  #' Direct initialization should not be used, it is handled by `ATL0X_read()`
+  #'
+  #' @param h5 the result of the [`ATLAS_dataFinder()`] with `cloud_computing = TRUE`
+  #'
+  #' @return The class object
   initialize = function(h5) {
     if (inherits(h5, "icesat2.granules_cloud")) {
       stop("For now the package only works with one granule at a time
@@ -45,12 +59,19 @@ try with only one granule [i].")
     }
     prepend_class(self, "icesat2.h5")
   },
-  #' Provides a means for listing the groups and datasets that are within current group
+  #' @description Lists the groups and datasets that are within current group
+  #'
+  #' @return List the groups and datasets within the current path
   ls = function() {
     pybuiltins <- reticulate::import_builtins()
     pybuiltins$list(self$h5$keys())
   },
-  #' Provides a means for listing all grouops recursively
+  #' @description Lists all grouops recursively
+  #'
+  #' @param recursive [`logical-class`], default FALSE. If TRUE it will list
+  #' groups recursively and return the full path.
+  #'
+  #' @return The [`character-class`] representing
   ls_groups = function(recursive = FALSE) {
     if (recursive) {
       pymain <- reticulate::import_main()
@@ -67,23 +88,80 @@ try with only one granule [i].")
       all_items <- self$h5$ls()
     }
   },
-  #' Provides a means for checking if a supplied group/dataset exist within the H5
+  #' @description Lists the available attributes
+  #'
+  #' @return [`character-class`] vector of attributes available
+  ls_attrs = function() {
+    pybuiltins <- reticulate::import_builtins()
+    pybuiltins$list(self$h5$attrs$keys())
+  },
+  #' @description Get datasets as data.table with columns (name, dataset.dims, rank)
+  #'
+  #' @param recursive [`logical-class`], default FALSE. If TRUE recursively searches
+  #' and returns the full path.
+  #'
+  #' @return A [`data.table::data.table`] with the columns (name, dataset.dims, rank)
+  dt_datasets = function(recursive = FALSE) {
+    pybuiltins <- reticulate::import_builtins(convert = FALSE)
+    nonrecursive <- function(callable) {
+      items_visit <- reticulate::py_to_r(pybuiltins$list(self$h5$items()))
+      for (x in items_visit) {
+        callable(x[[1]], x[[2]])
+      }
+    }
+    visitation <- if (recursive) self$h5$visititems else nonrecursive
+
+    pyres <- pybuiltins$dict(
+      name = pybuiltins$list(),
+      dataset.dims = pybuiltins$list(),
+      dataset.rank = pybuiltins$list()
+    )
+
+    visitation(function(x, obj) {
+      if (inherits(obj, "h5py._hl.dataset.Dataset")) {
+        pyres["name"]$append(x)
+        pyres["dataset.dims"]$append(pybuiltins$str(" x ")$join(pybuiltins$map(pybuiltins$str, obj$shape)))
+        pyres["dataset.rank"]$append(obj$ndim)
+      }
+    })
+    res <- reticulate::py_to_r(pyres)
+    data.table::as.data.table(data.frame(res))
+  },
+  #' @description Checks if a supplied group/dataset exist within the H5
+  #'
+  #' @param path [`character-class`] with the path to test
+  #'
+  #' @return [`logical-class`] TRUE or FALSE if it exists or not
   exists = function(path) {
     pymain <- reticulate::import_main()
-    pymain$h5 <- self$h5
-    pymain$path <- path
-    reticulate::py_run_string("res = path in h5")$res
+    reticulate::py_run_string("def funcin(a, b): return a in b")
+    pymain$funcin("gt1r", h5)
   },
-  #' Provides a means for accessing an attribute from H5 file
+  #' @description Read an attribute from h5
+  #'
+  #' @param attribute [`character-class`] the address of the attribute to open
   attr = function(attribute) {
     pymain <- reticulate::import_main()
     pymain$temp <- self$h5$attrs
     pymain$attribute <- attribute
     reticulate::py_run_string("res = temp[attribute].decode('utf8')")$res
   },
-  #' Safely closes
+  #' @description Safely closes the h5 file pointer
+  #'
+  #' @return Nothing, just closes the file
   close_all = function() {
     self$h5 <- NULL
+  },
+  #' @description Prints the data in a friendly manner
+  #'
+  #' @param ... Added for compatibility purposes with generic signature
+  #'
+  #' @return Outputs information about object
+  print = function(...) {
+    cat("Class: ICESat2.h5_local\n")
+    cat("=============================\n")
+    cat(paste0(self$ls(), collapse = "\n"))
+    cat("\n")
   }
 ))
 

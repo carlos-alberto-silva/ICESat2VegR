@@ -79,11 +79,6 @@ icesat2.atl08_h5 <- setClass(
   contains = "icesat2.h5"
 )
 
-icesat2.h5_dataset <- setClass(
-  Class = "icesat2.h5_dataset",
-  slots = list(ds = "ANY")
-)
-
 setRefClass("icesat2.h5_cloud")
 
 #' Class for ATL08 attributes

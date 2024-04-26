@@ -11,6 +11,7 @@ Imports:
   curl,
   data.table,
   e1071,
+  fastICA,
   gdalBindings,
   getPass,
   jsonlite,
@@ -22,13 +23,15 @@ Imports:
   magrittr,
   mathjaxr,
   methods,
+  nnet,
   Rcpp,
   Rdpack,
   R6,
   randomForest,
   reticulate,
   terra,
-  xml2
+  xml2,
+  yaImpute
 Encoding: UTF-8
 LazyData: true
 NeedsCompilation: yes

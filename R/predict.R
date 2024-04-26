@@ -22,8 +22,18 @@ setRefClass("ee.Classifier")
   return(classification)
 }
 
-
+#' Prediction method wrapper for yai
+#' 
+#' @param object the model of class `yai` to predict on
+#' @param ... the first parameter only will be used as the x parameter.
+#' If not supplied will be forwarded to defaul yaImpute predict function.
+#' 
+#' @return either a numeric or data.frame with the predicted/imputed variables.
+#' @export
 "predict.yai" <- function(object, ...) {
+  if (length(list(...)) == 0) {
+    return(yaImpute::predict.yai(object))
+  }
   x <- list(...)[[1]]
   rownames(x) = paste0("_", rownames(x))
   y <- object$yRefs

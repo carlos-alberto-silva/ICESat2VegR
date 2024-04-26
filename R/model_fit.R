@@ -42,103 +42,105 @@ randomForestRegression <- function(
 
 
 
-# modeling LOOCV
-model_fit<-function(x=INV[,2:6],y=INV[,7], method="lm", LOOCV = FALSE, ...){
-
-  maxy<-max(y)
-
-  par(mfrow=c(1,2))
-
-  
-
-  if  (method=="lm"){model<- lm(y ~ ., data = x)}
-  if  (method=="rf"){model<- randomForest(y=y, x=x, ...)}
-  if  (method=="knn.euclidean"){model<-yai(x=x,y=y,method="euclidean", ...)}
-  if  (method=="knn.mahalanobis"){model<-yai(x=x,y=y,method="mahalanobis", ...)}
-  if  (method=="knn.ica"){model<-yai(x=x,y=y,method="ica", ...)}
-  if  (method=="knn.msn"){model<-yai(x=x,y=y,method="msn", ...)}
-  if  (method=="knn.msn2"){model<-yai(x=x,y=y,method="msn2", ...)}
-  if  (method=="knn.randomForest"){model<-yai(x=x,y=y,method="randomForest", ...)}
-  if  (method=="knn.raw"){model<-yai(x=x,y=y,method="raw", ...)}
-  if  (method=="nnt"){
-    yscales<-(y-mean(y))/sd(y)
-    model<- nnet(yscales ~ ., data=x, ...)
-  }
-  if  (method=="svm"){model<-svm(x=x,y=y, ...)}
-
-  if (LOOCV == TRUE) {
-    pb <- txtProgressBar(min = 0, max = nrow(x), style = 3)
-  if ( any(method == c("lm","rf","svm"))) {
-    pred_model<-as.numeric(paste0(predict(model)))
-    pred_model<-cbind(method=rep(method,nrow(x)), obs=y, pred=pred_model)
-    stats_model<-cbind(method=rep(method,6), stats_model(y,as.numeric(pred_model[,3]),main=paste("model",method)))
-    predloocv<-NULL
-    for ( i in 1:nrow(x)){
-      setTxtProgressBar(pb, i)
-      if ( method=="lm") {model_i<-lm(y[-i] ~ ., data = x[-i,])}
-      if ( method=="rf") {model_i<-randomForest(y=y[-i], x=x[-i,], ntree=1000)}
-      if ( method=="svm") {model_i<-svm(x=x[-i,], y=y[-i])}
-
-      pred_i<-predict(model_i, newdata = x[i,])
-      predloocv<-rbind(predloocv,cbind(method=method,obs=y[i], pred=pred_i))
-    }
-    stats_loocv<-cbind(method=rep(method,6), stats_model(as.numeric(predloocv[,2]),as.numeric(predloocv[,3]),main=paste("LOOCV",method)))
+#' Fit different models based on x and y inputs
+#'
+#' @param x input data.frame of predictors (independ variables) the data from
+#' @param y input vector of observed data
+#' @param method the model to use the data from
+#' @param LOOCV [`logical-class`], default FALSE. Flag do determine if we should
+#' compute leave-one-out cross validation.
+#' @param ... Other parameters to pass to the model
+#' @param size [`integer-class`], default 40, used for neural network number of
+#' neurons only
+#' @param linout [`logical-class`], default TRUE. Used only for neural network as
+#' the activation function for the neuron to be linear instead of logistic.
+#'
+#' @return A list containing the method, model and cross validation data
+#' if `LOOCV = TRUE`.
+model_fit <- function(x, y, method = "lm", LOOCV = FALSE, ..., size = 40, linout = TRUE) {
+  oldpar <- par(no.readonly = TRUE)
+  if (LOOCV) {
+    on.exit(par(oldpar))
+    par(mfrow = c(1, 2))
   }
 
+  nnt_adapter <- function(y, x, ...) {
+    model <- nnet::nnet(y ~ ., data = x, ..., size = size, linout = linout)
+    return(model)
+  }
 
-  if ( any(method == c("knn.euclidean","knn.mahalanobis","knn.ica","knn.msn","knn.msn2","knn.randomForest","knn.raw"))) {
-    pred_model<-yaImpute::impute(model,vars=yaImpute::yvars(model))
-    
-    # yy = yaImpute::yvars(model)[1]
-    for (yy in yaImpute::yvars(model)) {
-      x11()
-      par(mfrow=c(1,2))
-      stats_model<-cbind(method=rep(method,6), stats_model(y[,yy],as.numeric(pred_model[,yy]),main=paste("model:",method, "var:", yy)))
-      
-      predloocv<-NULL
-      # i = 1
-      for ( i in 1:nrow(x)){
+  yai_adapter <- function(y, x, ...) {
+    yaImpute::yai(x = x, y = y, method = gsub("knn\\.", "", method), ...)
+  }
+
+  lm_adapter <- function(y, x, ...) {
+    model <- stats::lm(formula = y ~ ., data = x, ...)
+    return(model)
+  }
+
+  model_funs <- list(
+    lm = lm_adapter,
+    rf = randomForest::randomForest,
+    nnt = nnt_adapter,
+    svm = e1071::svm
+  )
+
+  model_fun <- yai_adapter
+
+  if (method %in% names(model_funs)) {
+    model_fun <- model_funs[[method]]
+  }
+
+  model <- model_fun(y = y, x = x, ...)
+  assign("model", model, .GlobalEnv)
+
+  results <- list()
+  pred_model <- predict(model)
+  pred_model <- if ("y" %in% names(pred_model)) pred_model[["y"]] else pred_model
+  y_names <- if (is.null(colnames(y))) "" else colnames(y)
+  if (length(dim(y)) == 2) {
+    on.exit(par(oldpar))
+    par(mfrow = c(dim(y)[2], par()$mfrow[2]))
+  }
+  for (yy in y_names) {
+    y_local <- if (yy == "") y else y[[yy]]
+    pred_model2 <- if (yy == "") pred_model else pred_model[[yy]]
+    pred_model2 <- cbind(method = rep(method, nrow(x)), obs = y_local, pred = pred_model2)
+
+    main_title <- if (yy == "") paste("model", method) else paste("model:", method, "var:", yy)
+    stats_model <- cbind(
+      method = rep(method, 6),
+      stats_model(y_local, as.numeric(pred_model2[, 3]), main = main_title)
+    )
+    if (LOOCV == TRUE) {
+      pb <- txtProgressBar(min = 0, max = nrow(x), style = 3)
+      predloocv <- NULL
+      for (i in 1:nrow(x)) {
         setTxtProgressBar(pb, i)
-        rownames(x) = NULL
-        model_i<- yai(x=x[-i,],y=y[-i, yy],method=gsub("knn.","",method), k = 1)
-        new.t <- newtargets(model_i,x[i,])
-        pred_i<-yaImpute::impute(new.t)[,1]
-        
-        predloocv<-rbind(predloocv,cbind(method=method,obs=y[i,yy], pred=pred_i))
+        model_i <- model_fun(y = y_local[-i], x = x[-i, ], ...)
+
+        pred_i <- predict(model_i, x[i, ])
+
+        predloocv <- rbind(predloocv, cbind(method = method, obs = y_local[i], pred = pred_i))
       }
-
-
-      stats_loocv<-cbind(method=rep(method,6), stats_model(as.numeric(predloocv[,2]),as.numeric(predloocv[,3]),main=paste("LOOCV",method)))
+      stats_loocv <- cbind(
+        method = rep(method, 6),
+        stats_model(as.numeric(predloocv[, 2]), as.numeric(predloocv[, 3]), main = paste("LOOCV", method))
+      )
+      colnames(pred_model2) <- c("method", "obs", "pred")
+      colnames(predloocv) <- colnames(pred_model2)
+      colnames(stats_model) <- c("method", "stat", "value")
+      colnames(stats_loocv) <- c("method", "stat", "value")
+      close(pb)
+      results[[yy]] <- list(
+        method = method, model = model, predModel = as.data.frame(pred_model2),
+        predLOOCV = as.data.frame(predloocv),
+        statModel = as.data.frame(stats_model),
+        statLOOCV = as.data.frame(stats_loocv)
+      )
+    } else {
+      results[[yy]] <- (list(method = method, model = model))
     }
   }
-
-
-  if  (method=="nnt"){
-    yscales<-(y-mean(y))/sd(y)
-    model<- nnet(yscales ~ ., data=x, size=40,linout=T, trace=FALSE,skip=FALSE,maxit = 90, MaxNWts = 2000)
-    pred<-predict(model);pred<-pred*sd(y)+mean(y) # removing negative predictions
-    pred_model<-cbind(method=rep(method,nrow(x)), obs=y, pred=pred)
-    stats_model<-cbind(method=rep(method,6), stats_model(y,as.numeric(pred_model[,3]),main=paste("model",method)))
-    predloocv<-NULL
-    for ( i in 1:nrow(x)){
-      setTxtProgressBar(pb, i)
-      model_i<- nnet(yscales[-i] ~ ., data=x[-i,], size=40,linout=T, trace=FALSE,skip=FALSE,maxit = 90, MaxNWts = 2000)
-      pred_i<-predict(model_i, newdata=x[i,]);pred_i<-pred_i*sd(y)+mean(y) # removing negative predictions
-      predloocv<-rbind(predloocv,cbind(method=method,obs=y[i], pred=pred_i))
-    }
-    predloocv<-na.omit(predloocv)
-    stats_loocv<-cbind(method=rep(method,6), stats_model(as.numeric(predloocv[,2]),as.numeric(predloocv[,3]),main=paste("LOOCV",method)))
-  }
-  colnames(pred_model)<-c("method","obs","pred")
-  colnames(predloocv)<-colnames(pred_model)
-  colnames(stats_model)<-c("method","stat","value")
-  colnames(stats_loocv)<-c("method","stat","value")
-  close(pb)
-  return(list(method = method,model=model,predModel=as.data.frame(pred_model),
-              predLOOCV=as.data.frame(predloocv),
-              statModel=as.data.frame(stats_model),
-              statLOOCV=as.data.frame(stats_loocv)))
-  } 
-
-  return (list(method = method,model = model))
+  return(results)
 }

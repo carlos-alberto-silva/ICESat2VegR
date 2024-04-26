@@ -299,17 +299,6 @@ glcmTexture <- function(x, size = 1, kernel = NULL, average = TRUE) {
   return(invisible(x$glcmTexture(size = size, kernel = kernel, average = average)))
 }
 
-#' @export
-unmix <- function(x, ...) {
-  UseMethod("unmix")
-}
-
-
-#' @export
-"unmix.ee.image.Image" <- function(x, ...) {
-  return(invisible(x$unmix(...)))
-}
-
 
 #' @export
 "c.ee.imagecollection.ImageCollection" <- function(x, ...) {
