@@ -191,6 +191,7 @@ Nothing, just closes the file
 \if{html}{\out{<a id="method-ICESat2.h5_cloud-print"></a>}}
 \if{latex}{\out{\hypertarget{method-ICESat2.h5_cloud-print}{}}}
 \subsection{Method \code{print()}}{
+Prints the data in a friendly manner
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{ICESat2.h5_cloud$print(...)}\if{html}{\out{</div>}}
 }
@@ -198,9 +199,7 @@ Nothing, just closes the file
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{...}}{Added for compatibility purposes with generic signature
-
-Prints the data in a friendly manner}
+\item{\code{...}}{Added for compatibility purposes with generic signature}
 }
 \if{html}{\out{</div>}}
 }

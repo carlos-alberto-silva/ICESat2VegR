@@ -21,15 +21,11 @@
 #'
 #' @examples
 #'
-#' # Specifying the path to ATL03 and ATL08 file (zip file)
-#' outdir <- tempdir()
-#' atl03_zip <- system.file("extdata",
-#'   "ATL03_20220401221822_01501506_005_01.zip",
+#' # ATL03 file path
+#' atl03_path <- system.file("extdata",
+#'   "atl03_clip.h5",
 #'   package = "ICESat2VegR"
 #' )
-#'
-#' # Unzipping ATL03 file
-#' atl03_path <- unzip(atl03_zip, exdir = outdir)
 #'
 #' # Reading ATL03 data (h5 file)
 #' atl03_h5 <- ATL03_read(atl03_path = atl03_path)

@@ -43,8 +43,7 @@ conditions: 0=day, 1=night. Night flag is set when solar elevation is below 0.0 
 }
 }
 \examples{
-
-# Specifying the path to ATL03 file (zip file)
+# ATL03 file path
 atl03_path <- system.file("extdata",
   "atl03_clip.h5",
   package = "ICESat2VegR"

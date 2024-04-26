@@ -17,15 +17,13 @@
 #' @return Return a SpatRast raster layer(s) of selected ATL03 and ATL08 photon attribute(s)
 #'
 #' @examples
-#' outdir <- tempdir()
-#'
-#' # Unzipping ATL03 file
+#' # ATL03 file path
 #' atl03_path <- system.file("extdata",
 #'   "atl03_clip.h5",
 #'   package = "ICESat2VegR"
 #' )
 #'
-#' # Unzipping ATL08 file
+#' # ATL08 file path
 #' atl08_path <- system.file("extdata",
 #'   "atl08_clip.h5",
 #'   package = "ICESat2VegR"

@@ -169,7 +169,6 @@ setMethod("close", signature = c("icesat2.h5"), h5closeall)
 #' atl03_zip <- system.file("extdata",
 #'   "ATL03_20220401221822_01501506_005_01.zip",
 #'   package = "ICESat2VegR"
-#'   package = "ICESat2VegR"
 #' )
 #'
 #' atl08_zip <- system.file("extdata",

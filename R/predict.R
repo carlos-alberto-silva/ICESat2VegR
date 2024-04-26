@@ -4,7 +4,7 @@ setRefClass("ee.Classifier")
 
 #' `predict` method for generating predictions for the ee.Classifier.
 #'
-#' @param x The ee.Classifier generated either by using the regular
+#' @param object The ee.Classifier generated either by using the regular
 #' `ee` API functions or using the package's [`build_ee_forest()`] function.
 #' @param data [`data.frame-class`] or `ee.FeatureCollection` with the
 #' features input to be used for the prediction.
@@ -12,12 +12,12 @@ setRefClass("ee.Classifier")
 #' @return A [`numeric-class`] with the predicted values
 #'
 #' @export
-"predict.ee.Classifier" <- function(x, data) {
+"predict.ee.Classifier" <- function(object, data, ...) {
   if (!inherits(data, "ee.featurecollection.FeatureCollection")) {
     data <- build_fc(data, NULL)
   }
 
-  predicted <- data$classify(x)
+  predicted <- data$classify(object)
   classification <- predicted$aggregate_array("classification")$getInfo()
   return(classification)
 }

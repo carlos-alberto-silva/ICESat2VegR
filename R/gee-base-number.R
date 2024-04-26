@@ -14,423 +14,431 @@ ee_number <- function(x) {
 "ee_number.numeric" <- function(x) if (!is.null(ee)) ee$Number(x)
 
 #' @export
-`+.ee.ee_number.Number` <- function(e1, e2) {
+`+.ee.ee_number.Number` <- function(x, e2) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$add(e2)
+    x$add(e2)
   }
 }
 
 #' @export
-`-.ee.ee_number.Number` <- function(e1, e2) {
+`-.ee.ee_number.Number` <- function(x, e2) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$subtract(e2)
+    x$subtract(e2)
   }
 }
 
 #' @export
-`*.ee.ee_number.Number` <- function(e1, e2) {
+`*.ee.ee_number.Number` <- function(x, e2) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$multiply(e2)
+    x$multiply(e2)
   }
 }
 
 #' @export
-`/.ee.ee_number.Number` <- function(e1, e2) {
+`/.ee.ee_number.Number` <- function(x, e2) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$divide(e2)
+    x$divide(e2)
   }
 }
 
 #' @export
-`abs.ee.ee_number.Number` <- function(e1) {
+`abs.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$abs()
+    x$abs()
   }
 }
 #' @export
-`acos.ee.ee_number.Number` <- function(e1) {
+`acos.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$acos()
+    x$acos()
   }
 }
 #' @export
-`asin.ee.ee_number.Number` <- function(e1) {
+`asin.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$asin()
+    x$asin()
   }
 }
 #' @export
-`atan.ee.ee_number.Number` <- function(e1) {
+`atan.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$atan()
+    x$atan()
   }
 }
 
 #' Calculates the angle formed by the 2D vector x, y.
 #'
-#' @param e1 The number to calculate the `atan2` on.
+#' @param x The number to calculate the `atan2` on.
 #'
 #' @return The resulting ee.Number with the results from `atan2`.
 #'
 #' @export
-`atan2.ee.ee_number.Number` <- function(e1) {
+`atan2.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$atan2()
+    x$atan2()
   }
 }
 #' @export
-`floor.ee.ee_number.Number` <- function(e1) {
+`floor.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$floor()
+    x$floor()
   }
 }
 #' @export
-`ceiling.ee.ee_number.Number` <- function(e1) {
+`ceiling.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$ceil()
+    x$ceil()
   }
 }
 #' @export
-`&.ee.ee_number.Number` <- function(e1, e2) {
+`&.ee.ee_number.Number` <- function(x, e2) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$bitwiseAnd(e2)
+    x$bitwiseAnd(e2)
   }
 }
 #' @export
-`!.ee.ee_number.Number` <- function(e1, e2) {
+`!.ee.ee_number.Number` <- function(x, e2) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$bitwiseNot(e2)
+    x$bitwiseNot(e2)
   }
 }
 #' @export
-`|.ee.ee_number.Number` <- function(e1, e2) {
+`|.ee.ee_number.Number` <- function(x, e2) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$bitwiseOr(e2)
+    x$bitwiseOr(e2)
   }
 }
 #' @export
-`^.ee.ee_number.Number` <- function(e1, e2) {
+`^.ee.ee_number.Number` <- function(x, e2) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$bitwiseXor(e2)
+    x$bitwiseXor(e2)
   }
 }
 #' @export
-`cos.ee.ee_number.Number` <- function(e1) {
+`cos.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$cos()
+    x$cos()
   }
 }
 #' @export
-`cosh.ee.ee_number.Number` <- function(e1) {
+`cosh.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$cosh()
+    x$cosh()
   }
 }
 #' @export
-`digamma.ee.ee_number.Number` <- function(e1) {
+`digamma.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$digamma()
+    x$digamma()
   }
 }
 #' @export
-`exp.ee.ee_number.Number` <- function(e1) {
+`exp.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$exp()
+    x$exp()
   }
 }
 #' @export
-`as.numeric.ee.ee_number.Number` <- function(e1) {
+`as.numeric.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$double()
+    x$double()
   }
 }
 #' @export
-`gamma.ee.ee_number.Number` <- function(e1) {
+`gamma.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$gamma()
+    x$gamma()
   }
 }
 #' @export
-`>.ee.ee_number.Number` <- function(e1, e2) {
+`>.ee.ee_number.Number` <- function(x, e2) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$gt(e2)
+    x$gt(e2)
   }
 }
 #' @export
-`>=.ee.ee_number.Number` <- function(e1, e2) {
+`>=.ee.ee_number.Number` <- function(x, e2) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$gte(e2)
+    x$gte(e2)
   }
 }
 #' @export
-`<.ee.ee_number.Number` <- function(e1, e2) {
+`<.ee.ee_number.Number` <- function(x, e2) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$lt(e2)
+    x$lt(e2)
   }
 }
 #' @export
-`<=.ee.ee_number.Number` <- function(e1, e2) {
+`<=.ee.ee_number.Number` <- function(x, e2) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$lte(e2)
+    x$lte(e2)
   }
 }
 #' @export
-`==.ee.ee_number.Number` <- function(e1, e2) {
+`==.ee.ee_number.Number` <- function(x, e2) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$eq(e2)
+    x$eq(e2)
   }
 }
 #' @export
-`!=.ee.ee_number.Number` <- function(e1, e2) {
+`!=.ee.ee_number.Number` <- function(x, e2) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$neq(e2)
+    x$neq(e2)
   }
 }
 #' @export
-`as.integer.ee.ee_number.Number` <- function(e1) {
+`as.integer.ee.ee_number.Number` <- function(x, ...) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$int()
+    x$int()
   }
 }
 #' @export
-`log.ee.ee_number.Number` <- function(e1) {
+`log.ee.ee_number.Number` <- function(x, base = NULL) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$log()
+    x$log()
   }
 }
 #' @export
-`log10.ee.ee_number.Number` <- function(e1) {
+`log10.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$log10()
+    x$log10()
   }
 }
 #' @export
-`max.ee.ee_number.Number` <- function(e1, e2, na.rm = FALSE) {
+`max.ee.ee_number.Number` <- function(..., na.rm = FALSE) {
+  args <- list(...)
+  stopifnot("Expected exactly two arguments for max within GEE" = length(args) == 2)
+  x <- args[[1]]
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$max(e2)
+    x$max(args[[2]])
   }
 }
 #' @export
-`min.ee.ee_number.Number` <- function(e1, e2, na.rm = FALSE) {
+`min.ee.ee_number.Number` <- function(x, e2, na.rm = FALSE) {
+  args <- list(...)
+  stopifnot("Expected exactly two arguments for min within GEE" = length(args) == 2)
+  x <- args[[1]]
+  
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$min(e2)
+    x$min(args[[2]])
   }
 }
 #' @export
-`%%.ee.ee_number.Number` <- function(e1, e2) {
+`%%.ee.ee_number.Number` <- function(x, e2) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$mod(e2)
+    x$mod(e2)
   }
 }
 #' @export
-`^.ee.ee_number.Number` <- function(e1, e2) {
+`^.ee.ee_number.Number` <- function(x, e2) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$pow(e2)
+    x$pow(e2)
+  }
+}
+
+#' @export
+`round.ee.ee_number.Number` <- function(x, digits = NULL) {
+  if (!is.null(ee)) {
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
+    }
+
+    x$round()
   }
 }
 #' @export
-`round.ee.ee_number.Number` <- function(e1) {
+`sin.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$round()
+    x$sin()
   }
 }
 #' @export
-`sin.ee.ee_number.Number` <- function(e1) {
+`sinh.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$sin()
+    x$sinh()
   }
 }
 #' @export
-`sinh.ee.ee_number.Number` <- function(e1) {
+`sqrt.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$sinh()
+    x$sqrt()
   }
 }
 #' @export
-`sqrt.ee.ee_number.Number` <- function(e1) {
+`tan.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$sqrt()
+    x$tan()
   }
 }
 #' @export
-`tan.ee.ee_number.Number` <- function(e1) {
+`tanh.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$tan()
+    x$tanh()
   }
 }
 #' @export
-`tanh.ee.ee_number.Number` <- function(e1) {
+`trigamma.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
+    if (inherits(x, "numeric")) {
+      x <- ee$Number(x)
     }
 
-    e1$tanh()
-  }
-}
-#' @export
-`trigamma.ee.ee_number.Number` <- function(e1) {
-  if (!is.null(ee)) {
-    if (inherits(e1, "numeric")) {
-      e1 <- ee$Number(e1)
-    }
-
-    e1$trigamma()
+    x$trigamma()
   }
 }

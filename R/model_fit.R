@@ -142,5 +142,10 @@ model_fit <- function(x, y, method = "lm", LOOCV = FALSE, ..., size = 40, linout
       results[[yy]] <- (list(method = method, model = model))
     }
   }
+
+  if (length(dim(y)) == 1) {
+    return(results[[1]])
+  }
+  
   return(results)
 }

@@ -4,10 +4,10 @@
 \alias{atan2.ee.ee_number.Number}
 \title{Calculates the angle formed by the 2D vector x, y.}
 \usage{
-atan2.ee.ee_number.Number(e1)
+atan2.ee.ee_number.Number(x)
 }
 \arguments{
-\item{e1}{The number to calculate the \code{atan2} on.}
+\item{x}{The number to calculate the \code{atan2} on.}
 }
 \value{
 The resulting ee.Number with the results from \code{atan2}.

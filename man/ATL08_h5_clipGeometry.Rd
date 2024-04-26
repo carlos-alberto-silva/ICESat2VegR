@@ -39,15 +39,11 @@ This function clips ATL08 HDF5 file within beam groups,
 but keeps metada and ancillary data the same.
 }
 \examples{
-# Specifying the path to ATL08 file (zip file)
-outdir <- tempdir()
-atl08_zip <- system.file("extdata",
-  "atl08_20220401221822_01501506_005_01.zip",
+# ATL08 file path
+atl08_path <- system.file("extdata",
+  "atl08_clip.h5",
   package = "ICESat2VegR"
 )
-
-# Unzipping ATL08 file
-atl08_path <- unzip(atl08_zip, exdir = outdir)
 
 # Reading ATL08 data (h5 file)
 atl08_h5 <- atl08_read(atl08_path = atl08_path)

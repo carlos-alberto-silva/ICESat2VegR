@@ -40,15 +40,13 @@ This function computes a series of user defined descriptive statistics within
 each given grid cell for ATL03 and ATL08 photon attributes
 }
 \examples{
-outdir <- tempdir()
-
-# Unzipping ATL03 file
+# ATL03 file path
 atl03_path <- system.file("extdata",
   "atl03_clip.h5",
   package = "ICESat2VegR"
 )
 
-# Unzipping ATL08 file
+# ATL08 file path
 atl08_path <- system.file("extdata",
   "atl08_clip.h5",
   package = "ICESat2VegR"

@@ -17,15 +17,11 @@ This function reads the ICESat-2 Land and
 Vegetation Along-Track Products (ATL08) as h5 file.
 }
 \examples{
-# Specifying the path to ICESat-2 ATL08 data (zip file)
-outdir <- tempdir()
-atl08_fp_zip <- system.file("extdata",
-  "ATL0802_A_2019108080338_O01964_T05337_02_001_01_sub.zip",
+# ATL08 file path
+atl08_path <- system.file("extdata",
+  "atl08_clip.h5",
   package = "ICESat2VegR"
 )
-
-# Unzipping ICESat-2 ATL08 data
-atl08_path <- unzip(atl08_fp_zip, exdir = outdir)
 
 # Reading ICESat-2 ATL08 data (h5 file)
 atl08 <- ATL08_read(atl08_path = atl08_path)

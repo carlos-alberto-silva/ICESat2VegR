@@ -12,47 +12,43 @@
 #' Containing Statistics of ATL08 classified canopy photons
 #'
 #' @examples
+#' # Specifying the path to ATL03 and ATL08 files
+#' # ATL03 file path
+#' atl03_path <- system.file("extdata",
+#'   "atl03_clip.h5",
+#'   package = "ICESat2VegR"
+#' )
 #'
-#'# Specifying the path to ATL03 and ATL08 file (zip file)
-#'outdir = tempdir()
-#'atl03_zip <- system.file("extdata",
-#'                   "ATL03_20220401221822_01501506_005_01.zip",
-#'                   package="ICESat2VegR")
+#' # ATL08 file path
+#' atl08_path <- system.file("extdata",
+#'   "atl08_clip.h5",
+#'   package = "ICESat2VegR"
+#' )
 #'
-#'atl08_zip <- system.file("extdata",
-#'                   "ATL08_20220401221822_01501506_005_01.zip",
-#'                   package="ICESat2VegR")
+#' # Reading ATL03 data (h5 file)
+#' atl03_h5 <- ATL08_read(atl03_path = atl03_path)
 #'
-#'# Unzipping ATL03 file
-#'atl03_path <- unzip(atl03_zip,exdir = outdir)
+#' # Reading ATL08 data (h5 file)
+#' atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 #'
-#'# Unzipping ATL08 file
-#'atl08_path <- unzip(atl08_zip,exdir = outdir)
+#' # Extracting ATL03 and ATL08 photons and heights
+#' atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
+#' head(atl03_atl08_dt)
 #'
-#'# Reading ATL03 data (h5 file)
-#atl03_h5<-ATL08_read(atl03_path=atl03_path)
-#'
-#'# Reading ATL08 data (h5 file)
-#atl08_h5<-ATL08_read(atl08_path=atl08_path)
-#'
-#'# Extracting ATL03 and ATL08 photons and heights
-#'atl03_atl08_dt<-ATL03_ATL08_photons_attributes_dt_join(atl03_h5,atl08_h5)
-#'head(atl03_atl08_dt)
-#'
-#'# Specifying the path to shapefile
+#' # Specifying the path to shapefile
 #' polygon_filepath <- system.file("extdata", "polygon.shp", package = "ICESat2VegR")
 #'
-#'# Reading shapefile as sf object
-#'polygon <- terra::vect(polygon_filepath)
+#' # Reading shapefile as sf object
+#' polygon <- terra::vect(polygon_filepath)
 #'
-#'# Clipping ATL08 terrain attributes by Geometry
+#' # Clipping ATL08 terrain attributes by Geometry
 #' atl03_atl08_dt_clip <- ATL03_ATL08_joined_dt_clipGeometry(atl03_atl08_dt, polygon, split_by = "FID")
 #'
-#'# Computing the maximum ph_h by polygon id
-#'max_ph_h <-ATL03_ATL08_photons_attributes_dt_polyStat(atl03_atl08_dt_clip, func=max(ph_h),poly_id="poly_id")
-#'head(max_ph_h)
+#' # Computing the maximum ph_h by polygon id
+#' max_ph_h <- ATL03_ATL08_photons_attributes_dt_polyStat(atl03_atl08_dt_clip, func = max(ph_h), poly_id = "poly_id")
+#' head(max_ph_h)
 #'
-#'# Define your own function
+#' # Define your own function
 #' mySetOfMetrics <- function(x) {
 #'   metrics <- list(
 #'     min = min(x), # Min of x
@@ -64,24 +60,27 @@
 #' }
 #'
 #' # Computing a series of ph_h statistics from customized function
-#'ph_h_metrics <-ATL03_ATL08_photons_attributes_dt_polyStat(atl03_atl08_dt, func=mySetOfMetrics(ph_h),poly_id="poly_id")
-#'head(ph_h_metrics)
+#' ph_h_metrics <- ATL03_ATL08_photons_attributes_dt_polyStat(
+#'   atl03_atl08_dt,
+#'   func = mySetOfMetrics(ph_h),
+#'   poly_id = "poly_id"
+#' )
+#' 
+#' head(ph_h_metrics)
 #'
-#'close(atl03_h5)
-#'close(atl08_h5)
+#' close(atl03_h5)
+#' close(atl08_h5)
 #' @import data.table lazyeval
 #' @export
-ATL03_ATL08_photons_attributes_dt_polyStat <- function(atl03_atl08_dt, func, poly_id=NULL) {
-
-  if (!inherits(atl03_atl08_dt, "icesat2.atl03atl08_dt")){
+ATL03_ATL08_photons_attributes_dt_polyStat <- function(atl03_atl08_dt, func, poly_id = NULL) {
+  if (!inherits(atl03_atl08_dt, "icesat2.atl03atl08_dt")) {
     stop("atl03_atl08_dt needs to be an object of class 'icesat2.atl03atl08_dt' ")
   }
 
   if (any(is.na(atl03_atl08_dt))) {
-    atl03_atl08_dt2<-na.omit(atl03_atl08_dt)
+    atl03_atl08_dt2 <- na.omit(atl03_atl08_dt)
   } else {
-
-    atl03_atl08_dt2<-atl03_atl08_dt
+    atl03_atl08_dt2 <- atl03_atl08_dt
   }
 
 

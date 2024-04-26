@@ -11,6 +11,13 @@
 #'
 #' @export
 map_create <- function(model, stack) {
+  stopifnot("Currently it only supports random forest (rf) model" = (
+    inherits(rf, "randomForest") ||
+      model[["method"]] == "rf"
+  ))
+  if (!is.null(model[["model"]])) {
+    model <- model$model
+  }
   trees <- build_ee_forest(model)
   gee_rf <- ee$Classifier$decisionTreeEnsemble(trees)
   result <- stack$classify(gee_rf)

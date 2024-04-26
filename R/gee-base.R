@@ -82,13 +82,13 @@ getTileUrl <- function(img) {
 }
 
 #' @export
-"exp.ee.image.Image" <- function(e1) {
-  return(invisible(e1$exp()))
+"exp.ee.image.Image" <- function(x) {
+  return(invisible(x$exp()))
 }
 
 #' @export
-"log.ee.image.Image" <- function(e1) {
-  return(invisible(e1$log()))
+"log.ee.image.Image" <- function(x, base = NULL) {
+  return(invisible(x$log()))
 }
 
 #' @export
@@ -132,8 +132,8 @@ getTileUrl <- function(img) {
 }
 
 #' @export
-"as.integer.ee.image.Image" <- function(e1) {
-  return(invisible(e1$int()))
+"as.integer.ee.image.Image" <- function(x, ...) {
+  return(invisible(x$int()))
 }
 
 #' @export
@@ -168,7 +168,7 @@ getTileUrl <- function(img) {
 }
 
 #' @export
-"mean.ee.image.Image" <- function(x) {
+"mean.ee.image.Image" <- function(x, ...) {
   return(invisible(x$getMapId()$tile_fetcher$url_format))
 }
 

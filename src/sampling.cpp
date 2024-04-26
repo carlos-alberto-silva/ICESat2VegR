@@ -9,7 +9,6 @@ using namespace Rcpp;
 IntegerVector sampleMinDistanceRcpp(NumericVector &x, NumericVector &y, const double radius, const int sampleSize, Environment indexPtr, const int seed)
 {
   // Set seed for the std random number generator
-  srand(seed);
   int nrows = x.length();
 
   LogicalVector tabooFlag(nrows);

@@ -30,7 +30,9 @@
 
 #include <ANN/ANN.h>					// basic ANN includes
 #include <ANN/ANNperf.h>				// performance includes
+#include <Rcpp.h>
 
+using namespace Rcpp;
 using namespace std;					// make std:: available
 
 //----------------------------------------------------------------------
@@ -106,18 +108,18 @@ DLL_API void annUpdateStats()				// update stats with current counts
 										// print a single statistic
 void print_one_stat(const char* title, ANNsampStat s, double div)
 {
-	cout << title << "= [ ";
-	cout.width(9); cout << s.mean()/div			<< " : ";
-	cout.width(9); cout << s.stdDev()/div		<< " ]<";
-	cout.width(9); cout << s.min()/div			<< " , ";
-	cout.width(9); cout << s.max()/div			<< " >\n";
+	Rcout  << title << "= [ ";
+	Rcout << s.mean()/div			<< " : ";
+	Rcout << s.stdDev()/div		<< " ]<";
+	Rcout << s.min()/div			<< " , ";
+	Rcout << s.max()/div			<< " >\n";
 }
 
 DLL_API void annPrintStats(				// print statistics for a run
 	ANNbool validate)					// true if average errors desired
 {
-	cout.precision(4);					// set floating precision
-	cout << "  (Performance stats: "
+	Rcout.precision(4);					// set floating precision
+	Rcout << "  (Performance stats: "
 		 << " [      mean :    stddev ]<      min ,       max >\n";
 	print_one_stat("    leaf_nodes       ", ann_visit_lfs, 1);
 	print_one_stat("    splitting_nodes  ", ann_visit_spl, 1);
@@ -130,7 +132,7 @@ DLL_API void annPrintStats(				// print statistics for a run
 		print_one_stat("    average_error    ", ann_average_err, 1);
 		print_one_stat("    rank_error       ", ann_rank_err, 1);
 	}
-	cout.precision(0);					// restore the default
-	cout << "  )\n";
-	cout.flush();
+	Rcout.precision(0);					// restore the default
+	Rcout << "  )\n";
+	Rcout.flush();
 }

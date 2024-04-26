@@ -16,30 +16,6 @@
 # #' @description This function clips ATL08 HDF5 file within beam groups,
 # #' but keeps metada and ancillary data the same.
 # #'
-# #' @examples
-# ##' # Specifying the path to ATL08 file (zip file)
-# #' outdir <- tempdir()
-# #' atl08_zip <- system.file("extdata",
-# #'   "atl08_20220401221822_01501506_005_01.zip",
-# #'   package = "rICESat2Veg"
-# #' )
-# #'
-# #' # Unzipping ATL08 file
-# #' atl08_path <- unzip(atl08_zip, exdir = outdir)
-# #'
-# #' # Reading ATL08 data (h5 file)
-# #' atl08_h5 <- atl08_read(atl08_path = atl08_path)
-# #'
-# #' # Bounding rectangle coordinates
-# #' xmin <- -107.7
-# #' xmax <- -106.5
-# #' ymin <- 32.75
-# #' ymax <- 42.75
-# #'
-# #' # Clipping ATL08 photons  by boundary box extent
-# #' atl08_photons_dt_clip <- ATL08_h5_clipBox(atl08_h5, outdir, xmin, xmax, ymin, ymax)
-# #'
-# #' close(atl08_h5)
 # #' @export
 #' @include class.icesat2.R ATL08_read.R
 #' @import data.table hdf5r

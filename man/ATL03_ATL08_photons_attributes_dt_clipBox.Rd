@@ -38,7 +38,6 @@ atl03_path <- system.file("extdata",
   package = "ICESat2VegR"
 )
 
-# Unzipping ATL08 file
 atl08_path <- system.file("extdata",
   "atl08_clip.h5",
   package = "ICESat2VegR"
