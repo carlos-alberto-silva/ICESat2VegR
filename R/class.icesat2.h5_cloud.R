@@ -38,7 +38,17 @@ ICESat2.h5_cloud <- R6::R6Class("ICESat2.h5_cloud", list(
 try with only one granule [i].")
     }
     if (inherits(h5, "icesat2.granule_cloud")) {
+      os <- reticulate::import("os")
+      sys <- reticulate::import("sys")
+      py_builtins <- reticulate::import_builtins()
+      sys$stdout <- py_builtins$open(os$devnull, "w")
+      sys$stderr <- py_builtins$open(os$devnull, "w")
+
       granules <- earthaccess$open(list(h5))
+
+      sys$stdout <- sys["__stdout__"]
+      sys$stderr <- sys["__stderr__"]
+
       h5file <- h5py$File(granules[0])
       self$h5 <- h5file
       groups <- self$ls()
