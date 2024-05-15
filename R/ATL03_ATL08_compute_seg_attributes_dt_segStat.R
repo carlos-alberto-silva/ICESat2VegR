@@ -21,7 +21,7 @@
 #' Containing Statistics of ATL03 and ATL08 labeled photons
 #'
 #' @examples
-# Specifying ATL03 and ATL08 file path
+#' # Specifying ATL03 and ATL08 file path
 #' atl03_path <- system.file("extdata",
 #'   "atl03_clip.h5",
 #'   package = "ICESat2VegR"
@@ -54,7 +54,7 @@
 #'
 #' head(max_canopy)
 #'
-#' # Computing a series of canopy height statistics from customized function
+#' # Computing a series of canopy height statistics from customized list expressions
 #' canopy_metrics <- ATL03_ATL08_compute_seg_attributes_dt_segStat(atl03_atl08_dt_seg,
 #'   list_expr = list(
 #'     max_ph_elevation = max(h_ph),
@@ -80,12 +80,12 @@ ATL03_ATL08_compute_seg_attributes_dt_segStat <- function(
     list_expr,
     ph_class = c(0, 1, 2, 3),
     beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
-    quality_ph = 0,
-    night_flag = 1) {
+    quality_ph = NULL,
+    night_flag = NULL) {
   if (!inherits(atl03_atl08_seg_dt, "icesat2.atl03_atl08_seg_dt")) {
     stop("atl03_atl08_dt needs to be an object of class 'icesat2.atl03_atl08_seg_dt' ")
   }
-  
+
   selected_quality_ph <- quality_ph
   selected_night_flag <- night_flag
   selected_beams <- beam
@@ -93,9 +93,9 @@ ATL03_ATL08_compute_seg_attributes_dt_segStat <- function(
 
   atl03_atl08_seg_dt2 <- atl03_atl08_seg_dt[
     classed_pc_flag %in% ph_class &
-      quality_ph == selected_quality_ph &
+      ifelse(is.null(selected_quality_ph), TRUE, quality_ph == selected_quality_ph) &
       beam %in% selected_beams &
-      night_flag == selected_night_flag,
+      ifelse(is.null(selected_night_flag), TRUE, night_flag == selected_night_flag)
   ]
 
   args <- substitute(list_expr)
@@ -106,6 +106,7 @@ ATL03_ATL08_compute_seg_attributes_dt_segStat <- function(
     "by = .(segment_id, beam, longitude = centroid_x, latitude = centroid_y)"
   )
 
-  
+  prepend_class(metrics, "icesat2.atl03_atl08_seg_dt")
+
   return(metrics)
 }
