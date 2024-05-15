@@ -75,12 +75,12 @@ ATL03_ATL08_photons_attributes_dt_join <- function(atl03_h5, atl08_h5,
   `.N` <- data.table::`.N`
 
   # Check file input
-  if (inherits(atl03_h5, "icesat2.atl03_h5") == FALSE) {
+  if (!inherits(atl03_h5, "icesat2.atl03_h5")) {
     stop("atl03_h5 must be an object of class 'icesat2.atl03_h5' - output of [ATL03_read()] function ")
   }
 
   # Check file input
-  if (inherits(atl08_h5, "icesat2.atl08_h5") == FALSE) {
+  if (!inherits(atl08_h5, "icesat2.atl08_h5")) {
     stop("atl08_h5 must be an object of class 'icesat2.atl08_h5' - output of [ATL08_read()] function ")
   }
 
@@ -96,12 +96,11 @@ ATL03_ATL08_photons_attributes_dt_join <- function(atl03_h5, atl08_h5,
       beam <- intersect(beam, atl03_h5$weak_beams)
     }
   }
-  
+
   photon.dt <- list()
   pb <- utils::txtProgressBar(min = 0, max = length(beam), style = 3)
 
   i_s <- 0
-  # i <- beam[2]
   for (i in beam) {
     atl03_beam_group <- atl03_h5[[i]]
     atl08_beam_group <- atl08_h5[[i]]
@@ -113,7 +112,6 @@ ATL03_ATL08_photons_attributes_dt_join <- function(atl03_h5, atl08_h5,
       utils::setTxtProgressBar(pb, i_s)
       next
     }
-
 
     segment_ph_cnt <- atl03_beam_group[["geolocation/segment_ph_cnt"]][]
 
@@ -132,19 +130,21 @@ ATL03_ATL08_photons_attributes_dt_join <- function(atl03_h5, atl08_h5,
       delta_time = atl08_beam_group[["signal_photons/delta_time"]][]
     )
 
-
     i_s <- i_s + 0.25
     utils::setTxtProgressBar(pb, i_s)
 
     n_segments <- atl03_beam_group[["geolocation/segment_length"]]$dims
-    segment_length <- c(0, cumsum(atl03_beam_group[["geolocation/segment_length"]][1:(n_segments - 1)]))
+    if (n_segments > 1) {
+      segment_length <- c(0, cumsum(atl03_beam_group[["geolocation/segment_length"]][1:(n_segments - 1)]))
+    } else {
+      segment_length <- c(0)
+    }
     segment_lengths <- rep(segment_length, segment_ph_cnt)
 
     segment_solar_elevation <- atl03_beam_group[["geolocation/solar_elevation"]][]
     ph_solar_elev <- rep(segment_solar_elevation, segment_ph_cnt)
 
     ph_segment_id <- rep(dataTableATL03Segs$ph_segment_id, dataTableATL03Segs$segment_ph_cnt)
-
 
     dataTableATL03Photons <- data.table::data.table(
       ph_segment_id = ph_segment_id,
@@ -164,7 +164,6 @@ ATL03_ATL08_photons_attributes_dt_join <- function(atl03_h5, atl08_h5,
     unique_segment_id <- unique(dataTableATL08Photons$ph_segment_id)
     unique_segment_id <- intersect(unique_segment_id, dataTableATL03Segs$ph_segment_id)
 
-
     dataTableATL08Photons <- dataTableATL08Photons[ph_segment_id %in% unique_segment_id]
     dataTableATL03Photons <- dataTableATL03Photons[ph_segment_id %in% unique_segment_id]
     dataTableATL03Photons[, classed_pc_indx := seq_len(.N), by = ph_segment_id]
@@ -173,7 +172,6 @@ ATL03_ATL08_photons_attributes_dt_join <- function(atl03_h5, atl08_h5,
     data.table::setindex(dataTableATL03Photons, ph_segment_id, classed_pc_indx)
     data.table::setindex(dataTableATL08Photons, ph_segment_id, classed_pc_indx)
     ph_dt <- dataTableATL03Photons[dataTableATL08Photons, on = .(ph_segment_id, classed_pc_indx)]
-
 
     photon.dt[[""]] <- ph_dt
 
