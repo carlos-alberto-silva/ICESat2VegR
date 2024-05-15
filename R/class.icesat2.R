@@ -385,7 +385,7 @@ plot.icesat2.atl08_dt <- function(x, y, beam = "gt1l",
 #' atl03_path <- unzip(atl03_zip,exdir = outdir)
 #'
 #' # Reading atl03 data (h5 file)
-#' atl03_h5<-atl03_read(atl03_path=atl03_path)
+#' atl03_h5<-ATL03_read(atl03_path=atl03_path)
 #'
 #' # Extracting atl03 and atl03 photons and heights
 #' atl03_photons_dt<-atl03_seg_attributes_dt(atl03_h5=atl03_h5)

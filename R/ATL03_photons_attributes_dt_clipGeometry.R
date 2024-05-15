@@ -24,13 +24,13 @@
 #'
 #'
 #'# Reading ATL03 data (h5 file)
-#atl03_h5<-atl03_read(atl03_path=atl03_path)
+#atl03_h5<-ATL03_read(atl03_path=atl03_path)
 #'
 #'# Extracting ATL03 photons attributes
 #'atl03_photons_dt<-ATL03_photons_attributes_dt(atl03_h5=atl03_h5)
 #'
 #' # Specifying the path to shapefile
-#' polygon_filepath <- system.file("extdata", "polygon.shp", package = "ICESat2VegR")
+#' polygon_filepath <- system.file("extdata", "clip_geom.shp", package = "ICESat2VegR")
 #'
 #' # Reading shapefile as sf object
 #' sppoly <- terra::vect(polygon_filepath)

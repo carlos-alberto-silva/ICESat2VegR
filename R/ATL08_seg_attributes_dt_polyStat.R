@@ -29,7 +29,7 @@
 #' atl08_seg_att_dt <- ATL08_seg_attributes_dt(atl08_h5 = atl08_h5)
 #'
 #' # Specifying the path to shapefile
-#' polygon_filepath <- system.file("extdata", "polygon.shp", package = "ICESat2VegR")
+#' polygon_filepath <- system.file("extdata", "clip_geom.shp", package = "ICESat2VegR")
 #'
 #' # Reading shapefile as sf object
 #' polygon <- terra::vect(polygon_filepath)

@@ -25,13 +25,13 @@
 #' )
 #'
 #' # Reading ATL03 data (h5 file)
-#' atl03_h5 <- atl03_read(atl03_path = atl03_path)
+#' atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 #'
 #' # Bounding rectangle coordinates
-#' xmin <- -107.7
-#' xmax <- -106.5
-#' ymin <- 32.75
-#' ymax <- 42.75
+#' xmin <- -106.5723
+#' xmax <- -106.5693
+#' ymin <- 41.533
+#' ymax <- 41.537
 #'
 #' # Clipping ATL03 photons  by boundary box extent
 #' atl03_photons_dt_clip <- ATL03_h5_clipBox(atl03_h5, outdir, xmin, xmax, ymin, ymax)

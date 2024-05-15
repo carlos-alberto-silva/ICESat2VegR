@@ -25,7 +25,7 @@
 #' )
 #'
 #' # Reading ATL03 data (h5 file)
-#' atl03_h5 <- atl03_read(atl03_path = atl03_path)
+#' atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 #'
 #' output <- file.path(outdir, "clipped.h5")
 #'

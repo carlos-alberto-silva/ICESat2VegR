@@ -32,10 +32,10 @@
 #' atl08_terrain_dt <- ATL08_terrain_attributes(atl08_h5 = atl08_h5)
 #'
 #' # Bounding rectangle coordinates
-#' xmin <- -107.7
-#' xmax <- -106.5
-#' ymin <- 32.75
-#' ymax <- 42.75
+#' xmin <- -106.5723
+#' xmax <- -106.5693
+#' ymin <- 41.533
+#' ymax <- 41.537
 #'
 #' # Clipping ATL08-derived terrain metrics by boundary box extent
 #' atl08_terrain_dt_clip <- ATL08_terrain_dt_clipBox(atl08_terrain_dt, xmin, xmax, ymin, ymax)
