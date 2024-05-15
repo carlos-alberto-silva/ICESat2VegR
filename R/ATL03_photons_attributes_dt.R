@@ -72,8 +72,13 @@ ATL03_photons_attributes_dt <- function(atl03_h5,
       next
     }
     segment_ph_cnt <- atl03_h5[[paste0(i, "/geolocation/segment_ph_cnt")]][]
-    segment_length <- c(0, cumsum(atl03_h5[[paste0(i, "/geolocation/segment_length")]][1:(n_segments - 1)]))
-    segment_lengths <- rep(segment_length, segment_ph_cnt)
+    if (length(segment_ph_cnt) == 0) next
+    if (n_segments > 1) {
+      segment_length <- c(0, cumsum(atl03_h5[[paste0(i, "/geolocation/segment_length")]][1:(n_segments - 1)]))
+      segment_lengths <- rep(segment_length, segment_ph_cnt)
+    } else {
+      segment_lengths <- 0
+    }
 
     if ("solar_elevation" %in% atl03_h5[[paste0(i, "/geolocation/")]]$dt_datasets()$name) {
       segment_solar_elevation <- atl03_h5[[paste0(i, "/geolocation/solar_elevation")]][]
@@ -97,14 +102,14 @@ ATL03_photons_attributes_dt <- function(atl03_h5,
     }
 
 
-    dataTableATL03Photons <- data.table::data.table(cbind(
+    dataTableATL03Photons <- data.table::data.table(
       lon_ph = atl03_h5[[paste0(i, "/heights/lon_ph")]][],
       lat_ph = atl03_h5[[paste0(i, "/heights/lat_ph")]][],
       h_ph = atl03_h5[[paste0(i, "/heights/h_ph")]][],
       quality_ph = quality_ph,
       solar_elevation = ph_solar_elev,
       dist_ph_along = dist_ph_along
-    ))
+    )
 
     photon_dt <- data.table::rbindlist(list(photon.dt, dataTableATL03Photons), fill = TRUE)
     utils::setTxtProgressBar(pb, i_s)
