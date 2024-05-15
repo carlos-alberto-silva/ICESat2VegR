@@ -26,6 +26,8 @@ Nothing, it just saves outputs as LAS file in disk
 Converts ATL03/ATL08 classified photon cloud to LAS
 }
 \examples{
+outdir <- tempdir()
+
 # ATL03 file path
 atl03_path <- system.file("extdata",
   "atl03_clip.h5",
@@ -49,7 +51,7 @@ atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
 
 ATL03_ATL08_photons_attributes_dt_LAS(
   atl03_atl08_dt,
-  file.path(outdir, "output.laz"),
+  output = file.path(outdir, "output.laz"),
   normalized = TRUE
 )
 

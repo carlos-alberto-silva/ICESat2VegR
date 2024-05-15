@@ -9,6 +9,8 @@
 #' @return Nothing, it just saves outputs as LAS file in disk
 #'
 #' @examples
+#' outdir <- tempdir()
+#'
 #' # ATL03 file path
 #' atl03_path <- system.file("extdata",
 #'   "atl03_clip.h5",
@@ -32,7 +34,7 @@
 #'
 #' ATL03_ATL08_photons_attributes_dt_LAS(
 #'   atl03_atl08_dt,
-#'   file.path(outdir, "output.laz"),
+#'   output = file.path(outdir, "output.laz"),
 #'   normalized = TRUE
 #' )
 #'
@@ -43,7 +45,7 @@
 #' @export
 ATL03_ATL08_photons_attributes_dt_LAS <- function(atl03_atl08_dt, output, normalized = TRUE) {
   stopifnot("lidR is not available" = require(lidR))
-  
+
   lon_ph <- lat_ph <- classed_pc_flag <- mask <- NA
 
   atl03_atl08_dt <- na.omit(atl03_atl08_dt)
@@ -61,7 +63,7 @@ ATL03_ATL08_photons_attributes_dt_LAS <- function(atl03_atl08_dt, output, normal
   message(sprintf("The provided data will be splitted into %s UTM zones", nrow(maskZones)))
   message("====================================================")
 
-  for (ii in seq_along(maskZones)) {
+  for (ii in seq_along(maskZones$epsg)) {
     dtLocal <- dt[maskZones[ii, mask][[1]]]
     epsgCode <- maskZones[ii, epsg]
     epsg <- sprintf("epsg:%s", epsgCode)
@@ -77,7 +79,7 @@ ATL03_ATL08_photons_attributes_dt_LAS <- function(atl03_atl08_dt, output, normal
     las <- suppressWarnings(lidR::LAS(dtLocal, header))
 
     localOutput <- gsub("(\\.la[sz])", sprintf("_%s\\1", epsgCode), output)
-    message(sprintf("EPSG: %s - saved as %s", epsgCode, localOutput))
     lidR::writeLAS(las, localOutput)
+    message(sprintf("EPSG: %s - saved as %s", epsgCode, localOutput))
   }
 }
