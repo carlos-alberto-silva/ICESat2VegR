@@ -19,51 +19,57 @@
 # #' @export
 #' @import hdf5r
 ATL03_h5_clip <- function(
-    atl03,
-    output,
-    clipObj,
-    mask_fn,
-    beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
-    additional_groups = c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")) {
-  dataset.rank <- dataset.dims <- name <- NA
-
+  atl03,
+  output,
+  clipObj,
+  mask_fn,
+  beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
+  additional_groups = c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")
+) {
   # Create a new HDF5 file
   newFile <- hdf5r::H5File$new(output, mode = "w")
 
   all_groups <- c(beam, additional_groups)
   all_groups <- intersect(all_groups, atl03$ls_groups())
   starts_with_regex <- paste0("^(", paste(all_groups, collapse = "|"), ")")
-
-  # Create all groups
   groups <- atl03$ls_groups(recursive = TRUE)
   groups <- grep(starts_with_regex, groups, value = TRUE)
 
-  # Remove unselected beams groups
-  not_beam <- setdiff(atl03$beams, beam)
-  not_beam_regex <- paste(not_beam, collapse = "|")
+  # Copy groups and attributes
+  copyGroupsAndAttributes(atl03, newFile, beam, groups)
 
-  groups <- grep(not_beam_regex, groups, value = TRUE, invert = TRUE)
+  # Copy non-beam groups and datasets
+  copyNonBeamGroupsAndDatasets(atl03, newFile, beam, groups)
 
+  # Loop through beams
+  clipBeams(atl03, newFile, beam, mask_fn, clipObj)
+
+  newFile$close_all()
+  ATL03_read(output)
+}
+
+copyGroupsAndAttributes <- function(atl03, newFile, beam, groups) {
   for (group in groups) {
     grp <- newFile$create_group(group)
-
-    # Create all atributes within group
     attributes <- atl03[[group]]$ls_attrs()
     for (attribute in attributes) {
       grp$create_attr(attribute, atl03[[group]]$attr(attribute))
     }
   }
 
-  # Create root attributes
   attributes <- atl03$ls_attrs()
   for (attribute in attributes) {
     hdf5r::h5attr(newFile, attribute) <- atl03$attr(attribute)
   }
+}
 
+copyNonBeamGroupsAndDatasets <- function(atl03, newFile, beam, groups) {
   non_beams_groups <- grep("^gt[1-3][rl]", groups, value = TRUE, invert = TRUE)
 
+  # non_beam_group <- "orbit_info"
   for (non_beam_group in non_beams_groups) {
     datasets_dt <- atl03[[non_beam_group]]$dt_datasets()
+    # dataset <- "bounding_polygon_lat1"
     for (dataset in datasets_dt$name) {
       ds_dims <- length(atl03[[non_beam_group]][[dataset]]$dims)
       args <- list(atl03[[non_beam_group]][[dataset]])
@@ -79,43 +85,30 @@ ATL03_h5_clip <- function(
       )
     }
   }
+}
 
-  # Get all beams
+clipBeams <- function(atl03, newFile, beam, mask_fn, clipObj) {
   beams <- intersect(beam, atl03$beams)
-
-
-  nBeam <- 0
   nBeams <- length(beams)
 
-  # Loop the beams
-  # beamName = beams[nBeam + 1]
-  for (beamName in beams) {
-    nBeam <- nBeam + 1
+  for (nBeam in seq_along(beams)) {
+    beamName <- beams[nBeam]
     message(sprintf("Clipping %s (%d/%d)", beamName, nBeam, nBeams))
 
-    # Get the reference beam
     beam <- atl03[[beamName]]
-
-    # Get the beam to update
     updateBeam <- newFile[[beamName]]
 
-    # Get the masks
     segmentsMask <- mask_fn(beam, clipObj)
     photonsMask <- ATL03_photons_segment_mask(beam, segmentsMask)
 
-    # Get sizes of clipping datasets
     photonsSize <- beam[["heights/h_ph"]]$dims
     segmentsSize <- beam[["geolocation/ph_index_beg"]]$dims
 
-    # Get all datasets
     datasets_dt <- beam$dt_datasets(recursive = TRUE)
 
-    # Get all types of clipping photons/segment/no cut
     photonsCut <- datasets_dt[dataset.dims == photonsSize]$name
     photonsCut2D <- datasets_dt[grepl(photonsSize, dataset.dims) & dataset.rank == 2]$name
-    specialCuts <- c(
-      "geolocation/ph_index_beg"
-    )
+    specialCuts <- c("geolocation/ph_index_beg")
     segmentsCut <- datasets_dt[
       dataset.dims == segmentsSize &
         !(name %in% specialCuts)
@@ -133,7 +126,6 @@ ATL03_h5_clip <- function(
 
     pb <- utils::txtProgressBar(min = 0, max = qty, style = 3)
 
-    # Do clipping and copying
     if (length(segmentsMask) == 0) {
       utils::setTxtProgressBar(pb, qty)
       close(pb)
@@ -158,7 +150,4 @@ ATL03_h5_clip <- function(
     }
     close(pb)
   }
-  newFile$close_all()
-
-  ATL03_read(output)
 }
