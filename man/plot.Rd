@@ -2,8 +2,7 @@
 % Please edit documentation in R/class.icesat2.R
 \name{plot,icesat2.atl03atl08_dt,character-method}
 \alias{plot,icesat2.atl03atl08_dt,character-method}
-\alias{plot.icesat2.atl08_dt}
-\alias{plot,icesat2.atl03_dt,missing-method}
+\alias{plot,icesat2.atl03_dt,character-method}
 \title{Plot photons from ATL03 and ATL08 joined products}
 \usage{
 \S4method{plot}{icesat2.atl03atl08_dt,character}(
@@ -15,17 +14,7 @@
   ...
 )
 
-\method{plot}{icesat2.atl08_dt}(
-  x,
-  y,
-  beam = "gt1l",
-  colors = c("gray", "#bd8421", "forestgreen", "green"),
-  xlim = NULL,
-  ylim = NULL,
-  ...
-)
-
-\S4method{plot}{icesat2.atl03_dt,missing}(x, y, col, ...)
+\S4method{plot}{icesat2.atl03_dt,character}(x, y, col = "gray", ...)
 }
 \arguments{
 \item{x}{An object of class \code{\linkS4class{icesat2.atl03_dt}}}
@@ -42,15 +31,9 @@ Default is "gt1r"}
 
 \item{...}{will be passed to the main plot}
 
-\item{xlim}{The x limits to use for the plot}
-
-\item{ylim}{the y limits to use for the plot}
-
 \item{col}{Color for plotting the photons. Default is "gray"}
 }
 \value{
-No return value
-
 No return value
 
 No return value
@@ -59,27 +42,19 @@ No return value
 This function plots photons along track
 
 This function plots photons along track
-
-This function plots photons along track
 }
 \examples{
-# Specifying the path to ATL03 and ATL08 file (zip file)
-outdir <- tempdir()
-atl03_zip <- system.file("extdata",
-  "ATL03_20220401221822_01501506_005_01.zip",
+# Specifying the path to ATL03 file
+atl03_path <- system.file("extdata",
+  "atl03_clip.h5",
   package = "ICESat2VegR"
 )
 
-atl08_zip <- system.file("extdata",
-  "ATL08_20220401221822_01501506_005_01.zip",
+# Specifying the path to ATL08 file
+atl08_path <- system.file("extdata",
+  "atl08_clip.h5",
   package = "ICESat2VegR"
 )
-
-# Unzipping ATL03 file
-atl03_path <- unzip(atl03_zip, exdir = outdir)
-
-# Unzipping ATL08 file
-atl08_path <- unzip(atl08_zip, exdir = outdir)
 
 # Reading ATL03 data (h5 file)
 atl03_h5 <- ATL03_read(atl03_path = atl03_path)
@@ -90,71 +65,33 @@ atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 # Extracting ATL03 and ATL08 photons and heights
 atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
 
-ICESat2VegR::plot(
-ICESat2VegR::plot(
-  atl03_atl08_dt = atl03_atl08_dt, attribute = "ph_h",
+plot(
+  atl03_atl08_dt, "ph_h",
   colors = c("gray", "#bd8421", "forestgreen", "green"),
   pch = 16, cex = 0.5
 )
 
 close(atl03_h5)
 close(atl08_h5)
-# Specifying the path to atl08 and ATL08 file (zip file)
-outdir <- tempdir()
-atl08_zip <- system.file("extdata",
-  "atl08_20220401221822_01501506_005_01.zip",
+# Specifying the path to ATL03 file
+atl03_path <- system.file("extdata",
+  "atl03_clip.h5",
   package = "ICESat2VegR"
 )
 
-atl08_zip <- system.file("extdata",
-  "ATL08_20220401221822_01501506_005_01.zip",
-  package = "ICESat2VegR"
-)
-
-# Unzipping atl08 file
-atl08_path <- unzip(atl08_zip, exdir = outdir)
-
-# Reading atl08 data (h5 file)
-atl08_h5 <- atl08_read(atl08_path=atl08_path)
-
-# Extracting atl08 and ATL08 photons and heights
-atl08_photons_dt <- atl08_seg_attributes_dt(atl08_h5 = atl08_h5)
-
-ICESat2VegR::plot(
-  atl08_photons_dt = atl08_photons_dt,
-  beam = "gt1r",
-  colors = c("gray", "#bd8421", "forestgreen", "green"),
-  pch = 16, cex = 0.5
-)
-
-close(atl08_h5)
-close(atl08_h5)
-# Specifying the path to atl03 and atl03 file (zip file)
-outdir = tempdir()
-atl03_zip <- system.file("extdata",
-                  "atl03_20220401221822_01501506_005_01.zip",
-                  package="ICESat2VegR")
-                  package="ICESat2VegR")
-
-atl03_zip <- system.file("extdata",
-                  "atl03_20220401221822_01501506_005_01.zip",
-                  package="ICESat2VegR")
-                  package="ICESat2VegR")
-
-# Unzipping atl03 file
-atl03_path <- unzip(atl03_zip,exdir = outdir)
-
-# Reading atl03 data (h5 file)
-atl03_h5<-atl03_read(atl03_path=atl03_path)
+# Reading ATL03 data (h5 file)
+atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 
 # Extracting atl03 and atl03 photons and heights
-atl03_photons_dt<-atl03_seg_attributes_dt(atl03_h5=atl03_h5)
+atl03_photons_dt <- ATL03_seg_attributes_dt(atl03_h5 = atl03_h5, attributes = c("reference_photon_lon", "reference_photon_lat", "segment_dist_x", "h_ph"))
 
-ICESat2VegR::plot(atl03_photons_dt
-ICESat2VegR::plot(atl03_photons_dt
-                col = "gray",
-                pch = 16,
-                cex = 0.5)
+plot(
+  atl03_photons_dt,
+  "h_ph",
+  col = "gray",
+  pch = 16,
+  cex = 0.5
+)
 
 close(atl03_h5)
 }
