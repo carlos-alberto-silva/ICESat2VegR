@@ -10,7 +10,7 @@
 #' @param beam [`character-class`]. The vector of beams to include, default
 #' all c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")
 #' @param additional_groups [`character-class`]. Other addional groups that should be included, default
-#' c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")
+#' c("orbit_info")
 #'
 #' @return Returns a list of clipped S4 object of class [`ICESat2VegR::icesat2.atl03_h5-class`]
 #'
@@ -50,8 +50,8 @@
 #' @export
 ATL03_h5_clipGeometry <- function(
     atl03, output, vect, polygon_id = NULL, beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
-    additional_groups = c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")) {
-  geom <- terra::union(vect)
+    additional_groups = c("orbit_info")) {
+  geom <- terra::aggregate(vect)
 
   ATL03_h5_clip(atl03, output, geom, ATL03_segments_mask_geometry, beam, additional_groups)
 }

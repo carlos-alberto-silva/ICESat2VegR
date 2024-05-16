@@ -22,25 +22,22 @@
 ATL08_h5_clip <- function(
     atl08, output, clip_obj, landSegmentsMask_fn,
     beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
-    additional_groups = c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")) {
+    additional_groups = c("orbit_info")) {
   dataset.rank <- dataset.dims <- name <- NA
 
   # Create a new HDF5 file
   newFile <- hdf5r::H5File$new(output, mode = "w")
 
+  if (!"orbit_info" %in% additional_groups) {
+    additional_groups <- c("orbit_info", additional_groups)
+  }
   all_groups <- c(beam, additional_groups)
   all_groups <- intersect(all_groups, atl08$ls_groups())
-  starts_with_regex <- paste0("^(", paste(all_groups, collapse="|"), ")")
+  starts_with_regex <- paste0("^(", paste(all_groups, collapse = "|"), ")")
 
   # Create all groups
-  groups <-  atl08$ls_groups(recursive = TRUE)
+  groups <- atl08$ls_groups(recursive = TRUE)
   groups <- grep(starts_with_regex, groups, value = TRUE)
-
-  # Remove unselected beams groups
-  not_beam <- setdiff(atl08$beams, beam)
-  not_beam_regex <- paste(not_beam, collapse = "|")
-  
-  groups <- grep(not_beam_regex, groups, value = TRUE, invert = TRUE)
 
   for (group in groups) {
     grp <- newFile$create_group(group)

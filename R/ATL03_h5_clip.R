@@ -9,7 +9,7 @@
 # #' @param beam [`character-class`]. The vector of beams to include, default
 # #' all c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")
 # #' @param additional_groups [`character-class`]. Other addional groups that should be included, default
-# #' c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")
+# #' c("orbit_info")
 # #'
 # #' @return Returns the clipped S4 object of class [`ICESat2VegR::icesat2.atl03_h5-class`]
 # #'
@@ -24,11 +24,14 @@ ATL03_h5_clip <- function(
   clipObj,
   mask_fn,
   beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
-  additional_groups = c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")
+  additional_groups = c("orbit_info")
 ) {
   # Create a new HDF5 file
   newFile <- hdf5r::H5File$new(output, mode = "w")
 
+  if (!"orbit_info" %in% additional_groups) {
+    additional_groups <- c("orbit_info", additional_groups)
+  }
   all_groups <- c(beam, additional_groups)
   all_groups <- intersect(all_groups, atl03$ls_groups())
   starts_with_regex <- paste0("^(", paste(all_groups, collapse = "|"), ")")

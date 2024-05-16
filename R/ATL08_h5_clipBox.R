@@ -9,7 +9,7 @@
 #' @param beam [`character-class`]. The vector of beams to include, default
 #' all c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")
 #' @param additional_groups [`character-class`]. Other addional groups that should be included, default
-#' c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")
+#' c("orbit_info")
 #'
 #' @return Returns the clipped S4 object of class [`ICESat2VegR::icesat2.atl08_h5-class`]
 #'
@@ -41,7 +41,7 @@
 #' @export
 ATL08_h5_clipBox <- function(atl08, output, bbox,
     beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
-    additional_groups = c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")) {
+    additional_groups = c("orbit_info")) {
   if (inherits(bbox, "numeric")) {
     bbox <- terra::ext(bbox[2], bbox[4], bbox[3], bbox[1])
   }
@@ -60,7 +60,7 @@ ATL08_h5_clipBox <- function(atl08, output, bbox,
 #' @param beam [`character-class`]. The vector of beams to include, default
 #' all c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")
 #' @param additional_groups [`character-class`]. Other addional groups that should be included, default
-#' c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")
+#' c("orbit_info")
 #'
 #' @return Returns a list of clipped S4 object of class [`ICESat2VegR::icesat2.atl08_h5-class`]
 #'
@@ -77,14 +77,14 @@ ATL08_h5_clipBox <- function(atl08, output, bbox,
 #' # Reading ATL08 data (h5 file)
 #' atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 #'
-#' output <- file.path(outdir, "clipped.h5")
+#' output <- tempfile(fileext = ".h5")
 #'
 #' vect_path <- system.file("extdata",
-#'   "polygons.shp",
+#'   "clip_geom.shp",
 #'   package = "ICESat2VegR"
 #' )
 #'
-#' vect <- terra::vect()
+#' vect <- terra::vect(vect_path)
 #'
 #' # Clipping ATL08 photons by boundary box extent
 #' atl08_photons_dt_clip <- ATL08_h5_clipGeometry(
@@ -99,8 +99,8 @@ ATL08_h5_clipBox <- function(atl08, output, bbox,
 #' @export
 ATL08_h5_clipGeometry <- function(atl08, output, vect, polygon_id = "id",
     beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
-    additional_groups = c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")) {
-  geom <- terra::union(vect)
+    additional_groups = c("orbit_info")) {
+  geom <- terra::aggregate(vect)
   ATL08_h5_clip(atl08, output, clip_obj = geom, landSegmentsMask_fn = landsegmentsMask_geom, beam, additional_groups)
 }
 

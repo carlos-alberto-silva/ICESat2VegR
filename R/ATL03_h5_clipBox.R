@@ -9,7 +9,7 @@
 #' @param beam [`character-class`]. The vector of beams to include, default
 #' all c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")
 #' @param additional_groups [`character-class`]. Other addional groups that should be included, default
-#' c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")
+#' c("orbit_info")
 
 #'
 #' @return Returns the clipped S4 object of class [`ICESat2VegR::icesat2.atl03_h5-class`]
@@ -43,7 +43,7 @@
 #' @export
 ATL03_h5_clipBox <- function(
     atl03, output, bbox, beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
-    additional_groups = c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")) {
+    additional_groups = c("orbit_info")) {
   if (inherits(bbox, "numeric")) {
     bbox <- terra::ext(bbox[2], bbox[4], bbox[3], bbox[1])
   }
