@@ -41,5 +41,5 @@ terra::writeVector(atl03_segment_vect, temp_vect)
 }
 
 head(atl03_segment_dt)
-close(ATL03_h5)
+close(atl03_h5)
 }

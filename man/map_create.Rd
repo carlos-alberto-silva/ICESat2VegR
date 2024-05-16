@@ -2,8 +2,7 @@
 % Please edit documentation in R/map_create.R
 \name{map_create}
 \alias{map_create}
-\title{Applies the model in the input rasters to generate the
-modelled raster}
+\title{Map create}
 \usage{
 map_create(model, stack)
 }
@@ -14,9 +13,9 @@ to use for the prediction.}
 \item{stack}{A vector/list of ee.Image created using the ee API.}
 }
 \value{
-An \code{ee.Image} resulting from the model.
+An \code{ee.Image} resulting from applying the fitted model.
 }
 \description{
-Applies the model in the input rasters to generate the
-modelled raster
+Applies the fitted model as \code{\link[randomForest:randomForest]{randomForest::randomForest}} object to
+the input raster stack (as ee.Image) to produce a wall-to-wall maps.
 }

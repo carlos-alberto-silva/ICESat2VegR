@@ -26,23 +26,19 @@ This function clips ATL03 and ATL08 HDF5 file within beam groups,
 but keeps metada and ancillary data the same.
 }
 \examples{
-# Specifying the path to ATL03 file (zip file)
-outdir <- tempdir()
-atl03_zip <- system.file("extdata",
-  "atl03_20220401221822_01501506_005_01.zip",
+# ATL03 file path
+atl03_path <- system.file("extdata",
+  "atl03_clip.h5",
   package = "ICESat2VegR"
 )
 
-# Unzipping ATL03 file
-atl03_path <- unzip(atl03_zip, exdir = outdir)
-
 # Reading ATL03 data (h5 file)
-atl03_h5 <- atl03_read(atl03_path = atl03_path)
+atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 
-output <- file.path(outdir, "clipped.h5")
+output <- tempfile(fileext = ".h5")
 
 vect_path <- system.file("extdata",
-  "polygons.shp",
+  "clip_geom.shp",
   package = "ICESat2VegR"
 )
 
@@ -66,7 +62,7 @@ atl03_clip_geom <- clip(
   polygon_id = "id"
 )
 
-lapply(atl03_clip_geom, close)
+close(atl03_clip_geom)
 }
 \seealso{
 \code{\link[=ATL03_h5_clipBox]{ATL03_h5_clipBox()}}, \code{\link[=ATL03_h5_clipGeometry]{ATL03_h5_clipGeometry()}},

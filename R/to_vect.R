@@ -28,7 +28,7 @@
 #' }
 #'
 #' head(atl03_segment_dt)
-#' close(ATL03_h5)
+#' close(atl03_h5)
 #' @include class.icesat2.R
 #' @export
 setGeneric(
