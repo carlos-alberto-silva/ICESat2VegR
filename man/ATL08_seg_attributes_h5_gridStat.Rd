@@ -5,7 +5,7 @@
 \title{Rasterize ATL08 canopy attributes from h5 files at large scale}
 \usage{
 ATL08_seg_attributes_h5_gridStat(
-  atl08_path,
+  atl08_dir,
   metrics = c("h_canopy", "canopy_rh_conf", "h_median_canopy_abs", "h_min_canopy",
     "h_mean_canopy_abs", "h_median_canopy", "h_canopy_abs", "toc_roughness",
     "h_min_canopy_abs", "h_dif_canopy", "h_canopy_quad", "h_canopy_20m", "n_ca_photons",
@@ -27,7 +27,7 @@ ATL08_seg_attributes_h5_gridStat(
 )
 }
 \arguments{
-\item{atl08_path}{CharacterVector. The directory paths where the ATL08 H5 files are stored;}
+\item{atl08_dir}{CharacterVector. The directory paths where the ATL08 H5 files are stored;}
 
 \item{metrics}{CharacterVector. A vector of canopy attributes available from ATL08 product (e.g. "h_canopy")}
 
@@ -156,22 +156,20 @@ values. It is defined as:
 library(ICESat2VegR)
 library(data.table)
 
-# Specifying the path to ATL08 file (zip file)
-outdir <- tempdir()
-
-atl08_zip <- system.file("extdata",
-  "ATL08_20220401221822_01501506_005_01.zip",
+# Specifying the path to ATL08 file
+atl08_path <- system.file("extdata",
+  "atl08_clip.h5",
   package = "ICESat2VegR"
 )
 
-# Unzipping ATL08 file
-unzip(atl08_zip, exdir = outdir)
+# Reading ATL08 data (h5 file)
+atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 
 # Bounding rectangle coordinates
-ul_lat <- -13.72016
-ul_lon <- -100
-lr_lat <- 54
-lr_lon <- -975
+ul_lat <- 41.5386848449707031
+ul_lon <- -106.5708541870117188
+lr_lat <- 41.5314979553222656
+lr_lon <- -106.5699081420898438
 
 res <- 100 # meters
 lat_to_met_factor <- 1 / 110540
@@ -202,9 +200,9 @@ finalizer <- list(
 )
 
 ATL08_seg_attributes_h5_gridStat(
-  atl08_path = "C:/Users/caiohamamura/Downloads/",
+  atl08_dir = dirname(atl08_path),
   metrics = c("h_canopy"),
-  out_root = file.path(outdir, "output"),
+  out_root = tempdir(),
   ul_lat = ul_lat,
   ul_lon = ul_lon,
   lr_lat = lr_lat,

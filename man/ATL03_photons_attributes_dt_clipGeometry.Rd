@@ -11,22 +11,21 @@ ATL03_photons_attributes_dt_clipGeometry(
 )
 }
 \arguments{
-\item{atl03_photons_dt}{A atl03_photons_dt object (output of \code{\link[=ATL03_photons_attributes_dt]{ATL03_photons_attributes_dt()}} function).
-An S4 object of class \code{\linkS4class{icesat2.atl03_dt}}}
+\item{atl03_photons_dt}{An ATL03 photon data table. An S4 object of class \code{\linkS4class{icesat2.atl03_dt}}.}
 
 \item{sppoly}{Spatial Polygon. An object of class \code{\link[terra:SpatVector-class]{terra::SpatVector}},
-which can be loaded as an ESRI shapefile using \link[terra:vect]{terra::vect} function in the
+which can be loaded as an ESRI shapefile using the \link[terra:vect]{terra::vect} function in the
 \emph{sf} package.}
 
 \item{split_by}{Polygon id. If defined, GEDI data will be clipped by each polygon using
-the polygon id from table of attribute defined by the user}
+the polygon id from the attribute table defined by the user.}
 }
 \value{
 Returns an S4 object of class \code{\linkS4class{icesat2.atl03_dt}}
-containing the ATL03 photons attributes.
+containing the ATL03 photon attributes.
 }
 \description{
-This function clips ATL03 photons attributes within a given bounding coordinates
+This function clips ATL03 photon attributes within given bounding coordinates.
 }
 \examples{
 # ATL03 file path
@@ -35,19 +34,19 @@ atl03_path <- system.file("extdata",
   package = "ICESat2VegR"
 )
 
-
 # Reading ATL03 data (h5 file)
+atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 
-# Extracting ATL03 photons attributes
-atl03_photons_dt<-ATL03_photons_attributes_dt(atl03_h5=atl03_h5)
+# Extracting ATL03 photon attributes
+atl03_photons_dt <- ATL03_photons_attributes_dt(atl03_h5 = atl03_h5)
 
 # Specifying the path to shapefile
-polygon_filepath <- system.file("extdata", "polygon.shp", package = "ICESat2VegR")
+polygon_filepath <- system.file("extdata", "clip_geom.shp", package = "ICESat2VegR")
 
 # Reading shapefile as sf object
 sppoly <- terra::vect(polygon_filepath)
 
-# Clipping ATL03 photons attributes by Geometry
+# Clipping ATL03 photon attributes by Geometry
 atl03_photons_dt_clip <- ATL03_photons_attributes_dt_clipGeometry(atl03_photons_dt, sppoly, split_by = "FID")
 head(atl03_photons_dt_clip)
 

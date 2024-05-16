@@ -42,7 +42,7 @@
 #'
 #' res <- 0.05
 #' # Computing a series of h_canopy statistics at 0.05 degree grid cell from customized function
-#' h_canopy_metrics <- ATL08_seg_attributes_dt_gridStat(atl08_seg_att_dt, func = ~ mySetOfMetrics(h_canopy), res = res)
+#' h_canopy_metrics <- ATL08_seg_attributes_dt_gridStat(atl08_seg_att_dt, func = mySetOfMetrics(h_canopy), res = res)
 #'
 #' plot(h_canopy_metrics)
 #'

@@ -9,8 +9,7 @@ ATL08_h5_clipBox(
   output,
   bbox,
   beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
-  additional_groups = c("METADATA", "orbit_info", "quality_assessment",
-    "atlas_impulse_response", "ancillary_data")
+  additional_groups = c("orbit_info")
 )
 }
 \arguments{
@@ -27,7 +26,7 @@ order of the bbox is the default from NASA's ICESat-2 CMS searching:
 all c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")}
 
 \item{additional_groups}{\code{\linkS4class{character}}. Other addional groups that should be included, default
-c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")}
+c("orbit_info")}
 }
 \value{
 Returns the clipped S4 object of class \code{\linkS4class{icesat2.atl08_h5}}
@@ -47,10 +46,10 @@ atl08_path <- system.file("extdata",
 # Reading ATL08 data (h5 file)
 
 # Bounding rectangle coordinates
-xmin <- -107.7
-xmax <- -106.5
-ymin <- 32.75
-ymax <- 42.75
+xmin <- -106.5723
+xmax <- -106.5693
+ymin <- 41.533
+ymax <- 41.537
 
 # Clipping ATL08 terrain and canopy attributes by boundary box
 atl08_seg_att_dt_clip <- ATL08_h5_clipBox(atl08_h5, outdir, xmin, xmax, ymin, ymax)

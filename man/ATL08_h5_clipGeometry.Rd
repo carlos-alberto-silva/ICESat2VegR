@@ -10,8 +10,7 @@ ATL08_h5_clipGeometry(
   vect,
   polygon_id = "id",
   beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
-  additional_groups = c("METADATA", "orbit_info", "quality_assessment",
-    "atlas_impulse_response", "ancillary_data")
+  additional_groups = c("orbit_info")
 )
 }
 \arguments{
@@ -29,7 +28,7 @@ the different polygons. Default is "id"}
 all c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")}
 
 \item{additional_groups}{\code{\linkS4class{character}}. Other addional groups that should be included, default
-c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")}
+c("orbit_info")}
 }
 \value{
 Returns a list of clipped S4 object of class \code{\linkS4class{icesat2.atl08_h5}}
@@ -46,18 +45,18 @@ atl08_path <- system.file("extdata",
 )
 
 # Reading ATL08 data (h5 file)
-atl08_h5 <- atl08_read(atl08_path = atl08_path)
+atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 
-output <- file.path(outdir, "clipped.h5")
+output <- tempfile(fileext = ".h5")
 
 vect_path <- system.file("extdata",
-  "polygons.shp",
+  "clip_geom.shp",
   package = "ICESat2VegR"
 )
 
-vect <- terra::vect()
+vect <- terra::vect(vect_path)
 
-# Clipping ATL08 photons  by boundary box extent
+# Clipping ATL08 photons by boundary box extent
 atl08_photons_dt_clip <- ATL08_h5_clipGeometry(
   atl08_h5,
   output,

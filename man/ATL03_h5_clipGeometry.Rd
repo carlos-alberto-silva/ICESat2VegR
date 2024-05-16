@@ -10,8 +10,7 @@ ATL03_h5_clipGeometry(
   vect,
   polygon_id = NULL,
   beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
-  additional_groups = c("METADATA", "orbit_info", "quality_assessment",
-    "atlas_impulse_response", "ancillary_data")
+  additional_groups = c("orbit_info")
 )
 }
 \arguments{
@@ -30,7 +29,7 @@ the different polygons. Default is "id"}
 all c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")}
 
 \item{additional_groups}{\code{\linkS4class{character}}. Other addional groups that should be included, default
-c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")}
+c("orbit_info")}
 }
 \value{
 Returns a list of clipped S4 object of class \code{\linkS4class{icesat2.atl03_h5}}
@@ -47,7 +46,7 @@ atl03_path <- system.file("extdata",
 )
 
 # Reading ATL03 data (h5 file)
-atl03_h5 <- atl03_read(atl03_path = atl03_path)
+atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 
 output <- file.path(outdir, "clipped.h5")
 

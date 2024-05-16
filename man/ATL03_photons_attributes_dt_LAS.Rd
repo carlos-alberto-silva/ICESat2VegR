@@ -4,7 +4,7 @@
 \alias{ATL03_photons_attributes_dt_LAS}
 \title{Converts ATL03 photon cloud to LAS}
 \usage{
-ATL03_photons_attributes_dt_LAS(atl03_dt, output, normalized = TRUE)
+ATL03_photons_attributes_dt_LAS(atl03_dt, output)
 }
 \arguments{
 \item{atl03_dt}{An S4 object of class \code{\linkS4class{icesat2.atl03_dt}}
@@ -12,9 +12,6 @@ ATL03_photons_attributes_dt_LAS(atl03_dt, output, normalized = TRUE)
 
 \item{output}{character. The output path of for the LAS(Z) file(s)
 The function will create one LAS file per UTM Zone in WGS84 datum.}
-
-\item{normalized}{logical. Whether we should use normalized height
-or elevation for the photons, default TRUE.}
 }
 \value{
 Nothing, it just saves outputs as LAS file in disk
@@ -40,9 +37,10 @@ atl03_path <- system.file("extdata",
 # Reading ATL03 data (h5 file)
 atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 
-# # Extracting ATL03 and ATL08 photons and heights
+# Extracting ATL03 and ATL08 photons and heights
 atl03_dt <- ATL03_photons_attributes_dt(atl03_h5, beam = "gt1r")
 
+outdir <- tempdir()
 ATL03_photons_attributes_dt_LAS(
   atl03_dt,
   file.path(outdir, "output.laz")

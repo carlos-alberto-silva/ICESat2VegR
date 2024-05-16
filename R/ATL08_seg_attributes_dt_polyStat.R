@@ -12,18 +12,14 @@
 #' Containing Statistics of ATL08 terrain and canopy attributes
 #'
 #' @examples
-#' # Specifying the path to ATL08 file (zip file)
-#' outdir <- tempdir()
-#' atl08_zip <- system.file("extdata",
-#'   "ATL08_20220401221822_01501506_005_01.zip",
+#' # Specifying the path to ATL08 file
+#' atl08_path <- system.file("extdata",
+#'   "atl08_clip.h5",
 #'   package = "ICESat2VegR"
 #' )
 #'
-#' # Unzipping ATL08 file
-#' atl08_path <- unzip(atl08_zip, exdir = outdir)
-#'
 #' # Reading ATL08 data (h5 file)
-#' atl08_h5 <- ATL08_read(ATL08_path = atl08_path)
+#' atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 #'
 #' # Extracting ATL08 terrain and canopy attributes
 #' atl08_seg_att_dt <- ATL08_seg_attributes_dt(atl08_h5 = atl08_h5)
@@ -35,7 +31,7 @@
 #' polygon <- terra::vect(polygon_filepath)
 #'
 #' # Clipping ATL08 terrain and canopy attributes by Geometry
-#' atl08_seg_att_dt_clip <- ATL08_seg_attributes_dt_clipGeometry(atl08_seg_att_dt, polygon, split_by = "FID")
+#' atl08_seg_att_dt_clip <- ATL08_seg_attributes_dt_clipGeometry(atl08_seg_att_dt, polygon, split_by = "id")
 #'
 #' # Computing the max h_canopy by polygon id
 #' max_h_canopy <- ATL08_seg_attributes_dt_polyStat(atl08_seg_att_dt_clip, func = max(h_canopy), poly_id = "poly_id")
@@ -54,11 +50,11 @@
 #'
 #' # Computing a series of canopy statistics from customized function
 #' h_canopy_metrics <- ATL08_seg_attributes_dt_polyStat(
-#'   atl08_seg_att_dt,
+#'   atl08_seg_att_dt_clip,
 #'   func = mySetOfMetrics(h_canopy),
 #'   poly_id = "poly_id"
 #' )
-#' 
+#'
 #' head(h_canopy_metrics)
 #'
 #' close(atl03_h5)

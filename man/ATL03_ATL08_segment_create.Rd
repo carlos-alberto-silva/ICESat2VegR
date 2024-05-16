@@ -44,6 +44,7 @@ the segment. This will give a better representation of the segment true mid-poin
 }
 }
 \examples{
+# Specifying the path to ICESat-2 ATL03 and ATL08 data
 atl03_path <- system.file("extdata",
   "atl03_clip.h5",
   package = "ICESat2VegR"

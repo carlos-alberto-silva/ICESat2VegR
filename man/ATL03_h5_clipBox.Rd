@@ -9,8 +9,7 @@ ATL03_h5_clipBox(
   output,
   bbox,
   beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
-  additional_groups = c("METADATA", "orbit_info", "quality_assessment",
-    "atlas_impulse_response", "ancillary_data")
+  additional_groups = c("orbit_info")
 )
 }
 \arguments{
@@ -27,7 +26,7 @@ order of the bbox is the default from NASA's ICESat-2 CMS searching:
 all c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")}
 
 \item{additional_groups}{\code{\linkS4class{character}}. Other addional groups that should be included, default
-c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")}
+c("orbit_info")}
 }
 \value{
 Returns the clipped S4 object of class \code{\linkS4class{icesat2.atl03_h5}}
@@ -44,16 +43,17 @@ atl03_path <- system.file("extdata",
 )
 
 # Reading ATL03 data (h5 file)
-atl03_h5 <- atl03_read(atl03_path = atl03_path)
+atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 
 # Bounding rectangle coordinates
-xmin <- -107.7
-xmax <- -106.5
-ymin <- 32.75
-ymax <- 42.75
+xmin <- -106.5723
+xmax <- -106.5693
+ymin <- 41.533
+ymax <- 41.537
 
-# Clipping ATL03 photons  by boundary box extent
-atl03_photons_dt_clip <- ATL03_h5_clipBox(atl03_h5, outdir, xmin, xmax, ymin, ymax)
+# Clipping ATL03 photons by boundary box extent
+output <- tempfile(fileext = ".h5")
+atl03_photons_dt_clip <- ATL03_h5_clipBox(atl03_h5, output, c(ymax, xmin, ymin, xmax))
 
 close(atl03_h5)
 }

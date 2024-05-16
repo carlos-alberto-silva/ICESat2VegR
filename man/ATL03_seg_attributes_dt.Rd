@@ -7,15 +7,15 @@
 ATL03_seg_attributes_dt(
   atl03_h5,
   beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
-  strong_beam_filter = NULL,
-  attributes = c("altitude_sc", "bounce_time_offset", "delta_time", "full_sat_fract",
-    "near_sat_fract", "neutat_delay_derivative", "neutat_delay_total", "neutat_ht",
-    "ph_index_beg", "pitch", "podppd_flag", "range_bias_corr", "ref_azimuth", "ref_elev",
-    "reference_photon_index", "roll", "segment_dist_x", "segment_id", "segment_length",
-    "segment_ph_cnt", "sigma_across", "sigma_along", "sigma_h", "sigma_lat", "sigma_lon",
-    "solar_azimuth", "solar_elevation", "surf_type", "tx_pulse_energy",
-    "tx_pulse_skew_est", "tx_pulse_width_lower", 
-     "tx_pulse_width_upper", "yaw")
+  attributes = c("h_ph", "altitude_sc", "bounce_time_offset", "delta_time",
+    "full_sat_fract", "near_sat_fract", "neutat_delay_derivative", "neutat_delay_total",
+    "neutat_ht", "ph_index_beg", "pitch", "podppd_flag", "range_bias_corr",
+    "ref_azimuth", "ref_elev", "reference_photon_index", "roll", "segment_dist_x",
+    "segment_id", "segment_length", "segment_ph_cnt", "sigma_across", "sigma_along",
+    "sigma_h", "sigma_lat", "sigma_lon", "solar_azimuth", "solar_elevation", "surf_type",
+    "tx_pulse_energy", "tx_pulse_skew_est", 
+     "tx_pulse_width_lower",
+    "tx_pulse_width_upper", "yaw")
 )
 }
 \arguments{
@@ -23,9 +23,6 @@ ATL03_seg_attributes_dt(
 An S4 object of class \code{\linkS4class{icesat2.atl03_dt}}.}
 
 \item{beam}{Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")}
-
-\item{strong_beam_filter}{Logical. If true will only get strong beams, if FALSE will only
-retrieve weak beams, if NULL or default won't filter the beams.}
 
 \item{attributes}{Character vector indicating the attrivutes}
 }
@@ -39,42 +36,50 @@ This function extracts segment attributes from ICESat-2 ATL03 data
 \details{
 These are the available variables for extraction:
 \itemize{
-\item \code{altitude_sc}
-\item \code{bounce_time_offset}
-\item \code{delta_time}
-\item \code{full_sat_fract}
-\item \code{near_sat_fract}
-\item \code{neutat_delay_derivative}
-\item \code{neutat_delay_total}
-\item \code{neutat_ht}
-\item \code{ph_index_beg}
-\item \code{pitch}
-\item \code{podppd_flag}
-\item \code{range_bias_corr}
-\item \code{ref_azimuth}
-\item \code{ref_elev}
-\item \code{reference_photon_index}
-\item \code{reference_photon_lat}
-\item \code{reference_photon_lon}
-\item \code{roll}
-\item \code{segment_dist_x}
-\item \code{segment_id}
-\item \code{segment_length}
-\item \code{segment_ph_cnt}
-\item \code{sigma_across}
-\item \code{sigma_along}
-\item \code{sigma_h}
-\item \code{sigma_lat}
-\item \code{sigma_lon}
-\item \code{solar_azimuth}
-\item \code{solar_elevation}
-\item \code{surf_type}
-\item \code{tx_pulse_energy}
-\item \code{tx_pulse_skew_est}
-\item \code{tx_pulse_width_lower}
-\item \code{tx_pulse_width_upper}
-\item \code{velocity_sc}
-\item \code{yaw}
+\item \code{altitude_sc}: Height of the spacecraft above the WGS84 ellipsoid.
+\item \code{bounce_time_offset}: The difference between the transmit time and the ground bounce time of the reference photons.
+\item \code{delta_time}: Transmit time of the reference photon, measured in seconds from the atlas_sdp_gps_epoch.
+\item \code{full_sat_fract}: The fraction of pulses within the segment determined to be fully saturated.
+\item \code{near_sat_fract}: The fraction of pulses within the segment determined to be nearly saturated.
+\item \code{neutat_delay_derivative}: Change in neutral atmospheric delay per height change.
+\item \code{neutat_delay_total}: Total neutral atmosphere delay correction (wet+dry).
+\item \code{neutat_ht}: Reference height of the neutral atmosphere range correction.
+\item \code{ph_index_beg}: Index (1-based) within the photon-rate data of the first photon within this segment.
+\item \code{pitch}: Spacecraft pitch, computed using a 3, 2, 1 Euler angle sequence, with units in degrees.
+\item \code{podppd_flag}: A composite flag indicating the quality of input geolocation products for the specific ATL03 segment.
+\item \code{range_bias_corr}: The estimated range bias from geolocation analysis.
+\item \code{ref_azimuth}: Azimuth of the unit pointing vector for the reference photon in the local ENU frame, in radians.
+\item \code{ref_elev}: Elevation of the unit pointing vector for the reference photon in the local ENU frame, in radians.
+\item \code{reference_photon_index}: Index of the reference photon within the set of photons grouped within a segment.
+\item \code{reference_photon_lat}: Latitude of each reference photon.
+\item \code{reference_photon_lon}: Longitude of each reference photon.
+\item \code{roll}: Spacecraft roll, computed using a 3, 2, 1 Euler angle sequence, with units in degrees.
+\item \code{segment_dist_x}: Along-track distance from the equator crossing to the start of the 20 meter geolocation segment.
+\item \code{segment_id}: A 7-digit number identifying the along-track geolocation segment number.
+\item \code{segment_length}: The along-track length of the along-track segment, typically 20 meters.
+\item \code{segment_ph_cnt}: Number of photons in a given along-track segment.
+\item \code{sigma_across}: Estimated Cartesian across-track uncertainty (1-sigma) for the reference photon.
+\item \code{sigma_along}: Estimated cartesian along-track uncertainty (1-sigma) for the reference photon.
+\item \code{sigma_h}: Estimated height uncertainty (1-sigma) for the reference photon bounce point.
+\item \code{sigma_lat}: Estimated geodetic Latitude uncertainty (1-sigma) for the reference photon bounce point.
+\item \code{sigma_lon}: Estimated geodetic Longitude uncertainty (1-sigma) for the reference photon bounce point.
+\item \code{solar_azimuth}: Azimuth of the sun position vector from the reference photon bounce point position in
+the local ENU frame, in degrees east.
+\item \code{solar_elevation}: Elevation of the sun position vector from the reference photon bounce point
+position in the local ENU frame, in degrees.
+\item \code{surf_type}: Flags describing which surface types an interval is associated with (e.g., land,
+ocean, sea ice, land ice, inland water).
+\item \code{tx_pulse_energy}: Average transmit pulse energy, measured by the internal laser energy monitor,
+split into per-beam measurements.
+\item \code{tx_pulse_skew_est}: Difference between the averages of the lower and upper threshold crossing times,
+estimating the transmit pulse skew.
+\item \code{tx_pulse_width_lower}: Average distance between the lower threshold crossing times measured by the
+Start Pulse Detector.
+\item \code{tx_pulse_width_upper}: Average distance between the upper threshold crossing times measured by the
+Start Pulse Detector.
+\item \code{velocity_sc}: Spacecraft velocity components (east component, north component, up component)
+an observer on the ground would measure.
+\item \code{yaw}: Spacecraft yaw, computed using a 3, 2, 1 Euler angle sequence, with units in degrees.
 }
 }
 \examples{
@@ -83,12 +88,15 @@ atl03_path <- system.file("extdata",
   "atl03_clip.h5",
   package = "ICESat2VegR"
 )
+
 # Reading ATL03 data (h5 file)
 atl03_h5 <- ATL03_read(atl03_path = atl03_path)
+
 # Extracting ATL03 segment attributes
 atl03_segment_dt <- ATL03_seg_attributes_dt(atl03_h5 = atl03_h5)
+
 head(atl03_segment_dt)
-close(ATL03_h5)
+close(atl03_h5)
 }
 \seealso{
 \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}

@@ -9,8 +9,8 @@ ATL03_ATL08_compute_seg_attributes_dt_segStat(
   list_expr,
   ph_class = c(0, 1, 2, 3),
   beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
-  quality_ph = 0,
-  night_flag = 1
+  quality_ph = NULL,
+  night_flag = NULL
 )
 }
 \arguments{
@@ -31,6 +31,8 @@ c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")}
 effect, 3=possible_tep. Default is 0}
 
 \item{night_flag}{Flag indicating the data were acquired in night conditions: 0=day, 1=night. Default is 1}
+
+\item{seg_length}{Segment length. Default is 30 m}
 }
 \value{
 Returns an S4 object of class \code{\linkS4class{icesat2.atl08_dt}}
@@ -41,6 +43,7 @@ Computes a series of statistics from ATL03 and ATL08 labeled photons
 within a given segment length.
 }
 \examples{
+# Specifying ATL03 and ATL08 file path
 atl03_path <- system.file("extdata",
   "atl03_clip.h5",
   package = "ICESat2VegR"
@@ -73,7 +76,7 @@ max_canopy <- ATL03_ATL08_compute_seg_attributes_dt_segStat(atl03_atl08_dt_seg,
 
 head(max_canopy)
 
-# Computing a series of canopy height statistics from customized function
+# Computing a series of canopy height statistics from customized list expressions
 canopy_metrics <- ATL03_ATL08_compute_seg_attributes_dt_segStat(atl03_atl08_dt_seg,
   list_expr = list(
     max_ph_elevation = max(h_ph),

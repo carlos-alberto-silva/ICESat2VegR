@@ -41,7 +41,7 @@ atl08_path <- system.file("extdata",
 )
 
 # Reading ATL03 data (h5 file)
-atl03_h5 <- ATL08_read(atl03_path = atl03_path)
+atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 
 # Reading ATL08 data (h5 file)
 atl08_h5 <- ATL08_read(atl08_path = atl08_path)
@@ -51,13 +51,13 @@ atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
 head(atl03_atl08_dt)
 
 # Specifying the path to shapefile
-polygon_filepath <- system.file("extdata", "polygon.shp", package = "ICESat2VegR")
+polygon_filepath <- system.file("extdata", "clip_geom.shp", package = "ICESat2VegR")
 
 # Reading shapefile as sf object
 polygon <- terra::vect(polygon_filepath)
 
 # Clipping ATL08 terrain attributes by Geometry
-atl03_atl08_dt_clip <- ATL03_ATL08_joined_dt_clipGeometry(atl03_atl08_dt, polygon, split_by = "FID")
+atl03_atl08_dt_clip <- ATL03_ATL08_photons_attributes_dt_clipGeometry(atl03_atl08_dt, polygon, split_by = "id")
 
 # Computing the maximum ph_h by polygon id
 max_ph_h <- ATL03_ATL08_photons_attributes_dt_polyStat(atl03_atl08_dt_clip, func = max(ph_h), poly_id = "poly_id")
@@ -76,7 +76,7 @@ mySetOfMetrics <- function(x) {
 
 # Computing a series of ph_h statistics from customized function
 ph_h_metrics <- ATL03_ATL08_photons_attributes_dt_polyStat(
-  atl03_atl08_dt,
+  atl03_atl08_dt_clip,
   func = mySetOfMetrics(ph_h),
   poly_id = "poly_id"
 )
