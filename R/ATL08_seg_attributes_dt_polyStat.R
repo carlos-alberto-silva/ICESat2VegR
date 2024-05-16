@@ -70,26 +70,19 @@ ATL08_seg_attributes_dt_polyStat <- function(atl08_seg_att_dt, func, poly_id = N
     stop("atl08_seg_att_dt needs to be an object of class 'icesat2.atl08_dt' ")
   }
 
-  if (any(is.na(atl08_seg_att_dt@dt))) {
-    atl08_seg_att_dt2 <- na.omit(atl08_seg_att_dt@dt)
-  } else {
-    atl08_seg_att_dt2 <- atl08_seg_att_dt@dt
-  }
-
-
   # Add data.table operator
   `:=` <- data.table::`:=`
 
   call <- substitute(func)
 
   if (is.null(poly_id)) {
-    metrics <- lazy_apply_dt_call(dt = atl08_seg_att_dt@dt, call = call)
+    metrics <- lazy_apply_dt_call(dt = atl08_seg_att_dt, call = call)
     metrics <- as.data.table(metrics)
     if (ncol(metrics) < 2) {
       colnames(metrics) <- paste0(call)[1]
     }
   } else {
-    metrics <- lazy_apply_dt_call(dt = atl08_seg_att_dt@dt, call = call, group.by = paste0("by = ", poly_id))
+    metrics <- lazy_apply_dt_call(dt = atl08_seg_att_dt, call = call, group.by = paste0("by = ", poly_id))
 
     if (ncol(metrics) < 3) {
       colnames(metrics)[2] <- paste0(call)[1]
