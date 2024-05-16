@@ -42,6 +42,10 @@
 ATL08_h5_clipBox <- function(atl08, output, bbox,
     beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
     additional_groups = c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")) {
+  if (inherits(bbox, "numeric")) {
+    bbox <- terra::ext(bbox[2], bbox[4], bbox[3], bbox[1])
+  }
+  
   ATL08_h5_clip(atl08, output, bbox, landsegmentsMask_bbox, beam, additional_groups)
 }
 
@@ -71,7 +75,7 @@ ATL08_h5_clipBox <- function(atl08, output, bbox,
 #' )
 #'
 #' # Reading ATL08 data (h5 file)
-#' atl08_h5 <- atl08_read(atl08_path = atl08_path)
+#' atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 #'
 #' output <- file.path(outdir, "clipped.h5")
 #'
@@ -82,7 +86,7 @@ ATL08_h5_clipBox <- function(atl08, output, bbox,
 #'
 #' vect <- terra::vect()
 #'
-#' # Clipping ATL08 photons  by boundary box extent
+#' # Clipping ATL08 photons by boundary box extent
 #' atl08_photons_dt_clip <- ATL08_h5_clipGeometry(
 #'   atl08_h5,
 #'   output,
