@@ -50,6 +50,7 @@ ATL03.seg.map[["yaw"]] <- "geolocation/yaw"
 #'
 #' @details These are the available variables for extraction:
 #'
+#' - `h_ph`: Height of the reference photon above the WGS84 ellipsoid.
 #' - `altitude_sc`: Height of the spacecraft above the WGS84 ellipsoid.
 #' - `bounce_time_offset`: The difference between the transmit time and the ground bounce time of the reference photons.
 #' - `delta_time`: Transmit time of the reference photon, measured in seconds from the atlas_sdp_gps_epoch.
@@ -116,6 +117,7 @@ ATL03.seg.map[["yaw"]] <- "geolocation/yaw"
 ATL03_seg_attributes_dt <- function(atl03_h5,
                                     beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
                                     attributes = c(
+                                      "h_ph",
                                       "altitude_sc",
                                       "bounce_time_offset",
                                       "delta_time",
@@ -204,8 +206,15 @@ ATL03_seg_attributes_dt <- function(atl03_h5,
       # Special case when attribute is "h_ph"
       if (attr == "h_ph") {
         ref_idx <- beam_group[["geolocation/reference_photon_index"]][] # Get reference photon index
-        idx_mask <- seq_along(ref_idx)[ref_idx > 0] # Get valid indices (greater than 0)
-        dt[idx_mask, h_ph := beam_group[["heights/h_ph"]][ref_idx[idx_mask]]] # Update h_ph for those indices
+        ref_idx_mask <- ref_idx > 0
+        idx <- ref_idx[ref_idx_mask] 
+        idx_mask <- seq_along(ref_idx_mask)[ref_idx_mask]
+        ph_index_beg <- beam_group[["geolocation/ph_index_beg"]][ref_idx_mask] # Get photon index beginning
+        if (nrow(dt) > 1) {
+          dt[idx_mask, h_ph := beam_group[["heights/h_ph"]][ph_index_beg + idx - 1]] # Update h_ph for those indices
+        } else {
+          dt[, h_ph := beam_group[["heights/h_ph"]][ph_index_beg + idx - 1]] # Update h_ph for those indices
+        }
       }
     }
 
