@@ -130,7 +130,8 @@ ATL08.var.map[["night_flag"]] <- "/land_segments/night_flag"
 #' \item \emph{"h_max_canopy"}
 #' \item \emph{"segment_cover"}
 #' }
-#' @details ATL08 terrain attributes:
+#' 
+#' ATL08 terrain attributes:
 #' \itemize{
 #' \item \emph{"h_te_best_fit"}
 #' \item \emph{"h_te_best_fit_20m"}
@@ -171,6 +172,7 @@ ATL08_seg_attributes_dt <- function(atl08_h5,
                                     beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
                                     strong_beam_filter = NULL,
                                     attributes = c(
+                                      "delta_time",
                                       "h_canopy",
                                       "canopy_openness",
                                       "h_te_mean",
