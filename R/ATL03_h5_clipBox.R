@@ -33,8 +33,9 @@
 #' ymin <- 41.533
 #' ymax <- 41.537
 #'
-#' # Clipping ATL03 photons  by boundary box extent
-#' atl03_photons_dt_clip <- ATL03_h5_clipBox(atl03_h5, outdir, xmin, xmax, ymin, ymax)
+#' # Clipping ATL03 photons by boundary box extent
+#' output <- tempfile(fileext = ".h5")
+#' atl03_photons_dt_clip <- ATL03_h5_clipBox(atl03_h5, output, c(ymax, xmin, ymin, xmax))
 #'
 #' close(atl03_h5)
 #' @import hdf5r
@@ -43,5 +44,9 @@
 ATL03_h5_clipBox <- function(
     atl03, output, bbox, beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
     additional_groups = c("METADATA", "orbit_info", "quality_assessment", "atlas_impulse_response", "ancillary_data")) {
+  if (inherits(bbox, "numeric")) {
+    bbox <- terra::ext(bbox[2], bbox[4], bbox[3], bbox[1])
+  }
+
   ATL03_h5_clip(atl03, output, bbox, ATL03_segments_mask, beam, additional_groups)
 }
