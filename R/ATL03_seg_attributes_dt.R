@@ -77,14 +77,22 @@ ATL03.seg.map[["yaw"]] <- "geolocation/yaw"
 #' - `sigma_h`: Estimated height uncertainty (1-sigma) for the reference photon bounce point.
 #' - `sigma_lat`: Estimated geodetic Latitude uncertainty (1-sigma) for the reference photon bounce point.
 #' - `sigma_lon`: Estimated geodetic Longitude uncertainty (1-sigma) for the reference photon bounce point.
-#' - `solar_azimuth`: Azimuth of the sun position vector from the reference photon bounce point position in the local ENU frame, in degrees east.
-#' - `solar_elevation`: Elevation of the sun position vector from the reference photon bounce point position in the local ENU frame, in degrees.
-#' - `surf_type`: Flags describing which surface types an interval is associated with (e.g., land, ocean, sea ice, land ice, inland water).
-#' - `tx_pulse_energy`: Average transmit pulse energy, measured by the internal laser energy monitor, split into per-beam measurements.
-#' - `tx_pulse_skew_est`: Difference between the averages of the lower and upper threshold crossing times, estimating the transmit pulse skew.
-#' - `tx_pulse_width_lower`: Average distance between the lower threshold crossing times measured by the Start Pulse Detector.
-#' - `tx_pulse_width_upper`: Average distance between the upper threshold crossing times measured by the Start Pulse Detector.
-#' - `velocity_sc`: Spacecraft velocity components (east component, north component, up component) an observer on the ground would measure.
+#' - `solar_azimuth`: Azimuth of the sun position vector from the reference photon bounce point position in
+#' the local ENU frame, in degrees east.
+#' - `solar_elevation`: Elevation of the sun position vector from the reference photon bounce point
+#' position in the local ENU frame, in degrees.
+#' - `surf_type`: Flags describing which surface types an interval is associated with (e.g., land,
+#' ocean, sea ice, land ice, inland water).
+#' - `tx_pulse_energy`: Average transmit pulse energy, measured by the internal laser energy monitor,
+#' split into per-beam measurements.
+#' - `tx_pulse_skew_est`: Difference between the averages of the lower and upper threshold crossing times,
+#' estimating the transmit pulse skew.
+#' - `tx_pulse_width_lower`: Average distance between the lower threshold crossing times measured by the
+#' Start Pulse Detector.
+#' - `tx_pulse_width_upper`: Average distance between the upper threshold crossing times measured by the
+#' Start Pulse Detector.
+#' - `velocity_sc`: Spacecraft velocity components (east component, north component, up component)
+#' an observer on the ground would measure.
 #' - `yaw`: Spacecraft yaw, computed using a 3, 2, 1 Euler angle sequence, with units in degrees.
 #'
 #' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
@@ -103,7 +111,7 @@ ATL03.seg.map[["yaw"]] <- "geolocation/yaw"
 #' atl03_segment_dt <- ATL03_seg_attributes_dt(atl03_h5 = atl03_h5)
 #'
 #' head(atl03_segment_dt)
-#' close(ATL03_h5)
+#' close(atl03_h5)
 #' @export
 ATL03_seg_attributes_dt <- function(atl03_h5,
                                     beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
@@ -148,7 +156,9 @@ ATL03_seg_attributes_dt <- function(atl03_h5,
   }
 
   `:=` <- data.table::`:=`
-  h_ph <- NA
+
+  # Initialize data.table inside variable to avoid R CMD check warnings
+  strong_beam <- h_ph <- NA
 
   # Check beams to select
   beam <- intersect(atl03_h5$beams, beam)
@@ -160,12 +170,12 @@ ATL03_seg_attributes_dt <- function(atl03_h5,
   i_s <- 0
 
   mask_surf_type <- attributes == "surf_type"
-  has_surf_type <- any(mask_surf_type)
   attributes <- c(attributes[!mask_surf_type], c("reference_photon_lon", "reference_photon_lat"))
+
   # Loop over each beam
-  for (i in beam) {
+  for (ii in beam) {
     i_s <- i_s + 1 # Increment counter
-    beam_group <- atl03_h5[[i]] # Extract ith beam group from ATL03 data
+    beam_group <- atl03_h5[[ii]] # Extract ith beam group from ATL03 data
     dt <- data.table::data.table() # Initialize data table
 
     # Loop within each beam to process attributes
@@ -199,7 +209,7 @@ ATL03_seg_attributes_dt <- function(atl03_h5,
       }
     }
 
-    dt[, beam := i] # Add beam number as a new column to the data table
+    dt[, beam := ii] # Add beam number as a new column to the data table
 
     # If there are more than one columns in data table, store it into list 'seg.dt'
     if (ncol(dt) > 1) {
@@ -209,8 +219,8 @@ ATL03_seg_attributes_dt <- function(atl03_h5,
     utils::setTxtProgressBar(pb, i_s) # Update progress bar
   }
 
-  seg.dt[, strong_beam := ifelse(beam %in% atl03_h5$strong_beams, TRUE, FALSE)]
   seg.dt <- data.table::rbindlist(seg.dt, fill = TRUE)
+  seg.dt[, strong_beam := ifelse(beam %in% atl03_h5$strong_beams, TRUE, FALSE)]
   seg.dt <- na.omit(seg.dt)
   prepend_class(seg.dt, "icesat2.atl03_seg_dt")
 
