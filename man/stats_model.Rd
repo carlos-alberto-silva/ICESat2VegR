@@ -2,14 +2,14 @@
 % Please edit documentation in R/stats_model.R
 \name{stats_model}
 \alias{stats_model}
-\title{Model stats}
+\title{Model fit stats}
 \usage{
 stats_model(
   observed,
   predicted,
   plotstat = TRUE,
   legend = "topleft",
-  unit = " Mg/ha",
+  unit = " m",
   ...
 )
 }
@@ -18,7 +18,7 @@ stats_model(
 
 \item{predicted}{A vector containing predicted data}
 
-\item{plotstat}{if TRUE, a plot showing the 1:1 figure will be ploted. Default is TRUE}
+\item{plotstat}{if TRUE, a plot showing the 1:1 figure will be displayed. Default is TRUE}
 
 \item{legend}{Character for legend position. Default is "topleft"}
 
@@ -35,12 +35,14 @@ from a linear relationship between predicted and observed data
 }
 \examples{
 
-Observed and predicted aboveground biomass
-observed<-c(178,33,60,80,104,204,146)
-predicted<-c(184,28.5,55,85,105,210,155)
+# Observed and predicted aboveground biomass
+observed <- c(178, 33, 60, 80, 104, 204, 146)
+predicted <- c(184, 28.5, 55, 85, 105, 210, 155)
 
-stats_model(observed, predicted , plotstat=TRUE, legend="topleft", unit="Mg/ha",
-           xlab="Obserbed AGBD (Mg/ha)",
-           ylab="Predicted AGBD (Mg/ha)", pch=16)
+stats_model(observed, predicted,
+  plotstat = TRUE, legend = "topleft", unit = "Mg/ha",
+  xlab = "Obserbed AGBD (Mg/ha)",
+  ylab = "Predicted AGBD (Mg/ha)", pch = 16
+)
 
 }

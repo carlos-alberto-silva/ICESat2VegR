@@ -14,13 +14,15 @@
 #'
 #' @examples
 #'
-#'Observed and predicted aboveground biomass
-#'observed<-c(178,33,60,80,104,204,146)
-#'predicted<-c(184,28.5,55,85,105,210,155)
+#' # Observed and predicted aboveground biomass
+#' observed <- c(178, 33, 60, 80, 104, 204, 146)
+#' predicted <- c(184, 28.5, 55, 85, 105, 210, 155)
 #'
-#'stats_model(observed, predicted , plotstat=TRUE, legend="topleft", unit="Mg/ha",
-#'            xlab="Obserbed AGBD (Mg/ha)",
-#'            ylab="Predicted AGBD (Mg/ha)", pch=16)
+#' stats_model(observed, predicted,
+#'   plotstat = TRUE, legend = "topleft", unit = "Mg/ha",
+#'   xlab = "Obserbed AGBD (Mg/ha)",
+#'   ylab = "Predicted AGBD (Mg/ha)", pch = 16
+#' )
 #'
 #' @export
 stats_model <- function(observed, predicted, plotstat = TRUE, legend = "topleft", unit = " m", ...) {
