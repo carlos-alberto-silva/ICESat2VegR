@@ -4,8 +4,6 @@
 #' (output of [`ATL03_photons_attributes_dt()`] function).
 #' @param output character. The output path of for the LAS(Z) file(s)
 #' The function will create one LAS file per UTM Zone in WGS84 datum.
-#' @param normalized logical. Whether we should use normalized height
-#' or elevation for the photons, default TRUE.
 #'
 #' @return Nothing, it just saves outputs as LAS file in disk
 #'
@@ -30,9 +28,10 @@
 #' # Reading ATL03 data (h5 file)
 #' atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 #'
-#' # # Extracting ATL03 and ATL08 photons and heights
+#' # Extracting ATL03 and ATL08 photons and heights
 #' atl03_dt <- ATL03_photons_attributes_dt(atl03_h5, beam = "gt1r")
 #'
+#' outdir <- tempdir()
 #' ATL03_photons_attributes_dt_LAS(
 #'   atl03_dt,
 #'   file.path(outdir, "output.laz")
@@ -42,14 +41,17 @@
 #' @include utmTools.R lasTools.R
 #' @importFrom data.table as.data.table
 #' @export
-ATL03_photons_attributes_dt_LAS <- function(atl03_dt, output, normalized = TRUE) {
-  lon_ph <- lat_ph <- ph_h <- h_ph <- mask <- NA
+ATL03_photons_attributes_dt_LAS <- function(atl03_dt, output) {
+  # Define placeholders to avoid R CMD check warnings
+  lon_ph <- lat_ph <- h_ph <- NA
 
+  # Convert the input ATL03 data table to a data.table with required columns
   dt <- data.table::as.data.table(atl03_dt[, list(
     X = lon_ph,
     Y = lat_ph,
-    Z = ifelse(normalized, ph_h, h_ph)
+    Z = h_ph
   )])
 
+  # Call the function to convert the data.table to LAS format and save to output path
   dt_to_las(dt, output)
 }
