@@ -316,7 +316,7 @@ ATL08_seg_attributes_h5_gridStat <- function(
   atl08_list <- sapply(atl08_dir, function(search_path) {
     list.files(search_path,
       pattern = "08.*h5",
-      recursive = TRUE, full.name = TRUE
+      recursive = TRUE, full.names = TRUE
     )
   })
   total_files <- length(atl08_list)
