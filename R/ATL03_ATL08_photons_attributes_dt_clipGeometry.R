@@ -46,6 +46,8 @@ ATL03_ATL08_photons_attributes_dt_clipGeometry <- function(atl03_atl08_dt, polyg
     stop("atl03_atl08_dt must be an object of class 'icesat2.at03atl08_dt'")
   }
 
+  nid <- NA
+
   exshp <- terra::ext(polygon)
 
   # Clip data by bounding box of the polygon

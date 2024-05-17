@@ -68,8 +68,7 @@ ATL03_ATL08_photons_dt_height_normalize <- function(
     interpolation_func = NA,
     xout_parameter_name = "xout",
     ...) {
-  ph_h <-
-    h_ph <- NA
+  ph_h <- dist_ph_along <- classed_pc_flag <- h_ph <- NA
 
   stopifnot(
     "atl03_atl08_seg_dt seems to be invalid, use the package function" =

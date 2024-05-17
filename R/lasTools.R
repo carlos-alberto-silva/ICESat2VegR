@@ -1,7 +1,7 @@
 #' @include utmTools.R
 dt_to_las <- function(dt, output) {
-  stopifnot("lidR is not available" = require(lidR))
-  mask <- NA
+  stopifnot("lidR is not available" = requireNamespace(lidR, quietly = TRUE))
+  mask <- X <- Y <- NA
 
   names(dt) <- c("X", "Y", "Z")
   maskZones <- latLongToUtmMask(dt$Y, dt$X)

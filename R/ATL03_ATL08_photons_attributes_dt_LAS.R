@@ -46,7 +46,9 @@
 #' @importFrom data.table as.data.table
 #' @export
 ATL03_ATL08_photons_attributes_dt_LAS <- function(atl03_atl08_dt, output, normalized = TRUE) {
-  stopifnot("lidR is not available" = require(lidR))
+  stopifnot("lidR is not available for exporting LAS" = requireNamespace("lidR", quietly = TRUE))
+
+  X <- Y <- NA
 
   lon_ph <- lat_ph <- classed_pc_flag <- mask <- NA
 
@@ -68,7 +70,7 @@ ATL03_ATL08_photons_attributes_dt_LAS <- function(atl03_atl08_dt, output, normal
   for (ii in seq_along(maskZones$epsg)) {
     dtLocal <- dt[maskZones[ii, mask][[1]]]
     epsgCode <- maskZones[ii, epsg]
-    epsg <- sprintf("epsg:%s", epsgCode)
+    epsg <- sprintf("epsg: %s", epsgCode)
     coordinates <- terra::project(as.matrix(dtLocal[, list(X, Y)]), from = "epsg:4326", to = epsg)
     dtLocal$X <- coordinates[, 1]
     dtLocal$Y <- coordinates[, 2]

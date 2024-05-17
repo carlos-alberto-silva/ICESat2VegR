@@ -72,6 +72,9 @@ copyNonBeamGroupsAndDatasets <- function(atl03, newFile, beam, groups) {
 }
 
 clipBeams <- function(atl03, newFile, beam, mask_fn, clipObj) {
+  # Avoid R CMD check warnings about no visible binding
+  dataset.dims <- dataset.rank <- name <- NULL
+
   beams <- intersect(beam, atl03$beams)
   nBeams <- length(beams)
 
