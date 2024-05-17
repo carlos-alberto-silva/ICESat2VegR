@@ -145,14 +145,8 @@ ee_number <- function(x) {
   }
 }
 #' @export
-`!.ee.ee_number.Number` <- function(x, e2) {
-  if (!is.null(ee)) {
-    if (inherits(x, "numeric")) {
-      x <- ee$Number(x)
-    }
-
-    x$bitwiseNot(e2)
-  }
+`!.ee.ee_number.Number` <- function(x) {
+  x$bitwiseNot()
 }
 #' @export
 `|.ee.ee_number.Number` <- function(x, e2) {
@@ -215,7 +209,7 @@ ee_number <- function(x) {
   }
 }
 #' @export
-`as.numeric.ee.ee_number.Number` <- function(x) {
+`as.numeric.ee.ee_number.Number` <- function(x, ...) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
       x <- ee$Number(x)
@@ -325,9 +319,9 @@ ee_number <- function(x) {
   }
 }
 #' @export
-`max.ee.ee_number.Number` <- function(..., na.rm = FALSE) {
+`max.ee.ee_number.Number` <- function(x, ..., na.rm = FALSE) {
   args <- list(...)
-  stopifnot("Expected exactly two arguments for max within GEE" = length(args) == 2)
+  stopifnot("Expected exactly two arguments for max within GEE" = length(args) == 1)
   x <- args[[1]]
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -338,18 +332,11 @@ ee_number <- function(x) {
   }
 }
 #' @export
-`min.ee.ee_number.Number` <- function(x, e2, na.rm = FALSE) {
+`min.ee.ee_number.Number` <- function(x, ..., na.rm = FALSE) {
   args <- list(...)
-  stopifnot("Expected exactly two arguments for min within GEE" = length(args) == 2)
-  x <- args[[1]]
-  
-  if (!is.null(ee)) {
-    if (inherits(x, "numeric")) {
-      x <- ee$Number(x)
-    }
+  stopifnot("Expected exactly two arguments for min within GEE" = length(args) == 1)
 
-    x$min(args[[2]])
-  }
+  x$min(args[[1]])
 }
 #' @export
 `%%.ee.ee_number.Number` <- function(x, e2) {
