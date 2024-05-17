@@ -25,9 +25,11 @@ setGeneric("ATL03_read", function(atl03_path) {
   standardGeneric("ATL03_read")
 })
 
-
 #' @include zzz.R
 #' @include class.icesat2.R
+#' @describeIn ATL03_read Method for reading ICESat-2 ATL03 data from a local h5 file.
+#' @param atl03_path A character string specifying the path to the ICESat-2 ATL03 h5 file.
+#' @return An S4 object of class [`icesat2.atl03_h5`] containing ICESat-2 ATL03 data.
 setMethod(
   "ATL03_read",
   signature = c("ANY"),
@@ -47,6 +49,9 @@ setMethod(
   }
 )
 
+#' @describeIn ATL03_read Method for reading ICESat-2 ATL03 data from a cloud granule.
+#' @param atl03_path An object of class `icesat2.granule_cloud` pointing to the ICESat-2 ATL03 data in the cloud.
+#' @return An S4 object of class [`icesat2.atl03_h5`] containing ICESat-2 ATL03 data.
 setMethod(
   "ATL03_read",
   signature = c("icesat2.granule_cloud"),
