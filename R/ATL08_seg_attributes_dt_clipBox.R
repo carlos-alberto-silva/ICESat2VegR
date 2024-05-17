@@ -1,13 +1,19 @@
 #' Clip ATL08 Terrain and Canopy Attributes by Bounding Box
 #'
-#' @description This function clips ATL08 Terrain and Canopy Attributes within a given bounding box coordinates
+#' @description This function clips ATL08 Terrain and Canopy Attributes within a
+#' given bounding box coordinates
 #'
-#' @param atl08_seg_att_dt A atl08_seg_att_dt object (output of [ICESat2VegR::ATL08_seg_attributes_dt()] function).
+#' @param atl08_seg_att_dt A atl08_seg_att_dt object (output of
+#' [ICESat2VegR::ATL08_seg_attributes_dt()] function).
 #' An S4 object of class [`ICESat2VegR::icesat2.atl08_dt-class`]
-#' @param lower_left_lon Numeric. West longitude (x) coordinate of bounding rectangle, in decimal degrees.
-#' @param upper_right_lon Numeric. East longitude (x) coordinate of bounding rectangle, in decimal degrees.
-#' @param lower_left_lat Numeric. South latitude (y) coordinate of bounding rectangle, in decimal degrees.
-#' @param upper_right_lat Numeric. North latitude (y) coordinate of bounding rectangle, in decimal degrees.
+#' @param lower_left_lon Numeric. West longitude (x) coordinate of bounding rectangle,
+#' in decimal degrees.
+#' @param upper_right_lon Numeric. East longitude (x) coordinate of bounding rectangle,
+#' in decimal degrees.
+#' @param lower_left_lat Numeric. South latitude (y) coordinate of bounding rectangle,
+#' in decimal degrees.
+#' @param upper_right_lat Numeric. North latitude (y) coordinate of bounding rectangle,
+#' in decimal degrees.
 #'
 #' @return Returns an S4 object of class [`ICESat2VegR::icesat2.atl08_dt-class`]
 #' containing the clipped ATL08 terrain and canopy attributes.
@@ -32,7 +38,13 @@
 #' upper_right_lat <- 59.4680
 #'
 #' # Clipping ATL08 terrain and canopy attributes by boundary box
-#' atl08_seg_att_dt_clip <- ATL08_seg_attributes_dt_clipBox(atl08_seg_att_dt, lower_left_lon, upper_right_lon, lower_left_lat, upper_right_lat)
+#' atl08_seg_att_dt_clip <- ATL08_seg_attributes_dt_clipBox(
+#'   atl08_seg_att_dt,
+#'   lower_left_lon,
+#'   upper_right_lon,
+#'   lower_left_lat,
+#'   upper_right_lat
+#' )
 #'
 #' close(atl08_h5)
 #' @import hdf5r stats

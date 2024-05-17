@@ -4,13 +4,13 @@
 #'
 #' @param atl03_photons_dt An ATL03 photon data table. An S4 object of class [`ICESat2VegR::icesat2.atl03_dt-class`].
 #' @param sppoly Spatial Polygon. An object of class [`terra::SpatVector`],
-#' which can be loaded as an ESRI shapefile using the [terra::vect] function in the
-#' \emph{sf} package.
+#'   which can be loaded as an ESRI shapefile using the [terra::vect] function in the
+#'   \emph{sf} package.
 #' @param split_by Polygon id. If defined, GEDI data will be clipped by each polygon using
-#' the polygon id from the attribute table defined by the user.
+#'   the polygon id from the attribute table defined by the user.
 #'
 #' @return Returns an S4 object of class [`ICESat2VegR::icesat2.atl03_dt-class`]
-#' containing the ATL03 photon attributes.
+#'   containing the ATL03 photon attributes.
 #'
 #' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_atl03_ATBD_r006.pdf}
 #'
@@ -34,7 +34,9 @@
 #' sppoly <- terra::vect(polygon_filepath)
 #'
 #' # Clipping ATL03 photon attributes by Geometry
-#' atl03_photons_dt_clip <- ATL03_photons_attributes_dt_clipGeometry(atl03_photons_dt, sppoly, split_by = "FID")
+#' atl03_photons_dt_clip <-
+#'   ATL03_photons_attributes_dt_clipGeometry(atl03_photons_dt, sppoly, split_by = "FID")
+#'
 #' head(atl03_photons_dt_clip)
 #'
 #' close(atl03_h5)
@@ -45,10 +47,10 @@ ATL03_photons_attributes_dt_clipGeometry <- function(atl03_photons_dt, sppoly, s
   if (!inherits(atl03_photons_dt, "icesat2.atl03_dt")) {
     stop("atl03_photons_dt needs to be an object of class 'icesat2.atl03_dt'")
   }
-  
+
   # Extract the bounding box of the spatial polygon
   exshp <- terra::ext(sppoly)
-  
+
   # Clip ATL03 photons using the bounding box of the spatial polygon
   atl03_photons_dt <- ATL03_photons_attributes_dt_clipBox(
     atl03_photons_dt,
@@ -57,15 +59,15 @@ ATL03_photons_attributes_dt_clipGeometry <- function(atl03_photons_dt, sppoly, s
     exshp$ymin,
     exshp$ymax
   )
-  
+
   # Remove any rows with NA values
   if (any(is.na(atl03_photons_dt))) {
     atl03_photons_dt <- na.omit(atl03_photons_dt)
   }
-  
+
   # Add a unique identifier to each row
   atl03_photons_dt$nid <- seq_len(nrow(atl03_photons_dt))
-  
+
   # Check if any data remains after clipping
   if (nrow(atl03_photons_dt) == 0) {
     warning("The polygon does not overlap the ATL03 data")
@@ -79,13 +81,13 @@ ATL03_photons_attributes_dt_clipGeometry <- function(atl03_photons_dt, sppoly, s
       geom = c("lon_ph", "lat_ph"),
       crs = terra::crs(sppoly)
     )
-    
+
     # Add a row number to each point
     points$rowNumber <- as.integer(seq_along(points))
-    
+
     # Intersect the points with the spatial polygon
     pts <- terra::intersect(terra::makeValid(points), terra::makeValid(sppoly))
-    
+
     # If split_by is defined, clip the data by each polygon id
     if (!is.null(split_by)) {
       if (any(names(sppoly) == split_by)) {
@@ -97,7 +99,7 @@ ATL03_photons_attributes_dt_clipGeometry <- function(atl03_photons_dt, sppoly, s
     } else {
       newFile <- atl03_photons_dt[pts$nid, ]
     }
-    
+
     return(newFile)
   }
 }

@@ -25,27 +25,33 @@
 #' )
 #'
 #' # Reading ATL08 data (h5 file)
-# atl08_h5<-ATL08_read(atl08_path=atl08_path)
+#' atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 #'
 #' # Bounding rectangle coordinates
-#' xmin <- -106.5723
-#' xmax <- -106.5693
-#' ymin <- 41.533
-#' ymax <- 41.537
+#' ul_lon <- -106.5723
+#' lr_lon <- -106.5693
+#' lr_lat <- 41.533
+#' ul_lat <- 41.537
 #'
 #' # Clipping ATL08 terrain and canopy attributes by boundary box
-#' atl08_seg_att_dt_clip <- ATL08_h5_clipBox(atl08_h5, outdir, xmin, xmax, ymin, ymax)
+#' atl08_seg_att_dt_clip <- ATL08_h5_clipBox(
+#'   atl08_h5,
+#'   output = tempfile(fileext = ".h5"),
+#'   c(ul_lat, ul_lon, lr_lat, lr_lon)
+#' )
 #'
 #' close(atl08_h5)
+#' close(atl08_seg_att_dt_clip)
 #' @import hdf5r
 #' @export
-ATL08_h5_clipBox <- function(atl08, output, bbox,
+ATL08_h5_clipBox <- function(
+    atl08, output, bbox,
     beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
     additional_groups = c("orbit_info")) {
   if (inherits(bbox, "numeric")) {
     bbox <- terra::ext(bbox[2], bbox[4], bbox[3], bbox[1])
   }
-  
+
   ATL08_h5_clip(atl08, output, bbox, landsegmentsMask_bbox, beam, additional_groups)
 }
 
@@ -97,7 +103,8 @@ ATL08_h5_clipBox <- function(atl08, output, bbox,
 #' close(atl08_h5)
 #' @import hdf5r
 #' @export
-ATL08_h5_clipGeometry <- function(atl08, output, vect, polygon_id = "id",
+ATL08_h5_clipGeometry <- function(
+    atl08, output, vect, polygon_id = "id",
     beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
     additional_groups = c("orbit_info")) {
   geom <- terra::aggregate(vect)

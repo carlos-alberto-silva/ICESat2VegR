@@ -15,24 +15,22 @@ ATL08_photon.var.map[["delta_time"]] <- "delta_time"
 #' @description This function extracts computed photons attributes from ICESat-2 ATL08 data
 #'
 #' @param atl08_h5 A ICESat-2 ATL08 object (output of [`ATL08_read()`] function).
-#' An S4 object of class [`icesat2.atl08_dt-class`].
+#'                An S4 object of class [`icesat2.atl08_dt-class`].
 #' @param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
 #' @param photon_attributes [character-class] vector indicating the attributes to extract from the ATL08 photons.
-#' Default all `c("ph_segment_id", "classed_pc_indx", "classed_pc_flag", "ph_h", "d_flag", "delta_time")`.
+#'                         Default all `c("ph_segment_id", "classed_pc_indx", "classed_pc_flag", "ph_h", "d_flag", "delta_time")`.
 #'
 #' @return Returns an S4 object of class [data.table::data.table]
-#' containing the ATL08 computed photons attributes.
+#'         containing the ATL08 computed photons attributes.
 #'
 #' @details These are the photons attributes extracted by default:
-#' \itemize{
-#' \item \emph{ph_segment_id} Georeferenced	bin	number (20-m) associated	with	each photon
-#' \item \emph{classed_pc_indx} Indices of photons	tracking back	to ATL03	that	surface finding	software	identified and	used	within	the
-#' creation of the	data products.
-#' \item \emph{classed_pc_flag} The L2B algorithm is run if this flag is set to 1 indicating data have sufficient waveform fidelity for L2B to run
-#' \item \emph{ph_h} Height of photon above interpolated ground surface
-#' #'\item \emph{d_flag} Flag indicating	whether DRAGANN	labeled	the photon as noise or signal
-#' \item \emph{delta_time} Mid-segment	GPS	time	in seconds past	an epoch. The epoch is provided	in the metadata	at the file	level
-#' }
+#' - **ph_segment_id**: Georeferenced bin number (20-m) associated with each photon
+#' - **classed_pc_indx**: Indices of photons tracking back to ATL03 that surface finding
+#'   software identified and used within the creation of the data products.
+#' - **classed_pc_flag**: The L2B algorithm is run if this flag is set to 1 indicating data have sufficient waveform fidelity for L2B to run
+#' - **ph_h**: Height of photon above interpolated ground surface
+#' - **d_flag**: Flag indicating whether DRAGANN labeled the photon as noise or signal
+#' - **delta_time**: Mid-segment GPS time in seconds past an epoch. The epoch is provided in the metadata at the file level
 #'
 #' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
 #'

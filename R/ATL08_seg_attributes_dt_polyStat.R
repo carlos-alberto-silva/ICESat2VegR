@@ -3,8 +3,10 @@
 #' @description Computes a series of statistics of ATL08 terrain and canopy attributes within
 #' area defined by a polygon
 #'
-#' @param atl08_seg_att_dt  An S4 object of class [`ICESat2VegR::icesat2.atl08_dt-class`] containing
-#' ATL08 terrain and canopy attributes (output of [`ICESat2VegR::ATL08_seg_attributes_dt()`] function).
+#' @param atl08_seg_att_dt  An S4 object of class
+#' [`ICESat2VegR::icesat2.atl08_dt-class`] containing
+#' ATL08 terrain and canopy attributes (output of
+#' [`ICESat2VegR::ATL08_seg_attributes_dt()`] function).
 #' @param func The function to be applied for computing the defined statistics
 #' @param poly_id Polygon id. If defined, statistics will be computed for each polygon
 #'
@@ -13,7 +15,8 @@
 #'
 #' @examples
 #' # Specifying the path to ATL08 file
-#' atl08_path <- system.file("extdata",
+#' atl08_path <- system.file(
+#'   "extdata",
 #'   "atl08_clip.h5",
 #'   package = "ICESat2VegR"
 #' )
@@ -25,16 +28,28 @@
 #' atl08_seg_att_dt <- ATL08_seg_attributes_dt(atl08_h5 = atl08_h5)
 #'
 #' # Specifying the path to shapefile
-#' polygon_filepath <- system.file("extdata", "clip_geom.shp", package = "ICESat2VegR")
+#' polygon_filepath <- system.file(
+#'   "extdata",
+#'   "clip_geom.shp",
+#'   package = "ICESat2VegR"
+#' )
 #'
 #' # Reading shapefile as sf object
 #' polygon <- terra::vect(polygon_filepath)
 #'
 #' # Clipping ATL08 terrain and canopy attributes by Geometry
-#' atl08_seg_att_dt_clip <- ATL08_seg_attributes_dt_clipGeometry(atl08_seg_att_dt, polygon, split_by = "id")
+#' atl08_seg_att_dt_clip <- ATL08_seg_attributes_dt_clipGeometry(
+#'   atl08_seg_att_dt,
+#'   polygon,
+#'   split_by = "id"
+#' )
 #'
 #' # Computing the max h_canopy by polygon id
-#' max_h_canopy <- ATL08_seg_attributes_dt_polyStat(atl08_seg_att_dt_clip, func = max(h_canopy), poly_id = "poly_id")
+#' max_h_canopy <- ATL08_seg_attributes_dt_polyStat(
+#'   atl08_seg_att_dt_clip,
+#'   func = max(h_canopy),
+#'   poly_id = "poly_id"
+#' )
 #' head(max_h_canopy)
 #'
 #' # Define your own function

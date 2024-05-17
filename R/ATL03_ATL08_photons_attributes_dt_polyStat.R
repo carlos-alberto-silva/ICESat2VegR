@@ -1,10 +1,11 @@
 #' Statistics of ATL03 and ATL08 joined photons attributes within a given area
 #'
-#' @description Computes a series of statistics ATL03 and ATL08 joined photons attributes within
-#' area defined by a polygon
+#' @description Computes a series of statistics ATL03 and ATL08 joined photons
+#' attributes within area defined by a polygon
 #'
-#' @param atl03_atl08_dt  An S4 object of class [`ICESat2VegR::icesat2.atl08_dt-class`] containing ATL03 and ATL08 data
-#' (output of [ATL03_ATL08_photons_attributes_dt_join()] function).
+#' @param atl03_atl08_dt  An S4 object of class [`ICESat2VegR::icesat2.atl08_dt-class`]
+#' containing ATL03 and ATL08 data (output of [ATL03_ATL08_photons_attributes_dt_join()]
+#' function).
 #' @param func The function to be applied for computing the defined statistics
 #' @param poly_id Polygon id. If defined, statistics will be computed for each polygon
 #'
@@ -42,10 +43,12 @@
 #' polygon <- terra::vect(polygon_filepath)
 #'
 #' # Clipping ATL08 terrain attributes by Geometry
-#' atl03_atl08_dt_clip <- ATL03_ATL08_photons_attributes_dt_clipGeometry(atl03_atl08_dt, polygon, split_by = "id")
+#' atl03_atl08_dt_clip <- ATL03_ATL08_photons_attributes_dt_clipGeometry(atl03_atl08_dt,
+#'   polygon, split_by = "id")
 #'
 #' # Computing the maximum ph_h by polygon id
-#' max_ph_h <- ATL03_ATL08_photons_attributes_dt_polyStat(atl03_atl08_dt_clip, func = max(ph_h), poly_id = "poly_id")
+#' max_ph_h <- ATL03_ATL08_photons_attributes_dt_polyStat(atl03_atl08_dt_clip,
+#'   func = max(ph_h), poly_id = "poly_id")
 #' head(max_ph_h)
 #'
 #' # Define your own function
@@ -82,7 +85,6 @@ ATL03_ATL08_photons_attributes_dt_polyStat <- function(atl03_atl08_dt, func, pol
   } else {
     atl03_atl08_dt2 <- atl03_atl08_dt
   }
-
 
   # Add data.table operator
   `:=` <- data.table::`:=`

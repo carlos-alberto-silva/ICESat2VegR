@@ -1,10 +1,12 @@
 #' Converts ATL03/ATL08 classified photon cloud to LAS
 #'
-#' @param atl03_atl08_dt  An S4 object of class [`ICESat2VegR::icesat2.atl08_dt-class`] containing ATL03 and ATL08 data
-#' (output of [ATL03_ATL08_photons_attributes_dt_join()] function).
-#' @param output character. The output path of for the LAS(Z) file(s)
-#' The function will create one LAS file per UTM Zone in WGS84 datum.
-#' @param normalized logical, default TRUE. Whether the output should be normalized LAS or raw altitude.
+#' @param atl03_atl08_dt  An S4 object of class [`ICESat2VegR::icesat2.atl08_dt-class`]
+#'                        containing ATL03 and ATL08 data (output of
+#'                        [ATL03_ATL08_photons_attributes_dt_join()] function).
+#' @param output          character. The output path of for the LAS(Z) file(s). The
+#'                        function will create one LAS file per UTM Zone in WGS84 datum.
+#' @param normalized      logical, default TRUE. Whether the output should be
+#'                        normalized LAS or raw altitude.
 #'
 #' @return Nothing, it just saves outputs as LAS file in disk
 #'
@@ -29,7 +31,7 @@
 #' # Reading ATL08 data (h5 file)
 #' atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 #'
-#' # # Extracting ATL03 and ATL08 photons and heights
+#' # Extracting ATL03 and ATL08 photons and heights
 #' atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
 #'
 #' ATL03_ATL08_photons_attributes_dt_LAS(

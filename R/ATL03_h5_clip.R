@@ -1,22 +1,3 @@
-# #' Clips ICESat-2 ATL03 H5 data
-# #'
-# #' @param atl03 [`ICESat2VegR::icesat2.atl03_h5-class`] object,
-# #' obtained through [`ATL03_read()`] for clipping
-# #' @param output character. Path to the output h5 file.
-# #' @param clip_obj [`numeric-class`], [`terra::SpatExtent`] or [`terra::SpatVector`]
-# #' object for clipping. The bbox order is the default from NASA's ICESat-2 CMS searching:
-# #' (ul_lat, ul_lon, lr_lat, lr_lon).
-# #' @param beam [`character-class`]. The vector of beams to include, default
-# #' all c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")
-# #' @param additional_groups [`character-class`]. Other addional groups that should be included, default
-# #' c("orbit_info")
-# #'
-# #' @return Returns the clipped S4 object of class [`ICESat2VegR::icesat2.atl03_h5-class`]
-# #'
-# #' @description This function clips ATL03 HDF5 file within beam groups,
-# #' but keeps metada and ancillary data the same.
-# #'
-# #' @export
 #' @import hdf5r
 ATL03_h5_clip <- function(
   atl03,
