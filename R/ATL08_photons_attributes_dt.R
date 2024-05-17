@@ -84,7 +84,7 @@ ATL08_photons_attributes_dt <- function(
           if (atl08_h5v2_i$exists(col)) {
             metric_address <- col
           } else {
-            if (i.s == 1) {
+            if (i_s == 1) {
               warning(
                 sprintf(
                   "The column '%s' is not available in the ATL08 product!",

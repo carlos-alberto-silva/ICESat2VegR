@@ -229,7 +229,7 @@ ATL08_seg_attributes_dt <- function(atl08_h5,
           if (atl08_h5$exists(full_addr)) {
             metric_address <- col
           } else {
-            if (i.s == 1) {
+            if (i_s == 1) {
               warning(
                 sprintf(
                   "The column '%s' is not available in the ATL08 product!",
