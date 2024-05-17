@@ -1,5 +1,6 @@
 #' The pointer to the `earthaccess` python reticulate module
 #' @useDynLib ICESat2VegR
+#' @import Rcpp Rdpack mathjaxr
 #' @export
 earthaccess <- NULL
 
@@ -43,7 +44,7 @@ ee_cache$search <- NULL
     },
     error = function(e) {
       tryCatch({ee$Authenticate()}, error = function(e){
-        message("Could not authenticate within earth-engine")
+        warning("Could not authenticate within earth-engine")
       })
     }
   )

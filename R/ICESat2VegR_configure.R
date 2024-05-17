@@ -10,7 +10,7 @@ check_conda <- function() {
 tryRestart <- function(auto = TRUE) {
   resp <- readline("I will need to restart RSession, would you like to proceed? y/[n]")
   if (substr(tolower(resp), 1, 1) == "y") {
-    if (require(rstudioapi)) {
+    if (requireNamespace(rstudioapi, quietly = TRUE)) {
       try(rstudioapi::restartSession(), silent = TRUE)
     }
   }
@@ -62,7 +62,7 @@ ICESat2VegR_configure <- function() {
     warning("Something went wrong, conda is still not installed properly!")
   }
 
-  if (!require(ICESat2VegR) || is.null(ee) || is.null(h5py) || is.null(earthaccess)) {
+  if (!requireNamespace(ICESat2VegR, quietly = TRUE) || is.null(ee) || is.null(h5py) || is.null(earthaccess)) {
     warning("The package could not be loaded properly please read the readme in")
     warning("https://github.com/carlos-alberto-silva/ICESat2VegR and file a new issue")
     warning("if the problem is not solved.")

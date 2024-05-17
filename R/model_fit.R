@@ -57,11 +57,12 @@ randomForestRegression <- function(
 #'
 #' @return A list containing the method, model and cross validation data
 #' if `LOOCV = TRUE`.
+#' @export
 model_fit <- function(x, y, method = "lm", LOOCV = FALSE, ..., size = 40, linout = TRUE) {
-  oldpar <- par(no.readonly = TRUE)
+  oldpar <- graphics::par(no.readonly = TRUE)
   if (LOOCV) {
     on.exit(par(oldpar))
-    par(mfrow = c(1, 2))
+    graphics::par(mfrow = c(1, 2))
   }
 
   nnt_adapter <- function(y, x, ...) {
@@ -92,7 +93,6 @@ model_fit <- function(x, y, method = "lm", LOOCV = FALSE, ..., size = 40, linout
   }
 
   model <- model_fun(y = y, x = x, ...)
-  assign("model", model, .GlobalEnv)
 
   results <- list()
   pred_model <- predict(model)
@@ -113,7 +113,7 @@ model_fit <- function(x, y, method = "lm", LOOCV = FALSE, ..., size = 40, linout
       stats_model(y_local, as.numeric(pred_model2[, 3]), main = main_title)
     )
     if (LOOCV == TRUE) {
-      pb <- txtProgressBar(min = 0, max = nrow(x), style = 3)
+      pb <- utils::txtProgressBar(min = 0, max = nrow(x), style = 3)
       predloocv <- NULL
       for (i in 1:nrow(x)) {
         setTxtProgressBar(pb, i)

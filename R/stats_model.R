@@ -42,14 +42,14 @@ stats_model <- function(observed, predicted, plotstat = TRUE, legend = "topleft"
   # StatInfo2$Values<-round(StatInfo2$Values,2)
   if (plotstat == TRUE) {
     plot(observed, predicted, ...)
-    abline(0, 1, col = "red", lwd = 2)
-    abline(lm(predicted ~ observed), col = "black", lwd = 2)
-    legend("topleft", c(
-      gettextf("RMSE=%.4f %s", StatInfo[1, 2], unit),
-      gettextf("RMSE=%.4f%s", StatInfo[2, 2], " %"),
-      gettextf("Bias=%.4f%s", StatInfo[3, 2], unit),
-      gettextf("Bias=%.4f%s", StatInfo[4, 2], " %"),
-      gettextf("adj.R2=%.4f", StatInfo[6, 2])
+    graphics::abline(0, 1, col = "red", lwd = 2)
+    graphics::abline(lm(predicted ~ observed), col = "black", lwd = 2)
+    graphics::legend("topleft", c(
+      sprintf("RMSE=%.4f %s", StatInfo[1, 2], unit),
+      sprintf("RMSE=%.4f%s", StatInfo[2, 2], " %"),
+      sprintf("Bias=%.4f%s", StatInfo[3, 2], unit),
+      sprintf("Bias=%.4f%s", StatInfo[4, 2], " %"),
+      sprintf("adj.R2=%.4f", StatInfo[6, 2])
     ), bty = "n")
   }
 
