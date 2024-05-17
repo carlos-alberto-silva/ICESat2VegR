@@ -11,8 +11,9 @@ ATL08_seg_attributes_dt_clipGeometry(
 )
 }
 \arguments{
-\item{atl08_seg_att_dt}{A atl08_seg_att_dt object (output of \code{\link[=ATL08_seg_attributes_dt]{ATL08_seg_attributes_dt()}} function).
-An S4 object of class \code{\linkS4class{icesat2.atl08_dt}}}
+\item{atl08_seg_att_dt}{A atl08_seg_att_dt object (output of
+\code{\link[=ATL08_seg_attributes_dt]{ATL08_seg_attributes_dt()}} function). An S4 object of class
+\code{\linkS4class{icesat2.atl08_dt}}}
 
 \item{polygon}{Polygon. An object of class \code{\link[terra:SpatVector-class]{terra::SpatVector}},
 which can be loaded as an ESRI shapefile using \link[terra:vect]{terra::vect} function in the
@@ -51,7 +52,8 @@ if (require(terra)) {
 
   head(atl08_seg_att_dt)
   # Clipping ATL08 Terrain and Canopy Attributes by Geometry
-  atl08_seg_att_dt_clip <- ATL08_seg_attributes_dt_clipGeometry(atl08_seg_att_dt, polygon, split_by = "id")
+  atl08_seg_att_dt_clip <- ATL08_seg_attributes_dt_clipGeometry(atl08_seg_att_dt, 
+      polygon, split_by = "id")
 
   hasLeaflet <- require(leaflet)
 

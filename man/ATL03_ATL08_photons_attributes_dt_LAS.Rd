@@ -11,13 +11,15 @@ ATL03_ATL08_photons_attributes_dt_LAS(
 )
 }
 \arguments{
-\item{atl03_atl08_dt}{An S4 object of class \code{\linkS4class{icesat2.atl08_dt}} containing ATL03 and ATL08 data
-(output of \code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}} function).}
+\item{atl03_atl08_dt}{An S4 object of class \code{\linkS4class{icesat2.atl08_dt}}
+containing ATL03 and ATL08 data (output of
+\code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}} function).}
 
-\item{output}{character. The output path of for the LAS(Z) file(s)
-The function will create one LAS file per UTM Zone in WGS84 datum.}
+\item{output}{character. The output path of for the LAS(Z) file(s). The
+function will create one LAS file per UTM Zone in WGS84 datum.}
 
-\item{normalized}{logical, default TRUE. Whether the output should be normalized LAS or raw altitude.}
+\item{normalized}{logical, default TRUE. Whether the output should be
+normalized LAS or raw altitude.}
 }
 \value{
 Nothing, it just saves outputs as LAS file in disk
@@ -46,7 +48,7 @@ atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 # Reading ATL08 data (h5 file)
 atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 
-# # Extracting ATL03 and ATL08 photons and heights
+# Extracting ATL03 and ATL08 photons and heights
 atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
 
 ATL03_ATL08_photons_attributes_dt_LAS(

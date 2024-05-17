@@ -47,7 +47,9 @@ polygon_filepath <- system.file("extdata", "clip_geom.shp", package = "ICESat2Ve
 sppoly <- terra::vect(polygon_filepath)
 
 # Clipping ATL03 photon attributes by Geometry
-atl03_photons_dt_clip <- ATL03_photons_attributes_dt_clipGeometry(atl03_photons_dt, sppoly, split_by = "FID")
+atl03_photons_dt_clip <-
+  ATL03_photons_attributes_dt_clipGeometry(atl03_photons_dt, sppoly, split_by = "FID")
+
 head(atl03_photons_dt_clip)
 
 close(atl03_h5)

@@ -2,6 +2,7 @@
 % Please edit documentation in R/class.icesat2.R
 \name{plot,icesat2.atl03atl08_dt,character-method}
 \alias{plot,icesat2.atl03atl08_dt,character-method}
+\alias{plot,icesat2.atl08_dt,character-method}
 \alias{plot,icesat2.atl03_dt,character-method}
 \title{Plot photons from ATL03 and ATL08 joined products}
 \usage{
@@ -14,12 +15,14 @@
   ...
 )
 
+\S4method{plot}{icesat2.atl08_dt,character}(x, y, beam = "gt1l", col = "gray", xlim = NULL, ylim = NULL, ...)
+
 \S4method{plot}{icesat2.atl03_dt,character}(x, y, col = "gray", ...)
 }
 \arguments{
 \item{x}{An object of class \code{\linkS4class{icesat2.atl03_dt}}}
 
-\item{y}{photon attribute to be plot (ph_h or h_ph)}
+\item{y}{The attribute name for y axis}
 
 \item{beam}{Character vector indicating only one beam to process ("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r").
 Default is "gt1r"}
@@ -32,13 +35,21 @@ Default is "gt1r"}
 \item{...}{will be passed to the main plot}
 
 \item{col}{Color for plotting the photons. Default is "gray"}
+
+\item{xlim}{The x limits to use for the plot}
+
+\item{ylim}{the y limits to use for the plot}
 }
 \value{
 No return value
 
 No return value
+
+No return value
 }
 \description{
+This function plots photons along track
+
 This function plots photons along track
 
 This function plots photons along track
@@ -73,6 +84,25 @@ plot(
 
 close(atl03_h5)
 close(atl08_h5)
+atl08_path <- system.file("extdata",
+  "atl08_clip.h5",
+  package = "ICESat2VegR"
+)
+
+# Reading ATL08 data (h5 file)
+atl08_h5 <- ATL08_read(atl08_path = atl08_path)
+
+# Extracting atl08 and ATL08 photons and heights
+atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5 = atl08_h5)
+
+plot(
+  atl08_seg_dt,
+  "h_canopy",
+  beam = "gt1r",
+  col = "gray"
+)
+
+close(atl08_h5)
 # Specifying the path to ATL03 file
 atl03_path <- system.file("extdata",
   "atl03_clip.h5",
@@ -83,7 +113,10 @@ atl03_path <- system.file("extdata",
 atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 
 # Extracting atl03 and atl03 photons and heights
-atl03_photons_dt <- ATL03_seg_attributes_dt(atl03_h5 = atl03_h5, attributes = c("reference_photon_lon", "reference_photon_lat", "segment_dist_x", "h_ph"))
+atl03_photons_dt <- ATL03_seg_attributes_dt(
+  atl03_h5 = atl03_h5,
+  attributes = c("reference_photon_lon", "reference_photon_lat", "segment_dist_x", "h_ph")
+)
 
 plot(
   atl03_photons_dt,

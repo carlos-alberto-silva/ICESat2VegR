@@ -48,7 +48,7 @@ atl03_path <- system.file("extdata",
 # Reading ATL03 data (h5 file)
 atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 
-output <- file.path(outdir, "clipped.h5")
+output <- tempfile(fileext = ".h5")
 
 vect_path <- system.file("extdata",
   "polygons.shp",

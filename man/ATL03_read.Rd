@@ -2,20 +2,36 @@
 % Please edit documentation in R/ATL03_read.R
 \name{ATL03_read}
 \alias{ATL03_read}
+\alias{ATL03_read,ANY-method}
+\alias{ATL03_read,icesat2.granule_cloud-method}
 \title{Read ICESat-2 ATL03 data}
 \usage{
 ATL03_read(atl03_path)
+
+\S4method{ATL03_read}{ANY}(atl03_path)
+
+\S4method{ATL03_read}{icesat2.granule_cloud}(atl03_path)
 }
 \arguments{
-\item{atl03_path}{Either file path pointing to ICESat-2 ATL03 h5 data
-or a granule resulting from \code{\link[=ATLAS_dataFinder]{ATLAS_dataFinder()}} with \code{cloud_computing = TRUE}.}
+\item{atl03_path}{An object of class \code{icesat2.granule_cloud} pointing to the ICESat-2 ATL03 data in the cloud.}
 }
 \value{
 Returns an S4 object of class \code{\linkS4class{icesat2.atl03_dt}} containing ICESat-2 ATL03 data.
+
+An S4 object of class \code{\link{icesat2.atl03_h5}} containing ICESat-2 ATL03 data.
+
+An S4 object of class \code{\link{icesat2.atl03_h5}} containing ICESat-2 ATL03 data.
 }
 \description{
 This function reads the ICESat-2 Global Geolocated Photons (ATL03) Product (ATL03) as h5 file.
 }
+\section{Functions}{
+\itemize{
+\item \code{ATL03_read(ANY)}: Method for reading ICESat-2 ATL03 data from a local h5 file.
+
+\item \code{ATL03_read(icesat2.granule_cloud)}: Method for reading ICESat-2 ATL03 data from a cloud granule.
+
+}}
 \examples{
 # Specifying the path to ATL03 file
 atl03_path <- system.file("extdata",

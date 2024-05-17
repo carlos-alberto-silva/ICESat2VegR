@@ -15,22 +15,26 @@ ATL03_ATL08_photons_attributes_dt_gridStat(
 )
 }
 \arguments{
-\item{atl03_atl08_dt}{An S4 object of class \code{\linkS4class{icesat2.atl03atl08_dt}} containing ATL03 and ATL08  attributes
+\item{atl03_atl08_dt}{An S4 object of class \code{\linkS4class{icesat2.atl03atl08_dt}}
+containing ATL03 and ATL08 attributes
 (output of the \code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}} function).}
 
 \item{func}{The function to be applied for computing the defined statistics}
 
-\item{res}{Spatial resolution in decimal degrees for the output SpatRast raster layer. Default is 0.5.}
+\item{res}{Spatial resolution in decimal degrees for the output SpatRast raster layer.
+Default is 0.5.}
 
-\item{ph_class}{Character vector indicating photons to process based on the classification (1=ground, 2=canopy, 3=top canopy),
-Default is c(2,3)}
+\item{ph_class}{Character vector indicating photons to process based on the classification
+(1=ground, 2=canopy, 3=top canopy), Default is c(2,3)}
 
-\item{beam}{Character vector indicating beams to process. Default is c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")}
+\item{beam}{Character vector indicating beams to process. Default is c("gt1l", "gt1r", "gt2l",
+"gt2r", "gt3l", "gt3r")}
 
-\item{quality_ph}{Indicates the quality of the associated photon. 0=nominal, 1=possible_afterpulse, 2=possible_impulse_response_
-effect, 3=possible_tep. Default is 0}
+\item{quality_ph}{Indicates the quality of the associated photon. 0=nominal,
+1=possible_afterpulse, 2=possible_impulse_response_effect, 3=possible_tep. Default is 0}
 
-\item{night_flag}{Flag indicating the data were acquired in night conditions: 0=day, 1=night. Default is 1}
+\item{night_flag}{Flag indicating the data were acquired in night conditions: 0=day, 1=night.
+Default is 1}
 }
 \value{
 Return a SpatRast raster layer(s) of selected ATL03 and ATL08 photon attribute(s)
@@ -61,7 +65,10 @@ atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
 
 # Computing the mean of ph_h attribute at 0.0002 degree grid cell
-mean_ph_h <- ATL03_ATL08_photons_attributes_dt_gridStat(atl03_atl08_dt, func = mean(ph_h), res = 0.0002)
+mean_ph_h <- ATL03_ATL08_photons_attributes_dt_gridStat(atl03_atl08_dt,
+  func = mean(ph_h),
+  res = 0.0002
+)
 
 plot(mean_ph_h)
 
@@ -77,7 +84,9 @@ mySetOfMetrics <- function(x) {
 }
 
 # Computing a series of ph_h stats at 0.0002 degree grid cell from customized function
-ph_h_metrics <- ATL03_ATL08_photons_attributes_dt_gridStat(atl03_atl08_dt, func = mySetOfMetrics(ph_h), res = 0.0002)
+ph_h_metrics <- ATL03_ATL08_photons_attributes_dt_gridStat(atl03_atl08_dt,
+  func = mySetOfMetrics(ph_h), res = 0.0002
+)
 
 plot(ph_h_metrics)
 

@@ -9,6 +9,20 @@ setClass(
 
 setRefClass("icesat2.granule_cloud")
 
+#' Subset Granules
+#'
+#' This method subsets the `granules` slot of an `icesat2.granules_cloud` object.
+#'
+#' @param x An object of class `icesat2.granules_cloud`.
+#' @param i Subset index.
+#' @param ... Additional arguments (not used).
+#' @return An object of class `icesat2.granule_cloud`.
+#' @exportMethod [
+#' @examples
+#' \dontrun{
+#' granule <- new("icesat2.granules_cloud")
+#' subset_granule <- granule[1]
+#' }
 setMethod(
   "[",
   signature = c("icesat2.granules_cloud"),
@@ -28,6 +42,21 @@ setMethod(
   }
 )
 
+
+#' Extract Granules
+#'
+#' This method extracts a single element from the `granules` slot of an `icesat2.granules_cloud` object.
+#'
+#' @param x An object of class `icesat2.granules_cloud`.
+#' @param i Extraction index.
+#' @param ... Additional arguments (not used).
+#' @return An object of class `icesat2.granule_cloud`.
+#' @exportMethod [[
+#' @examples
+#' \dontrun{
+#' granule <- new("icesat2.granules_cloud")
+#' extracted_granule <- granule[[1]]
+#' }
 setMethod(
   "[[",
   signature = c("icesat2.granules_cloud"),
@@ -35,6 +64,7 @@ setMethod(
     x[i]
   }
 )
+
 
 
 #' @importFrom hdf5r H5File
@@ -235,7 +265,7 @@ setMethod(
         col = colorMap, xlab = "Distance along-track (m)", ylab = paste(y, "(m)"),
         ...
       )
-      legend(legend,
+      graphics::legend(legend,
         legend = c(
           "ATL03 unclassified",
           "ATL03 Terrain",
@@ -356,7 +386,10 @@ setMethod(
 #' atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 #'
 #' # Extracting atl03 and atl03 photons and heights
-#' atl03_photons_dt <- ATL03_seg_attributes_dt(atl03_h5 = atl03_h5, attributes = c("reference_photon_lon", "reference_photon_lat", "segment_dist_x", "h_ph"))
+#' atl03_photons_dt <- ATL03_seg_attributes_dt(
+#'   atl03_h5 = atl03_h5,
+#'   attributes = c("reference_photon_lon", "reference_photon_lat", "segment_dist_x", "h_ph")
+#' )
 #'
 #' plot(
 #'   atl03_photons_dt,
@@ -379,7 +412,10 @@ setMethod(
     x <- x[x$beam == beam, ]
     suppressWarnings({
       plot(x = x$segment_dist_x, y = x$h_ph, col = col, xlab = "Distance along-track (m)", ylab = "Elevation (m)", ...)
-      legend("topleft", legend = c("Noise", "Terrain", "Vegetation", "Top canopy"), pch = 16, col = colors, bty = "n")
+      graphics::legend(
+        "topleft",
+        legend = c("Noise", "Terrain", "Vegetation", "Top canopy"), pch = 16, col = col, bty = "n"
+      )
     })
   }
 )

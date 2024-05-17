@@ -8,7 +8,8 @@ ATL08_seg_attributes_dt(
   atl08_h5,
   beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
   strong_beam_filter = NULL,
-  attributes = c("h_canopy", "canopy_openness", "h_te_mean", "terrain_slope")
+  attributes = c("delta_time", "h_canopy", "canopy_openness", "h_te_mean",
+    "terrain_slope")
 )
 }
 \arguments{

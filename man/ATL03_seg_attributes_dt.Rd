@@ -36,6 +36,7 @@ This function extracts segment attributes from ICESat-2 ATL03 data
 \details{
 These are the available variables for extraction:
 \itemize{
+\item \code{h_ph}: Height of the reference photon above the WGS84 ellipsoid.
 \item \code{altitude_sc}: Height of the spacecraft above the WGS84 ellipsoid.
 \item \code{bounce_time_offset}: The difference between the transmit time and the ground bounce time of the reference photons.
 \item \code{delta_time}: Transmit time of the reference photon, measured in seconds from the atlas_sdp_gps_epoch.

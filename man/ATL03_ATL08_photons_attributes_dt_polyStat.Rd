@@ -11,8 +11,9 @@ ATL03_ATL08_photons_attributes_dt_polyStat(
 )
 }
 \arguments{
-\item{atl03_atl08_dt}{An S4 object of class \code{\linkS4class{icesat2.atl08_dt}} containing ATL03 and ATL08 data
-(output of \code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}} function).}
+\item{atl03_atl08_dt}{An S4 object of class \code{\linkS4class{icesat2.atl08_dt}}
+containing ATL03 and ATL08 data (output of \code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}}
+function).}
 
 \item{func}{The function to be applied for computing the defined statistics}
 
@@ -23,8 +24,8 @@ Returns an S4 object of class \code{\linkS4class{icesat2.atl08_dt}}
 Containing Statistics of ATL08 classified canopy photons
 }
 \description{
-Computes a series of statistics ATL03 and ATL08 joined photons attributes within
-area defined by a polygon
+Computes a series of statistics ATL03 and ATL08 joined photons
+attributes within area defined by a polygon
 }
 \examples{
 # Specifying the path to ATL03 and ATL08 files
@@ -57,10 +58,12 @@ polygon_filepath <- system.file("extdata", "clip_geom.shp", package = "ICESat2Ve
 polygon <- terra::vect(polygon_filepath)
 
 # Clipping ATL08 terrain attributes by Geometry
-atl03_atl08_dt_clip <- ATL03_ATL08_photons_attributes_dt_clipGeometry(atl03_atl08_dt, polygon, split_by = "id")
+atl03_atl08_dt_clip <- ATL03_ATL08_photons_attributes_dt_clipGeometry(atl03_atl08_dt,
+  polygon, split_by = "id")
 
 # Computing the maximum ph_h by polygon id
-max_ph_h <- ATL03_ATL08_photons_attributes_dt_polyStat(atl03_atl08_dt_clip, func = max(ph_h), poly_id = "poly_id")
+max_ph_h <- ATL03_ATL08_photons_attributes_dt_polyStat(atl03_atl08_dt_clip,
+  func = max(ph_h), poly_id = "poly_id")
 head(max_ph_h)
 
 # Define your own function

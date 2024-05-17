@@ -13,23 +13,29 @@ ATL08_seg_attributes_dt_clipBox(
 )
 }
 \arguments{
-\item{atl08_seg_att_dt}{A atl08_seg_att_dt object (output of \code{\link[=ATL08_seg_attributes_dt]{ATL08_seg_attributes_dt()}} function).
+\item{atl08_seg_att_dt}{A atl08_seg_att_dt object (output of
+\code{\link[=ATL08_seg_attributes_dt]{ATL08_seg_attributes_dt()}} function).
 An S4 object of class \code{\linkS4class{icesat2.atl08_dt}}}
 
-\item{lower_left_lon}{Numeric. West longitude (x) coordinate of bounding rectangle, in decimal degrees.}
+\item{lower_left_lon}{Numeric. West longitude (x) coordinate of bounding rectangle,
+in decimal degrees.}
 
-\item{upper_right_lon}{Numeric. East longitude (x) coordinate of bounding rectangle, in decimal degrees.}
+\item{upper_right_lon}{Numeric. East longitude (x) coordinate of bounding rectangle,
+in decimal degrees.}
 
-\item{lower_left_lat}{Numeric. South latitude (y) coordinate of bounding rectangle, in decimal degrees.}
+\item{lower_left_lat}{Numeric. South latitude (y) coordinate of bounding rectangle,
+in decimal degrees.}
 
-\item{upper_right_lat}{Numeric. North latitude (y) coordinate of bounding rectangle, in decimal degrees.}
+\item{upper_right_lat}{Numeric. North latitude (y) coordinate of bounding rectangle,
+in decimal degrees.}
 }
 \value{
 Returns an S4 object of class \code{\linkS4class{icesat2.atl08_dt}}
 containing the clipped ATL08 terrain and canopy attributes.
 }
 \description{
-This function clips ATL08 Terrain and Canopy Attributes within a given bounding box coordinates
+This function clips ATL08 Terrain and Canopy Attributes within a
+given bounding box coordinates
 }
 \examples{
 # Specifying the path to ATL08 file
@@ -51,7 +57,13 @@ upper_right_lon <- -103.7600
 upper_right_lat <- 59.4680
 
 # Clipping ATL08 terrain and canopy attributes by boundary box
-atl08_seg_att_dt_clip <- ATL08_seg_attributes_dt_clipBox(atl08_seg_att_dt, lower_left_lon, upper_right_lon, lower_left_lat, upper_right_lat)
+atl08_seg_att_dt_clip <- ATL08_seg_attributes_dt_clipBox(
+  atl08_seg_att_dt,
+  lower_left_lon,
+  upper_right_lon,
+  lower_left_lat,
+  upper_right_lat
+)
 
 close(atl08_h5)
 }

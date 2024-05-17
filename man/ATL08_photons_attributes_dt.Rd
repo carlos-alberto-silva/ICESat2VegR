@@ -30,13 +30,13 @@ This function extracts computed photons attributes from ICESat-2 ATL08 data
 \details{
 These are the photons attributes extracted by default:
 \itemize{
-\item \emph{ph_segment_id} Georeferenced	bin	number (20-m) associated	with	each photon
-\item \emph{classed_pc_indx} Indices of photons	tracking back	to ATL03	that	surface finding	software	identified and	used	within	the
-creation of the	data products.
-\item \emph{classed_pc_flag} The L2B algorithm is run if this flag is set to 1 indicating data have sufficient waveform fidelity for L2B to run
-\item \emph{ph_h} Height of photon above interpolated ground surface
-#'\item \emph{d_flag} Flag indicating	whether DRAGANN	labeled	the photon as noise or signal
-\item \emph{delta_time} Mid-segment	GPS	time	in seconds past	an epoch. The epoch is provided	in the metadata	at the file	level
+\item \strong{ph_segment_id}: Georeferenced bin number (20-m) associated with each photon
+\item \strong{classed_pc_indx}: Indices of photons tracking back to ATL03 that surface finding
+software identified and used within the creation of the data products.
+\item \strong{classed_pc_flag}: The L2B algorithm is run if this flag is set to 1 indicating data have sufficient waveform fidelity for L2B to run
+\item \strong{ph_h}: Height of photon above interpolated ground surface
+\item \strong{d_flag}: Flag indicating whether DRAGANN labeled the photon as noise or signal
+\item \strong{delta_time}: Mid-segment GPS time in seconds past an epoch. The epoch is provided in the metadata at the file level
 }
 }
 \examples{

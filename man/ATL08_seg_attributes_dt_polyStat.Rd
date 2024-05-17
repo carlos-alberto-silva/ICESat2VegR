@@ -7,8 +7,10 @@
 ATL08_seg_attributes_dt_polyStat(atl08_seg_att_dt, func, poly_id = NULL)
 }
 \arguments{
-\item{atl08_seg_att_dt}{An S4 object of class \code{\linkS4class{icesat2.atl08_dt}} containing
-ATL08 terrain and canopy attributes (output of \code{\link[=ATL08_seg_attributes_dt]{ATL08_seg_attributes_dt()}} function).}
+\item{atl08_seg_att_dt}{An S4 object of class
+\code{\linkS4class{icesat2.atl08_dt}} containing
+ATL08 terrain and canopy attributes (output of
+\code{\link[=ATL08_seg_attributes_dt]{ATL08_seg_attributes_dt()}} function).}
 
 \item{func}{The function to be applied for computing the defined statistics}
 
@@ -24,7 +26,8 @@ area defined by a polygon
 }
 \examples{
 # Specifying the path to ATL08 file
-atl08_path <- system.file("extdata",
+atl08_path <- system.file(
+  "extdata",
   "atl08_clip.h5",
   package = "ICESat2VegR"
 )
@@ -36,16 +39,28 @@ atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 atl08_seg_att_dt <- ATL08_seg_attributes_dt(atl08_h5 = atl08_h5)
 
 # Specifying the path to shapefile
-polygon_filepath <- system.file("extdata", "clip_geom.shp", package = "ICESat2VegR")
+polygon_filepath <- system.file(
+  "extdata",
+  "clip_geom.shp",
+  package = "ICESat2VegR"
+)
 
 # Reading shapefile as sf object
 polygon <- terra::vect(polygon_filepath)
 
 # Clipping ATL08 terrain and canopy attributes by Geometry
-atl08_seg_att_dt_clip <- ATL08_seg_attributes_dt_clipGeometry(atl08_seg_att_dt, polygon, split_by = "id")
+atl08_seg_att_dt_clip <- ATL08_seg_attributes_dt_clipGeometry(
+  atl08_seg_att_dt,
+  polygon,
+  split_by = "id"
+)
 
 # Computing the max h_canopy by polygon id
-max_h_canopy <- ATL08_seg_attributes_dt_polyStat(atl08_seg_att_dt_clip, func = max(h_canopy), poly_id = "poly_id")
+max_h_canopy <- ATL08_seg_attributes_dt_polyStat(
+  atl08_seg_att_dt_clip,
+  func = max(h_canopy),
+  poly_id = "poly_id"
+)
 head(max_h_canopy)
 
 # Define your own function

@@ -47,7 +47,11 @@ polygon_filepath <- system.file("extdata", "clip_geom.shp", package = "ICESat2Ve
 polygon <- terra::vect(polygon_filepath)
 
 # Clipping ATL08 terrain attributes by geometry
-atl03_atl08_dt_clip <- ATL03_ATL08_photons_attributes_dt_clipGeometry(atl03_atl08_dt, polygon, split_by = "id")
+atl03_atl08_dt_clip <- ATL03_ATL08_photons_attributes_dt_clipGeometry(
+  atl03_atl08_dt,
+  polygon,
+  split_by = "id"
+)
 head(atl03_atl08_dt_clip)
 
 close(atl03_h5)
