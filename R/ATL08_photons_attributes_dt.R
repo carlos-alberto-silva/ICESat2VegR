@@ -7,9 +7,6 @@ ATL08_photon.var.map[["ph_h"]] <- "ph_h"
 ATL08_photon.var.map[["d_flag"]] <- "d_flag"
 ATL08_photon.var.map[["delta_time"]] <- "delta_time"
 
-
-
-#'
 #' ATL08 computed photons attributes
 #'
 #' @description This function extracts computed photons attributes from ICESat-2 ATL08 data
@@ -53,7 +50,10 @@ ATL08_photon.var.map[["delta_time"]] <- "delta_time"
 ATL08_photons_attributes_dt <- function(
     atl08_h5,
     beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
-    photon_attributes = c("ph_segment_id", "classed_pc_indx", "classed_pc_flag", "ph_h", "d_flag", "delta_time")) {
+    photon_attributes = c(
+      "ph_segment_id", "classed_pc_indx", "classed_pc_flag",
+      "ph_h", "d_flag", "delta_time"
+    )) {
   # Check file input
   if (!inherits(atl08_h5, "icesat2.atl08_h5")) {
     stop("atl08_h5 must be an object of class 'icesat2.atl08_h5' - output of [ATL08_read()] function ")
@@ -69,7 +69,6 @@ ATL08_photons_attributes_dt <- function(
   i_s <- 0
 
   if (length(photon_attributes) > 1) {
-    # i = beam[2]
     for (i in beam) {
       i_s <- i_s + 1
 

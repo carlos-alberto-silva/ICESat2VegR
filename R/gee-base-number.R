@@ -1,9 +1,9 @@
 #' Creates an `Earth Engine` server number
 #'
 #' @param x the number to convert to Earth Engine's number.
-#' 
+#'
 #' @return The Earth Engine number
-#' 
+#'
 #' @seealso https://developers.google.com/earth-engine/apidocs/ee-number
 #' @export
 ee_number <- function(x) {

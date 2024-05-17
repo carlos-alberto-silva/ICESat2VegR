@@ -101,7 +101,7 @@ ATL08_seg_attributes_dt_gridStat <- function(atl08_seg_att_dt, func, res = 0.5) 
 
   names(output) <- names(metrics)[-1]
   metrics <- metrics[!is.nan(cells)]
-  
+
   for (metric in 1:n_metrics) {
     output[[metric]][metrics$cells] <- metrics[[metric + 1]]
   }
