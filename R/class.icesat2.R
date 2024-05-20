@@ -15,14 +15,10 @@ setRefClass("icesat2.granule_cloud")
 #'
 #' @param x An object of class `icesat2.granules_cloud`.
 #' @param i Subset index.
+#' @param j Unused, just to match the generic signature.
+#' @param drop Unused, just to match the generic signature.
 #' @param ... Additional arguments (not used).
 #' @return An object of class `icesat2.granule_cloud`.
-#' @exportMethod [
-#' @examples
-#' \dontrun{
-#' granule <- new("icesat2.granules_cloud")
-#' subset_granule <- granule[1]
-#' }
 setMethod(
   "[",
   signature = c("icesat2.granules_cloud"),
@@ -32,7 +28,7 @@ setMethod(
         res <- x@granules[i - 1]
       },
       error = function(e) {
-        res <- x@granules[i]
+        res <<- x@granules[i]
       },
       finally = {
         prepend_class(res, "icesat2.granule_cloud")
@@ -49,6 +45,7 @@ setMethod(
 #'
 #' @param x An object of class `icesat2.granules_cloud`.
 #' @param i Extraction index.
+#' @param j Unused, just to match the generic signature.
 #' @param ... Additional arguments (not used).
 #' @return An object of class `icesat2.granule_cloud`.
 #' @exportMethod [[
@@ -434,27 +431,6 @@ genericICESatC <- function(classname, x, ...) {
 #' @export
 "c.icesat2.atl08_dt" <- genericICESatC("icesat2.atl08_dt")
 
-#' @export
-vect <- terra::vect
-
-#' @export
-setMethod(
-  "vect",
-  "icesat2.atl03atl08_dt",
-  function(x, ...) {
-    terra::vect(as.data.frame(x), ...)
-  }
-)
-
-
-#' @export
-setMethod(
-  "vect",
-  "icesat2.atl08_dt",
-  function(x, ...) {
-    terra::vect(as.data.frame(x), ...)
-  }
-)
 
 #' Wraps around [`data.table::rbindlist()`] function
 #'

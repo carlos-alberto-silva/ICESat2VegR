@@ -12,6 +12,8 @@
 
 \item{data}{\code{\linkS4class{data.frame}} or \code{ee.FeatureCollection} with the
 features input to be used for the prediction.}
+
+\item{...}{Unused parameter, just to match the generic signature.}
 }
 \value{
 A \code{\linkS4class{numeric}} with the predicted values

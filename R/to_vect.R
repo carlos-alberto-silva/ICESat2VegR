@@ -49,7 +49,15 @@ generic_to_vect <- function(x, lon, lat) {
   }
 }
 
-
+#' Convert ICESat-2 data to terra::SpatVector
+#'
+#' This method converts data from various ICESat-2 data types to a `terra::SpatVector-class` object,
+#' facilitating geographic operations and visualizations within the terra package.
+#'
+#' @param x ICESat-2 data object to be converted.
+#' @param ... Additional parameters for the method.
+#'
+#' @return `terra::SpatVector` object representing the input data.
 #' @export
 setMethod(
   "to_vect",
@@ -59,7 +67,15 @@ setMethod(
   }
 )
 
-
+#' Convert ICESat-2 data to terra::SpatVector
+#'
+#' This method converts data from various ICESat-2 data types to a `terra::SpatVector-class` object,
+#' facilitating geographic operations and visualizations within the terra package.
+#'
+#' @param x ICESat-2 data object to be converted.
+#' @param ... Additional parameters for the method.
+#'
+#' @return `terra::SpatVector` object representing the input data.
 #' @export
 setMethod(
   "to_vect",
@@ -69,6 +85,15 @@ setMethod(
   }
 )
 
+#' Convert ICESat-2 data to terra::SpatVector
+#'
+#' This method converts data from various ICESat-2 data types to a `terra::SpatVector-class` object,
+#' facilitating geographic operations and visualizations within the terra package.
+#'
+#' @param x ICESat-2 data object to be converted.
+#' @param ... Additional parameters for the method.
+#'
+#' @return `terra::SpatVector` object representing the input data.
 #' @export
 setMethod(
   "to_vect",
@@ -78,6 +103,15 @@ setMethod(
   }
 )
 
+#' Convert ICESat-2 data to terra::SpatVector
+#'
+#' This method converts data from various ICESat-2 data types to a `terra::SpatVector-class` object,
+#' facilitating geographic operations and visualizations within the terra package.
+#'
+#' @param x ICESat-2 data object to be converted.
+#' @param ... Additional parameters for the method.
+#'
+#' @return `terra::SpatVector` object representing the input data.
 #' @export
 setMethod(
   "to_vect",
@@ -87,6 +121,15 @@ setMethod(
   }
 )
 
+#' Convert ICESat-2 data to terra::SpatVector
+#'
+#' This method converts data from various ICESat-2 data types to a `terra::SpatVector-class` object,
+#' facilitating geographic operations and visualizations within the terra package.
+#'
+#' @param x ICESat-2 data object to be converted.
+#' @param ... Additional parameters for the method.
+#'
+#' @return `terra::SpatVector` object representing the input data.
 #' @export
 setMethod(
   "to_vect",

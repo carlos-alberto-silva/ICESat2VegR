@@ -31,8 +31,6 @@ c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")}
 effect, 3=possible_tep. Default is 0}
 
 \item{night_flag}{Flag indicating the data were acquired in night conditions: 0=day, 1=night. Default is 1}
-
-\item{seg_length}{Segment length. Default is 30 m}
 }
 \value{
 Returns an S4 object of class \code{\linkS4class{icesat2.atl08_dt}}

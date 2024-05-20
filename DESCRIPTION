@@ -111,10 +111,13 @@ Collate:
     'var_select.R'
 Suggests: 
     chromote,
+    devtools,
     ggplot2,
     grid,
     gridExtra,
+    htmlwidgets,
     knitr,
+    leafsync,
     lidR,
     mapview,
     png,
@@ -122,7 +125,8 @@ Suggests:
     rstudioapi,
     signal,
     testthat (>= 3.0.0),
-    webshot
+    webshot,
+    viridis
 Config/testthat/edition: 3
 LinkingTo: 
     Rcpp

@@ -56,6 +56,20 @@ setGeneric(
 defaultPallete <- c("#d55e00", "#cc79a7", "#f0e442", "#0072b2", "#009e73")
 
 setRefClass("leaflet")
+
+#' Adds Earth Engine Image class to leaflet map
+#'
+#' This method handles adding an Earth Engine Image to a leaflet map.
+#'
+#' @param map A [`leaflet::leaflet`] object. A leaflet map to which the Earth Engine image will be added.
+#' @param x An Earth Engine Image object created with `ee$Image`.
+#' @param bands A vector defining the bands to be used for visualization. Default is NULL, which uses the available bands from the image.
+#' @param min_value The minimum value for visualization purposes. Default is 0.
+#' @param max_value The maximum value for visualization purposes. Default is 1.
+#' @param palette A character vector describing a list of colors in either hexadecimal or valid CSS color names. Default is a predefined palette.
+#' @param ... Other parameters to be passed to the [`leaflet::addTiles()`] function.
+#'
+#' @return A [`leaflet::leaflet`]/`htmlwidget` object with the Earth Engine image added.
 #' @export
 setMethod(
   "addEEImage",

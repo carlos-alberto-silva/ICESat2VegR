@@ -33,7 +33,7 @@
 #' )
 #'
 #' if (require(terra)) {
-#'   polygon <- vect(polygon_path)
+#'   polygon <- terra::vect(polygon_path)
 #'
 #'   head(atl08_seg_att_dt)
 #'   # Clipping ATL08 Terrain and Canopy Attributes by Geometry

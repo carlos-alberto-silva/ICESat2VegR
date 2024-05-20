@@ -8,6 +8,7 @@ setRefClass("ee.Classifier")
 #' `ee` API functions or using the package's [`build_ee_forest()`] function.
 #' @param data [`data.frame-class`] or `ee.FeatureCollection` with the
 #' features input to be used for the prediction.
+#' @param ... Unused parameter, just to match the generic signature.
 #'
 #' @return A [`numeric-class`] with the predicted values
 #'

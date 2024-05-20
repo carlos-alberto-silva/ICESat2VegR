@@ -6,7 +6,6 @@
 #' @param atl03_atl08_seg_dt  An S4 object of class [`ICESat2VegR::icesat2.atl03_atl08_seg_dt-class`] containing ATL03 and ATL08 data
 #' (output of [ATL03_ATL08_photons_attributes_dt_join()] function).
 #' @param list_expr The function to be applied for computing the defined statistics
-#' @param seg_length Segment length. Default is 30 m
 #' @param ph_class Character vector indicating photons to process based
 #' on the classification (1=ground, 2=canopy, 3=top canopy),
 #' Default is c(2,3)

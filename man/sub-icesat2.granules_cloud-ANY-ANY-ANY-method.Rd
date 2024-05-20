@@ -11,17 +11,15 @@
 
 \item{i}{Subset index.}
 
+\item{j}{Unused, just to match the generic signature.}
+
 \item{...}{Additional arguments (not used).}
+
+\item{drop}{Unused, just to match the generic signature.}
 }
 \value{
 An object of class \code{icesat2.granule_cloud}.
 }
 \description{
 This method subsets the \code{granules} slot of an \code{icesat2.granules_cloud} object.
-}
-\examples{
-\dontrun{
-granule <- new("icesat2.granules_cloud")
-subset_granule <- granule[1]
-}
 }

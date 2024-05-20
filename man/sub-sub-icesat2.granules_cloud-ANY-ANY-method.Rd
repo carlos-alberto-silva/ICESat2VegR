@@ -11,6 +11,8 @@
 
 \item{i}{Extraction index.}
 
+\item{j}{Unused, just to match the generic signature.}
+
 \item{...}{Additional arguments (not used).}
 }
 \value{
