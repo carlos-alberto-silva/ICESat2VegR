@@ -37,7 +37,7 @@ par(oma = c(0, 0, 0, 0))
 par(mar = c(2, 3, 1, 1))
 layout(matrix(c(1, 2), ncol = 1))
 plot(
-  atl03_atl08_dt[rgt == 233],
+  atl03_atl08_dt[orbit_number == 3208],
   y = "h_ph",
   colors = c("gray", "#bd8421", "forestgreen", "green"),
   xlim = c(25500, 28500),
@@ -49,7 +49,7 @@ plot(
 par(mar = c(3, 3, 1, 1))
 
 plot(
-  atl03_atl08_dt[rgt == 233],
+  atl03_atl08_dt[orbit_number == 3208],
   y = "ph_h",
   colors = c("gray", "#bd8421", "forestgreen", "green"),
   xlim = c(25500, 28500),
@@ -72,7 +72,7 @@ par(oma = c(0, 0, 0, 0))
 par(mar = c(2, 3, 1, 1))
 layout(matrix(c(1, 2), ncol = 1))
 plot(
-  atl03_atl08_dt[rgt == 233],
+  atl03_atl08_dt[orbit_number == 3208],
   y = "h_ph",
   colors = c("gray", "#bd8421", "forestgreen", "green"),
   xlim = c(25500, 28500),
@@ -84,7 +84,7 @@ plot(
 par(mar = c(3, 3, 1, 1))
 
 plot(
-  atl03_atl08_dt[rgt == 233],
+  atl03_atl08_dt[orbit_number == 3208],
   y = "ph_h",
   colors = c("gray", "#bd8421", "forestgreen", "green"),
   xlim = c(25500, 28500),

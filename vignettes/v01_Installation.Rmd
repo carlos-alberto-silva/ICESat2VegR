@@ -8,11 +8,6 @@ vignette: >
 ---
 
 ```{r opts, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-
 if (!exists("vignettes_path")) {
   vignettes_path <- "."
 }

@@ -35,7 +35,7 @@ if (!exists("ATL03_read")) {
 
 ```{r, echo = FALSE, eval = !exists("first_setup_run")}
 knitr::asis_output("## Opening the example dataset")
-knitr::asis_output("")
+knitr::asis_output("\n\n")
 knitr::asis_output("As we will be working with multiple h5 granules, we will be using `lapply` for reading
 and extracting information from the granules.")
 ```
@@ -92,9 +92,7 @@ if (!exists("atl03_h5")) {
   atl08_seg_dt <- atl08_seg_dt[h_canopy < 100 & h_te_mean < 20000]
 
   atl03_atl08_ls <- lapply(seq_along(atl03_h5), function(ii) {
-    dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5[[ii]], atl08_h5[[ii]])
-    dt[["rgt"]] <- atl03_h5[[ii]][["orbit_info/rgt"]][]
-    dt
+    ATL03_ATL08_photons_attributes_dt_join(atl03_h5[[ii]], atl08_h5[[ii]])
   })
   atl03_atl08_dt <- rbindlist2(atl03_atl08_ls)
 }

@@ -217,7 +217,7 @@ bandNames <- names(hls)
 x <- extracted_dt[, .SD, .SDcols = bandNames]
 y <- extracted_dt[["h_canopy"]]
 
-rf_model <- model_fit(x, y, ntree = 500, mtry = 1)
+rf_model <- randomForest::randomForest(x, y, ntree = 500, mtry = 1)
 print(rf_model)
 ```
 
