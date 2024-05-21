@@ -74,7 +74,7 @@
 #'
 #' close(atl03_h5)
 #' close(atl08_h5)
-#' @import data.table lazyeval
+#' @import data.table
 #' @export
 ATL08_seg_attributes_dt_polyStat <- function(atl08_seg_att_dt, func, poly_id = NULL) {
   if (!inherits(atl08_seg_att_dt, "icesat2.atl08_dt")) {

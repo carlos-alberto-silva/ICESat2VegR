@@ -10,27 +10,21 @@ License: GPL (>= 3)
 Imports:
   curl,
   data.table,
-  e1071,
   fs,
-  gdalBindings,
   getPass,
   jsonlite,
   hdf5r,
   httr2,
-  lazyeval,
-  leaflet,
   magrittr,
   mathjaxr,
   methods,
-  nnet,
   Rcpp,
   Rdpack,
   R6,
   randomForest,
   reticulate,
   terra,
-  xml2,
-  yaImpute
+  xml2
 Encoding: UTF-8
 LazyData: true
 NeedsCompilation: yes
@@ -112,21 +106,26 @@ Collate:
 Suggests: 
     chromote,
     devtools,
+    e1071,
+    gdalBindings,
     ggplot2,
     grid,
     gridExtra,
     htmlwidgets,
     knitr,
+    leaflet,
     leafsync,
     lidR,
     mapview,
+    nnet,
     png,
     rmarkdown,
     rstudioapi,
     signal,
     testthat (>= 3.0.0),
     webshot,
-    viridis
+    viridis,
+    yaImpute
 Config/testthat/edition: 3
 LinkingTo: 
     Rcpp

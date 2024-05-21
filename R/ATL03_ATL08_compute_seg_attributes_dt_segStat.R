@@ -72,7 +72,7 @@
 #' close(atl03_h5)
 #' close(atl08_h5)
 #' @include lazy_applier.R
-#' @import data.table lazyeval
+#' @import data.table
 #' @export
 ATL03_ATL08_compute_seg_attributes_dt_segStat <- function(
     atl03_atl08_seg_dt,

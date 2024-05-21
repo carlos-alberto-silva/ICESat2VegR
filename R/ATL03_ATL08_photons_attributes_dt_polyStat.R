@@ -73,7 +73,7 @@
 #'
 #' close(atl03_h5)
 #' close(atl08_h5)
-#' @import data.table lazyeval
+#' @import data.table
 #' @export
 ATL03_ATL08_photons_attributes_dt_polyStat <- function(atl03_atl08_dt, func, poly_id = NULL) {
   if (!inherits(atl03_atl08_dt, "icesat2.atl03atl08_dt")) {

@@ -34,27 +34,31 @@
 #'   ee_collection$filterDate("2021-04-01", "2021-07-31")$map(hlsMask)
 #' )$filter("CLOUD_COVERAGE < 30")$median()
 #'
-#' library(leaflet)
-#' leaflet() %>%
-#'   addEEImage(
-#'     image,
-#'     bands = list(3, 2, 1),
-#'     min_value = 0.001,
-#'     max_value = 0.2
-#'   ) %>%
-#'   setView(lng = -82.2345, lat = 29.6552, zoom = 10)
+#' if (require("leaflet")) {
+#'   leaflet() %>%
+#'     addEEImage(
+#'       image,
+#'       bands = list(3, 2, 1),
+#'       min_value = 0.001,
+#'       max_value = 0.2
+#'     ) %>%
+#'     setView(lng = -82.2345, lat = 29.6552, zoom = 10)
+#'   }
 #' }
 #' @include gee-base.R
 #' @export
 setGeneric(
   "addEEImage",
   def = function(map, x, bands, min_value = 0, max_value = 1, palette = c("red", "green"), ...) {
-    standardGeneric("addEEImage")
+    if (requireNamespace("leaflet", quietly = TRUE)) {
+      standardGeneric("addEEImage")
+    } else {
+      stop("The 'leaflet' package is required to use this function.")
+    }
   }
 )
 
 defaultPallete <- c("#d55e00", "#cc79a7", "#f0e442", "#0072b2", "#009e73")
-
 setRefClass("leaflet")
 
 #' Adds Earth Engine Image class to leaflet map

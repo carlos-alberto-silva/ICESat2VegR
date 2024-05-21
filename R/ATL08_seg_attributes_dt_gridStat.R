@@ -57,7 +57,7 @@
 #' plot(h_canopy_metrics)
 #'
 #' close(atl08_h5)
-#' @import data.table lazyeval
+#' @import data.table
 #' @export
 ATL08_seg_attributes_dt_gridStat <- function(atl08_seg_att_dt, func, res = 0.5) {
   if (!inherits(atl08_seg_att_dt, "icesat2.atl08_dt")) {

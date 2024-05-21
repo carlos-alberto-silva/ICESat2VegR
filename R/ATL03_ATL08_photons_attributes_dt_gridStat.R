@@ -69,7 +69,7 @@
 #'
 #' close(atl03_h5)
 #' close(atl08_h5)
-#' @import data.table lazyeval
+#' @import data.table
 #' @export
 ATL03_ATL08_photons_attributes_dt_gridStat <- function(
     atl03_atl08_dt,

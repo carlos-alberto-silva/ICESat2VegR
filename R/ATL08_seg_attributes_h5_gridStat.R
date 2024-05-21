@@ -7,17 +7,17 @@ def_co <- c(
 )
 
 default_finalizer <- list(
-  sd = ~ sqrt(M2 / (n - 1)),
-  skew = ~ sqrt((n * (n - 1))) * ((sqrt(n) * M3) / (M2^1.5)) / (n - 2),
-  kur = ~ ((n - 1) / ((n - 2) * (n - 3))) * ((n + 1) * ((n * M4) / (M2^2) - 3.0) + 6)
+  sd = ~ sqrt(M2 / (n - 1))
+  # skew = ~ sqrt((n * (n - 1))) * ((sqrt(n) * M3) / (M2^1.5)) / (n - 2),
+  # kur = ~ ((n - 1) / ((n - 2) * (n - 3))) * ((n + 1) * ((n * M4) / (M2^2) - 3.0) + 6)
 )
 
 default_agg_function <- ~ data.table::data.table(
   n = length(x),
-  M1 = mean_red(x, na.rm = TRUE),
-  M2 = e1071::moment(x, order = 2, center = TRUE, na.rm = TRUE) * length(x),
-  M3 = e1071::moment(x, order = 3, center = TRUE, na.rm = TRUE) * length(x),
-  M4 = e1071::moment(x, order = 4, center = TRUE, na.rm = TRUE) * length(x),
+  M1 = mean(x, na.rm = TRUE),
+  M2 = var(x) * (length(x) - 1),
+  # M3 = e1071::moment(x, order = 3, center = TRUE, na.rm = TRUE) * length(x),
+  # M4 = e1071::moment(x, order = 4, center = TRUE, na.rm = TRUE) * length(x),
   min = min(x, na.rm = TRUE),
   max = max(x, na.rm = TRUE)
 )
@@ -27,8 +27,8 @@ default_agg_join <- function(x1, x2) {
   x1$n[is.na(x1$n)] <- 0
   x1$M1[is.na(x1$M1)] <- 0
   x1$M2[is.na(x1$M2)] <- 0
-  x1$M3[is.na(x1$M3)] <- 0
-  x1$M4[is.na(x1$M4)] <- 0
+  # x1$M3[is.na(x1$M3)] <- 0
+  # x1$M4[is.na(x1$M4)] <- 0
   x1$max[is.na(x1$max)] <- -Inf
   x1$min[is.na(x1$min)] <- Inf
 
@@ -44,14 +44,14 @@ default_agg_join <- function(x1, x2) {
   combined$M2 <- x1$M2 + x2$M2 +
     delta2 * x1$n * x2$n / combined$n
 
-  combined$M3 <- x1$M3 + x2$M3 +
-    delta3 * x1$n * x2$n * (x1$n - x2$n) / (combined$n * combined$n)
-  combined$M3 <- combined$M3 + 3.0 * delta * (x1$n * x2$M2 - x2$n * x1$M2) / combined$n
+  # combined$M3 <- x1$M3 + x2$M3 +
+  #   delta3 * x1$n * x2$n * (x1$n - x2$n) / (combined$n * combined$n)
+  # combined$M3 <- combined$M3 + 3.0 * delta * (x1$n * x2$M2 - x2$n * x1$M2) / combined$n
 
-  combined$M4 <- x1$M4 + x2$M4 + delta4 * x1$n * x2$n * (x1$n * x1$n - x1$n * x2$n + x2$n * x2$n) /
-    (combined$n * combined$n * combined$n)
-  combined$M4 <- combined$M4 + 6.0 * delta2 * (x1$n * x1$n * x2$M2 + x2$n * x2$n * x1$M2) / (combined$n * combined$n) +
-    4.0 * delta * (x1$n * x2$M3 - x2$n * x1$M3) / combined$n
+  # combined$M4 <- x1$M4 + x2$M4 + delta4 * x1$n * x2$n * (x1$n * x1$n - x1$n * x2$n + x2$n * x2$n) /
+  #   (combined$n * combined$n * combined$n)
+  # combined$M4 <- combined$M4 + 6.0 * delta2 * (x1$n * x1$n * x2$M2 + x2$n * x2$n * x1$M2) / (combined$n * combined$n) +
+  #   4.0 * delta * (x1$n * x2$M3 - x2$n * x1$M3) / combined$n
 
   combined$min <- pmin(x1$min, x2$min, na.rm = F)
   combined$max <- pmax(x1$max, x2$max, na.rm = F)
@@ -249,7 +249,7 @@ default_agg_join <- function(x1, x2) {
 #'
 #' close(atl08_h5)
 #'
-#' @import e1071 data.table
+#' @import data.table
 #' @export
 ATL08_seg_attributes_h5_gridStat <- function(
     atl08_dir,
@@ -331,30 +331,31 @@ ATL08_seg_attributes_h5_gridStat <- function(
 
   metricCounter <- 0
   nMetrics <- length(metrics)
-  x <- 1
-  func <- lazyeval::f_interp(agg_function)
-  call <- lazyeval::as_call(func)
-  stats <- eval(call)
+
+  call <- parse(text = as.character(eval.parent(substitute(agg_function)))[2])
+  tempenv <- new.env()
+  tempenv$x <- c(1,1)
+  stats <- eval(call, envir = tempenv)
   classes <- lapply(stats, class)
-  stats <- names(stats)
+  stats_names <- names(stats)
   # metric = metrics[1]
   for (metric in metrics) {
     metricCounter <- metricCounter + 1
     message(sprintf("Metric %s (%d/%d)", metric, metricCounter, nMetrics), appendLF = TRUE)
     cols <- c(cols.coord, metric)
 
-    rast_paths <- sprintf("%s_%s_%s.tif", out_root, metric, stats)
+    rast_paths <- sprintf("%s_%s_%s.tif", out_root, metric, stats_names)
     rasts <- list()
 
     # stat_ind = 1
-    for (stat_ind in seq_along(stats)) {
+    for (stat_ind in seq_along(stats_names)) {
       datatype <- gdalBindings::GDALDataType$GDT_Float64
       nodata <- -9999.0
       if (classes[[stat_ind]] == "integer") {
         datatype <- gdalBindings::GDALDataType$GDT_Int32
         nodata <- 0
       }
-      rasts[[stats[[stat_ind]]]] <- gdalBindings::createDataset(
+      rasts[[stats_names[[stat_ind]]]] <- gdalBindings::createDataset(
         raster_path = rast_paths[[stat_ind]],
         nbands = 1,
         datatype = datatype,
@@ -418,7 +419,7 @@ ATL08_seg_attributes_h5_gridStat <- function(
       aggs[, block_inds := 1 + block_xind + block_yind * block_x_size]
 
       # Get calculated stats aggregated by each block
-      blocks <- aggs[, list(vals = list(.SD)), by = list(x_block, y_block), .SDcols = c(stats, "block_inds")]
+      blocks <- aggs[, list(vals = list(.SD)), by = list(x_block, y_block), .SDcols = c(stats_names, "block_inds")]
 
       thisEnv <- new.env()
       assign("ii", 0, thisEnv)
@@ -436,7 +437,7 @@ ATL08_seg_attributes_h5_gridStat <- function(
         )
 
         agg1[row$vals$block_inds] <- agg_join(agg1[row$vals$block_inds], row$vals[, 1:(ncol(row$vals) - 1)])
-        lapply(stats, function(x) bands[[x]][[row$x_block, row$y_block]] <- agg1[[x]])
+        lapply(stats_names, function(x) bands[[x]][[row$x_block, row$y_block]] <- agg1[[x]])
       }))
       message()
       rm(list = ls(envir = thisEnv), envir = thisEnv)

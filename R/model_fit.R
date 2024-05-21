@@ -46,7 +46,10 @@ randomForestRegression <- function(
 #'
 #' @param x input data.frame of predictors (independ variables) the data from
 #' @param y input vector of observed data
-#' @param method the model to use the data from
+#' @param method the model to use the data from. The options are "lm" for linear
+#' regression, "rf" for random forest, "nnt" for neural network, "svm" for support
+#' vector machine and knn.* for k-nearest neighbors (see [`yaImpute::yai()`] for * methods).
+#' The default is "lm".
 #' @param LOOCV [`logical-class`], default FALSE. Flag do determine if we should
 #' compute leave-one-out cross validation.
 #' @param ... Other parameters to pass to the model
@@ -61,16 +64,22 @@ randomForestRegression <- function(
 model_fit <- function(x, y, method = "lm", LOOCV = FALSE, ..., size = 40, linout = TRUE) {
   oldpar <- graphics::par(no.readonly = TRUE)
   if (LOOCV) {
-    on.exit(par(oldpar))
+    on.exit(graphics::par(oldpar))
     graphics::par(mfrow = c(1, 2))
   }
 
   nnt_adapter <- function(y, x, ...) {
+    if (requireNamespace("nnet", quietly = TRUE) == FALSE) {
+      stop("Package nnet is not available for using nnt")
+    }
     model <- nnet::nnet(y ~ ., data = x, ..., size = size, linout = linout)
     return(model)
   }
 
   yai_adapter <- function(y, x, ...) {
+    if (requireNamespace("yaImpute", quietly = TRUE) == FALSE) {
+      stop("Package yaImpute is not available for using yai")
+    }
     yaImpute::yai(x = x, y = y, method = gsub("knn\\.", "", method), ...)
   }
 
@@ -81,9 +90,15 @@ model_fit <- function(x, y, method = "lm", LOOCV = FALSE, ..., size = 40, linout
 
   model_funs <- list(
     lm = lm_adapter,
-    rf = randomForest::randomForest,
+    rf = tryCatch(
+      randomForest::randomForest,
+      error = function(x) stop("Package randomForest is not available")
+    ),
     nnt = nnt_adapter,
-    svm = e1071::svm
+    svm = tryCatch(
+      e1071::svm,
+      error = function(x) stop("Package e1071 is not available for using svm")
+    )
   )
 
   model_fun <- yai_adapter
@@ -99,8 +114,8 @@ model_fit <- function(x, y, method = "lm", LOOCV = FALSE, ..., size = 40, linout
   pred_model <- if ("y" %in% names(pred_model)) pred_model[["y"]] else pred_model
   y_names <- if (is.null(colnames(y))) "" else colnames(y)
   if (length(dim(y)) == 2) {
-    on.exit(par(oldpar))
-    par(mfrow = c(dim(y)[2], par()$mfrow[2]))
+    on.exit(graphics::par(oldpar))
+    graphics::par(mfrow = c(dim(y)[2], graphics::par()$mfrow[2]))
   }
   for (yy in y_names) {
     y_local <- if (yy == "") y else y[[yy]]
@@ -116,7 +131,7 @@ model_fit <- function(x, y, method = "lm", LOOCV = FALSE, ..., size = 40, linout
       pb <- utils::txtProgressBar(min = 0, max = nrow(x), style = 3)
       predloocv <- NULL
       for (i in 1:nrow(x)) {
-        setTxtProgressBar(pb, i)
+        utils::setTxtProgressBar(pb, i)
         model_i <- model_fun(y = y_local[-i], x = x[-i, ], ...)
 
         pred_i <- predict(model_i, x[i, ])
@@ -146,6 +161,6 @@ model_fit <- function(x, y, method = "lm", LOOCV = FALSE, ..., size = 40, linout
   if (length(dim(y)) == 1) {
     return(results[[1]])
   }
-  
+
   return(results)
 }
