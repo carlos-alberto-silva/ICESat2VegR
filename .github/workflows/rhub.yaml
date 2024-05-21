@@ -56,7 +56,7 @@ jobs:
         with:
           token: ${{ secrets.RHUB_TOKEN }}
           job-config: ${{ matrix.config.job-config }}
-      - name: Add r-universe as a package repository
+      - name: Add r-universe as default package repository
         run: |
           echo "options(repos = c('https://caiohamamura.r-universe.dev', 'https://cloud.r-project.org'))" > ~/.Rprofile
       - uses: r-hub/actions/setup-deps@v1
@@ -88,9 +88,9 @@ jobs:
         with:
           token: ${{ secrets.RHUB_TOKEN }}
           job-config: ${{ matrix.config.job-config }}
-      - name: Install gdalBindings
+      - name: Add r-universe as default package repository
         run: |
-          Rscript -e "install.packages('gdalBindings', repos = c('https://caiohamamura.r-universe.dev', 'https://cloud.r-project.org'))"
+          echo "options(repos = c('https://caiohamamura.r-universe.dev', 'https://cloud.r-project.org'))" > ~/.Rprofile
       - uses: r-hub/actions/setup-deps@v1
         with:
           job-config: ${{ matrix.config.job-config }}
