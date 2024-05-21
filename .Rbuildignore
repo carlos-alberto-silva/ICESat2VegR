@@ -9,3 +9,5 @@
 .*\.ipynb_checkpoints$
 ^.lintr$
 ^src/COPYRIGHT$
+^doc$
+^Meta$
