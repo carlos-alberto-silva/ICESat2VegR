@@ -249,7 +249,7 @@ default_agg_join <- function(x1, x2) {
 #'
 #' close(atl08_h5)
 #'
-#' @import e1071 data.table gdalBindings
+#' @import e1071 data.table
 #' @export
 ATL08_seg_attributes_h5_gridStat <- function(
     atl08_dir,
@@ -292,6 +292,9 @@ ATL08_seg_attributes_h5_gridStat <- function(
     agg_function = default_agg_function,
     agg_join = default_agg_join,
     finalizer = default_finalizer) {
+
+      stopifnot("gdalBindings package is not installed. Please install it to use this function." = requireNamespace("gdalBindings", quietly = TRUE))
+
   block_inds <-
     block_xind <-
     block_yind <-
