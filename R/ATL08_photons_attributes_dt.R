@@ -100,6 +100,7 @@ ATL08_photons_attributes_dt <- function(
           m[, eval(col) := atl08_h5v2_i[[metric_address]][]]
         }
         m$beam <- i
+        m$strong_beam <- i %in% atl08_h5$strong_beams
       }
 
       photon.dt[[""]] <- m

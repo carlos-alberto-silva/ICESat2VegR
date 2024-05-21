@@ -95,8 +95,6 @@ ATL08.var.map[["night_flag"]] <- "/land_segments/night_flag"
 #' @param atl08_h5 A ICESat-2 ATL08 object (output of [ATL08_read()] function).
 #' An S4 object of class [`ICESat2VegR::icesat2.atl08_dt-class`].
 #' @param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
-#' @param strong_beam_filter Logical. If true will only get strong beams, if FALSE will only
-#' retrieve weak beams, if NULL or default won't filter the beams.
 #' @param attributes A character vector containing the list of terrain and canopy attributes to be extracted.
 #' Default is attribute = c("h_canopy","canopy_h_metrics","canopy_openness","h_te_mean","h_te_median","terrain_slope")
 #' @return Returns an S4 object of class [`ICESat2VegR::icesat2.atl08_dt-class`]
@@ -130,7 +128,7 @@ ATL08.var.map[["night_flag"]] <- "/land_segments/night_flag"
 #' \item \emph{"h_max_canopy"}
 #' \item \emph{"segment_cover"}
 #' }
-#' 
+#'
 #' ATL08 terrain attributes:
 #' \itemize{
 #' \item \emph{"h_te_best_fit"}
@@ -170,7 +168,6 @@ ATL08.var.map[["night_flag"]] <- "/land_segments/night_flag"
 #' @export
 ATL08_seg_attributes_dt <- function(atl08_h5,
                                     beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
-                                    strong_beam_filter = NULL,
                                     attributes = c(
                                       "delta_time",
                                       "h_canopy",
@@ -189,13 +186,6 @@ ATL08_seg_attributes_dt <- function(atl08_h5,
 
   check_beams <- groups_id %in% beam
   beam <- groups_id[check_beams]
-  if (!is.null(strong_beam_filter)) {
-    if (strong_beam_filter == TRUE) {
-      beam <- intersect(beam, atl08_h5$strong_beams)
-    } else if (strong_beam_filter == FALSE) {
-      beam <- intersect(beam, atl08_h5$weak_beams)
-    }
-  }
 
   attribute.dt <- data.table::data.table()
 
@@ -215,7 +205,12 @@ ATL08_seg_attributes_dt <- function(atl08_h5,
       lat_i <- atl08_h5_beam[["land_segments/latitude"]][]
       lon_i <- atl08_h5_beam[["land_segments/longitude"]][]
 
-      m <- data.table::data.table(latitude = lat_i, longitude = lon_i, beam = i)
+      m <- data.table::data.table(
+        latitude = lat_i,
+        longitude = lon_i,
+        beam = i,
+        strong_beam = i %in% atl08_h5$strong_beams
+      )
 
       for (col in attributes) {
         # print(col)

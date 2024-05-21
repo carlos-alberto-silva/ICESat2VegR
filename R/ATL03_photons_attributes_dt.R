@@ -103,6 +103,8 @@ ATL03_photons_attributes_dt <- function(atl03_h5,
 
 
     dataTableATL03Photons <- data.table::data.table(
+      beam = i,
+      strong_beam = i %in% atl03_h5$strong_beams,
       lon_ph = atl03_h5[[paste0(i, "/heights/lon_ph")]][],
       lat_ph = atl03_h5[[paste0(i, "/heights/lat_ph")]][],
       h_ph = atl03_h5[[paste0(i, "/heights/h_ph")]][],

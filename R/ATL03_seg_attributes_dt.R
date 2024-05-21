@@ -207,7 +207,7 @@ ATL03_seg_attributes_dt <- function(atl03_h5,
       if (attr == "h_ph") {
         ref_idx <- beam_group[["geolocation/reference_photon_index"]][] # Get reference photon index
         ref_idx_mask <- ref_idx > 0
-        idx <- ref_idx[ref_idx_mask] 
+        idx <- ref_idx[ref_idx_mask]
         idx_mask <- seq_along(ref_idx_mask)[ref_idx_mask]
         ph_index_beg <- beam_group[["geolocation/ph_index_beg"]][ref_idx_mask] # Get photon index beginning
         if (nrow(dt) > 1) {
@@ -229,7 +229,7 @@ ATL03_seg_attributes_dt <- function(atl03_h5,
   }
 
   seg.dt <- data.table::rbindlist(seg.dt, fill = TRUE)
-  seg.dt[, strong_beam := ifelse(beam %in% atl03_h5$strong_beams, TRUE, FALSE)]
+  seg.dt[["strong_beam"]] <- ifelse(seg.dt$beam %in% atl03_h5$strong_beams, TRUE, FALSE)
   seg.dt <- na.omit(seg.dt)
   prepend_class(seg.dt, "icesat2.atl03_seg_dt")
 

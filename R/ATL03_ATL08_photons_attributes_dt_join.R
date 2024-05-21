@@ -6,33 +6,42 @@
 #' An S4 object of class [`ICESat2VegR::icesat2.atl03_dt-class`].
 #' @param atl08_h5 A ICESat-2 ATL08 object (output of [ATL08_read()] function).
 #' An S4 object of class [`ICESat2VegR::icesat2.atl08_dt-class`].
-#' @param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
-#' @param strong_beam_filter Logical. If true will only get strong beams, if FALSE will only
-#' retrieve weak beams, if NULL or default won't filter the beams.
+#' @param beam Character vector indicating beams to process
+#' (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
 #'
 #' @return Returns an S4 object of class [`ICESat2VegR::icesat2.atl03atl08_dt-class`]
 #' containing the ATL08 computed photons attributes.
 #'
 #' @details These are the photons attributes extracted by default:
-#' \itemize{
-#' \item \emph{lon_ph} Longitude of each received photon. Computed from the ECEF Cartesian coordinates of the bounce point.
-#' \item \emph{lat_ph} Latitude of each received photon. Computed from the ECEF Cartesian coordinates of the bounce point.
-#' \item \emph{lat_ph} Latitude of each received photon. Computed from the ECEF Cartesian coordinates of the bounce point.
-#' Height of each received photon, relative to the WGS-84 ellipsoid including the geophysical corrections noted in section 6.0. Please note that
-#' neither the geoid, ocean tide nor the dynamic atmospheric corrections (DAC) are applied to the ellipsoidal heights.
-#' \item \emph{quality_ph} Indicates the quality of the associated photon. 0=nominal, 1=possible_afterpulse, 2=possible_impulse_response_
-#' effect, 3=possible_tep. Use this flag in conjunction with signal_conf_ph to identify those photons that are likely noise or likely signal
-#' \item \emph{night_flag}  Flag indicating the data were acquired in night conditions: 0=day, 1=night. Night flag is set when solar elevation is below 0.0 degrees.
-#' \item \emph{ph_segment_id}  The elevation of the sun position vector from the reference photon bounce point position in the local ENU frame.
-#' The angle is measured from the East-North plane and is positive Up. ATL03g provides this value in radians; it is converted to degrees for ATL03 output.
-#' \item \emph{ph_segment_id} Georeferenced	bin	number (20-m) associated	with	each photon
-#' \item \emph{classed_pc_indx} Indices of photons	tracking back	to ATL03	that	surface finding	software	identified and	used	within	the
-#' creation of the	data products.
-#' \item \emph{classed_pc_flag} The L2B algorithm is run if this flag is set to 1 indicating data have sufficient waveform fidelity for L2B to run
-#' \item \emph{ph_h} Height of photon above interpolated ground surface
-#' #'\item \emph{d_flag} Flag indicating	whether DRAGANN	labeled	the photon as noise or signal
-#' \item \emph{delta_time} Mid-segment	GPS	time	in seconds past	an epoch. The epoch is provided	in the metadata	at the file	level
-#' }
+#' - `ph_segment_id`: Georeferenced segment id (20-m) associated with each photon.
+#' - `lon_ph`: Longitude of each received photon. Computed from the ECEF Cartesian coordinates
+#'             of the bounce point.
+#' - `lat_ph`: Latitude of each received photon. Computed from the ECEF Cartesian coordinates
+#'             of the bounce point.
+#' - `h_ph`: Height of each received photon, relative to the WGS-84 ellipsoid including the
+#'           geophysical corrections noted in section 6.0. Please note that neither the geoid,
+#'           ocean tide nor the dynamic atmospheric corrections (DAC) are applied to the
+#'           ellipsoidal heights.
+#' - `quality_ph`: Indicates the quality of the associated photon. 0=nominal,
+#'                 1=possible_afterpulse, 2=possible_impulse_response_effect, 3=possible_tep.
+#'                 Use this flag in conjunction with `signal_conf_ph` to identify those photons
+#'                 that are likely noise or likely signal.
+#' - `solar_elevation`: Elevation of the sun above the horizon at the photon bounce point.
+#' - `dist_ph_along`: Along-track distance of the photon from the beginning of the segment.
+#' - `dist_ph_across`: Across-track distance of the photon from the center of the segment.
+#' - `night_flag`: Flag indicating the data were acquired in night conditions: 0=day, 1=night.
+#'                 Night flag is set when solar elevation is below 0.0 degrees.
+#' - `classed_pc_indx`: Indices of photons tracking back to ATL03 that surface finding software
+#'                      identified and used within the creation of the data products.
+#' - `classed_pc_flag`: The L2B algorithm is run if this flag is set to 1 indicating data have
+#'                      sufficient waveform fidelity for L2B to run.
+#' - `ph_h`: Height of photon above interpolated ground surface.
+#' - `d_flag`: Flag indicating whether DRAGANN labeled the photon as noise or signal.
+#' - `delta_time`: Mid-segment GPS time in seconds past an epoch. The epoch is provided in
+#'                 the metadata at the file level.
+#' - `orbit_number`: Orbit number identifier to identify data from different orbits.
+#' - `beam`: Beam identifier.
+#' - `strong_beam`: Logical indicating if the beam is a strong beam.
 #'
 #' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
 #'
@@ -62,9 +71,9 @@
 #' close(atl03_h5)
 #' close(atl08_h5)
 #' @export
-ATL03_ATL08_photons_attributes_dt_join <- function(atl03_h5, atl08_h5,
-                                                   beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
-                                                   strong_beam_filter = NULL) {
+ATL03_ATL08_photons_attributes_dt_join <- function(
+    atl03_h5, atl08_h5,
+    beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")) {
   night_flag <-
     ph_segment_id <-
     classed_pc_indx <-
@@ -89,13 +98,6 @@ ATL03_ATL08_photons_attributes_dt_join <- function(atl03_h5, atl08_h5,
   beam_atl08 <- intersect(beam, atl08_h5$beams)
 
   beam <- intersect(beam_atl03, beam_atl08)
-  if (!is.null(strong_beam_filter)) {
-    if (strong_beam_filter == TRUE) {
-      beam <- intersect(beam, atl03_h5$strong_beams)
-    } else if (strong_beam_filter == FALSE) {
-      beam <- intersect(beam, atl03_h5$weak_beams)
-    }
-  }
 
   photon.dt <- list()
   pb <- utils::txtProgressBar(min = 0, max = length(beam), style = 3)
@@ -167,11 +169,14 @@ ATL03_ATL08_photons_attributes_dt_join <- function(atl03_h5, atl08_h5,
     dataTableATL08Photons <- dataTableATL08Photons[ph_segment_id %in% unique_segment_id]
     dataTableATL03Photons <- dataTableATL03Photons[ph_segment_id %in% unique_segment_id]
     dataTableATL03Photons[, classed_pc_indx := seq_len(.N), by = ph_segment_id]
-    dataTableATL03Photons[, beam := i]
-
+    
     data.table::setindex(dataTableATL03Photons, ph_segment_id, classed_pc_indx)
     data.table::setindex(dataTableATL08Photons, ph_segment_id, classed_pc_indx)
     ph_dt <- dataTableATL03Photons[dataTableATL08Photons, on = .(ph_segment_id, classed_pc_indx)]
+    ph_dt$orbit_number <- atl03_h5[["orbit_info/orbit_number"]][]
+    ph_dt[, beam := i]
+    ph_dt$strong_beam <- i %in% atl03_h5$strong_beams
+
 
     photon.dt[[""]] <- ph_dt
 
