@@ -1,6 +1,6 @@
 #' Adds Earth Engine Image class to leaflet
 #'
-#' @param map [`leaflet::leaflet`]. A leaflet class map.
+#' @param map `leaflet::leaflet`. A leaflet class map.
 #' @param x Earth Engine Image open with `ee$Image`.
 #' @param bands define the bands that should be used for visualization, default NULL,
 #' will use the available bands from the Image.
@@ -8,9 +8,9 @@
 #' @param max_value The maximum value to represent for visualization purposes
 #' @param palette A [`character-class`] describing a list of colors in either
 #' hexadecimal or valid CSS color names.
-#' @param ... Other parameters to be passed to [`leaflet::addTiles()`] function.
+#' @param ... Other parameters to be passed to `leaflet::addTiles()` function.
 #'
-#' @return A [`leaflet::leaflet`]/`htmlwidget` with the Earth Engine image added.
+#' @return A `leaflet::leaflet`/`htmlwidget` with the Earth Engine image added.
 #'
 #' @examples
 #' \dontrun{
@@ -65,15 +65,15 @@ setRefClass("leaflet")
 #'
 #' This method handles adding an Earth Engine Image to a leaflet map.
 #'
-#' @param map A [`leaflet::leaflet`] object. A leaflet map to which the Earth Engine image will be added.
+#' @param map A `leaflet::leaflet` object. A leaflet map to which the Earth Engine image will be added.
 #' @param x An Earth Engine Image object created with `ee$Image`.
 #' @param bands A vector defining the bands to be used for visualization. Default is NULL, which uses the available bands from the image.
 #' @param min_value The minimum value for visualization purposes. Default is 0.
 #' @param max_value The maximum value for visualization purposes. Default is 1.
 #' @param palette A character vector describing a list of colors in either hexadecimal or valid CSS color names. Default is a predefined palette.
-#' @param ... Other parameters to be passed to the [`leaflet::addTiles()`] function.
+#' @param ... Other parameters to be passed to the `leaflet::addTiles()` function.
 #'
-#' @return A [`leaflet::leaflet`]/`htmlwidget` object with the Earth Engine image added.
+#' @return A `leaflet::leaflet`/`htmlwidget` object with the Earth Engine image added.
 #' @export
 setMethod(
   "addEEImage",

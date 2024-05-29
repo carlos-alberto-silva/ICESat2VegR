@@ -15,7 +15,7 @@
 )
 }
 \arguments{
-\item{map}{A \code{\link[leaflet:leaflet]{leaflet::leaflet}} object. A leaflet map to which the Earth Engine image will be added.}
+\item{map}{A \code{leaflet::leaflet} object. A leaflet map to which the Earth Engine image will be added.}
 
 \item{x}{An Earth Engine Image object created with \code{ee$Image}.}
 
@@ -27,10 +27,10 @@
 
 \item{palette}{A character vector describing a list of colors in either hexadecimal or valid CSS color names. Default is a predefined palette.}
 
-\item{...}{Other parameters to be passed to the \code{\link[leaflet:map-layers]{leaflet::addTiles()}} function.}
+\item{...}{Other parameters to be passed to the \code{leaflet::addTiles()} function.}
 }
 \value{
-A \code{\link[leaflet:leaflet]{leaflet::leaflet}}/\code{htmlwidget} object with the Earth Engine image added.
+A \code{leaflet::leaflet}/\code{htmlwidget} object with the Earth Engine image added.
 }
 \description{
 This method handles adding an Earth Engine Image to a leaflet map.
