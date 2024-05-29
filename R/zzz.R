@@ -1,6 +1,6 @@
 #' The pointer to the `earthaccess` python reticulate module
 #' @useDynLib ICESat2VegR
-#' @import Rcpp Rdpack mathjaxr
+#' @import Rcpp Rdpack
 #' @importFrom Rdpack reprompt
 #' @export
 earthaccess <- NULL

@@ -62,8 +62,8 @@ This function will read multiple ATL08 H5 files and create a stack of raster lay
 This function will create seven different aggregate statistics
 (n, m1, m2, m3, m4, min, max). m1 to m4 are the central moments.
 One can calculate mean, standard deviation, skewness and kurtosis
-with the following formulas according to Terriberry (2007) and
-\insertCite{Joanes1998;textual}{ICESat2VegR}:
+with the following formulas according to Terriberry (2007)
+and \insertCite{Joanes1998;textual}{ICESat2VegR}:
 
 \deqn{ \bar{x} = m_1 }{mean = m1}
 
@@ -81,7 +81,7 @@ The \code{agg_function} is a formula which return a data.table with the
 aggregate function to perform over the data.
 The default is:
 
-\if{html}{\out{<div class="sourceCode {r, eval=FALSE}">}}\preformatted{~data.table(
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{~data.table(
     n = length(x),
     M1 = mean(x,na.rm = TRUE),
     M2 = e1071::moment(x, order = 2, center = TRUE, na.rm = TRUE) * length(x),
@@ -97,7 +97,7 @@ from the \code{agg_function}. Since the h5 files will be aggregated
 one by one, the statistics from the different h5 files should
 have a function to merge them. The default function is:
 
-\if{html}{\out{<div class="sourceCode {r, eval=FALSE}">}}\preformatted{function(x1, x2) \{
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{function(x1, x2) \{
     combined = data.table()
     x1$n[is.na(x1$n)] = 0
     x1$M1[is.na(x1$M1)] = 0
@@ -140,7 +140,7 @@ functions. The default \code{finalizer} will calculate the \code{sd},
 \code{skewness} and \code{kurtosis} based on the \code{M2}, \code{M3}, \code{M4} and \code{n}
 values. It is defined as:
 
-\if{html}{\out{<div class="sourceCode {r, eval=FALSE}">}}\preformatted{list(
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{list(
   sd = ~sqrt(M2/(n - 1)),
   skew = ~sqrt((n * (n - 1))) * ((sqrt(n) * M3) / (M2^1.5)) / (n - 2),
   kur = ~((n - 1) / ((n - 2) * (n - 3))) * ((n + 1) * ((n * M4) / (M2^2) - 3.0) + 6)
