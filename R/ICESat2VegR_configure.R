@@ -62,7 +62,7 @@ ICESat2VegR_configure <- function() {
     warning("Something went wrong, conda is still not installed properly!")
   }
 
-  if (!requireNamespace(ICESat2VegR, quietly = TRUE) || is.null(ee) || is.null(h5py) || is.null(earthaccess)) {
+  if (!requireNamespace("ICESat2VegR", quietly = TRUE) || is.null(ee) || is.null(h5py) || is.null(earthaccess)) {
     warning("The package could not be loaded properly please read the readme in")
     warning("https://github.com/carlos-alberto-silva/ICESat2VegR and file a new issue")
     warning("if the problem is not solved.")
