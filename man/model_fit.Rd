@@ -11,7 +11,10 @@ model_fit(x, y, method = "lm", LOOCV = FALSE, ..., size = 40, linout = TRUE)
 
 \item{y}{input vector of observed data}
 
-\item{method}{the model to use the data from}
+\item{method}{the model to use the data from. The options are "lm" for linear
+regression, "rf" for random forest, "nnt" for neural network, "svm" for support
+vector machine and knn.* for k-nearest neighbors (see \code{\link[yaImpute:yai]{yaImpute::yai()}} for * methods).
+The default is "lm".}
 
 \item{LOOCV}{\code{\linkS4class{logical}}, default FALSE. Flag do determine if we should
 compute leave-one-out cross validation.}

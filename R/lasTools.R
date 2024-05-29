@@ -1,6 +1,6 @@
 #' @include utmTools.R
 dt_to_las <- function(dt, output) {
-  stopifnot("lidR is not available" = requireNamespace(lidR, quietly = TRUE))
+  stopifnot("lidR is not available" = requireNamespace("lidR", quietly = TRUE))
   mask <- X <- Y <- NA
 
   names(dt) <- c("X", "Y", "Z")

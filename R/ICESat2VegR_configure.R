@@ -10,7 +10,7 @@ check_conda <- function() {
 tryRestart <- function(auto = TRUE) {
   resp <- readline("I will need to restart RSession, would you like to proceed? y/[n]")
   if (substr(tolower(resp), 1, 1) == "y") {
-    if (requireNamespace(rstudioapi, quietly = TRUE)) {
+    if (requireNamespace("rstudioapi", quietly = TRUE)) {
       try(rstudioapi::restartSession(), silent = TRUE)
     }
   }

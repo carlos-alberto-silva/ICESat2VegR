@@ -24,6 +24,6 @@ atl08_path <- system.file("extdata",
 )
 
 # Reading ICESat-2 ATL08 data (h5 file)
-ATL08 <- ATL08_read(atl08_path = atl08_path)
-close(ATL08)
+atl08 <- ATL08_read(atl08_path = atl08_path)
+close(atl08)
 }
