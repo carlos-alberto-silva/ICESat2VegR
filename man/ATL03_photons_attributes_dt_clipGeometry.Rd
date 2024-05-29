@@ -41,14 +41,19 @@ atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 atl03_photons_dt <- ATL03_photons_attributes_dt(atl03_h5 = atl03_h5)
 
 # Specifying the path to shapefile
-polygon_filepath <- system.file("extdata", "clip_geom.shp", package = "ICESat2VegR")
+polygon_filepath <-
+  system.file(
+    "extdata",
+    "clip_geom.shp",
+    package = "ICESat2VegR"
+  )
 
 # Reading shapefile as sf object
 sppoly <- terra::vect(polygon_filepath)
 
 # Clipping ATL03 photon attributes by Geometry
 atl03_photons_dt_clip <-
-  ATL03_photons_attributes_dt_clipGeometry(atl03_photons_dt, sppoly, split_by = "FID")
+  ATL03_photons_attributes_dt_clipGeometry(atl03_photons_dt, sppoly, split_by = "id")
 
 head(atl03_photons_dt_clip)
 

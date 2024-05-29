@@ -11,8 +11,8 @@ ATL03_ATL08_seg_cover_dt_compute(atl03_atl08_dt, reflectance_ratio = 1)
 The output of the \code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}}.}
 
 \item{reflectance_ratio}{Numeric. The reflectance ratio to use to compute the coverage metric.
-\mjseqn{\rho_v / \rho_g}, where \mjseqn{\rho_v} is the vegetation reflectance
-and \mjseqn{\rho_v} is the ground reflectance. Default is 1 (same reflectance).}
+\eqn{\rho_v / \rho_g}, where \eqn{\rho_v} is the vegetation reflectance
+and \eqn{\rho_v} is the ground reflectance. Default is 1 (same reflectance).}
 }
 \value{
 Returns an S4 object of class \code{\link[data.table:data.table-class]{data.table::data.table}} containing ICESat-2 ATL08 data.
@@ -23,7 +23,7 @@ Vegetation Along-Track Products (ATL08) as h5 file.
 }
 \details{
 Coverage is calculated with the formula
-\mjsdeqn{\frac{1}{1 + \frac{\rho_v N_g}{\rho_g N_v}}}
+\deqn{\frac{1}{1 + \frac{\rho_v N_g}{\rho_g N_v}}}
 }
 \examples{
 # ATL08 file path

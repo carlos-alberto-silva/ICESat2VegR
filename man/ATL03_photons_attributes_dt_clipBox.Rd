@@ -8,8 +8,8 @@ ATL03_photons_attributes_dt_clipBox(
   atl03_photons_dt,
   lower_left_lon,
   upper_right_lon,
-  upper_right_lat,
-  lower_left_lat
+  lower_left_lat,
+  upper_right_lat
 )
 }
 \arguments{
@@ -20,9 +20,9 @@ An S4 object of class \code{\linkS4class{icesat2.atl03_dt}}}
 
 \item{upper_right_lon}{Numeric. East longitude (x) coordinate of bounding rectangle, in decimal degrees.}
 
-\item{upper_right_lat}{Numeric. North latitude (y) coordinate of bounding rectangle, in decimal degrees.}
-
 \item{lower_left_lat}{Numeric. South latitude (y) coordinate of bounding rectangle, in decimal degrees.}
+
+\item{upper_right_lat}{Numeric. North latitude (y) coordinate of bounding rectangle, in decimal degrees.}
 }
 \value{
 Returns an S4 object of class \code{\linkS4class{icesat2.atl03_dt}}
@@ -45,18 +45,18 @@ atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 atl03_photons_dt <- ATL03_photons_attributes_dt(atl03_h5 = atl03_h5)
 
 # Bounding rectangle coordinates
-lower_left_lon <- -103.7604
-lower_left_lat <- 59.4672
-upper_right_lon <- -103.7600
-upper_right_lat <- 59.4680
+lower_left_lon <- -106.57
+lower_left_lat <- 41.53
+upper_right_lon <- -106.5698
+upper_right_lat <- 41.54
 
 # Clipping ATL08-derived canopy metrics by boundary box extent
 atl03_photons_dt_clip <- ATL03_photons_attributes_dt_clipBox(
   atl03_photons_dt,
   lower_left_lon,
   upper_right_lon,
-  upper_right_lat,
-  lower_left_lat
+  lower_left_lat,
+  upper_right_lat
 )
 
 head(atl03_photons_dt_clip)

@@ -67,8 +67,6 @@ default_agg_join <- function(x1, x2) {
 #' @param metrics CharacterVector. A vector of canopy attributes available from ATL08 product (e.g. "h_canopy")
 #' @param out_root Character. The root name for the raster output files, the pattern is {out_root}_{metric}_{count/m1/m2/m3/m4}.tif. This should include the full path for the file.
 #' @param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
-#' @param strong_beam_filter Logical. If true will only get strong beams, if FALSE will only
-#' retrieve weak beams, if NULL or default won't filter the beams.
 #' @param ul_lat Numeric. Upper left latitude for the bounding box
 #' @param ul_lon Numeric. Upper left longitude for the bounding box
 #' @param lr_lat Numeric. Lower right latitude for the bounding box
@@ -281,7 +279,6 @@ ATL08_seg_attributes_h5_gridStat <- function(
       "segment_cover"
     ),
     beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
-    strong_beam_filter = NULL,
     out_root,
     ul_lat,
     ul_lon,
@@ -385,7 +382,7 @@ ATL08_seg_attributes_h5_gridStat <- function(
       # read H5
       atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 
-      vals <- ATL08_seg_attributes_dt(atl08_h5, beam = beam, strong_beam_filter = strong_beam_filter, attributes = cols[-c(1:2)])
+      vals <- ATL08_seg_attributes_dt(atl08_h5, beam = beam, attributes = cols[-c(1:2)])
       vals <- ATL08_seg_attributes_dt_clipBox(vals, lower_left_lon = ul_lon, upper_right_lon = lr_lon, lower_left_lat = lr_lat, upper_right_lat = ul_lat)
       # Use only night photons
       # cols_night_flag = c(setdiff(cols, "night_flag"))
@@ -451,10 +448,10 @@ ATL08_seg_attributes_h5_gridStat <- function(
     invisible(lapply(names(finalizer), function(x) {
       rast_name <- sprintf("%s_%s_%s.tif", out_root, metric, x)
       message(sprintf("Writing raster: %s", rast_name))
-      rast <- createDataset(
+      rast <- gdalBindings::createDataset(
         raster_path = rast_name,
         nbands = 1,
-        datatype = GDALDataType$GDT_Float64,
+        datatype = gdalBindings::GDALDataType$GDT_Float64,
         projstring = projstring,
         lr_lat = lr_lat,
         ul_lat = ul_lat,
@@ -467,7 +464,7 @@ ATL08_seg_attributes_h5_gridStat <- function(
 
       band <- rast[[1]]
       formula <- finalizer[[x]]
-      formulaCalculate(formula, bands, band)
+      gdalBindings::formulaCalculate(formula, bands, band)
       rast$Close()
     }))
 

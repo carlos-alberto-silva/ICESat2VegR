@@ -16,7 +16,6 @@ Imports:
   hdf5r,
   httr2,
   magrittr,
-  mathjaxr,
   methods,
   Rcpp,
   Rdpack,
@@ -30,9 +29,7 @@ LazyData: true
 NeedsCompilation: yes
 RoxygenNote: 7.3.1
 Roxygen: list(markdown = TRUE)
-RdMacros: 
-    mathjaxr, 
-    Rdpack
+RdMacros: Rdpack
 Collate: 
     'ANNIndex.R'
     'lazy_applier.R'

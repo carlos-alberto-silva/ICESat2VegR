@@ -28,18 +28,18 @@
 #' atl03_photons_dt <- ATL03_photons_attributes_dt(atl03_h5 = atl03_h5)
 #'
 #' # Bounding rectangle coordinates
-#' lower_left_lon <- -103.7604
-#' lower_left_lat <- 59.4672
-#' upper_right_lon <- -103.7600
-#' upper_right_lat <- 59.4680
+#' lower_left_lon <- -106.57
+#' lower_left_lat <- 41.53
+#' upper_right_lon <- -106.5698
+#' upper_right_lat <- 41.54
 #'
 #' # Clipping ATL08-derived canopy metrics by boundary box extent
 #' atl03_photons_dt_clip <- ATL03_photons_attributes_dt_clipBox(
 #'   atl03_photons_dt,
 #'   lower_left_lon,
 #'   upper_right_lon,
-#'   upper_right_lat,
-#'   lower_left_lat
+#'   lower_left_lat,
+#'   upper_right_lat
 #' )
 #'
 #' head(atl03_photons_dt_clip)
@@ -50,8 +50,8 @@
 ATL03_photons_attributes_dt_clipBox <- function(atl03_photons_dt,
                                                 lower_left_lon,
                                                 upper_right_lon,
-                                                upper_right_lat,
-                                                lower_left_lat) {
+                                                lower_left_lat,
+                                                upper_right_lat) {
   if (!inherits(atl03_photons_dt, "icesat2.atl03_dt")) {
     stop("atl03_photons_dt needs to be an object of class 'icesat2.atl03_dt' ")
   }

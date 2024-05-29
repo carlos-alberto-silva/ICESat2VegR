@@ -6,12 +6,12 @@
 #' @param atl03_atl08_dt [`ICESat2VegR::icesat2.atl03atl08_dt-class`].
 #' The output of the [`ATL03_ATL08_photons_attributes_dt_join()`].
 #' @param reflectance_ratio Numeric. The reflectance ratio to use to compute the coverage metric.
-#' \mjseqn{\rho_v / \rho_g}, where \mjseqn{\rho_v} is the vegetation reflectance
-#' and \mjseqn{\rho_v} is the ground reflectance. Default is 1 (same reflectance).
+#' \eqn{\rho_v / \rho_g}, where \eqn{\rho_v} is the vegetation reflectance
+#' and \eqn{\rho_v} is the ground reflectance. Default is 1 (same reflectance).
 #'
 #' @details
 #' Coverage is calculated with the formula
-#' \mjsdeqn{\frac{1}{1 + \frac{\rho_v N_g}{\rho_g N_v}}}
+#' \deqn{\frac{1}{1 + \frac{\rho_v N_g}{\rho_g N_v}}}
 #'
 #' @return Returns an S4 object of class [`data.table::data.table-class`] containing ICESat-2 ATL08 data.
 #'

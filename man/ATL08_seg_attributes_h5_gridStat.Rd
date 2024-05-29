@@ -13,7 +13,6 @@ ATL08_seg_attributes_h5_gridStat(
     "subset_can_flag", "canopy_h_metrics", "n_toc_photons", "h_max_canopy_abs",
     "h_canopy_uncertainty", "canopy_openness", "h_max_canopy", "segment_cover"),
   beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
-  strong_beam_filter = NULL,
   out_root,
   ul_lat,
   ul_lon,
@@ -32,9 +31,6 @@ ATL08_seg_attributes_h5_gridStat(
 \item{metrics}{CharacterVector. A vector of canopy attributes available from ATL08 product (e.g. "h_canopy")}
 
 \item{beam}{Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")}
-
-\item{strong_beam_filter}{Logical. If true will only get strong beams, if FALSE will only
-retrieve weak beams, if NULL or default won't filter the beams.}
 
 \item{out_root}{Character. The root name for the raster output files, the pattern is {out_root}\emph{{metric}}{count/m1/m2/m3/m4}.tif. This should include the full path for the file.}
 
@@ -85,7 +81,7 @@ The \code{agg_function} is a formula which return a data.table with the
 aggregate function to perform over the data.
 The default is:
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{~data.table(
+\if{html}{\out{<div class="sourceCode {r, eval=FALSE}">}}\preformatted{~data.table(
     n = length(x),
     M1 = mean(x,na.rm = TRUE),
     M2 = e1071::moment(x, order = 2, center = TRUE, na.rm = TRUE) * length(x),
@@ -101,7 +97,7 @@ from the \code{agg_function}. Since the h5 files will be aggregated
 one by one, the statistics from the different h5 files should
 have a function to merge them. The default function is:
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{function(x1, x2) \{
+\if{html}{\out{<div class="sourceCode {r, eval=FALSE}">}}\preformatted{function(x1, x2) \{
     combined = data.table()
     x1$n[is.na(x1$n)] = 0
     x1$M1[is.na(x1$M1)] = 0
@@ -144,7 +140,7 @@ functions. The default \code{finalizer} will calculate the \code{sd},
 \code{skewness} and \code{kurtosis} based on the \code{M2}, \code{M3}, \code{M4} and \code{n}
 values. It is defined as:
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{list(
+\if{html}{\out{<div class="sourceCode {r, eval=FALSE}">}}\preformatted{list(
   sd = ~sqrt(M2/(n - 1)),
   skew = ~sqrt((n * (n - 1))) * ((sqrt(n) * M3) / (M2^1.5)) / (n - 2),
   kur = ~((n - 1) / ((n - 2) * (n - 3))) * ((n + 1) * ((n * M4) / (M2^2) - 3.0) + 6)

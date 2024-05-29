@@ -72,7 +72,6 @@
 #'
 #' head(h_canopy_metrics)
 #'
-#' close(atl03_h5)
 #' close(atl08_h5)
 #' @import data.table
 #' @export
