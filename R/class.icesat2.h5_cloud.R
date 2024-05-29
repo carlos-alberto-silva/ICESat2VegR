@@ -145,7 +145,7 @@ try with only one granule [i].")
   exists = function(path) {
     pymain <- reticulate::import_main()
     reticulate::py_run_string("def funcin(a, b): return a in b")
-    pymain$funcin("gt1r", h5)
+    pymain$funcin(path, self$h5)
   },
   #' @description Read an attribute from h5
   #'
