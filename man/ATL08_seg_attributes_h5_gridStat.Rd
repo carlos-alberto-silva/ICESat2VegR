@@ -62,8 +62,8 @@ This function will read multiple ATL08 H5 files and create a stack of raster lay
 This function will create seven different aggregate statistics
 (n, m1, m2, m3, m4, min, max). m1 to m4 are the central moments.
 One can calculate mean, standard deviation, skewness and kurtosis
-with the following formulas according to Terriberry (2007)
-and \insertCite{Joanes1998;textual}{ICESat2VegR}:
+with the following formulas according to Terriberry (2007) and
+\insertCite{Joanes1998;textual}{ICESat2VegR}:
 
 \deqn{ \bar{x} = m_1 }{mean = m1}
 

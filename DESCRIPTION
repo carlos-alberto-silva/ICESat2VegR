@@ -95,6 +95,8 @@ Collate:
     'model_fit.R'
     'model_tools.R'
     'predict.R'
+    'predict_h5.R'
+    'rasterize_h5.R'
     'rgt_extract.R'
     'sample.R'
     'stats_model.R'

@@ -35,7 +35,7 @@ ICESat2.h5ds_local <- R6::R6Class("ICESat2.h5ds_local", list(
     self$ds$get_fill_value()
   },
 
-  
+
   #' @description Get creation property list for the dataset (plist)
   get_creation_property_list = function() {
     old_plist <- self$ds$get_create_plist()
@@ -65,4 +65,9 @@ ICESat2.h5ds_local <- R6::R6Class("ICESat2.h5ds_local", list(
     }
   }
   do.call("[", c(list(x$ds), args))
+}
+
+#' @export
+"length.ICESat2.h5ds_local" <- function(x) {
+  exp(sum(log(x$dims)))
 }

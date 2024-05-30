@@ -76,3 +76,8 @@ ICESat2.h5ds_cloud <- R6::R6Class("ICESat2.h5ds_cloud", list(
   }
   do.call("[", c(list(x$ds), args))
 }
+
+#' @export
+"length.ICESat2.h5ds_cloud" <- function(x) {
+  exp(sum(log(x$dims)))
+}
