@@ -1,0 +1,79 @@
+```{r include = FALSE}
+child_setup <- file.path("../basic/00setup.Rmd")
+child_close <- file.path("../basic/01close.Rmd")
+```
+
+
+```{r child=child_setup}
+```
+
+
+```{r}
+# devtools::load_all()
+
+atl08_path <- system.file(
+  "extdata",
+  "atl08_clip.h5",
+  package = "ICESat2VegR"
+)
+
+atl08_h5 <- ATL08_read(atl08_path)
+atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5, attributes = c("h_canopy", "canopy_openness"))
+
+# For the sake of the example, we will train and test the model with the same data
+library(randomForest)
+model <- randomForest::randomForest(canopy_openness ~ h_canopy, atl08_seg_dt)
+out_h5 <- tempfile(fileext = ".h5")
+
+mode <- "w"
+if (file.exists(out_h5)) {
+  mode <- "r+"
+}
+h5_file <- hdf5r::H5File$new(out_h5, mode)
+
+if (!h5_file$exists("latitude")) {
+  h5_file[["latitude"]] <- atl08_seg_dt$latitude
+  h5_file[["longitude"]] <- atl08_seg_dt$longitude
+  h5_file[["prediction"]] <- predict(model, atl08_seg_dt)
+} else {
+  cur_size <- h5_file[["latitude"]]$dims
+  next_indices <- seq(cur_size + 1, length.out = length(atl08_seg_dt$latitude))
+  h5_file[["latitude"]][next_indices] <- latitude
+  h5_file[["longitude"]][next_indices] <- longitude
+  h5_file[["prediction"]][next_indices] <- predict(model, atl08_seg_dt)
+}
+h5_file$close_all()
+return(prediction_h5_read(out_h5))
+```
+
+```{r}
+prediction_h5_read <- function(h5_path) {
+  h5_file <- tryCatch(
+    {
+      hdf5r::H5File$new(h5_path, "r")
+    },
+    error = function(err) {
+      stop("The file is not a valid h5 file!")
+    }
+  )
+
+  stopifnot(
+    "The H5 file does not have `latitude`, `longitude` and `prediction`!" =
+      h5_file$exists("latitude") &&
+        h5_file$exists("longitude") &&
+        h5_file$exists("prediction")
+  )
+  prepend_class(h5_file, "icesat2.prediction_h5")
+
+  return(h5_file)
+}
+
+rasterize_h5 <- function() {
+
+}
+```
+
+```{r child=child_close}
+```
+
+

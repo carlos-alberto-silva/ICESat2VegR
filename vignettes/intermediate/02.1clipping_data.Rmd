@@ -1,0 +1,87 @@
+## Introduction
+
+Now we will use the clipping functions. There are two ways of
+clipping data in ICESat2VegR:
+
+  1. Clipping raw hdf5 data from ATL03 and ATL08 files
+  2. Clipping extracted attributes resulting from extraction functions:
+    - `ATL03_seg_attributes_dt`
+    - `ATL03_photon_attributes_dt`
+    - `ATL08_seg_attributes_dt`
+    - `ATL03_ATL08_photons_attributes_dt_join`
+
+## Clipping raw hdf5 data from ATL03
+
+```{r}
+# Define hdf5 output file
+output <- tempfile(fileext = ".h5")
+
+# Define bbox
+clip_region <- terra::ext(-83.2, -83.14, 32.12, 32.18)
+
+# Clip the data for only the first atl03 file
+atl03_clipped <- ATL03_h5_clipBox(atl03_h5[[1]], output, bbox = clip_region)
+
+atl03_seg_dt <- ATL03_seg_attributes_dt(atl03_h5[[1]], attributes = c("h_ph"))
+atl03_seg_dt_clip <- ATL03_seg_attributes_dt(atl03_clipped, attributes = c("h_ph"))
+
+# Display location of clipped data
+plot(
+  atl03_seg_dt$reference_photon_lon,
+  atl03_seg_dt$reference_photon_lat,
+  pch = 20,
+  xlab = "longitude",
+  ylab = "latitude"
+)
+points(atl03_seg_dt_clip$reference_photon_lon, atl03_seg_dt_clip$reference_photon_lat, col = "purple", pch = 3, cex = 1)
+rect(clip_region$xmin, clip_region$ymin, clip_region$xmax, clip_region$ymax, lty = 2)
+
+legend(col = c("black", "purple", "black"), legend = c("Original", "Clipped", "AOI"), pch = c(20, 3, NA), lty = c(NA, NA, 2), cex = 1, x = "topright")
+```
+
+## Clipping raw hdf5 data from ATL08
+
+```{r}
+# Define hdf5 output file
+output <- tempfile(fileext = ".h5")
+
+# Clip the data for only the first atl08 file
+atl08_clipped <- ATL08_h5_clipBox(atl08_h5[[1]], output, bbox = clip_region)
+
+atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5[[1]], attributes = c("h_canopy"))
+atl08_seg_dt_clip <- ATL08_seg_attributes_dt(atl08_clipped, attributes = c("h_canopy"))
+
+# Display location of clipped data
+plot(
+  atl08_seg_dt$longitude,
+  atl08_seg_dt$latitude,
+  pch = 20,
+  xlab = "longitude",
+  ylab = "latitude"
+)
+points(atl08_seg_dt_clip$longitude, atl08_seg_dt_clip$latitude, col = "purple", pch = 3, cex = 1)
+rect(clip_region$xmin, clip_region$ymin, clip_region$xmax, clip_region$ymax, lty = 2)
+
+legend(col = c("black", "purple", "black"), legend = c("Original", "Clipped", "AOI"), pch = c(20, 3, NA), lty = c(NA, NA, 2), cex = 1, x = "topright")
+```
+
+## Clipping extracted attributes from ATL08 segments
+```{r}
+# Extract the h_canopy attribute from the first ATL08 file
+atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5[[1]], attributes = c("h_canopy"))
+
+# Clip the data for only the first atl08 file
+atl08_seg_dt_clip <- ATL08_seg_attributes_dt_clipBox(atl08_seg_dt, clip_region$xmin, clip_region$xmax, clip_region$ymin, clip_region$ymax)
+
+plot(
+  atl08_seg_dt$longitude,
+  atl08_seg_dt$latitude,
+  pch = 20,
+  xlab = "longitude",
+  ylab = "latitude"
+)
+points(atl08_seg_dt_clip$longitude, atl08_seg_dt_clip$latitude, col = "purple", pch = 3, cex = 1)
+rect(clip_region$xmin, clip_region$ymin, clip_region$xmax, clip_region$ymax, lty = 2)
+
+legend(col = c("black", "purple", "black"), legend = c("Original", "Clipped", "AOI"), pch = c(20, 3, NA), lty = c(NA, NA, 2), cex = 1, x = "topright")
+```

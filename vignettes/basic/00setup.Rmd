@@ -9,10 +9,6 @@ if (!exists("kable_defined")) {
     }
   }
 
-  if (!exists("first_setup_run")) {
-    first_setup_run <- FALSE
-  }
-
   print.data.frame <- function(x, ...) print(knitr::kable(x, type))
   print.data.table <- function(x, ...) print(knitr::kable(x, type))
 
@@ -38,6 +34,10 @@ knitr::asis_output("## Opening the example dataset")
 knitr::asis_output("\n\n")
 knitr::asis_output("As we will be working with multiple h5 granules, we will be using `lapply` for reading
 and extracting information from the granules.")
+knitr::asis_output("\n\n")
+knitr::asis_output("If you are working with a single granule you can execute the 
+simpler instructions without lapply as per the function documentation examples instead
+(see ?ATL03_seg_attributes_dt for an example).")
 ```
 
 ```{r, echo = !exists("first_setup_run"), eval = FALSE}
@@ -51,12 +51,9 @@ ATLAS_dataDownload(
 unzip(file.path(outdir, "Study_Site.zip"), exdir = outdir)
 ```
 
-```{r, echo = FALSE, eval = !exists("first_setup_run")}
-first_setup_run <- FALSE
-```
-
-
 ```{r, echo = !exists("first_setup_run") && exists("use_atl03_h5"), eval = FALSE}
+outdir <- tempdir()
+
 # Find and read ATL03 dataset
 atl03_files <- list.files(outdir, "ATL03.*h5", full.names = TRUE)
 atl03_h5 <- lapply(atl03_files, ATL03_read)
@@ -96,4 +93,8 @@ if (!exists("atl03_h5")) {
   })
   atl03_atl08_dt <- rbindlist2(atl03_atl08_ls)
 }
+```
+
+```{r, echo = FALSE, eval = !exists("first_setup_run")}
+first_setup_run <- FALSE
 ```

@@ -25,6 +25,8 @@ Imports:
   terra,
   xml2
 Encoding: UTF-8
+URL: https://github.com/carlos-alberto-silva/ICESat2VegR
+BugReports: https://github.com/carlos-alberto-silva/ICESat2VegR/issues
 LazyData: true
 NeedsCompilation: yes
 RoxygenNote: 7.3.1

@@ -1,136 +1,116 @@
 ```{r include = FALSE}
-if (!exists("basic_path")) {
-  basic_path <- "../basic"
+child_setup <- file.path("../basic/00setup.Rmd")
+child_close <- file.path("../basic/01close.Rmd")
+use_atl03_h5 <- TRUE
+use_atl08_h5 <- TRUE
+
+if (!exists("is_readme")) {
+  printMapView <- function(mapviewObj, name, output = TRUE, delay = 0.2, full = FALSE) {
+    mapviewObj
+  }
+} else {
+  library(chromote)
+  chromeSession <- ChromoteSession$new(width = 800, height = 800)
+
+
+  printMapView <- function(mapviewObj, name, output = TRUE, delay = 5, full = FALSE, width = "500") {
+    html_temp <- tempfile(fileext = ".html")
+    if (inherits(mapviewObj, "mapview")) {
+      htmlwidgets::saveWidget(mapviewObj@map, html_temp)
+    } else if (inherits(mapviewObj, "htmlwidget")) {
+      htmlwidgets::saveWidget(mapviewObj, html_temp)
+    } else {
+      stop("printMapView don't know how to handle this!")
+    }
+
+    chromeSession$Page$navigate(html_temp)
+
+    Sys.sleep(delay)
+    if (full == TRUE) {
+      chromeSession$screenshot(name)
+    } else {
+      name <- gsub("\\.png$", "", name)
+      full_path <- file.path("../..", gettextf("figure/%s.png", name))
+
+      chromeSession$screenshot(full_path)
+    }
+    if (output == TRUE) {
+      if (width != "") {
+        width <- gettextf("width=%s ", width)
+      }
+
+      result <- knitr::asis_output(gettextf('<img src="figure/%s.png" %s/>\n', name, width))
+      return(result)
+    }
+  }
 }
 ```
 
-```{r child=file.path(basic_path, "01load.Rmd")}
+## Introduction
+
+In this section, we will demonstrate how to use the
+`ATL03_ATL08_segment_create` function from the `ICESat2VegR` package. 
+This function is used to compute segment IDs for ICESat-2 `ATL03` and `ATL08`
+data and create segments based on a specified segment length.
+
+```{r child=child_setup}
 ```
 
-```{r child=file.path(basic_path, "02openFiles.Rmd")}
+## Create Segments IDs
+
+Now, we use the `ATL03_ATL08_segment_create` function to create segments with a specified segment length.
+
+
+```{r}
+atl03_atl08_photons_grouped_dt <- ATL03_ATL08_segment_create(atl03_atl08_dt,
+  segment_length = 30,
+  centroid = "mean",
+  output = NA,
+  overwrite = FALSE
+)
 ```
+
+## Compute Segment Statistics
+```{r}
+atl03_atl08_seg_dt <- ATL03_ATL08_compute_seg_attributes_dt_segStat(
+  atl03_atl08_photons_grouped_dt,
+  list(
+    h_canopy_ge0 = quantile(ph_h, 0.98),
+    h_canopy_gt0 = quantile(ph_h[ph_h > 0], 0.98),
+    n_ground = sum(classed_pc_flag == 1),
+    n_mid_canopy = sum(classed_pc_flag == 2),
+    n_top_canopy = sum(classed_pc_flag == 3),
+    n_canopy_total = sum(classed_pc_flag >= 2)
+  ),
+  ph_class = c(1, 2, 3)
+)
+```
+
+## Convert to SpatVector
+
+Now, we convert the data.table to a SpatVector object.
+
+```{r}
+atl03_atl08_vect <- to_vect(atl03_atl08_seg_dt)
+```
+
+## Visualize the segments
+
+Finally, we visualize the SpatVector interactively using mapview.
+
+<div align="center">
 
 ```{r, include = FALSE}
-if (!exists("atl03_atl08_dt")) {
-  atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5, beam = "gt1r")
+if (require("mapview")) {
+  printMapView(mapview::mapview(atl03_atl08_vect), "atl03_atl08_vect", output = TRUE, delay = 5)
 }
 ```
 
-```{r, echo = FALSE, results = 'hide'}
-atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5, beam = "gt1r")
-```
-
-<div align="center" style="overflow-x: scroll;">
-
-```{r echo = FALSE, results = 'asis'}
-head(atl03_atl08_dt)
-```
-
 </div>
-
-## Plotting the result:
-```{r, eval = FALSE}
-oldpar <- par(no.readonly = TRUE)
-par(oma = c(0, 0, 0, 0))
-par(mar = c(2, 3, 1, 1))
-layout(matrix(c(1, 2), ncol = 1))
-plot(
-  atl03_atl08_dt,
-  y = "h_ph",
-  colors = c("gray", "#bd8421", "forestgreen", "green"),
-  xlim = range(atl03_atl08_dt$dist_ph_along),
-  ylim = range(atl03_atl08_dt$h_ph),
-  beam = "gt1r",
-  cex = 0.5,
-  pch = 16
-)
-
-par(mar = c(3, 3, 1, 1))
-
-plot(
-  atl03_atl08_dt,
-  y = "ph_h",
-  colors = c("gray", "#bd8421", "forestgreen", "green"),
-  xlim = range(atl03_atl08_dt$dist_ph_along),
-  ylim = range(atl03_atl08_dt$ph_h),
-  beam = "gt1r",
-  cex = 0.5,
-  pch = 16
-)
-
-par(
-  oldpar
-)
-```
-
-<div align="center">
-
-```{r, echo = FALSE, fig.align = 'center', fig.cap = 'Classified ATL03 photons using ATL08 labels', fig.width=5, fig.height=5}
-oldpar <- par(no.readonly = TRUE)
-par(oma = c(0, 0, 0, 0))
-par(mar = c(2, 3, 1, 1))
-layout(matrix(c(1, 2), ncol = 1))
-plot(
-  atl03_atl08_dt,
-  y = "h_ph",
-  colors = c("gray", "#bd8421", "forestgreen", "green"),
-  xlim = range(atl03_atl08_dt$dist_ph_along),
-  ylim = range(atl03_atl08_dt$h_ph),
-  beam = "gt1r",
-  cex = 0.5,
-  pch = 16
-)
-
-par(mar = c(3, 3, 1, 1))
-
-plot(
-  atl03_atl08_dt,
-  y = "ph_h",
-  colors = c("gray", "#bd8421", "forestgreen", "green"),
-  xlim = range(atl03_atl08_dt$dist_ph_along),
-  ylim = range(atl03_atl08_dt$ph_h),
-  beam = "gt1r",
-  cex = 0.5,
-  pch = 16
-)
-
-par(
-  oldpar
-)
-```
-
-</div>
-
-## Calculating raster statistics
 
 ```{r, eval = FALSE}
-h_canopy <- ATL03_ATL08_photons_attributes_dt_gridStat(
-  atl03_atl08_dt,
-  func = list(h_canopy = quantile(ph_h, 0.98), count = .N),
-  res = 0.0001
-)
-
-plot(h_canopy,
-  col = viridis::inferno(100),
-  xlab = "Langitude (degree)",
-  ylab = "Latitude (degree)"
-)
+mapview::mapview(atl03_atl08_vect)
 ```
 
-<div align="center">
-
-```{r, echo = FALSE, fig.align = 'center', fig.cap = 'Rasterized ATL03_ATL08 data for canopy height (h_canopy) and number of photons (n)', echo = FALSE, fig.width=5, fig.height=4}
-h_canopy <- ATL03_ATL08_photons_attributes_dt_gridStat(
-  atl03_atl08_dt,
-  func = list(h_canopy = quantile(ph_h, 0.98), count = .N),
-  res = 0.0001
-)
-
-plot(h_canopy,
-  col = viridis::inferno(100),
-  xlab = "Langitude (degree)",
-  ylab = "Latitude (degree)"
-)
+```{r child=child_close}
 ```
-
-</div>

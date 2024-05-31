@@ -8,6 +8,10 @@ vignette: >
 ---
 
 ```{r include = FALSE}
+if (!exists("vignettes_path")) {
+  vignettes_path <- "."
+}
+
 children_run <- file.path(vignettes_path, c(
   "intermediate/04joining_photons.Rmd"
 ))

@@ -11,3 +11,5 @@
 ^src/COPYRIGHT$
 ^doc$
 ^Meta$
+^Makefile$
+^.github$

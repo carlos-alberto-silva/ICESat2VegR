@@ -1,26 +1,20 @@
 ---
-title: "Working with segments data from ATL03 and ATL08"
+title: "Creating own custom defined segment size"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{v03_WorkingWithSegments}
+  %\VignetteIndexEntry{v04.1differentSizeSegments}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 ```{r include = FALSE}
-use_atl03_h5 <- TRUE
-
 if (!exists("vignettes_path")) {
   vignettes_path <- "."
 }
 
 children_run <- file.path(vignettes_path, c(
-  "intermediate/03segment_attributes.Rmd"
+  "intermediate/04.1differentSizeSegments.Rmd"
 ))
-```
-
-```{r}
-
 ```
 
 ```{r child=children_run}
