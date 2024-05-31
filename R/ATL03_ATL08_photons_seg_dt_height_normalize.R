@@ -100,7 +100,7 @@ ATL03_ATL08_photons_dt_height_normalize <- function(
     ph_h := h_ph - elevation
   ]
 
-  range(atl03_atl08_seg_dt[classed_pc_flag >= 1, list(ph_h)], na.rm = T)
+  range(atl03_atl08_seg_dt[classed_pc_flag >= 1, list(ph_h)], na.rm = TRUE)
 
   atl03_atl08_seg_dt
 }
