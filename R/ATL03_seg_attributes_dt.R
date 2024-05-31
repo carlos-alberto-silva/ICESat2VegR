@@ -207,13 +207,14 @@ ATL03_seg_attributes_dt <- function(atl03_h5,
       if (attr == "h_ph") {
         ref_idx <- beam_group[["geolocation/reference_photon_index"]][] # Get reference photon index
         ref_idx_mask <- ref_idx > 0
-        idx <- ref_idx[ref_idx_mask]
-        idx_mask <- seq_along(ref_idx_mask)[ref_idx_mask]
-        ph_index_beg <- beam_group[["geolocation/ph_index_beg"]][ref_idx_mask] # Get photon index beginning
-        if (nrow(dt) > 1) {
-          dt[idx_mask, h_ph := beam_group[["heights/h_ph"]][ph_index_beg + idx - 1]] # Update h_ph for those indices
-        } else {
-          dt[, h_ph := beam_group[["heights/h_ph"]][ph_index_beg + idx - 1]] # Update h_ph for those indices
+        idx_mask <- seq_along(ref_idx_mask)[!ref_idx_mask]
+        ph_index_beg <- beam_group[["geolocation/ph_index_beg"]][] # Get photon index beginning
+        if (beam_group[["heights/h_ph"]]$dims > 0) {
+          reference_idx <- ph_index_beg + ref_idx - 1
+          reference_idx[idx_mask] <- 1
+          
+          dt[, h_ph := beam_group[["heights/h_ph"]][reference_idx]]
+          dt[idx_mask, h_ph := NA_real_]
         }
       }
     }
