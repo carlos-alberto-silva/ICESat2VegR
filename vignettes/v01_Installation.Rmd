@@ -8,6 +8,7 @@ vignette: >
 ---
 
 ```{r opts, include = FALSE}
+suppressWarnings(rm("first_setup_run"))
 if (!exists("vignettes_path")) {
   vignettes_path <- "."
 }

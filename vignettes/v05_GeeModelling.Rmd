@@ -15,6 +15,12 @@ if (!exists("vignettes_path")) {
 children_run <- file.path(vignettes_path, c(
   "intermediate/05gee_modelling.Rmd"
 ))
+
+hide_close03 <- TRUE
+use_atl03_h5 <- FALSE
+use_atl08_h5 <- TRUE
+
+suppressWarnings(rm("first_setup_run", "hide_close08", "is_readme"))
 ```
 
 ```{r child=children_run}

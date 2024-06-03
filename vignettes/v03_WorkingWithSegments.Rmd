@@ -9,6 +9,7 @@ vignette: >
 
 ```{r include = FALSE}
 use_atl03_h5 <- TRUE
+use_atl08_h5 <- TRUE
 
 if (!exists("vignettes_path")) {
   vignettes_path <- "."
@@ -17,6 +18,8 @@ if (!exists("vignettes_path")) {
 children_run <- file.path(vignettes_path, c(
   "intermediate/03segment_attributes.Rmd"
 ))
+
+suppressWarnings(rm("first_setup_run", "hide_close08", "hide_close03"))
 ```
 
 ```{r}

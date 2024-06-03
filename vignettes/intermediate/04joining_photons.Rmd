@@ -7,17 +7,25 @@ child_close <- file.path("../basic/01close.Rmd")
 ```{r child=child_setup}
 ```
 
-```{r include = !exists("is_readme"), echo = !exists("is_readme")}
-# Define output dir
-outdir <- tempdir()
-
-
-```
-
 ## Extract attributes
 
-```{r, eval = FALSE}
-atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5, beam = "gt1r")
+```{r, eval = FALSE, echo = !exists("atl03_atl08_dt")}
+# Herein as we are working with list of h5 files we will need
+# to loop over each file and extract the attributes and then
+# concatenate them with rbindlist2
+atl03_atl08_dts <- list()
+
+for (ii in seq_along(atl03_h5)) {
+  atl03_file <- atl03_h5[[ii]]
+  atl08_file <- atl08_h5[[ii]]
+
+  atl03_atl08_dts[[ii]] <- ATL03_ATL08_photons_attributes_dt_join(
+    atl03_file,
+    atl08_file
+  )
+}
+
+atl03_atl08_dt <- rbindlist2(atl03_atl08_dts)
 
 head(atl03_atl08_dt)
 ```

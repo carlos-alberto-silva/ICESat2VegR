@@ -36,11 +36,16 @@ knitr::asis_output("As we will be working with multiple h5 granules, we will be 
 and extracting information from the granules.")
 knitr::asis_output("\n\n")
 knitr::asis_output("If you are working with a single granule you can execute the 
-simpler instructions without lapply as per the function documentation examples instead
-(see ?ATL03_seg_attributes_dt for an example).")
+simpler instructions without `lapply` as per the function documentation examples instead.")
 ```
 
 ```{r, echo = !exists("first_setup_run"), eval = FALSE}
+# Load the ICESat2VegR package
+library(ICESat2VegR)
+
+# Set output directory
+outdir <- tempdir()
+
 # Download example dataset
 ATLAS_dataDownload(
   "https://github.com/carlos-alberto-silva/ICESat2VegR/releases/download/example_datasets/Study_Site.zip",
@@ -52,8 +57,6 @@ unzip(file.path(outdir, "Study_Site.zip"), exdir = outdir)
 ```
 
 ```{r, echo = !exists("first_setup_run") && exists("use_atl03_h5"), eval = FALSE}
-outdir <- tempdir()
-
 # Find and read ATL03 dataset
 atl03_files <- list.files(outdir, "ATL03.*h5", full.names = TRUE)
 atl03_h5 <- lapply(atl03_files, ATL03_read)

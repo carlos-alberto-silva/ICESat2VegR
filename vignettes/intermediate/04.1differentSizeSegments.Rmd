@@ -1,8 +1,6 @@
 ```{r include = FALSE}
 child_setup <- file.path("../basic/00setup.Rmd")
 child_close <- file.path("../basic/01close.Rmd")
-use_atl03_h5 <- TRUE
-use_atl08_h5 <- TRUE
 
 if (!exists("is_readme")) {
   printMapView <- function(mapviewObj, name, output = TRUE, delay = 0.2, full = FALSE) {
@@ -56,6 +54,28 @@ data and create segments based on a specified segment length.
 ```{r child=child_setup}
 ```
 
+```{r, eval = FALSE, echo = !exists("atl03_atl08_dt")}
+# Herein as we are working with list of h5 files we will need
+# to loop over each file and extract the attributes and then
+# concatenate them with rbindlist2
+atl03_atl08_dts <- list()
+
+for (ii in seq_along(atl03_h5)) {
+  atl03_file <- atl03_h5[[ii]]
+  atl08_file <- atl08_h5[[ii]]
+
+  atl03_atl08_dts[[ii]] <- ATL03_ATL08_photons_attributes_dt_join(
+    atl03_file,
+    atl08_file
+  )
+}
+
+atl03_atl08_dt <- rbindlist2(atl03_atl08_dts)
+
+head(atl03_atl08_dt)
+```
+
+
 ## Create Segments IDs
 
 Now, we use the `ATL03_ATL08_segment_create` function to create segments with a specified segment length.
@@ -84,6 +104,8 @@ atl03_atl08_seg_dt <- ATL03_ATL08_compute_seg_attributes_dt_segStat(
   ),
   ph_class = c(1, 2, 3)
 )
+
+head(atl03_atl08_seg_dt)
 ```
 
 ## Convert to SpatVector
@@ -98,19 +120,21 @@ atl03_atl08_vect <- to_vect(atl03_atl08_seg_dt)
 
 Finally, we visualize the SpatVector interactively using mapview.
 
+
+```{r, eval = FALSE}
+mapview::mapview(atl03_atl08_vect)
+```
+
 <div align="center">
 
-```{r, include = FALSE}
-if (require("mapview")) {
+```{r, echo = FALSE, fig.cap = "Leaflet preview for segments h_canopy", out.height='400', out.width='500', fig.align = "center"}
+if (requireNamespace("mapview")) {
   printMapView(mapview::mapview(atl03_atl08_vect), "atl03_atl08_vect", output = TRUE, delay = 5)
 }
 ```
 
 </div>
 
-```{r, eval = FALSE}
-mapview::mapview(atl03_atl08_vect)
-```
 
 ```{r child=child_close}
 ```

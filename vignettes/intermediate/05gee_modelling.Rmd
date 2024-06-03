@@ -1,6 +1,4 @@
 ```{r include = FALSE}
-hide_close08 <- TRUE
-
 child_setup <- file.path("../basic/00setup.Rmd")
 child_close <- file.path("../basic/01close.Rmd")
 
@@ -55,7 +53,7 @@ In this example we will model the `h_canopy` of the ICESat-2 using only the Harm
 ## Extract ATL08 segment attributes h_canopy attribute
 
 ```{r, eval = FALSE}
-atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5, attribute = "h_canopy")
+atl08_seg_dt <- lapply(atl08_h5, ATL08_seg_attributes_dt, attribute = "h_canopy")
 head(atl08_seg_dt)
 ```
 
