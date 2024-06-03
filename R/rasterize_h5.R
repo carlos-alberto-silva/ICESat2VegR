@@ -6,13 +6,13 @@ def_co <- c(
   "BLOCKYSIZE=512"
 )
 
-finalizer <- list(
+finalizer_default <- list(
   sd = ~ sqrt(M2 / (n - 1))
   # skew = ~ sqrt((n * (n - 1))) * ((sqrt(n) * M3) / (M2^1.5)) / (n - 2),
   # kur = ~ ((n - 1) / ((n - 2) * (n - 3))) * ((n + 1) * ((n * M4) / (M2^2) - 3.0) + 6)
 )
 
-agg_function <- function(x) {
+agg_function_default <- function(x) {
   list(
     n = length(x),
     M1 = mean(x, na.rm = TRUE),
@@ -24,8 +24,8 @@ agg_function <- function(x) {
   )
 }
 
-agg_join <- function(x1, x2) {
-  combined <- data.table()
+agg_join_default <- function(x1, x2) {
+  combined <- data.table::data.table()
   x1$n[is.na(x1$n)] <- 0
   x1$M1[is.na(x1$M1)] <- 0
   x1$M2[is.na(x1$M2)] <- 0
@@ -60,6 +60,7 @@ agg_join <- function(x1, x2) {
   return(combined)
 }
 
+
 # Function to convert from x, y integers to single index
 xy_to_index <- function(x, y, ysize) {
   index <- (x - 1) * ysize + (y - 1) + 1
@@ -81,10 +82,7 @@ setGeneric("rasterize_h5", function(
     output,
     bbox,
     res,
-    chunk_size = 512 * 512,
-    agg_function = agg_function,
-    agg_join = agg_join,
-    finalizer = finalizer) {
+    ...) {
   standardGeneric("rasterize_h5")
 })
 
@@ -93,7 +91,16 @@ setGeneric("rasterize_h5", function(
 #' @export
 setMethod("rasterize_h5",
   signature = c("icesat2.predict_h5", "character", "SpatExtent", "numeric"),
-  function(h5_input, output, bbox, res, chunk_size = 512 * 512) {
+  function(
+    h5_input,
+    output,
+    bbox,
+    res,
+    chunk_size = 512 * 512,
+    agg_function = agg_function_default,
+    agg_join = agg_join_default,
+    finalizer = finalizer_default
+  ) {
     if (length(res) == 1) {
       res <- c(res, -res)
     }

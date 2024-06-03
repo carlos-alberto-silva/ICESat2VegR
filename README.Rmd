@@ -49,13 +49,16 @@ do_close <- FALSE
 ```{r child="vignettes/intermediate/04joining_photons.Rmd"}
 ```
 
+```{r child="vignettes/intermediate/05gee_modelling.Rmd"}
+```
+
 ```{r include=FALSE}
 do_close <- TRUE
 hide_close03 <- FALSE
 hide_close08 <- FALSE
 ```
 
-```{r child="vignettes/intermediate/05gee_modelling.Rmd"}
+```{r child="vignettes/basic/01close.Rmd"}
 ```
 
 

@@ -1,5 +1,9 @@
 setRefClass("icesat2.predict_h5")
 
+internal_predict_h5 <- new.env()
+internal_predict_h5$path <- ""
+internal_predict_h5$h5 <- NULL
+
 #' S4 generic method for predicting using H5 model
 #'
 #' @param model The trained model object
@@ -122,15 +126,32 @@ setMethod(
   "predict_h5",
   signature(model = "ANY", seg_dt = "icesat2.atl08_dt", output = "character"),
   function(model, seg_dt, output) {
-    h5 <- hdf5r::H5File$new(output, "w")
+    if (internal_predict_h5$path == output) {
+      h5 <- internal_predict_h5$h5$close_all()
+    }
 
-    h5[["prediction"]] <- predict(model, seg_dt)
-    h5[["longitude"]] <- seg_dt[["longitude"]]
-    h5[["latitude"]] <- seg_dt[["latitude"]]
+    if (!file.exists(output)) {
+      h5 <- hdf5r::H5File$new(output, "w")
+    } else {
+      h5 <- hdf5r::H5File$new(output, "r+")
+    }
+    internal_predict_h5$path <- output
+
+    if (h5$exists("prediction")) {
+      append_range <- seq(h5[["prediction"]]$dims + 1, length.out = nrow(seg_dt))
+      h5[["prediction"]][append_range] <- predict(model, seg_dt)
+      h5[["longitude"]][append_range] <- seg_dt[["longitude"]]
+      h5[["latitude"]][append_range] <- seg_dt[["latitude"]]
+    } else {
+      h5[["prediction"]] <- predict(model, seg_dt)
+      h5[["longitude"]] <- seg_dt[["longitude"]]
+      h5[["latitude"]] <- seg_dt[["latitude"]]
+    }
 
     h5$close_all()
     h5 <- hdf5r::H5File$new(output, "r")
     prepend_class(h5, "icesat2.predict_h5")
+    internal_predict_h5$h5 <- h5
 
     return(h5)
   }

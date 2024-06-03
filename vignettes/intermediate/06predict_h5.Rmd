@@ -1,6 +1,10 @@
 ```{r include = FALSE}
 child_setup <- file.path("../basic/00setup.Rmd")
 child_close <- file.path("../basic/01close.Rmd")
+
+if (!exists("do_close")) {
+  do_close <- FALSE
+}
 ```
 
 
@@ -8,69 +12,60 @@ child_close <- file.path("../basic/01close.Rmd")
 ```
 
 
+## Creating a simple model for ATL08 data
+
+Here, we will create a simple model to predict the canopy openness of ATL08 data based on the height of the canopy. 
+We will use the `randomForest` package to create the model.
+
+Let's assume we will fit the model on a subset of the ATL08 data and then predict the canopy openness for the rest of the data.
+
 ```{r}
-# devtools::load_all()
+# Extract atl08 data from the first file
+atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5[[1]], attributes = c("h_canopy", "canopy_openness"))
 
-atl08_path <- system.file(
-  "extdata",
-  "atl08_clip.h5",
-  package = "ICESat2VegR"
-)
+# Avoid the weird NA values
+atl08_seg_dt[h_canopy > 100, h_canopy := NA_real_]
+atl08_seg_dt[is.na(h_canopy), canopy_openness := NA_real_]
+atl08_seg_dt <- na.omit(atl08_seg_dt)
 
-atl08_h5 <- ATL08_read(atl08_path)
-atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5, attributes = c("h_canopy", "canopy_openness"))
+training <- sample(atl08_seg_dt, method = randomSampling(0.7))
 
 # For the sake of the example, we will train and test the model with the same data
 library(randomForest)
 model <- randomForest::randomForest(canopy_openness ~ h_canopy, atl08_seg_dt)
-out_h5 <- tempfile(fileext = ".h5")
-
-mode <- "w"
-if (file.exists(out_h5)) {
-  mode <- "r+"
-}
-h5_file <- hdf5r::H5File$new(out_h5, mode)
-
-if (!h5_file$exists("latitude")) {
-  h5_file[["latitude"]] <- atl08_seg_dt$latitude
-  h5_file[["longitude"]] <- atl08_seg_dt$longitude
-  h5_file[["prediction"]] <- predict(model, atl08_seg_dt)
-} else {
-  cur_size <- h5_file[["latitude"]]$dims
-  next_indices <- seq(cur_size + 1, length.out = length(atl08_seg_dt$latitude))
-  h5_file[["latitude"]][next_indices] <- latitude
-  h5_file[["longitude"]][next_indices] <- longitude
-  h5_file[["prediction"]][next_indices] <- predict(model, atl08_seg_dt)
-}
-h5_file$close_all()
-return(prediction_h5_read(out_h5))
 ```
 
+## Predicting ATL08 data
+
+Now we will predict the data for the entire ATL08 dataset, this can be
+as large as you want. This will create or append the predicted values to an H5 file.
+
 ```{r}
-prediction_h5_read <- function(h5_path) {
-  h5_file <- tryCatch(
-    {
-      hdf5r::H5File$new(h5_path, "r")
-    },
-    error = function(err) {
-      stop("The file is not a valid h5 file!")
-    }
-  )
+devtools::load_all()
+out_h5 <- tempfile(fileext = ".h5")
 
-  stopifnot(
-    "The H5 file does not have `latitude`, `longitude` and `prediction`!" =
-      h5_file$exists("latitude") &&
-        h5_file$exists("longitude") &&
-        h5_file$exists("prediction")
-  )
-  prepend_class(h5_file, "icesat2.prediction_h5")
-
-  return(h5_file)
+for (atl08_h5_item in atl08_h5) {
+  atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5_item, attributes = c("h_canopy", "canopy_openness"))
+  atl08_seg_dt[h_canopy > 100, h_canopy := NA_real_]
+  atl08_seg_dt[is.na(h_canopy), canopy_openness := NA_real_]
+  atl08_seg_dt <- na.omit(atl08_seg_dt)
+  predicted_h5 <- predict_h5(model, atl08_seg_dt, out_h5)
 }
+```
 
-rasterize_h5 <- function() {
+## Rasterizing the predicted data
 
-}
+```{r}
+output_raster <- tempfile(fileext = ".tif")
+x <- predicted_h5[['longitude']][]
+y <- predicted_h5[['latitude']][]
+bbox <- terra::ext(min(x), max(x), min(y), max(y))
+
+res <- 0.005
+rasterize_h5(predicted_h5, output_raster, bbox = bbox, res = res)
+out_rast <- terra::rast(output_raster)
+names(out_rast) = c("n", "mean", "sd", "min", "max")
+terra::plot(out_rast)
 ```
 
 ```{r child=child_close}

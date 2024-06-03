@@ -36,8 +36,8 @@ default_agg_join <- function(x1, x2) {
 
   delta <- x2$M1 - x1$M1
   delta2 <- delta * delta
-  delta3 <- delta * delta2
-  delta4 <- delta2 * delta2
+  # delta3 <- delta * delta2
+  # delta4 <- delta2 * delta2
 
   combined$M1 <- (x1$n * x1$M1 + x2$n * x2$M1) / combined$n
 
@@ -79,34 +79,24 @@ default_agg_join <- function(x1, x2) {
 #'
 #' @details
 #' This function will create seven different aggregate statistics
-#' (n, m1, m2, m3, m4, min, max). m1 to m4 are the central moments.
-#' One can calculate mean, standard deviation, skewness and kurtosis
-#' with the following formulas according to Terriberry (2007) and
+#' (n, mean, variance, min, max). m1 to m4 are the central moments.
+#' One can calculate mean and standard deviation with the following
+#' formulas according to Terriberry (2007) and
 #' \insertCite{Joanes1998;textual}{ICESat2VegR}:
 #'
 #' \deqn{ \bar{x} = m_1 }{mean = m1}
 #'
 #' \deqn{ s = \sqrt{\frac{m_2}{n - 1}} }{sd = sqrt(m2/(n - 1))}
 #'
-#' \deqn{ g_1 = \frac{\sqrt{n} \cdot m_3}{m_2^{1.5}} }{ g1 = (sqrt(n) * m3) / (m2^1.5)}
-#'
-#' \deqn{ g_2 = \frac{n \cdot m_4}{m_2^2} - 3 }{g2 = (n * m4) / (m2 * m2) - 3.0}
-#'
-#' \deqn{ skewness = \frac{\sqrt{n(n - 1)}}{n-2} g_1 }{skewness = sqrt((n * (n - 1))) * g1 / (n - 2)}
-#'
-#' \deqn{ kurtosis = \frac{n - 1}{(n - 2)(n - 3)}[(n + 1)g_2 + 6] }{kurtosis = ((n - 1) / ((n - 2) * (n - 3))) * ((n + 1) * g2 + 6)}
-#'
 #' The `agg_function` is a formula which return a data.table with the
 #' aggregate function to perform over the data.
 #' The default is:
 #'
-#' ```{r, eval=FALSE}
+#' ```
 #' ~data.table(
 #'     n = length(x),
 #'     M1 = mean(x,na.rm = TRUE),
 #'     M2 = e1071::moment(x, order = 2, center = TRUE, na.rm = TRUE) * length(x),
-#'     M3 = e1071::moment(x, order = 3, center = TRUE, na.rm = TRUE) * length(x),
-#'     M4 = e1071::moment(x, order = 4, center = TRUE, na.rm = TRUE) * length(x),
 #'     min = min(x, na.rm=T),
 #'     max = max(x, na.rm=T)
 #'   )
@@ -117,14 +107,12 @@ default_agg_join <- function(x1, x2) {
 #' one by one, the statistics from the different h5 files should
 #' have a function to merge them. The default function is:
 #'
-#' ```{r, eval=FALSE}
+#' ```
 #' function(x1, x2) {
 #'     combined = data.table()
 #'     x1$n[is.na(x1$n)] = 0
 #'     x1$M1[is.na(x1$M1)] = 0
 #'     x1$M2[is.na(x1$M2)] = 0
-#'     x1$M3[is.na(x1$M3)] = 0
-#'     x1$M4[is.na(x1$M4)] = 0
 #'     x1$max[is.na(x1$max)] = -Inf
 #'     x1$min[is.na(x1$min)] = Inf
 #'
@@ -132,22 +120,10 @@ default_agg_join <- function(x1, x2) {
 #'
 #'     delta = x2$M1 - x1$M1
 #'     delta2 = delta * delta
-#'     delta3 = delta * delta2
-#'     delta4 = delta2 * delta2
 #'
 #'     combined$M1 = (x1$n * x1$M1 + x2$n * x2$M1) / combined$n
-#'
 #'     combined$M2 = x1$M2 + x2$M2 +
 #'       delta2 * x1$n * x2$n / combined$n
-#'
-#'     combined$M3 = x1$M3 + x2$M3 +
-#'       delta3 * x1$n * x2$n * (x1$n - x2$n) / (combined$n * combined$n)
-#'     combined$M3 = combined$M3 + 3.0 * delta * (x1$n * x2$M2 - x2$n * x1$M2) / combined$n
-#'
-#'     combined$M4 = x1$M4 + x2$M4 + delta4 * x1$n * x2$n * (x1$n * x1$n - x1$n * x2$n + x2$n * x2$n) /
-#'       (combined$n * combined$n * combined$n)
-#'     combined$M4 = combined$M4 + 6.0 * delta2 * (x1$n * x1$n * x2$M2 + x2$n * x2$n * x1$M2) / (combined$n * combined$n) +
-#'       4.0 * delta * (x1$n * x2$M3 - x2$n * x1$M3) / combined$n
 #'
 #'     combined$min = pmin(x1$min, x2$min, na.rm=F)
 #'     combined$max = pmax(x1$max, x2$max, na.rm=F)
@@ -161,11 +137,9 @@ default_agg_join <- function(x1, x2) {
 #' `skewness` and `kurtosis` based on the `M2`, `M3`, `M4` and `n`
 #' values. It is defined as:
 #'
-#' ```{r, eval=FALSE}
+#' ```
 #' list(
 #'   sd = ~sqrt(M2/(n - 1)),
-#'   skew = ~sqrt((n * (n - 1))) * ((sqrt(n) * M3) / (M2^1.5)) / (n - 2),
-#'   kur = ~((n - 1) / ((n - 2) * (n - 3))) * ((n + 1) * ((n * M4) / (M2^2) - 3.0) + 6)
 #' )
 #' ```
 #'
