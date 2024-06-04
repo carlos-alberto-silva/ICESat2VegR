@@ -19,7 +19,7 @@ We will use the `randomForest` package to create the model.
 
 Let's assume we will fit the model on a subset of the ATL08 data and then predict the canopy openness for the rest of the data.
 
-```{r}
+```{r, message = FALSE}
 # Extract atl08 data from the first file
 atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5[[1]], attributes = c("h_canopy", "canopy_openness"))
 
@@ -41,7 +41,6 @@ Now we will predict the data for the entire ATL08 dataset, this can be
 as large as you want. This will create or append the predicted values to an H5 file.
 
 ```{r}
-devtools::load_all()
 out_h5 <- tempfile(fileext = ".h5")
 
 for (atl08_h5_item in atl08_h5) {

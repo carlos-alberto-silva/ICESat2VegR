@@ -56,7 +56,7 @@ ATL03_photons_attributes_dt <- function(atl03_h5,
 
   photon.dt <- data.table::data.table()
 
-  pb <- utils::txtProgressBar(min = 0, max = length(beam), style = 3)
+  pb <- utils::txtProgressBar(min = 0, max = length(beam), style = 3, file = stderr())
 
   i_s <- 0
 

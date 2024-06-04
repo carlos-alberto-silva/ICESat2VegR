@@ -84,7 +84,7 @@ ATL08_terrain_attributes_dt <- function(atl08_h5,
   beam <- intersect(groups_id, beam)
   terrain.dt <- data.table::data.table()
 
-  pb <- utils::txtProgressBar(min = 0, max = length(beam), style = 3)
+  pb <- utils::txtProgressBar(min = 0, max = length(beam), style = 3, file = stderr())
 
   i_s <- 0
 

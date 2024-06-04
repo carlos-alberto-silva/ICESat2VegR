@@ -9,13 +9,13 @@ if (!exists("kable_defined")) {
     }
   }
 
-  print.data.frame <- function(x, ...) print(knitr::kable(x, type))
-  print.data.table <- function(x, ...) print(knitr::kable(x, type))
+  print.data.frame <- function(x, ...) cat(knitr::kable(x, type))
+  print.data.table <- function(x, ...) cat(knitr::kable(x, type))
 
-  print.icesat2.atl03_seg_dt <- function(x, ...) print(knitr::kable(x, type))
-  print.icesat2.atl08_dt <- function(x, ...) print(knitr::kable(x, type))
-  print.icesat2.atl03_dt <- function(x, ...) print(knitr::kable(x, type))
-  print.icesat2.atl03atl08_dt <- function(x, ...) print(knitr::kable(x, type))
+  print.icesat2.atl03_seg_dt <- function(x, ...) cat(knitr::kable(x, type))
+  print.icesat2.atl08_dt <- function(x, ...) cat(knitr::kable(x, type))
+  print.icesat2.atl03_dt <- function(x, ...) cat(knitr::kable(x, type))
+  print.icesat2.atl03atl08_dt <- function(x, ...) cat(knitr::kable(x, type))
 }
 
 if (!exists("do_close")) {
@@ -35,7 +35,7 @@ knitr::asis_output("\n\n")
 knitr::asis_output("As we will be working with multiple h5 granules, we will be using `lapply` for reading
 and extracting information from the granules.")
 knitr::asis_output("\n\n")
-knitr::asis_output("If you are working with a single granule you can execute the 
+knitr::asis_output("If you are working with a single granule you can execute the
 simpler instructions without `lapply` as per the function documentation examples instead.")
 ```
 

@@ -100,7 +100,7 @@ ATL03_ATL08_photons_attributes_dt_join <- function(
   beam <- intersect(beam_atl03, beam_atl08)
 
   photon.dt <- list()
-  pb <- utils::txtProgressBar(min = 0, max = length(beam), style = 3)
+  pb <- utils::txtProgressBar(min = 0, max = length(beam), style = 3, file = stderr())
 
   i_s <- 0
   for (i in beam) {

@@ -128,7 +128,7 @@ model_fit <- function(x, y, method = "lm", LOOCV = FALSE, ..., size = 40, linout
       stats_model(y_local, as.numeric(pred_model2[, 3]), main = main_title)
     )
     if (LOOCV == TRUE) {
-      pb <- utils::txtProgressBar(min = 0, max = nrow(x), style = 3)
+      pb <- utils::txtProgressBar(min = 0, max = nrow(x), style = 3, file = stderr())
       predloocv <- NULL
       for (i in 1:nrow(x)) {
         utils::setTxtProgressBar(pb, i)

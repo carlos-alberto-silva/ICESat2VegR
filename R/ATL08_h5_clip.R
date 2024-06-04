@@ -136,7 +136,7 @@ ATL08_h5_clip <- function(
     qtyList <- lapply(datasets_dt$dataset.dims, function(x) eval(parse(text = gsub("x", "*", x))))
     qty <- sum(unlist(qtyList))
 
-    pb <- utils::txtProgressBar(min = 0, max = qty, style = 3)
+    pb <- utils::txtProgressBar(min = 0, max = qty, style = 3, file = stderr())
 
     # Do clipping and copying
     if (length(landSegmentsMask) == 0) {

@@ -111,7 +111,7 @@ clipBeams <- function(atl03, newFile, beam, mask_fn, clipObj) {
     qtyList <- lapply(datasets_dt$dataset.dims, function(x) eval(parse(text = gsub("x", "*", x))))
     qty <- sum(unlist(qtyList))
 
-    pb <- utils::txtProgressBar(min = 0, max = qty, style = 3)
+    pb <- utils::txtProgressBar(min = 0, max = qty, style = 3, file = stderr())
 
     if (length(segmentsMask) == 0) {
       utils::setTxtProgressBar(pb, qty)
