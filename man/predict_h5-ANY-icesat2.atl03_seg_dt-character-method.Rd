@@ -4,21 +4,25 @@
 \alias{predict_h5,ANY,icesat2.atl03_seg_dt,character-method}
 \title{Method for predicting using atl03 segments data}
 \usage{
-\S4method{predict_h5}{ANY,icesat2.atl03_seg_dt,character}(model, seg_dt, output)
+\S4method{predict_h5}{ANY,icesat2.atl03_seg_dt,character}(model, dt, output)
 }
 \arguments{
 \item{model}{The trained model object}
 
-\item{seg_dt}{The input segmentation data}
+\item{dt}{The input data.table to run the model}
 
 \item{output}{The output file path}
 }
 \value{
 An \code{\linkS4class{icesat2.predict_h5}}, which is an
-h5 file with latitude, longitude and predicted datasets.
+h5 file with latitude, longitude and prediction #' @param dt The input data.table to run the model.
 }
 \description{
 Method for predicting using atl03 segments data
+}
+\details{
+This method is used to predict using a trained model and
+save the results in an HDF5 file.
 }
 \examples{
 atl03_path <- system.file(
@@ -38,7 +42,7 @@ predicted_h5 <- predict_h5(linear_model, atl03_seg_dt, output_h5)
 predicted_h5$ls()$name
 
 # See predicted values
-head(predicted_h5[["predicted"]][])
+head(predicted_h5[["prediction"]][])
 
 # Close the file
 close(predicted_h5)

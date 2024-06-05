@@ -4,21 +4,25 @@
 \alias{predict_h5}
 \title{S4 generic method for predicting using H5 model}
 \usage{
-predict_h5(model, seg_dt, output)
+predict_h5(model, dt, output)
 }
 \arguments{
 \item{model}{The trained model object}
 
-\item{seg_dt}{The input segmentation data}
+\item{dt}{The input data.table to run the model}
 
-\item{output}{The output file path}
+\item{output}{The output HDF5 file path}
 }
 \value{
 An \code{\linkS4class{icesat2.predict_h5}}, which is an
-h5 file with latitude, longitude and predicted datasets.
+h5 file with latitude, longitude and prediction datasets.
 }
 \description{
 S4 generic method for predicting using H5 model
+}
+\details{
+This method is used to predict using a trained model and
+save the results in an HDF5 file.
 }
 \examples{
 atl03_path <- system.file(
@@ -38,7 +42,7 @@ predicted_h5 <- predict_h5(linear_model, atl03_seg_dt, output_h5)
 predicted_h5$ls()$name
 
 # See predicted values
-head(predicted_h5[["predicted"]][])
+head(predicted_h5[["prediction"]][])
 
 # Close the file
 close(predicted_h5)

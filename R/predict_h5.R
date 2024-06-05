@@ -7,11 +7,15 @@ internal_predict_h5$h5 <- NULL
 #' S4 generic method for predicting using H5 model
 #'
 #' @param model The trained model object
-#' @param seg_dt The input segmentation data
-#' @param output The output file path
+#' @param dt The input data.table to run the model
+#' @param output The output HDF5 file path
+#'
+#' @details
+#' This method is used to predict using a trained model and
+#' save the results in an HDF5 file.
 #'
 #' @return An [`icesat2.predict_h5-class`], which is an
-#' h5 file with latitude, longitude and predicted datasets.
+#' h5 file with latitude, longitude and prediction datasets.
 #'
 #' @examples
 #' atl03_path <- system.file(
@@ -31,23 +35,27 @@ internal_predict_h5$h5 <- NULL
 #' predicted_h5$ls()$name
 #'
 #' # See predicted values
-#' head(predicted_h5[["predicted"]][])
+#' head(predicted_h5[["prediction"]][])
 #'
 #' # Close the file
 #' close(predicted_h5)
 #'
 #' @export
-setGeneric("predict_h5", function(model, seg_dt, output) {
+setGeneric("predict_h5", function(model, dt, output) {
   standardGeneric("predict_h5")
 })
 #' Method for predicting using atl03 segments data
 #'
 #' @param model The trained model object
-#' @param seg_dt The input segmentation data
+#' @param dt The input data.table to run the model
 #' @param output The output file path
 #'
+#' @details
+#' This method is used to predict using a trained model and
+#' save the results in an HDF5 file.
+#'
 #' @return An [`icesat2.predict_h5-class`], which is an
-#' h5 file with latitude, longitude and predicted datasets.
+#' h5 file with latitude, longitude and prediction
 #'
 #' @examples
 #' atl03_path <- system.file(
@@ -67,20 +75,20 @@ setGeneric("predict_h5", function(model, seg_dt, output) {
 #' predicted_h5$ls()$name
 #'
 #' # See predicted values
-#' head(predicted_h5[["predicted"]][])
+#' head(predicted_h5[["prediction"]][])
 #'
 #' # Close the file
 #' close(predicted_h5)
 #' @export
 setMethod(
   "predict_h5",
-  signature(model = "ANY", seg_dt = "icesat2.atl03_seg_dt", output = "character"),
-  function(model, seg_dt, output) {
+  signature(model = "ANY", dt = "icesat2.atl03_seg_dt", output = "character"),
+  function(model, dt, output) {
     h5 <- hdf5r::H5File$new(output, "w")
 
-    h5[["prediction"]] <- predict(model, seg_dt)
-    h5[["longitude"]] <- seg_dt[["reference_photon_lon"]]
-    h5[["latitude"]] <- seg_dt[["reference_photon_lat"]]
+    h5[["prediction"]] <- predict(model, dt)
+    h5[["longitude"]] <- dt[["reference_photon_lon"]]
+    h5[["latitude"]] <- dt[["reference_photon_lat"]]
 
     h5$close()
     h5 <- hdf5r::H5File$new(output, "r")
@@ -94,11 +102,15 @@ setMethod(
 #' Method for predicting using atl08 segments data
 #'
 #' @param model The trained model object
-#' @param seg_dt The input segmentation data
+#' @param dt The input data.table to run the model
 #' @param output The output file path
 #'
+#' @details
+#' This method is used to predict using a trained model and
+#' save the results in an HDF5 file.
+#'
 #' @return An [`icesat2.predict_h5-class`], which is an
-#' h5 file with latitude, longitude and predicted datasets.
+#' h5 file with latitude, longitude and prediction datasets.
 #'
 #' @examples
 #' atl08_path <- system.file(
@@ -116,7 +128,7 @@ setMethod(
 #' predicted_h5$ls()$name
 #'
 #' # See predicted values
-#' head(predicted_h5[["predicted"]][])
+#' head(predicted_h5[["prediction"]][])
 #'
 #' # Close the file
 #' close(predicted_h5)
@@ -124,8 +136,8 @@ setMethod(
 #' @export
 setMethod(
   "predict_h5",
-  signature(model = "ANY", seg_dt = "icesat2.atl08_dt", output = "character"),
-  function(model, seg_dt, output) {
+  signature(model = "ANY", dt = "icesat2.atl08_dt", output = "character"),
+  function(model, dt, output) {
     if (internal_predict_h5$path == output) {
       h5 <- internal_predict_h5$h5$close_all()
     }
@@ -138,14 +150,14 @@ setMethod(
     internal_predict_h5$path <- output
 
     if (h5$exists("prediction")) {
-      append_range <- seq(h5[["prediction"]]$dims + 1, length.out = nrow(seg_dt))
-      h5[["prediction"]][append_range] <- predict(model, seg_dt)
-      h5[["longitude"]][append_range] <- seg_dt[["longitude"]]
-      h5[["latitude"]][append_range] <- seg_dt[["latitude"]]
+      append_range <- seq(h5[["prediction"]]$dims + 1, length.out = nrow(dt))
+      h5[["prediction"]][append_range] <- predict(model, dt)
+      h5[["longitude"]][append_range] <- dt[["longitude"]]
+      h5[["latitude"]][append_range] <- dt[["latitude"]]
     } else {
-      h5[["prediction"]] <- predict(model, seg_dt)
-      h5[["longitude"]] <- seg_dt[["longitude"]]
-      h5[["latitude"]] <- seg_dt[["latitude"]]
+      h5[["prediction"]] <- predict(model, dt)
+      h5[["longitude"]] <- dt[["longitude"]]
+      h5[["latitude"]] <- dt[["latitude"]]
     }
 
     h5$close_all()

@@ -29,11 +29,11 @@
 #' netrc_conn <- file(netrc)
 #'
 #' # Assuming login data is saved in the
-#' # environmental variables NASA_USER and NASA_PASSWORD
+#' # environmental variables EARTHDATA_USERNAME and EARTHDATA_PASSWORD
 #' writeLines(c(
 #'   "machine urs.earthdata.nasa.gov",
-#'   sprintf("login %s", Sys.getenv("NASA_USER")),
-#'   sprintf("password %s", Sys.getenv("NASA_PASSWORD"))
+#'   sprintf("login %s", Sys.getenv("EARTHDATA_USERNAME")),
+#'   sprintf("password %s", Sys.getenv("EARTHDATA_PASSWORD"))
 #' ), netrc_conn)
 #'
 #' close(netrc_conn)
