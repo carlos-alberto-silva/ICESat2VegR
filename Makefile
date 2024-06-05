@@ -29,6 +29,8 @@ clean:
 	@rm -rf $(PKGNAME)_$(PKGVERS).tar.gz $(PKGNAME).Rcheck
 
 vignettes: doc
+
+doc: 
 	Rscript -e 'devtools::build_vignettes()'
 	rm doc/*.Rmd
 	rm doc/*.R
