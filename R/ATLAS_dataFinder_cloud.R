@@ -50,17 +50,19 @@ PAGE_SIZE <- 2000
 # #' daterange <- c("2019-07-01", "2020-05-22")
 # #'
 # #' # Extracting the path to ICESat-2 ATLAS data for the specified boundary box coordinates
-# #' ATLAS02b_list <- ATLAS_dataFinder_cloud(
+# #' ATLAS02b_list <- ATLAS_dataFinder(
 # #'   short_name = "ATL08",
-# #'   ul_lat,
-# #'   ul_lon,
-# #'   lr_lat,
-# #'   lr_lon,
+# #'   upper_right_lat,
+# #'   lower_left_lon,
+# #'   lower_left_lat,
+# #'   upper_right_lon,
 # #'   version = "006",
-# #'   daterange = daterange
+# #'   daterange = daterange,
+# #'   cloud_computing = TRUE
 # #' )
 # #' }
 # #' @import jsonlite curl magrittr reticulate
+#' @include earthaccess.R
 ATLAS_dataFinder_cloud <- function(short_name,
                                  lower_left_lon,
                                  lower_left_lat,
@@ -86,17 +88,8 @@ ATLAS_dataFinder_cloud <- function(short_name,
   # Try different authentication mechanisms
   py_to_r <- reticulate::py_to_r
 
-  auth <- earthaccess$login(strategy = "environment")
-  if (!py_to_r(auth$authenticated) && file.exists(".netrc")) {
-    auth <- earthaccess$login(strategy = "netrc")
-  }
-  if (!py_to_r(auth$authenticated)) {
-    auth <- earthaccess$login(strategy = "interactive", persist = persist)
-  }
-  if (!py_to_r(auth$authenticated)) {
-    stop("Could not authenticate in NASA earthaccess,
-    please verify your credentials.")
-  }
+  # Try to refresh login
+  earthaccess_login(persist)
 
   granule_query <- earthaccess$granule_query()
   granule_query$bounding_box(lower_left_lon, lower_left_lat, upper_right_lon, upper_right_lat)

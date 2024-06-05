@@ -21,11 +21,9 @@
 #' # Terra plot
 #' terra::plot(atl03_segment_vect, col = atl03_segment_vect$segment_ph_cnt)
 #'
-#' \donttest{
 #' # Export as temp gpkg
 #' temp_vect <- tempfile(fileext = ".gpkg")
 #' terra::writeVector(atl03_segment_vect, temp_vect)
-#' }
 #'
 #' head(atl03_segment_dt)
 #' close(atl03_h5)

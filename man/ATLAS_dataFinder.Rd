@@ -72,6 +72,9 @@ daterange <- c("2022-05-01", "2022-05-02")
 
 # Extracting the path to ICESat-2 ATLAS data for the specified boundary box coordinates
 # for data download
+\donttest{
+# Shouldn't be tested because it relies on a web service which might be down
+
 ATLAS02b_list <- ATLAS_dataFinder(
   short_name = "ATL08",
   lower_left_lon,
@@ -81,6 +84,7 @@ ATLAS02b_list <- ATLAS_dataFinder(
   version = "006",
   daterange = daterange
 )
+}
 }
 \seealso{
 bbox: Defined by the upper left and lower right corner coordinates,

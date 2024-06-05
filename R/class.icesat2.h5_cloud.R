@@ -18,7 +18,7 @@
 #' as most other provided functions will actually give access to the most
 #' common necessities for working with ICESat-2 data.
 #'
-#' @include class.icesat2.R class.icesat2.h5ds_cloud.R
+#' @include class.icesat2.R class.icesat2.h5ds_cloud.R earthaccess.R
 #' @import R6 reticulate
 #' @export
 ICESat2.h5_cloud <- R6::R6Class("ICESat2.h5_cloud", list(
@@ -44,6 +44,8 @@ try with only one granule [i].")
       sys$stdout <- py_builtins$open(os$devnull, "w")
       sys$stderr <- py_builtins$open(os$devnull, "w")
 
+      # Try to refresh login
+      earthaccess_login()
       granules <- earthaccess$open(list(h5))
 
       sys$stdout <- sys["__stdout__"]
@@ -52,6 +54,7 @@ try with only one granule [i].")
       h5file <- h5py$File(granules[0])
       self$h5 <- h5file
       groups <- self$ls()
+      stop("Listou!")
       self$beams <- grep("gt[1-3][lr]", groups, value = TRUE)
       separated_beams <- list(
         grep("l$", self$beams, value = TRUE),
