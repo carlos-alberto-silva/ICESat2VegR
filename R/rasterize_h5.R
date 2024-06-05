@@ -7,7 +7,7 @@ def_co <- c(
 )
 
 finalizer_default <- list(
-  sd = ~ sqrt(variance / (n - 1))
+  sd = ~ ifelse(n > 1, sqrt(variance / (n - 1)), NA)
   # skew = ~ sqrt((n * (n - 1))) * ((sqrt(n) * M3) / (variance^1.5)) / (n - 2),
   # kur = ~ ((n - 1) / ((n - 2) * (n - 3))) * ((n + 1) * ((n * M4) / (variance^2) - 3.0) + 6)
 )

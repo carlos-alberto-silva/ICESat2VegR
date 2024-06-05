@@ -56,7 +56,7 @@ for (atl08_h5_item in atl08_h5) {
 
 
 
-```{r, fig.align='center'}
+```{r, fig.align='center', message = FALSE, warnings = FALSE, fig.width = 10, fig.height = 8, out.width = "100%"}
 output_raster <- tempfile(fileext = ".tif")
 x <- predicted_h5[["longitude"]][]
 y <- predicted_h5[["latitude"]][]
