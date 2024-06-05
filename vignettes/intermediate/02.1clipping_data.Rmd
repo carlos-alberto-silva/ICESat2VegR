@@ -1,3 +1,11 @@
+```{r include = FALSE}
+child_setup <- file.path("../basic/00setup.Rmd")
+child_close <- file.path("../basic/01close.Rmd")
+```
+
+```{r child=child_setup}
+```
+
 ## Introduction
 
 Now we will use the clipping functions. There are two ways of
@@ -10,38 +18,36 @@ clipping data in ICESat2VegR:
     - `ATL08_seg_attributes_dt`
     - `ATL03_ATL08_photons_attributes_dt_join`
 
-## Clipping raw hdf5 data from ATL03
+The second method is preffered as it is faster and more efficient
+because it does not require reading the hdf5 and will clip only
+the subset of extracted attributes, while hdf5 has a lot of attributes
+that might not be needed.
 
-```{r}
-# Define hdf5 output file
-output <- tempfile(fileext = ".h5")
+There are multiple variants using either the bounding box or the 
+geomtry to clip the data suffixed with _clipBox or _clipGeometry:
 
-# Define bbox
-clip_region <- terra::ext(-83.2, -83.14, 32.12, 32.18)
+  1. `ATL03_h5_clipBox`
+  2. `ATL03_h5_clipGeometry`
+  3. `ATL03_seg_attributes_dt_clipBox`
+  4. `ATL03_seg_attributes_dt_clipGeometry`
+  5. `ATL03_photon_attributes_dt_clipBox`
+  6. `ATL03_photon_attributes_dt_clipGeometry`
+  7. `ATL08_h5_clipBox`
+  8. `ATL08_h5_clipGeometry`
+  9. `ATL08_seg_attributes_dt_clipBox`
+  10. `ATL08_seg_attributes_dt_clipGeometry`
+  11. `ATL03_ATL08_photons_attributes_dt_join_clipBox`
+  12. `ATL03_ATL08_photons_attributes_dt_join_clipGeometry`
 
-# Clip the data for only the first atl03 file
-atl03_clipped <- ATL03_h5_clipBox(atl03_h5[[1]], output, bbox = clip_region)
-
-atl03_seg_dt <- ATL03_seg_attributes_dt(atl03_h5[[1]], attributes = c("h_ph"))
-atl03_seg_dt_clip <- ATL03_seg_attributes_dt(atl03_clipped, attributes = c("h_ph"))
-
-# Display location of clipped data
-plot(
-  atl03_seg_dt$reference_photon_lon,
-  atl03_seg_dt$reference_photon_lat,
-  pch = 20,
-  xlab = "longitude",
-  ylab = "latitude"
-)
-points(atl03_seg_dt_clip$reference_photon_lon, atl03_seg_dt_clip$reference_photon_lat, col = "purple", pch = 3, cex = 1)
-rect(clip_region$xmin, clip_region$ymin, clip_region$xmax, clip_region$ymax, lty = 2)
-
-legend(col = c("black", "purple", "black"), legend = c("Original", "Clipped", "AOI"), pch = c(20, 3, NA), lty = c(NA, NA, 2), cex = 1, x = "topright")
-```
+In the following two sections there are two small examples
+on how to clip the raw HDF5 and the extracted attributes.
 
 ## Clipping raw hdf5 data from ATL08
 
-```{r}
+```{r, message = FALSE, fig.width = 5, out.width = '260', fig.height = 8, fig.align = "center"}
+# Define bbox
+clip_region <- terra::ext(-83.2, -83.14, 32.12, 32.18)
+
 # Define hdf5 output file
 output <- tempfile(fileext = ".h5")
 
@@ -65,13 +71,17 @@ rect(clip_region$xmin, clip_region$ymin, clip_region$xmax, clip_region$ymax, lty
 legend(col = c("black", "purple", "black"), legend = c("Original", "Clipped", "AOI"), pch = c(20, 3, NA), lty = c(NA, NA, 2), cex = 1, x = "topright")
 ```
 
-## Clipping extracted attributes from ATL08 segments
-```{r}
+## Clipping extracted attributes from ATL08 segments data
+```{r, fig.width = 5, out.width = 260, fig.height = 9, fig.align = "center"}
+aoi <- file.path(outdir, "example_aoi.gpkg")
+aoi_vect <- terra::vect(aoi)
+
 # Extract the h_canopy attribute from the first ATL08 file
-atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5[[1]], attributes = c("h_canopy"))
+atl08_seg_dt <- lapply(atl08_h5, ATL08_seg_attributes_dt, attributes = c("h_canopy"))
+atl08_seg_dt <- rbindlist2(atl08_seg_dt)
 
 # Clip the data for only the first atl08 file
-atl08_seg_dt_clip <- ATL08_seg_attributes_dt_clipBox(atl08_seg_dt, clip_region$xmin, clip_region$xmax, clip_region$ymin, clip_region$ymax)
+atl08_seg_dt_clip <- ATL08_seg_attributes_dt_clipGeometry(atl08_seg_dt, aoi_vect)
 
 plot(
   atl08_seg_dt$longitude,
@@ -81,7 +91,11 @@ plot(
   ylab = "latitude"
 )
 points(atl08_seg_dt_clip$longitude, atl08_seg_dt_clip$latitude, col = "purple", pch = 3, cex = 1)
-rect(clip_region$xmin, clip_region$ymin, clip_region$xmax, clip_region$ymax, lty = 2)
-
+aoi_geom <- terra::geom(aoi_vect)
+polygon(aoi_geom[,"x"], aoi_geom[,"y"], lty = 2)
 legend(col = c("black", "purple", "black"), legend = c("Original", "Clipped", "AOI"), pch = c(20, 3, NA), lty = c(NA, NA, 2), cex = 1, x = "topright")
+```
+
+
+```{r child=child_close}
 ```

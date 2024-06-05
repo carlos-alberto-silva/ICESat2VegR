@@ -10,7 +10,7 @@ persist <- TRUE
 daterange <- c("2019-08-19", "2019-08-20")
 
 # devtools::load_all()
-res <- ATLAS_dataFinder_cloud(
+res <- ATLAS_dataFinder(
   short_name,
   lower_left_lon,
   lower_left_lat,
@@ -18,12 +18,16 @@ res <- ATLAS_dataFinder_cloud(
   upper_right_lat,
   version,
   daterange,
-  persist
+  persist,
+  cloud_computing = TRUE
 )
 
 atl08_h5 <- ATL08_read(res[1])
 
-
+atl08_granule <- earthaccess$open(list(res[1]))
+reticulate::py_install("xarray")
+xarray <- reticulate::import("xarray")
+atl08_h5 <- xarray$open_dataset(atl08_granule[0])
 # # ATL08_photon.var.map
 # ATL08_photon.var.map <- list()
 # ATL08_photon.var.map[["ph_segment_id"]] <- "ph_segment_id"
@@ -42,7 +46,7 @@ atl08_h5 <- ATL08_read(res[1])
 #   beam <- intersect(groups_id, beam)
 #   photon.dt <- list()
 
-#   pb <- utils::txtProgressBar(min = 0, max = length(beam), style = 3)
+#   pb <- utils::txtProgressBar(min = 0, max = length(beam), style = 3, file = stderr())
 
 #   i_s <- 0
 

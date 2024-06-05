@@ -2,7 +2,7 @@
 % Please edit documentation in R/predict_h5.R
 \name{predict_h5,ANY,icesat2.atl08_dt,character-method}
 \alias{predict_h5,ANY,icesat2.atl08_dt,character-method}
-\title{Method for predicting using atl08 segments data}
+\title{S4 method for predicting using HDF5 file as output}
 \usage{
 \S4method{predict_h5}{ANY,icesat2.atl08_dt,character}(model, dt, output)
 }
@@ -18,7 +18,8 @@ An \code{\linkS4class{icesat2.predict_h5}}, which is an
 h5 file with latitude, longitude and prediction datasets.
 }
 \description{
-Method for predicting using atl08 segments data
+This method is used to predict using a trained model and
+save the results in HDF5 file.
 }
 \details{
 This method is used to predict using a trained model and

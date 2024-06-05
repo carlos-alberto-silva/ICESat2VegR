@@ -2,7 +2,7 @@
 % Please edit documentation in R/predict_h5.R
 \name{predict_h5}
 \alias{predict_h5}
-\title{S4 generic method for predicting using H5 model}
+\title{Model prediction over data.tables using HDF5 file as output}
 \usage{
 predict_h5(model, dt, output)
 }
@@ -18,11 +18,11 @@ An \code{\linkS4class{icesat2.predict_h5}}, which is an
 h5 file with latitude, longitude and prediction datasets.
 }
 \description{
-S4 generic method for predicting using H5 model
-}
-\details{
-This method is used to predict using a trained model and
-save the results in an HDF5 file.
+Model prediction over a data.table from ATL03 or ATL08 data
+containing geolocation data.
+It can both append results to an existing HDF5 file or
+create a new file, allowing to incrementally add predictions
+to the file to avoid memory issues.
 }
 \examples{
 atl03_path <- system.file(

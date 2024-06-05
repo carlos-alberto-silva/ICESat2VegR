@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Creating prediction combining large amount of data</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Creating prediction combining large amount
+of data</h1>
+
+
+
+<div id="opening-the-example-dataset" class="section level2">
+<h2>Opening the example dataset</h2>
+<p>As we will be working with multiple h5 granules, we will be using
+<code>lapply</code> for reading and extracting information from the
+granules.</p>
+<p>If you are working with a single granule you can execute the simpler
+instructions without <code>lapply</code> as per the function
+documentation examples instead.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Load the ICESat2VegR package</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(ICESat2VegR)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co"># Set output directory</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>outdir <span class="ot">&lt;-</span> <span class="fu">tempdir</span>()</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="co"># Download example dataset</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="fu">ATLAS_dataDownload</span>(</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>  <span class="st">&quot;https://github.com/carlos-alberto-silva/ICESat2VegR/releases/download/example_datasets/Study_Site.zip&quot;</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>  outdir</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>)</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a><span class="co"># Unzip the example dataset</span></span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="fu">unzip</span>(<span class="fu">file.path</span>(outdir, <span class="st">&quot;Study_Site.zip&quot;</span>), <span class="at">exdir =</span> outdir)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Find and read ATL03 dataset</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>atl03_files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(outdir, <span class="st">&quot;ATL03.*h5&quot;</span>, <span class="at">full.names =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>atl03_h5 <span class="ot">&lt;-</span> <span class="fu">lapply</span>(atl03_files, ATL03_read)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Find and read ATL08 dataset</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>atl08_files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(outdir, <span class="st">&quot;ATL08.*h5&quot;</span>, <span class="at">full.names =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>atl08_h5 <span class="ot">&lt;-</span> <span class="fu">lapply</span>(atl08_files, ATL08_read)</span></code></pre></div>
+</div>
+<div id="creating-a-simple-model-for-atl08-data" class="section level2">
+<h2>Creating a simple model for ATL08 data</h2>
+<p>Here, we will create a simple model to predict the canopy openness of
+ATL08 data based on the height of the canopy. We will use the
+<code>randomForest</code> package to create the model.</p>
+<p>Let’s assume we will fit the model on a subset of the ATL08 data and
+then predict the canopy openness for the rest of the data.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Extract atl08 data from the first file</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>atl08_seg_dt <span class="ot">&lt;-</span> <span class="fu">ATL08_seg_attributes_dt</span>(atl08_h5[[<span class="dv">1</span>]], <span class="at">attributes =</span> <span class="fu">c</span>(<span class="st">&quot;h_canopy&quot;</span>, <span class="st">&quot;canopy_openness&quot;</span>))</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co"># Avoid the weird NA values</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>atl08_seg_dt[h_canopy <span class="sc">&gt;</span> <span class="dv">100</span>, h_canopy <span class="sc">:=</span> <span class="cn">NA_real_</span>]</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>atl08_seg_dt[<span class="fu">is.na</span>(h_canopy), canopy_openness <span class="sc">:=</span> <span class="cn">NA_real_</span>]</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>atl08_seg_dt <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(atl08_seg_dt)</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>training <span class="ot">&lt;-</span> <span class="fu">sample</span>(atl08_seg_dt, <span class="at">method =</span> <span class="fu">randomSampling</span>(<span class="fl">0.7</span>))</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co"># For the sake of the example, we will train and test the model with the same data</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="fu">library</span>(randomForest)</span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>model <span class="ot">&lt;-</span> randomForest<span class="sc">::</span><span class="fu">randomForest</span>(canopy_openness <span class="sc">~</span> h_canopy, atl08_seg_dt)</span></code></pre></div>
+</div>
+<div id="predicting-atl08-data" class="section level2">
+<h2>Predicting ATL08 data</h2>
+<p>Now we will predict the data for the entire ATL08 dataset, this can
+be as large as you want. This will create or append the predicted values
+to an H5 file.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>out_h5 <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="at">fileext =</span> <span class="st">&quot;.h5&quot;</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="cf">for</span> (atl08_h5_item <span class="cf">in</span> atl08_h5) {</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  atl08_seg_dt <span class="ot">&lt;-</span> <span class="fu">ATL08_seg_attributes_dt</span>(atl08_h5_item, <span class="at">attributes =</span> <span class="fu">c</span>(<span class="st">&quot;h_canopy&quot;</span>, <span class="st">&quot;canopy_openness&quot;</span>))</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  atl08_seg_dt[h_canopy <span class="sc">&gt;</span> <span class="dv">100</span>, h_canopy <span class="sc">:=</span> <span class="cn">NA_real_</span>]</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  atl08_seg_dt[<span class="fu">is.na</span>(h_canopy), canopy_openness <span class="sc">:=</span> <span class="cn">NA_real_</span>]</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>  atl08_seg_dt <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(atl08_seg_dt)</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>  predicted_h5 <span class="ot">&lt;-</span> <span class="fu">predict_h5</span>(model, atl08_seg_dt, out_h5)</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="rasterizing-the-predicted-data" class="section level2">
+<h2>Rasterizing the predicted data</h2>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>output_raster <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="at">fileext =</span> <span class="st">&quot;.tif&quot;</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>x <span class="ot">&lt;-</span> predicted_h5[[<span class="st">&quot;longitude&quot;</span>]][]</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>y <span class="ot">&lt;-</span> predicted_h5[[<span class="st">&quot;latitude&quot;</span>]][]</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>bbox <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">ext</span>(<span class="fu">min</span>(x), <span class="fu">max</span>(x), <span class="fu">min</span>(y), <span class="fu">max</span>(y))</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co"># Creates the raster with statistics</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fl">0.005</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="fu">rasterize_h5</span>(predicted_h5, output_raster, <span class="at">bbox =</span> bbox, <span class="at">res =</span> res)</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co"># Open the raster by file path</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>out_rast <span class="ot">&lt;-</span> terra<span class="sc">::</span><span class="fu">rast</span>(output_raster)</span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="fu">names</span>(out_rast) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;n&quot;</span>, <span class="st">&quot;mean&quot;</span>, <span class="st">&quot;sd&quot;</span>, <span class="st">&quot;min&quot;</span>, <span class="st">&quot;max&quot;</span>)</span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>terra<span class="sc">::</span><span class="fu">plot</span>(out_rast)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="close-the-files" class="section level2">
+<h2>Close the files</h2>
+<p>Do not forget to close the files to properly release them.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">lapply</span>(atl08_h5, close)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="do">## Non lapply single file</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="co"># close(atl08_h5)</span></span></code></pre></div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

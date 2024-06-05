@@ -46,10 +46,19 @@ do_close <- FALSE
 ```{r child="vignettes/intermediate/03segment_attributes.Rmd"}
 ```
 
+```{r child="vignettes/intermediate/02.1clipping_data.Rmd"}
+```
+
 ```{r child="vignettes/intermediate/04joining_photons.Rmd"}
 ```
 
+```{r child="vignettes/intermediate/04.1differentSizeSegments.Rmd"}
+```
+
 ```{r child="vignettes/intermediate/05gee_modelling.Rmd"}
+```
+
+```{r child="vignettes/intermediate/06predict_h5.Rmd"}
 ```
 
 ```{r include=FALSE}

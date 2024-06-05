@@ -151,7 +151,7 @@ m_dt <- list(terrain=data.table::data.table(),
 
 canopy.dt <- data.table::data.table()
 
-pb <- utils::txtProgressBar(min = 0, max = length(canopy_attribute), style = 3)
+pb <- utils::txtProgressBar(min = 0, max = length(canopy_attribute), style = 3, file = stderr())
 i_s = 0
 
 if (length(canopy_attribute) > 1) { glist="canopy"}
@@ -500,7 +500,7 @@ getLevel2AM<-function(level2a){
   groups_id<-grep("BEAM\\d{4}$",gsub("/","",
                                      hdf5r::list.groups(level2a, recursive = F)), value = TRUE)
   rh.dt<-data.table::data.table()
-  pb <- utils::txtProgressBar(min = 0, max = length(groups_id), style = 3)
+  pb <- utils::txtProgressBar(min = 0, max = length(groups_id), style = 3, file = stderr())
   i.s=0
 
   for ( i in groups_id){

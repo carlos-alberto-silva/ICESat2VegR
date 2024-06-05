@@ -7,15 +7,15 @@ def_co <- c(
 )
 
 default_finalizer <- list(
-  sd = ~ sqrt(M2 / (n - 1))
-  # skew = ~ sqrt((n * (n - 1))) * ((sqrt(n) * M3) / (M2^1.5)) / (n - 2),
-  # kur = ~ ((n - 1) / ((n - 2) * (n - 3))) * ((n + 1) * ((n * M4) / (M2^2) - 3.0) + 6)
+  sd = ~ sqrt(variance / (n - 1))
+  # skew = ~ sqrt((n * (n - 1))) * ((sqrt(n) * M3) / (variance^1.5)) / (n - 2),
+  # kur = ~ ((n - 1) / ((n - 2) * (n - 3))) * ((n + 1) * ((n * M4) / (variance^2) - 3.0) + 6)
 )
 
 default_agg_function <- ~ data.table::data.table(
   n = length(x),
-  M1 = mean(x, na.rm = TRUE),
-  M2 = var(x) * (length(x) - 1),
+  mean = mean(x, na.rm = TRUE),
+  variance = var(x) * (length(x) - 1),
   # M3 = e1071::moment(x, order = 3, center = TRUE, na.rm = TRUE) * length(x),
   # M4 = e1071::moment(x, order = 4, center = TRUE, na.rm = TRUE) * length(x),
   min = min(x, na.rm = TRUE),
@@ -25,8 +25,8 @@ default_agg_function <- ~ data.table::data.table(
 default_agg_join <- function(x1, x2) {
   combined <- data.table()
   x1$n[is.na(x1$n)] <- 0
-  x1$M1[is.na(x1$M1)] <- 0
-  x1$M2[is.na(x1$M2)] <- 0
+  x1$mean[is.na(x1$mean)] <- 0
+  x1$variance[is.na(x1$variance)] <- 0
   # x1$M3[is.na(x1$M3)] <- 0
   # x1$M4[is.na(x1$M4)] <- 0
   x1$max[is.na(x1$max)] <- -Inf
@@ -34,23 +34,23 @@ default_agg_join <- function(x1, x2) {
 
   combined$n <- x1$n + x2$n
 
-  delta <- x2$M1 - x1$M1
+  delta <- x2$mean - x1$mean
   delta2 <- delta * delta
   # delta3 <- delta * delta2
   # delta4 <- delta2 * delta2
 
-  combined$M1 <- (x1$n * x1$M1 + x2$n * x2$M1) / combined$n
+  combined$mean <- (x1$n * x1$mean + x2$n * x2$mean) / combined$n
 
-  combined$M2 <- x1$M2 + x2$M2 +
+  combined$variance <- x1$variance + x2$variance +
     delta2 * x1$n * x2$n / combined$n
 
   # combined$M3 <- x1$M3 + x2$M3 +
   #   delta3 * x1$n * x2$n * (x1$n - x2$n) / (combined$n * combined$n)
-  # combined$M3 <- combined$M3 + 3.0 * delta * (x1$n * x2$M2 - x2$n * x1$M2) / combined$n
+  # combined$M3 <- combined$M3 + 3.0 * delta * (x1$n * x2$variance - x2$n * x1$variance) / combined$n
 
   # combined$M4 <- x1$M4 + x2$M4 + delta4 * x1$n * x2$n * (x1$n * x1$n - x1$n * x2$n + x2$n * x2$n) /
   #   (combined$n * combined$n * combined$n)
-  # combined$M4 <- combined$M4 + 6.0 * delta2 * (x1$n * x1$n * x2$M2 + x2$n * x2$n * x1$M2) / (combined$n * combined$n) +
+  # combined$M4 <- combined$M4 + 6.0 * delta2 * (x1$n * x1$n * x2$variance + x2$n * x2$n * x1$variance) / (combined$n * combined$n) +
   #   4.0 * delta * (x1$n * x2$M3 - x2$n * x1$M3) / combined$n
 
   combined$min <- pmin(x1$min, x2$min, na.rm = F)
@@ -65,7 +65,8 @@ default_agg_join <- function(x1, x2) {
 #'
 #' @param atl08_dir CharacterVector. The directory paths where the ATL08 H5 files are stored;
 #' @param metrics CharacterVector. A vector of canopy attributes available from ATL08 product (e.g. "h_canopy")
-#' @param out_root Character. The root name for the raster output files, the pattern is {out_root}_{metric}_{count/m1/m2/m3/m4}.tif. This should include the full path for the file.
+#' @param out_root Character. The root name for the raster output files, the pattern is
+#' \{out_root\}_\{metric\}_\{count/m1/m2\}.tif. This should include the full path for the file.
 #' @param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
 #' @param ul_lat Numeric. Upper left latitude for the bounding box
 #' @param ul_lon Numeric. Upper left longitude for the bounding box
@@ -78,15 +79,11 @@ default_agg_join <- function(x1, x2) {
 #' @param finalizer List<name, formula>. A list with the final raster names and the formula which uses the base statistics.
 #'
 #' @details
-#' This function will create seven different aggregate statistics
-#' (n, mean, variance, min, max). m1 to m4 are the central moments.
+#' This function will create five different aggregate statistics
+#' (n, mean, variance, min, max).
 #' One can calculate mean and standard deviation with the following
 #' formulas according to Terriberry (2007) and
 #' \insertCite{Joanes1998;textual}{ICESat2VegR}:
-#'
-#' \deqn{ \bar{x} = m_1 }{mean = m1}
-#'
-#' \deqn{ s = \sqrt{\frac{m_2}{n - 1}} }{sd = sqrt(m2/(n - 1))}
 #'
 #' The `agg_function` is a formula which return a data.table with the
 #' aggregate function to perform over the data.
@@ -95,8 +92,8 @@ default_agg_join <- function(x1, x2) {
 #' ```
 #' ~data.table(
 #'     n = length(x),
-#'     M1 = mean(x,na.rm = TRUE),
-#'     M2 = e1071::moment(x, order = 2, center = TRUE, na.rm = TRUE) * length(x),
+#'     mean = mean(x,na.rm = TRUE),
+#'     var = var(x) * (length(x) - 1),
 #'     min = min(x, na.rm=T),
 #'     max = max(x, na.rm=T)
 #'   )
@@ -111,18 +108,18 @@ default_agg_join <- function(x1, x2) {
 #' function(x1, x2) {
 #'     combined = data.table()
 #'     x1$n[is.na(x1$n)] = 0
-#'     x1$M1[is.na(x1$M1)] = 0
-#'     x1$M2[is.na(x1$M2)] = 0
+#'     x1$mean[is.na(x1$mean)] = 0
+#'     x1$variance[is.na(x1$variance)] = 0
 #'     x1$max[is.na(x1$max)] = -Inf
 #'     x1$min[is.na(x1$min)] = Inf
 #'
 #'     combined$n = x1$n + x2$n
 #'
-#'     delta = x2$M1 - x1$M1
+#'     delta = x2$mean - x1$mean
 #'     delta2 = delta * delta
 #'
-#'     combined$M1 = (x1$n * x1$M1 + x2$n * x2$M1) / combined$n
-#'     combined$M2 = x1$M2 + x2$M2 +
+#'     combined$mean = (x1$n * x1$mean + x2$n * x2$mean) / combined$n
+#'     combined$variance = x1$variance + x2$variance +
 #'       delta2 * x1$n * x2$n / combined$n
 #'
 #'     combined$min = pmin(x1$min, x2$min, na.rm=F)
@@ -134,12 +131,12 @@ default_agg_join <- function(x1, x2) {
 #' The `finalizer` is a list of formulas to generate the final
 #' rasters based on the intermediate statistics from the previous
 #' functions. The default `finalizer` will calculate the `sd`,
-#' `skewness` and `kurtosis` based on the `M2`, `M3`, `M4` and `n`
+#' `skewness` and `kurtosis` based on the `variance`, `M3`, `M4` and `n`
 #' values. It is defined as:
 #'
 #' ```
 #' list(
-#'   sd = ~sqrt(M2/(n - 1)),
+#'   sd = ~sqrt(variance/(n - 1)),
 #' )
 #' ```
 #'

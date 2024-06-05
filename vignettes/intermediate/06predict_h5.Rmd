@@ -56,14 +56,17 @@ for (atl08_h5_item in atl08_h5) {
 
 ```{r}
 output_raster <- tempfile(fileext = ".tif")
-x <- predicted_h5[['longitude']][]
-y <- predicted_h5[['latitude']][]
+x <- predicted_h5[["longitude"]][]
+y <- predicted_h5[["latitude"]][]
 bbox <- terra::ext(min(x), max(x), min(y), max(y))
 
+# Creates the raster with statistics
 res <- 0.005
 rasterize_h5(predicted_h5, output_raster, bbox = bbox, res = res)
+
+# Open the raster by file path
 out_rast <- terra::rast(output_raster)
-names(out_rast) = c("n", "mean", "sd", "min", "max")
+names(out_rast) <- c("n", "mean", "sd", "min", "max")
 terra::plot(out_rast)
 ```
 

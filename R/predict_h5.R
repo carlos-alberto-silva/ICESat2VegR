@@ -4,15 +4,17 @@ internal_predict_h5 <- new.env()
 internal_predict_h5$path <- ""
 internal_predict_h5$h5 <- NULL
 
-#' S4 generic method for predicting using H5 model
+#' Model prediction over data.tables using HDF5 file as output
+#'
+#' Model prediction over a data.table from ATL03 or ATL08 data
+#' containing geolocation data.
+#' It can both append results to an existing HDF5 file or
+#' create a new file, allowing to incrementally add predictions
+#' to the file to avoid memory issues.
 #'
 #' @param model The trained model object
 #' @param dt The input data.table to run the model
 #' @param output The output HDF5 file path
-#'
-#' @details
-#' This method is used to predict using a trained model and
-#' save the results in an HDF5 file.
 #'
 #' @return An [`icesat2.predict_h5-class`], which is an
 #' h5 file with latitude, longitude and prediction datasets.
@@ -44,15 +46,15 @@ internal_predict_h5$h5 <- NULL
 setGeneric("predict_h5", function(model, dt, output) {
   standardGeneric("predict_h5")
 })
-#' Method for predicting using atl03 segments data
+
+#' S4 method for predicting using HDF5 file as output
+#'
+#' This method is used to predict using a trained model and
+#' save the results in HDF5 file.
 #'
 #' @param model The trained model object
 #' @param dt The input data.table to run the model
 #' @param output The output file path
-#'
-#' @details
-#' This method is used to predict using a trained model and
-#' save the results in an HDF5 file.
 #'
 #' @return An [`icesat2.predict_h5-class`], which is an
 #' h5 file with latitude, longitude and prediction
@@ -99,7 +101,10 @@ setMethod(
 )
 
 
-#' Method for predicting using atl08 segments data
+#' S4 method for predicting using HDF5 file as output
+#'
+#' This method is used to predict using a trained model and
+#' save the results in HDF5 file.
 #'
 #' @param model The trained model object
 #' @param dt The input data.table to run the model

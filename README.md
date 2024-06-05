@@ -22,11 +22,11 @@ for Land and Vegetation Applications in R environment.
 # Getting started
 
 ``` r
+# The r-universe version (recommended for the latest version)
+install.packages("ICESat2VegR",  repos = 'https://caiohamamura.r-universe.dev')
+
 # The CRAN version
 install.packages("ICESat2VegR")
-
-# Development version
-remotes::install_github("https://github.com/carlos-alberto-silva/ICESat2VegR")
 ```
 
 ## Load the package
@@ -60,7 +60,8 @@ This will install miniconda if not available and the necessary packages.
 - There are some issues regarding some Python packages not being
   compatible with the Python version. The above configure function will
   also try to update python version in that case.
-- The configure function will warn you about the need to restart R
+- The configure function may warn you about the need to restart R after
+  installing some packages, restart if needed.
 
 ## Introduction
 
@@ -73,7 +74,17 @@ are working within an AWS cloud computing within zone us-west-2.
 As we will be working with multiple h5 granules, we will be using
 `lapply` for reading and extracting information from the granules.
 
+If you are working with a single granule you can execute the simpler
+instructions without `lapply` as per the function documentation examples
+instead.
+
 ``` r
+# Load the ICESat2VegR package
+library(ICESat2VegR)
+
+# Set output directory
+outdir <- tempdir()
+
 # Download example dataset
 ATLAS_dataDownload(
   "https://github.com/carlos-alberto-silva/ICESat2VegR/releases/download/example_datasets/Study_Site.zip",
@@ -279,7 +290,7 @@ hist(atl08_seg_dt$h_canopy, col = "green", xlab = "Height (m)", main = "ATL08 h_
 
 <div class="figure" style="text-align: center">
 
-<img src="README_files/figure-gfm/unnamed-chunk-68-1.png" alt="Histograms for ATL03 elevation and ATL08 h_canopy"  />
+<img src="README_files/figure-gfm/unnamed-chunk-69-1.png" alt="Histograms for ATL03 elevation and ATL08 h_canopy"  />
 <p class="caption">
 Histograms for ATL03 elevation and ATL08 h_canopy
 </p>
@@ -319,6 +330,10 @@ mapview::mapView(
 </div>
 
 ``` r
+# Extract vector from atl08_seg_dt
+atl08_seg_vect <- to_vect(atl08_seg_dt)
+
+# Palette function
 greenYellowRed <- function(n) {
   grDevices::hcl.colors(n, "RdYlGn")
 }
@@ -345,8 +360,8 @@ Save vector as geopackage file. The formats supported are as from GDAL
 terra package.
 
 ``` r
-terra::writeVector(atl03_seg_vect, "atl03_seg.gpkg")
-terra::writeVector(atl08_seg_vect, "atl08_seg.gpkg")
+terra::writeVector(atl03_seg_vect, file.path(outdir, "atl03_seg.gpkg"))
+terra::writeVector(atl08_seg_vect, file.path(outdir, "atl08_seg.gpkg"))
 ```
 
 ## View ATL08 segments as raster
@@ -425,12 +440,6 @@ close(atl03_h5)
 ```
 
 ## Extract attributes
-
-``` r
-atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5, beam = "gt1r")
-
-head(atl03_atl08_dt)
-```
 
 <div align="center" style="overflow-x: scroll;">
 
@@ -548,7 +557,7 @@ the Harmonized Landsat Sentinel-2 dataset (hls).
 ## Extract ATL08 segment attributes h_canopy attribute
 
 ``` r
-atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5, attribute = "h_canopy")
+atl08_seg_dt <- lapply(atl08_h5, ATL08_seg_attributes_dt, attribute = "h_canopy")
 head(atl08_seg_dt)
 ```
 
@@ -747,7 +756,7 @@ barplot(rf_importance[, "IncNodePurity"], main = "Variable importance (Increase 
 
 <div class="figure" style="text-align: center">
 
-<img src="README_files/figure-gfm/unnamed-chunk-184-1.png" alt="Random forests variable importance (increase node impurity)." width="500" />
+<img src="README_files/figure-gfm/unnamed-chunk-182-1.png" alt="Random forests variable importance (increase node impurity)." width="500" />
 <p class="caption">
 Random forests variable importance (increase node impurity).
 </p>
@@ -816,6 +825,18 @@ Do not forget to close the files to properly release them.
 close(atl03_h5)
 ```
 
+## Close the files
+
+Do not forget to close the files to properly release them.
+
+``` r
+close(atl03_h5)
+```
+
+``` r
+close(atl08_h5)
+```
+
 # Acknowledgements
 
 We gratefully acknowledge funding from NASA’s ICESat-2 (ICESat-2, grant
@@ -830,7 +851,7 @@ Please report any issue regarding the ICESat2VegR package to Dr. Silva
 
 # Citing ICESat2VegR
 
-Silva,C.A; Hamamura,C.ICESat2VegR: An R Package for NASA’s Ice, Cloud,
+Silva,C.A; Hamamura,C. ICESat2VegR: An R Package for NASA’s Ice, Cloud,
 and Elevation Satellite (ICESat-2) Data Processing and Visualization for
 Terrestrial Applications.version 0.0.1, accessed on November. 22 2023,
 available at: <https://CRAN.R-project.org/package=ICESat2VegR>

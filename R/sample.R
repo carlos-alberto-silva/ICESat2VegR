@@ -141,7 +141,7 @@ stratifiedSamplingWorker <- function(dt, size, variable, chainSampling = NULL, .
   # variable <- "h_canopy"
 
   y <- dt[, .SD, .SDcols = variable][[1]]
-  hist_bins <- hist(y, plot = FALSE, ...)
+  hist_bins <- graphics::hist(y, plot = FALSE, ...)
 
   grouped <- dt[, cbind(.SD, breaks = cut(y, hist_bins$breaks))]
   grouped[, I := .I]

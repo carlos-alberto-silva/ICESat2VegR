@@ -27,3 +27,10 @@ install: build
 
 clean:
 	@rm -rf $(PKGNAME)_$(PKGVERS).tar.gz $(PKGNAME).Rcheck
+
+vignettes: doc
+	Rscript -e 'devtools::build_vignettes()'
+	rm doc/*.Rmd
+	rm doc/*.R
+	rm -rf inst/doc
+	mv doc inst/doc

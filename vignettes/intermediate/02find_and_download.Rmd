@@ -73,7 +73,7 @@ atl03_h5[[1]]$ls()
 ```
 
 ## Working in the cloud
-```{r cloud_find, cache=FALSE}
+```{r cloud_find, cache=FALSE, eval = FALSE}
 atl03_granules_cloud <- ATLAS_dataFinder(
   short_name = "ATL03",
   lower_left_lon,
@@ -85,34 +85,26 @@ atl03_granules_cloud <- ATLAS_dataFinder(
   persist = TRUE,
   cloud_computing = TRUE
 )
-
-head(atl03_granules_cloud)
 ```
 
 In cloud computing you don't need to download data, instead you can 
 read the data and start working with it.
 
-```{r, cache=FALSE}
+```{r, cache=FALSE, eval = FALSE}
 # Read the granule (the ATL03_read can only read one granule per read)
 atl03_h5_cloud <- ATL03_read(atl03_granules_cloud[1])
 
 # List groups within the h5 in cloud
-atl03_h5_cloud$ls()
+atl03_h5_cloud$beams
 ```
 
-```{r, cache=FALSE}
-# Which are strong beams
-print(atl03_h5_cloud$strong_beams)
-```
-
-```{r, cache=FALSE}
-# Orientation 0=forward, 1=backwards, 2=transition
-print(atl03_h5_cloud[["orbit_info/sc_orient"]][])
+```{r}
+## gt1l gt1r gt2l gt2r gt3l gt3r
 ```
 
 ```{r child=child_close}
 ```
 
-```{r}
+```{r, eval = FALSE}
 close(atl03_h5_cloud)
 ```
