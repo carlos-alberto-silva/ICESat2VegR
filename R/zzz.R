@@ -75,8 +75,8 @@ ee_cache$search <- NULL
   }
   base::packageStartupMessage(
     paste("\n##----------------------------------------------------------------##\n",
-      "##ICESat2VegR package, version ", info$Version, ", Released ", info$Date,
-       "     ##",
+      "##  ICESat2VegR package, version ", info$Version, ", Released ", info$Date,
+       "    #",
       "\n##----------------------------------------------------------------##\n",
       "\n",
       "This package is developed by Carlos A. Silva (c.silva@ufl.edu) and \n",
