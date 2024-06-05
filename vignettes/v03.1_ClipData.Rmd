@@ -1,0 +1,27 @@
+---
+title: "Clipping HDF and extracted data for an area of interest"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{v03.1_ClipData}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r include = FALSE}
+use_atl08_h5 <- TRUE
+hide_close03 <- TRUE
+
+if (!exists("vignettes_path")) {
+  vignettes_path <- "."
+}
+
+children_run <- file.path(vignettes_path, c(
+  "intermediate/02.1clipping_data.Rmd"
+))
+suppressWarnings(rm("first_setup_run", "hide_close08", "is_readme"))
+
+```
+
+```{r child=children_run}
+```
