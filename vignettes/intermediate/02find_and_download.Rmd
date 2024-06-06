@@ -54,22 +54,30 @@ Now we download the granules:
 
 ```{r eval = FALSE}
 # Download all granules
-ATLAS_dataDownload(atl03_granules_local, "/the/directory/to/save")
+ATLAS_dataDownload(atl03_granules_local, outdir)
 ```
 
 And then we can open and work with them
 
 ```{r eval = FALSE}
+## ATL03
 # Read the granules
-atl03_h5 <- ATL03_read("/the/directory/to/save/name_of_granule.h5")
+atl03_files <- list.files(outdir, "ATL03.*h5", full.names = TRUE)
+atl03_h5 <- lapply(atl03_files, ATL03_read)
 
-# List groups within atl03_h5
-atl03_h5$ls()
+
+## ATL08
+# Read the granules
+atl08_files <- list.files(outdir, "ATL08.*h5", full.names = TRUE)
+atl08_h5 <- lapply(atl08_files, ATL08_read)
+
+# List groups within first file of atl08_h5
+atl08_h5[[1]]$ls()
 ```
 
 ```{r read, echo = FALSE}
 # List groups within atl03_h5
-atl03_h5[[1]]$ls()
+atl08_h5[[1]]$ls()
 ```
 
 ## Working in the cloud

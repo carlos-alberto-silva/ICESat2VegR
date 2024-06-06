@@ -54,6 +54,12 @@ In this example we will model the `h_canopy` of the ICESat-2 using only the Harm
 
 ```{r, eval = FALSE}
 atl08_seg_dt <- lapply(atl08_h5, ATL08_seg_attributes_dt, attribute = "h_canopy")
+
+atl08_seg_dt <- rbindlist2(atl08_seg_dt)
+
+# Remove h_canopy values that are above 100m
+atl08_seg_dt <- atl08_seg_dt[h_canopy < 100]
+
 head(atl08_seg_dt)
 ```
 
@@ -215,7 +221,15 @@ bandNames <- names(hls)
 x <- extracted_dt[, .SD, .SDcols = bandNames]
 y <- extracted_dt[["h_canopy"]]
 
-rf_model <- randomForest::randomForest(x, y, ntree = 500, mtry = 1)
+# Mask the NA values
+na_mask <- y < 100
+
+x <- x[na_mask]
+y <- y[na_mask]
+
+set.seed(1)
+
+rf_model <- randomForest::randomForest(x, y, ntree = 300, mtry = 1)
 print(rf_model)
 ```
 
@@ -245,6 +259,13 @@ result <- hls$classify(gee_model)
 min_hcanopy <- min(atl08_seg_dt$h_canopy)
 max_hcanopy <- 20
 atl08_seg_vect$h_canopy <- round(atl08_seg_vect$h_canopy, 3) # Round off to 3 decimal places
+
+map <- terra::plet(
+  atl08_seg_vect,
+  "h_canopy",
+  palette_colors,
+  tiles = ""
+)
 
 modelled_map <- terra::plet(
   atl08_seg_vect,
@@ -287,6 +308,9 @@ modelled_map
 
 ```{r echo = FALSE, fig.cap = 'Upscalling of ICESat-2 ATL08 h_canopy data', message = FALSE, warning = FALSE, out.height='400', out.width='500', fig.align="center"}
 gee_model <- build_ee_forest(rf_model)
+```
+
+```{r echo = FALSE, fig.cap = 'Upscalling of ICESat-2 ATL08 h_canopy data', message = FALSE, warning = FALSE, out.height='400', out.width='500', fig.align="center"}
 result <- hls$classify(gee_model)
 min_hcanopy <- min(atl08_seg_dt$h_canopy)
 max_hcanopy <- 20

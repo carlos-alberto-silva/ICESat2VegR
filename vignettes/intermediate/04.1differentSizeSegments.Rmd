@@ -54,7 +54,7 @@ data and create segments based on a specified segment length.
 ```{r child=child_setup}
 ```
 
-```{r, eval = FALSE, echo = !exists("atl03_atl08_dt")}
+```{r, eval = FALSE}
 # Herein as we are working with list of h5 files we will need
 # to loop over each file and extract the attributes and then
 # concatenate them with rbindlist2
@@ -91,7 +91,7 @@ atl03_atl08_photons_grouped_dt <- ATL03_ATL08_segment_create(atl03_atl08_dt,
 ```
 
 ## Compute Segment Statistics
-```{r}
+```{r, results = 'hide'}
 atl03_atl08_seg_dt <- ATL03_ATL08_compute_seg_attributes_dt_segStat(
   atl03_atl08_photons_grouped_dt,
   list(
@@ -107,6 +107,15 @@ atl03_atl08_seg_dt <- ATL03_ATL08_compute_seg_attributes_dt_segStat(
 
 head(atl03_atl08_seg_dt)
 ```
+
+<div align="center" style="overflow-x: scroll;">
+
+```{r echo = FALSE, results = 'asis'}
+print(head(atl03_atl08_seg_dt))
+```
+
+</div>
+
 
 ## Convert to SpatVector
 

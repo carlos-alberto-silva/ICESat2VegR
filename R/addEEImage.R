@@ -105,10 +105,12 @@ setMethod(
     url <- vis$getMapId()$tile_fetcher$url_format
 
     return(
-      leaflet::addTiles(
-        map,
-        urlTemplate = url,
-        ...
+      invisible(
+        leaflet::addTiles(
+          map,
+          urlTemplate = url,
+          ...
+        )
       )
     )
   }

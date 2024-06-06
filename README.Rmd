@@ -34,6 +34,8 @@ print.icesat2.atl08_dt <- function(x, ...) print(knitr::kable(x))
 print.icesat2.atl03_dt <- function(x, ...) print(knitr::kable(x))
 print.icesat2.atl03atl08_dt <- function(x, ...) print(knitr::kable(x))
 
+hide_close03 <- TRUE
+hide_close08 <- TRUE
 do_close <- FALSE
 ```
 
@@ -43,20 +45,32 @@ do_close <- FALSE
 ```{r child="vignettes/intermediate/02find_and_download.Rmd"}
 ```
 
+# Working with segments attributes form ATL03 and ATL08
+
 ```{r child="vignettes/intermediate/03segment_attributes.Rmd"}
 ```
+
+# Clipping ATL03 and ATL08 data
 
 ```{r child="vignettes/intermediate/02.1clipping_data.Rmd"}
 ```
 
+# Joining ATL03 and ATL08 data
+
 ```{r child="vignettes/intermediate/04joining_photons.Rmd"}
 ```
+
+# Calculating ATL08 metrics for different size segments other than 100m and 20m
 
 ```{r child="vignettes/intermediate/04.1differentSizeSegments.Rmd"}
 ```
 
+# Upscalling ATL08 h_canopy data using Harmonized Landsat-Sentinel-2 (HLS) data
+
 ```{r child="vignettes/intermediate/05gee_modelling.Rmd"}
 ```
+
+# Predicting and rasterizing ATL08 h_canopy data using Machine Learning models
 
 ```{r child="vignettes/intermediate/06predict_h5.Rmd"}
 ```

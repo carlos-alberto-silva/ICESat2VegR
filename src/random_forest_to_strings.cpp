@@ -1,6 +1,7 @@
 #include <R.h>
 #include <Rcpp.h>
 #include "random_forest_to_strings.h"
+#include <cstdint>
 
 using namespace Rcpp;
 
@@ -13,31 +14,31 @@ CharacterVector build_forest(List rf)
   {
     std::stringstream temp;
     temp << "1) root 9999 9999 ";
-    visitNode(temp, rf, 1, 1, 1, ii);
+    visitNode(temp, rf, 1UL, 1UL, 1, ii);
     output(ii) = temp.str();
   }
 
   return output;
 }
 
-void visitNode(std::stringstream &temp, List rf, int idx, int previdx = 1, int depth = 1, int tree = 1)
+void visitNode(std::stringstream &temp, List rf, uint64_t idx, uint64_t previdx = 1, int depth = 1, int tree = 1)
 {
   List rfobj = rf["forest"];
   // Accessing columns from DataFrame
   IntegerMatrix leftDaughter = rfobj["leftDaughter"];
-  int left_idx = leftDaughter(idx - 1, tree);
+  uint64_t left_idx = leftDaughter(idx - 1, tree);
 
   NumericMatrix importance = rf["importance"];
   CharacterVector importanceNames = rownames(importance);
   IntegerMatrix bestvar = rfobj["bestvar"];
-  int var_idx = bestvar(idx - 1, tree);
+  uint64_t var_idx = bestvar(idx - 1, tree);
   auto split_var = var_idx > 0 ? Rcpp::as<std::string>(importanceNames[var_idx - 1]) : "";
 
   NumericMatrix xbestsplit = rfobj["xbestsplit"];
   double split_point = xbestsplit(idx - 1, tree);
 
   IntegerMatrix rightDaughter = rfobj["rightDaughter"];
-  int right_idx = rightDaughter(idx - 1, tree);
+  uint64_t right_idx = rightDaughter(idx - 1, tree);
 
   NumericMatrix nodepred = rfobj["nodepred"];
   double node_prediction = nodepred(idx - 1, tree);

@@ -68,6 +68,6 @@ if (require("leaflet")) {
       max_value = 0.2
     ) \%>\%
     setView(lng = -82.2345, lat = 29.6552, zoom = 10)
-  }
+}
 }
 }

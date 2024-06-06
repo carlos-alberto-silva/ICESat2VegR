@@ -21,9 +21,19 @@ for Land and Vegetation Applications in R environment.
 
 # Getting started
 
+Install dependency for rasterizing functions:
+
+    ## Installing package into 'C:/Users/caiohamamura/AppData/Local/Temp/Rtmp86oqED/temp_libpath7fc01b53e91'
+    ## (as 'lib' is unspecified)
+
+    ## package 'gdalBindings' successfully unpacked and MD5 sums checked
+    ## 
+    ## The downloaded binary packages are in
+    ##  C:\Users\caiohamamura\AppData\Local\Temp\RtmpAH0u9E\downloaded_packages
+
 ``` r
 # The r-universe version (recommended for the latest version)
-install.packages("ICESat2VegR",  repos = 'https://caiohamamura.r-universe.dev')
+install.packages("ICESat2VegR", , repos = c("https://caiohamamura.r-universe.dev", "https://cloud.r-project.org"))
 
 # The CRAN version
 install.packages("ICESat2VegR")
@@ -141,22 +151,30 @@ Now we download the granules:
 
 ``` r
 # Download all granules
-ATLAS_dataDownload(atl03_granules_local, "/the/directory/to/save")
+ATLAS_dataDownload(atl03_granules_local, outdir)
 ```
 
 And then we can open and work with them
 
 ``` r
+## ATL03
 # Read the granules
-atl03_h5 <- ATL03_read("/the/directory/to/save/name_of_granule.h5")
+atl03_files <- list.files(outdir, "ATL03.*h5", full.names = TRUE)
+atl03_h5 <- lapply(atl03_files, ATL03_read)
 
-# List groups within atl03_h5
-atl03_h5$ls()
+
+## ATL08
+# Read the granules
+atl08_files <- list.files(outdir, "ATL08.*h5", full.names = TRUE)
+atl08_h5 <- lapply(atl08_files, ATL08_read)
+
+# List groups within first file of atl08_h5
+atl08_h5[[1]]$ls()
 ```
 
-    ## [1] "METADATA"               "ancillary_data"         "atlas_impulse_response"
-    ## [4] "gt1r"                   "gt2r"                   "gt3r"                  
-    ## [7] "orbit_info"             "quality_assessment"
+    ## [1] "METADATA"           "ancillary_data"     "gt1r"              
+    ## [4] "gt2r"               "gt3r"               "orbit_info"        
+    ## [7] "quality_assessment"
 
 ## Working in the cloud
 
@@ -172,15 +190,7 @@ atl03_granules_cloud <- ATLAS_dataFinder(
   persist = TRUE,
   cloud_computing = TRUE
 )
-
-head(atl03_granules_cloud)
 ```
-
-    ## Collection: {'EntryTitle': 'ATLAS/ICESat-2 L2A Global Geolocated Photon Data V006'}
-    ## Spatial coverage: {'HorizontalSpatialDomain': {'Geometry': {'GPolygons': [{'Boundary': {'Points': [{'Longitude': 167.89473, 'Latitude': 59.54564}, {'Longitude': 167.67404, 'Latitude': 59.53425}, {'Longitude': 167.81095, 'Latitude': 58.84718}, {'Longitude': 168.29123, 'Latitude': 56.32957}, {'Longitude': 168.82548, 'Latitude': 53.24275}, {'Longitude': 169.43429, 'Latitude': 49.36326}, {'Longitude': 169.987, 'Latitude': 45.51084}, {'Longitude': 170.50035, 'Latitude': 41.65845}, {'Longitude': 170.98695, 'Latitude': 37.77973}, {'Longitude': 171.54559, 'Latitude': 33.0688}, {'Longitude': 172.15242, 'Latitude': 27.69247}, {'Longitude': 172.23362, 'Latitude': 26.9541}, {'Longitude': 172.35961, 'Latitude': 26.96509}, {'Longitude': 172.27919, 'Latitude': 27.70353}, {'Longitude': 171.67947, 'Latitude': 33.08007}, {'Longitude': 171.12888, 'Latitude': 37.7909}, {'Longitude': 170.65047, 'Latitude': 41.66957}, {'Longitude': 170.14702, 'Latitude': 45.52198}, {'Longitude': 169.60642, 'Latitude': 49.37448}, {'Longitude': 169.01275, 'Latitude': 53.25412}, {'Longitude': 168.49331, 'Latitude': 56.34106}, {'Longitude': 168.02745, 'Latitude': 58.85889}, {'Longitude': 167.89473, 'Latitude': 59.54564}]}}]}}}
-    ## Temporal coverage: {'RangeDateTime': {'BeginningDateTime': '2021-10-02T00:16:58.259Z', 'EndingDateTime': '2021-10-02T00:25:28.858Z'}}
-    ## Size(MB): 1732.5397911071777
-    ## Data: ['https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/ATLAS/ATL03/006/2021/10/02/ATL03_20211002001658_01461302_006_01.h5']
 
 In cloud computing you don’t need to download data, instead you can read
 the data and start working with it.
@@ -190,40 +200,18 @@ the data and start working with it.
 atl03_h5_cloud <- ATL03_read(atl03_granules_cloud[1])
 
 # List groups within the h5 in cloud
-atl03_h5_cloud$ls()
+atl03_h5_cloud$beams
 ```
 
-    ##  [1] "METADATA"               "ancillary_data"         "atlas_impulse_response"
-    ##  [4] "ds_surf_type"           "ds_xyz"                 "gt1l"                  
-    ##  [7] "gt1r"                   "gt2l"                   "gt2r"                  
-    ## [10] "gt3l"                   "gt3r"                   "orbit_info"            
-    ## [13] "quality_assessment"
-
 ``` r
-# Which are strong beams
-print(atl03_h5_cloud$strong_beams)
-```
-
-    ## [1] "gt1l" "gt2l" "gt3l"
-
-``` r
-# Orientation 0=forward, 1=backwards, 2=transition
-print(atl03_h5_cloud[["orbit_info/sc_orient"]][])
-```
-
-    ## [1] 1
-
-## Close the files
-
-Do not forget to close the files to properly release them.
-
-``` r
-close(atl03_h5)
+## gt1l gt1r gt2l gt2r gt3l gt3r
 ```
 
 ``` r
 close(atl03_h5_cloud)
 ```
+
+# Working with segments attributes form ATL03 and ATL08
 
 ## Extract attributes
 
@@ -266,15 +254,14 @@ atl08_seg_dt <- atl08_seg_dt[h_canopy < 100 & h_te_mean < 20000]
 head(atl08_seg_dt)
 ```
 
-latitude longitude beam strong_beam h_canopy h_te_mean terrain_slope
-<num> <num> <char> <lgcl> <num> <num> <num> 1: 32.04510 -83.18090 gt1r
-TRUE 13.640770 47.51598 0.083001114 2: 32.04690 -83.18111 gt1r TRUE
-11.407394 44.67390 -0.005336457 3: 32.09549 -83.18666 gt1r TRUE
-10.392395 65.23853 0.005352197 4: 32.09639 -83.18677 gt1r TRUE 10.364944
-65.63503 0.009777225 5: 32.10629 -83.18790 gt1r TRUE 14.952076 58.39679
-0.004236006 6: 32.10719 -83.18800 gt1r TRUE 9.288475 59.01027
-0.001786952 canopy_openness night_flag <num> <int> 1: 3.445780 0 2:
-2.606891 0 3: 2.132361 0 4: 3.251597 0 5: 4.113675 0 6: 3.213291 0
+| latitude | longitude | beam | strong_beam |  h_canopy | h_te_mean | terrain_slope | canopy_openness | night_flag |
+|---------:|----------:|:-----|:------------|----------:|----------:|--------------:|----------------:|-----------:|
+| 32.04510 | -83.18090 | gt1r | TRUE        | 13.640770 |  47.51598 |     0.0830011 |        3.445780 |          0 |
+| 32.04690 | -83.18111 | gt1r | TRUE        | 11.407394 |  44.67390 |    -0.0053365 |        2.606891 |          0 |
+| 32.09549 | -83.18666 | gt1r | TRUE        | 10.392395 |  65.23853 |     0.0053522 |        2.132361 |          0 |
+| 32.09639 | -83.18677 | gt1r | TRUE        | 10.364945 |  65.63503 |     0.0097772 |        3.251597 |          0 |
+| 32.10629 | -83.18790 | gt1r | TRUE        | 14.952076 |  58.39679 |     0.0042360 |        4.113675 |          0 |
+| 32.10719 | -83.18800 | gt1r | TRUE        |  9.288475 |  59.01027 |     0.0017870 |        3.213291 |          0 |
 
 ### Plot histograms:
 
@@ -290,7 +277,7 @@ hist(atl08_seg_dt$h_canopy, col = "green", xlab = "Height (m)", main = "ATL08 h_
 
 <div class="figure" style="text-align: center">
 
-<img src="README_files/figure-gfm/unnamed-chunk-69-1.png" alt="Histograms for ATL03 elevation and ATL08 h_canopy"  />
+<img src="README_files/figure-gfm/unnamed-chunk-71-1.png" alt="Histograms for ATL03 elevation and ATL08 h_canopy"  />
 <p class="caption">
 Histograms for ATL03 elevation and ATL08 h_canopy
 </p>
@@ -431,33 +418,136 @@ leafsync::sync(m1, m2, m3, m4)
 
 </div>
 
-## Close the files
+# Clipping ATL03 and ATL08 data
 
-Do not forget to close the files to properly release them.
+## Introduction
+
+Now we will use the clipping functions. There are two ways of clipping
+data in ICESat2VegR:
+
+1.  Clipping raw hdf5 data from ATL03 and ATL08 files
+2.  Clipping extracted attributes resulting from extraction functions: -
+    `ATL03_seg_attributes_dt` - `ATL03_photon_attributes_dt` -
+    `ATL08_seg_attributes_dt` - `ATL03_ATL08_photons_attributes_dt_join`
+
+The second method is preffered as it is faster and more efficient
+because it does not require reading the hdf5 and will clip only the
+subset of extracted attributes, while hdf5 has a lot of attributes that
+might not be needed.
+
+There are multiple variants using either the bounding box or the geomtry
+to clip the data suffixed with \_clipBox or \_clipGeometry:
+
+1.  `ATL03_h5_clipBox`
+2.  `ATL03_h5_clipGeometry`
+3.  `ATL03_seg_attributes_dt_clipBox`
+4.  `ATL03_seg_attributes_dt_clipGeometry`
+5.  `ATL03_photon_attributes_dt_clipBox`
+6.  `ATL03_photon_attributes_dt_clipGeometry`
+7.  `ATL08_h5_clipBox`
+8.  `ATL08_h5_clipGeometry`
+9.  `ATL08_seg_attributes_dt_clipBox`
+10. `ATL08_seg_attributes_dt_clipGeometry`
+11. `ATL03_ATL08_photons_attributes_dt_join_clipBox`
+12. `ATL03_ATL08_photons_attributes_dt_join_clipGeometry`
+
+In the following two sections there are two small examples on how to
+clip the raw HDF5 and the extracted attributes.
+
+## Clipping raw hdf5 data from ATL08
 
 ``` r
-close(atl03_h5)
+# Define bbox
+clip_region <- terra::ext(-83.2, -83.14, 32.12, 32.18)
+
+# Define hdf5 output file
+output <- tempfile(fileext = ".h5")
+
+# Clip the data for only the first atl08 file
+atl08_clipped <- ATL08_h5_clipBox(atl08_h5[[1]], output, bbox = clip_region)
+
+atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5[[1]], attributes = c("h_canopy"))
+atl08_seg_dt_clip <- ATL08_seg_attributes_dt(atl08_clipped, attributes = c("h_canopy"))
+
+# Display location of clipped data
+plot(
+  atl08_seg_dt$longitude,
+  atl08_seg_dt$latitude,
+  pch = 20,
+  xlab = "longitude",
+  ylab = "latitude"
+)
+points(atl08_seg_dt_clip$longitude, atl08_seg_dt_clip$latitude, col = "purple", pch = 3, cex = 1)
+rect(clip_region$xmin, clip_region$ymin, clip_region$xmax, clip_region$ymax, lty = 2)
+
+legend(col = c("black", "purple", "black"), legend = c("Original", "Clipped", "AOI"), pch = c(20, 3, NA), lty = c(NA, NA, 2), cex = 1, x = "topright")
 ```
+
+<img src="README_files/figure-gfm/unnamed-chunk-129-1.png" width="260" style="display: block; margin: auto;" />
+
+## Clipping extracted attributes from ATL08 segments data
+
+``` r
+aoi <- file.path(outdir, "example_aoi.gpkg")
+aoi_vect <- terra::vect(aoi)
+
+# Extract the h_canopy attribute from the first ATL08 file
+atl08_seg_dt <- lapply(atl08_h5, ATL08_seg_attributes_dt, attributes = c("h_canopy"))
+atl08_seg_dt <- rbindlist2(atl08_seg_dt)
+
+# Clip the data for only the first atl08 file
+atl08_seg_dt_clip <- ATL08_seg_attributes_dt_clipGeometry(atl08_seg_dt, aoi_vect)
+
+plot(
+  atl08_seg_dt$longitude,
+  atl08_seg_dt$latitude,
+  pch = 20,
+  xlab = "longitude",
+  ylab = "latitude"
+)
+points(atl08_seg_dt_clip$longitude, atl08_seg_dt_clip$latitude, col = "purple", pch = 3, cex = 1)
+aoi_geom <- terra::geom(aoi_vect)
+polygon(aoi_geom[,"x"], aoi_geom[,"y"], lty = 2)
+legend(col = c("black", "purple", "black"), legend = c("Original", "Clipped", "AOI"), pch = c(20, 3, NA), lty = c(NA, NA, 2), cex = 1, x = "topright")
+```
+
+<img src="README_files/figure-gfm/unnamed-chunk-130-1.png" width="260" style="display: block; margin: auto;" />
+
+# Joining ATL03 and ATL08 data
 
 ## Extract attributes
 
+``` r
+# Herein as we are working with list of h5 files we will need
+# to loop over each file and extract the attributes and then
+# concatenate them with rbindlist2
+atl03_atl08_dts <- list()
+
+for (ii in seq_along(atl03_h5)) {
+  atl03_file <- atl03_h5[[ii]]
+  atl08_file <- atl08_h5[[ii]]
+
+  atl03_atl08_dts[[ii]] <- ATL03_ATL08_photons_attributes_dt_join(
+    atl03_file,
+    atl08_file
+  )
+}
+
+atl03_atl08_dt <- rbindlist2(atl03_atl08_dts)
+
+head(atl03_atl08_dt)
+```
+
 <div align="center" style="overflow-x: scroll;">
 
-ph_segment_id lon_ph lat_ph h_ph quality_ph solar_elevation <int> <num>
-<num> <num> <int> <num> 1: 177488 -83.17570 31.99959 44.61499 0 15.39738
-2: 177488 -83.17570 31.99959 48.81370 0 15.39738 3: 177488 -83.17571
-31.99962 43.38353 0 15.39738 4: 177488 -83.17571 31.99964 48.24021 0
-15.39738 5: 177488 -83.17571 31.99964 56.24585 0 15.39738 6: 177488
--83.17571 31.99965 40.30040 0 15.39738 dist_ph_along dist_ph_across
-night_flag classed_pc_indx classed_pc_flag <num> <num> <int> <int> <int>
-1: 3762.072 3169.208 0 44 2 2: 3762.074 3169.180 0 45 3 3: 3765.626
-3169.205 0 49 2 4: 3767.768 3169.175 0 56 3 5: 3767.773 3169.122 0 57 3
-6: 3769.191 3169.229 0 62 1 ph_h d_flag delta_time orbit_number beam
-strong_beam <num> <int> <num> <int> <char> <lgcl> 1: 4.3425255 1
-40393396 3208 gt1r TRUE 2: 8.6167412 1 40393396 3208 gt1r TRUE 3:
-3.2494583 1 40393396 3208 gt1r TRUE 4: 8.1592712 1 40393396 3208 gt1r
-TRUE 5: 16.2089348 1 40393396 3208 gt1r TRUE 6: 0.2985229 1 40393396
-3208 gt1r TRUE
+| ph_segment_id |    lon_ph |   lat_ph |     h_ph | quality_ph | solar_elevation | dist_ph_along | dist_ph_across | night_flag | classed_pc_indx | classed_pc_flag |       ph_h | d_flag | delta_time | orbit_number | beam | strong_beam |
+|--------------:|----------:|---------:|---------:|-----------:|----------------:|--------------:|---------------:|-----------:|----------------:|----------------:|-----------:|-------:|-----------:|-------------:|:-----|:------------|
+|        177488 | -83.17570 | 31.99959 | 44.61499 |          0 |        15.39738 |      3762.072 |       3169.208 |          0 |              44 |               2 |  4.3425255 |      1 |   40393396 |         3208 | gt1r | TRUE        |
+|        177488 | -83.17570 | 31.99959 | 48.81370 |          0 |        15.39738 |      3762.074 |       3169.180 |          0 |              45 |               3 |  8.6167412 |      1 |   40393396 |         3208 | gt1r | TRUE        |
+|        177488 | -83.17571 | 31.99962 | 43.38353 |          0 |        15.39738 |      3765.626 |       3169.205 |          0 |              49 |               2 |  3.2494583 |      1 |   40393396 |         3208 | gt1r | TRUE        |
+|        177488 | -83.17571 | 31.99964 | 48.24021 |          0 |        15.39738 |      3767.768 |       3169.175 |          0 |              56 |               3 |  8.1592712 |      1 |   40393396 |         3208 | gt1r | TRUE        |
+|        177488 | -83.17571 | 31.99964 | 56.24585 |          0 |        15.39738 |      3767.773 |       3169.122 |          0 |              57 |               3 | 16.2089348 |      1 |   40393396 |         3208 | gt1r | TRUE        |
+|        177488 | -83.17571 | 31.99965 | 40.30040 |          0 |        15.39738 |      3769.191 |       3169.229 |          0 |              62 |               1 |  0.2985229 |      1 |   40393396 |         3208 | gt1r | TRUE        |
 
 </div>
 
@@ -500,7 +590,7 @@ par(
 
 <div class="figure" style="text-align: center">
 
-<img src="README_files/figure-gfm/unnamed-chunk-130-1.png" alt="Classified ATL03 photons using ATL08 labels"  />
+<img src="README_files/figure-gfm/unnamed-chunk-163-1.png" alt="Classified ATL03 photons using ATL08 labels"  />
 <p class="caption">
 Classified ATL03 photons using ATL08 labels
 </p>
@@ -533,7 +623,7 @@ plot(h_canopy,
 
 <div class="figure" style="text-align: center">
 
-<img src="README_files/figure-gfm/unnamed-chunk-132-1.png" alt="Rasterized ATL03_ATL08 data for canopy height (h_canopy) and number of photons (n)"  />
+<img src="README_files/figure-gfm/unnamed-chunk-165-1.png" alt="Rasterized ATL03_ATL08 data for canopy height (h_canopy) and number of photons (n)"  />
 <p class="caption">
 Rasterized ATL03_ATL08 data for canopy height (h_canopy) and number of
 photons (n)
@@ -543,13 +633,105 @@ photons (n)
 
 </div>
 
-## Close the files
+# Calculating ATL08 metrics for different size segments other than 100m and 20m
 
-Do not forget to close the files to properly release them.
+## Introduction
+
+In this section, we will demonstrate how to use the
+`ATL03_ATL08_segment_create` function from the `ICESat2VegR` package.
+This function is used to compute segment IDs for ICESat-2 `ATL03` and
+`ATL08` data and create segments based on a specified segment length.
 
 ``` r
-close(atl03_h5)
+# Herein as we are working with list of h5 files we will need
+# to loop over each file and extract the attributes and then
+# concatenate them with rbindlist2
+atl03_atl08_dts <- list()
+
+for (ii in seq_along(atl03_h5)) {
+  atl03_file <- atl03_h5[[ii]]
+  atl08_file <- atl08_h5[[ii]]
+
+  atl03_atl08_dts[[ii]] <- ATL03_ATL08_photons_attributes_dt_join(
+    atl03_file,
+    atl08_file
+  )
+}
+
+atl03_atl08_dt <- rbindlist2(atl03_atl08_dts)
+
+head(atl03_atl08_dt)
 ```
+
+## Create Segments IDs
+
+Now, we use the `ATL03_ATL08_segment_create` function to create segments
+with a specified segment length.
+
+``` r
+atl03_atl08_photons_grouped_dt <- ATL03_ATL08_segment_create(atl03_atl08_dt,
+  segment_length = 30,
+  centroid = "mean",
+  output = NA,
+  overwrite = FALSE
+)
+```
+
+## Compute Segment Statistics
+
+``` r
+atl03_atl08_seg_dt <- ATL03_ATL08_compute_seg_attributes_dt_segStat(
+  atl03_atl08_photons_grouped_dt,
+  list(
+    h_canopy_ge0 = quantile(ph_h, 0.98),
+    h_canopy_gt0 = quantile(ph_h[ph_h > 0], 0.98),
+    n_ground = sum(classed_pc_flag == 1),
+    n_mid_canopy = sum(classed_pc_flag == 2),
+    n_top_canopy = sum(classed_pc_flag == 3),
+    n_canopy_total = sum(classed_pc_flag >= 2)
+  ),
+  ph_class = c(1, 2, 3)
+)
+
+head(atl03_atl08_seg_dt)
+```
+
+<div align="center" style="overflow-x: scroll;">
+
+| segment_id | beam | longitude | latitude | h_canopy_ge0 | h_canopy_gt0 | n_ground | n_mid_canopy | n_top_canopy | n_canopy_total |
+|-----------:|:-----|----------:|---------:|-------------:|-------------:|---------:|-------------:|-------------:|---------------:|
+|        126 | gt1r | -83.17571 | 31.99965 |    15.611358 |    15.611358 |        1 |            7 |            3 |             10 |
+|        127 | gt1r | -83.17574 | 31.99986 |    18.311493 |    18.311493 |        1 |           12 |            1 |             13 |
+|        128 | gt1r | -83.17577 | 32.00011 |    12.236551 |    12.236551 |        1 |            8 |            0 |              8 |
+|        293 | gt1r | -83.18086 | 32.04469 |     3.518969 |     3.518969 |        0 |            1 |            5 |              6 |
+|        294 | gt1r | -83.18087 | 32.04482 |     5.167805 |     5.167805 |        7 |            4 |            2 |              6 |
+|        295 | gt1r | -83.18091 | 32.04511 |    12.113018 |    12.258518 |       12 |           10 |            0 |             10 |
+
+</div>
+
+## Convert to SpatVector
+
+Now, we convert the data.table to a SpatVector object.
+
+``` r
+atl03_atl08_vect <- to_vect(atl03_atl08_seg_dt)
+```
+
+## Visualize the segments
+
+Finally, we visualize the SpatVector interactively using mapview.
+
+``` r
+mapview::mapview(atl03_atl08_vect)
+```
+
+<div align="center">
+
+<img src="figure/atl03_atl08_vect.png" width=500 />
+
+</div>
+
+# Upscalling ATL08 h_canopy data using Harmonized Landsat-Sentinel-2 (HLS) data
 
 In this example we will model the `h_canopy` of the ICESat-2 using only
 the Harmonized Landsat Sentinel-2 dataset (hls).
@@ -558,6 +740,8 @@ the Harmonized Landsat Sentinel-2 dataset (hls).
 
 ``` r
 atl08_seg_dt <- lapply(atl08_h5, ATL08_seg_attributes_dt, attribute = "h_canopy")
+
+atl08_seg_dt <- rbindlist2(atl08_seg_dt)
 head(atl08_seg_dt)
 ```
 
@@ -565,16 +749,11 @@ head(atl08_seg_dt)
 head(atl08_seg_dt)
 ```
 
-latitude longitude beam strong_beam h_canopy h_te_mean terrain_slope
-<num> <num> <char> <lgcl> <num> <num> <num> 1: 32.04510 -83.18090 gt1r
-TRUE 13.640770 47.51598 0.083001114 2: 32.04690 -83.18111 gt1r TRUE
-11.407394 44.67390 -0.005336457 3: 32.09549 -83.18666 gt1r TRUE
-10.392395 65.23853 0.005352197 4: 32.09639 -83.18677 gt1r TRUE 10.364944
-65.63503 0.009777225 5: 32.10629 -83.18790 gt1r TRUE 14.952076 58.39679
-0.004236006 6: 32.10719 -83.18800 gt1r TRUE 9.288475 59.01027
-0.001786952 canopy_openness night_flag cells <num> <int> <num> 1:
-3.445780 0 499 2: 2.606891 0 499 3: 2.132361 0 438 4: 3.251597 0 438 5:
-4.113675 0 426 6: 3.213291 0 426
+latitude longitude beam strong_beam h_canopy <num> <num> <char> <lgcl>
+<num> 1: 31.99992 -83.17574 gt1r TRUE 1.986016e+01 2: 32.04510 -83.18090
+gt1r TRUE 1.364077e+01 3: 32.04600 -83.18101 gt1r TRUE 1.072907e+01 4:
+32.04690 -83.18111 gt1r TRUE 1.140739e+01 5: 32.04780 -83.18121 gt1r
+TRUE 3.402823e+38 6: 32.05626 -83.18217 gt1r TRUE 3.402823e+38
 
 ### Visualizing the ‘h_canopy’ for the ATL08 dataset.
 
@@ -586,6 +765,9 @@ terra::plet(atl08_seg_vect, "h_canopy", col = grDevices::hcl.colors(9, "RdYlGn")
 ```
 
 <div align="center" style="display:flex;justify-content:center">
+
+    ## Warning in .get_breaks(out$v, out$breaks, out$breakby, out$range): probable
+    ## complete loss of accuracy in modulus
 
 <img src="figure/atl08_seg_vect_gee_modelling.png" width=500 />
 
@@ -709,20 +891,20 @@ For each segment extract the hls data:
 extracted_dt <- seg_gee_ancillary_dt_extract(hls, atl08_seg_vect)
 ```
 
-    ## Processing 1-481 of 481
+    ## Processing 1-983 of 983
 
 ``` r
 head(extracted_dt)
 ```
 
-| idx | canopy_openness | beam | cells | h_te_mean | terrain_slope |  h_canopy | night_flag | strong_beam |     red |   green |    blue |     nir |   swir1 |  swir2 |       evi |
-|----:|----------------:|:-----|------:|----------:|--------------:|----------:|-----------:|:------------|--------:|--------:|--------:|--------:|--------:|-------:|----------:|
-|   1 |        3.445780 | gt1r |   499 |  47.51598 |     0.0830011 | 13.640770 |          0 | TRUE        | 0.09290 | 0.08440 | 0.06130 | 0.26820 | 0.36780 | 0.2278 | 0.3208625 |
-|   2 |        2.606891 | gt1r |   499 |  44.67390 |    -0.0053365 | 11.407394 |          0 | TRUE        | 0.09980 | 0.08920 | 0.05230 | 0.28910 | 0.35340 | 0.2213 | 0.3164176 |
-|   3 |        2.132361 | gt1r |   438 |  65.23853 |     0.0053522 | 10.392395 |          0 | TRUE        | 0.17975 | 0.14520 | 0.09220 | 0.29535 | 0.40075 | 0.3137 | 0.1717835 |
-|   4 |        3.251597 | gt1r |   438 |  65.63503 |     0.0097772 | 10.364945 |          0 | TRUE        | 0.12935 | 0.11065 | 0.06335 | 0.33105 | 0.32645 | 0.2278 | 0.3089720 |
-|   5 |        4.113675 | gt1r |   426 |  58.39679 |     0.0042360 | 14.952076 |          0 | TRUE        | 0.03680 | 0.05410 | 0.02270 | 0.26540 | 0.12610 | 0.0608 | 0.4342870 |
-|   6 |        3.213291 | gt1r |   426 |  59.01027 |     0.0017870 |  9.288475 |          0 | TRUE        | 0.02530 | 0.03460 | 0.01310 | 0.13110 | 0.06950 | 0.0405 | 0.2232727 |
+| idx | beam |     h_canopy | strong_beam |    red |   green |    blue |     nir |   swir1 |  swir2 |       evi |
+|----:|:-----|-------------:|:------------|-------:|--------:|--------:|--------:|--------:|-------:|----------:|
+|   1 | gt1r | 1.986016e+01 | TRUE        | 0.0316 | 0.05070 | 0.02625 | 0.33685 | 0.14700 | 0.0684 | 0.5739616 |
+|   2 | gt1r | 1.364077e+01 | TRUE        | 0.0929 | 0.08440 | 0.06130 | 0.26820 | 0.36780 | 0.2278 | 0.3208625 |
+|   3 | gt1r | 1.072907e+01 | TRUE        | 0.0836 | 0.07990 | 0.05880 | 0.28860 | 0.33700 | 0.2036 | 0.3798547 |
+|   4 | gt1r | 1.140739e+01 | TRUE        | 0.0998 | 0.08920 | 0.05230 | 0.28910 | 0.35340 | 0.2213 | 0.3164176 |
+|   5 | gt1r | 9.223372e+18 | TRUE        | 0.0509 | 0.06020 | 0.03280 | 0.20580 | 0.15600 | 0.0864 | 0.3060781 |
+|   6 | gt1r | 9.223372e+18 | TRUE        | 0.0810 | 0.08065 | 0.04670 | 0.27750 | 0.27105 | 0.1623 | 0.3476030 |
 
 ## Fit the randomForest model
 
@@ -731,19 +913,27 @@ bandNames <- names(hls)
 x <- extracted_dt[, .SD, .SDcols = bandNames]
 y <- extracted_dt[["h_canopy"]]
 
-rf_model <- randomForest::randomForest(x, y, ntree = 500, mtry = 1)
+# Mask the NA values
+na_mask <- y < 100
+
+x <- x[na_mask]
+y <- y[na_mask]
+
+set.seed(1)
+
+rf_model <- randomForest::randomForest(x, y, ntree = 300, mtry = 1)
 print(rf_model)
 ```
 
     ## 
     ## Call:
-    ##  randomForest(x = x, y = y, ntree = 500, mtry = 1) 
+    ##  randomForest(x = x, y = y, ntree = 300, mtry = 1) 
     ##                Type of random forest: regression
-    ##                      Number of trees: 500
+    ##                      Number of trees: 300
     ## No. of variables tried at each split: 1
     ## 
-    ##           Mean of squared residuals: 40.29124
-    ##                     % Var explained: 12.65
+    ##           Mean of squared residuals: 53.50407
+    ##                     % Var explained: 16.65
 
 ``` r
 library(randomForest)
@@ -756,7 +946,7 @@ barplot(rf_importance[, "IncNodePurity"], main = "Variable importance (Increase 
 
 <div class="figure" style="text-align: center">
 
-<img src="README_files/figure-gfm/unnamed-chunk-182-1.png" alt="Random forests variable importance (increase node impurity)." width="500" />
+<img src="README_files/figure-gfm/unnamed-chunk-256-1.png" alt="Random forests variable importance (increase node impurity)." width="500" />
 <p class="caption">
 Random forests variable importance (increase node impurity).
 </p>
@@ -773,6 +963,13 @@ result <- hls$classify(gee_model)
 min_hcanopy <- min(atl08_seg_dt$h_canopy)
 max_hcanopy <- 20
 atl08_seg_vect$h_canopy <- round(atl08_seg_vect$h_canopy, 3) # Round off to 3 decimal places
+
+map <- terra::plet(
+  atl08_seg_vect,
+  "h_canopy",
+  palette_colors,
+  tiles = ""
+)
 
 modelled_map <- terra::plet(
   atl08_seg_vect,
@@ -817,24 +1014,91 @@ modelled_map
 
 </div>
 
+# Predicting and rasterizing ATL08 h_canopy data using Machine Learning models
+
+## Creating a simple model for ATL08 data
+
+Here, we will create a simple model to predict the canopy openness of
+ATL08 data based on the height of the canopy. We will use the
+`randomForest` package to create the model.
+
+Let’s assume we will fit the model on a subset of the ATL08 data and
+then predict the canopy openness for the rest of the data.
+
+``` r
+# Extract atl08 data from the first file
+atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5[[1]], attributes = c("h_canopy", "canopy_openness"))
+
+# Avoid the weird NA values
+atl08_seg_dt[h_canopy > 100, h_canopy := NA_real_]
+atl08_seg_dt[is.na(h_canopy), canopy_openness := NA_real_]
+atl08_seg_dt <- na.omit(atl08_seg_dt)
+
+training <- sample(atl08_seg_dt, method = randomSampling(0.7))
+
+# For the sake of the example, we will train and test the model with the same data
+library(randomForest)
+model <- randomForest::randomForest(canopy_openness ~ h_canopy, atl08_seg_dt)
+```
+
+## Predicting ATL08 data
+
+Now we will predict the data for the entire ATL08 dataset, this can be
+as large as you want. This will create or append the predicted values to
+an H5 file.
+
+``` r
+out_h5 <- tempfile(fileext = ".h5")
+
+for (atl08_h5_item in atl08_h5) {
+  atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5_item, attributes = c("h_canopy", "canopy_openness"))
+  atl08_seg_dt[h_canopy > 100, h_canopy := NA_real_]
+  atl08_seg_dt[is.na(h_canopy), canopy_openness := NA_real_]
+  atl08_seg_dt <- na.omit(atl08_seg_dt)
+  predicted_h5 <- predict_h5(model, atl08_seg_dt, out_h5)
+}
+```
+
+## Rasterizing the predicted data
+
+``` r
+output_raster <- tempfile(fileext = ".tif")
+x <- predicted_h5[["longitude"]][]
+y <- predicted_h5[["latitude"]][]
+bbox <- terra::ext(min(x), max(x), min(y), max(y))
+
+# Creates the raster with statistics
+res <- 0.005
+rasterize_h5(predicted_h5, output_raster, bbox = bbox, res = res)
+```
+
+    ## Warning in sqrt(variance/(n - 1)): NaNs produced
+
+``` r
+# Open the raster by file path
+out_rast <- terra::rast(output_raster)
+names(out_rast) <- c("n", "mean", "var", "min", "max", "sd")
+terra::plot(out_rast)
+```
+
+<img src="README_files/figure-gfm/unnamed-chunk-309-1.png" width="100%" style="display: block; margin: auto;" />
+
 ## Close the files
 
 Do not forget to close the files to properly release them.
 
 ``` r
-close(atl03_h5)
-```
+lapply(atl03_h5, close)
 
-## Close the files
-
-Do not forget to close the files to properly release them.
-
-``` r
-close(atl03_h5)
+## Non lapply single file
+# close(atl03_h5)
 ```
 
 ``` r
-close(atl08_h5)
+lapply(atl08_h5, close)
+
+## Non lapply single file
+# close(atl08_h5)
 ```
 
 # Acknowledgements

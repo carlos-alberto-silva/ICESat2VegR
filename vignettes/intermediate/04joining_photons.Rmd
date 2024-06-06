@@ -9,7 +9,7 @@ child_close <- file.path("../basic/01close.Rmd")
 
 ## Extract attributes
 
-```{r, eval = FALSE, echo = !exists("atl03_atl08_dt")}
+```{r, eval = FALSE, results = 'hide'}
 # Herein as we are working with list of h5 files we will need
 # to loop over each file and extract the attributes and then
 # concatenate them with rbindlist2
@@ -33,7 +33,7 @@ head(atl03_atl08_dt)
 <div align="center" style="overflow-x: scroll;">
 
 ```{r echo = FALSE, results = 'asis'}
-head(atl03_atl08_dt)
+print(head(atl03_atl08_dt))
 ```
 
 </div>

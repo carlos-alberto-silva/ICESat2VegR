@@ -29,7 +29,7 @@ print(head(atl03_seg_dt))
 ```
 
 
-```{r, eval = FALSE}
+```{r, results = 'hide', eval = FALSE}
 # ATL08 seg attributes
 atl08_seg_att_ls <- lapply(
   atl08_h5,
@@ -45,7 +45,7 @@ head(atl08_seg_dt)
 ```
 
 ```{r, echo = FALSE, results = 'asis'}
-head(atl08_seg_dt)
+print(head(atl08_seg_dt))
 ```
 
 

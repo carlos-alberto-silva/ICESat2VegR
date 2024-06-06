@@ -15,14 +15,14 @@ if (!exists("vignettes_path")) {
 ```
 
 Install dependency for rasterizing functions:
-```{r install_deps}
+```{r install_deps, echo = FALSE}
 # Install gdalBindings in R:
 install.packages("gdalBindings", repos = c("https://caiohamamura.r-universe.dev", "https://cloud.r-project.org"))
 ```
 
 ```{r installation, eval = FALSE}
 # The r-universe version (recommended for the latest version)
-install.packages("ICESat2VegR", repos = "https://caiohamamura.r-universe.dev")
+install.packages("ICESat2VegR", , repos = c("https://caiohamamura.r-universe.dev", "https://cloud.r-project.org"))
 
 # The CRAN version
 install.packages("ICESat2VegR")
