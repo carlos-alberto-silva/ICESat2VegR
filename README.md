@@ -23,13 +23,13 @@ for Land and Vegetation Applications in R environment.
 
 Install dependency for rasterizing functions:
 
-    ## Installing package into 'C:/Users/caiohamamura/AppData/Local/Temp/Rtmp86oqED/temp_libpath7fc01b53e91'
+    ## Installing package into 'C:/Users/caiohamamura/AppData/Local/Temp/RtmpQZgPvD/temp_libpath8041c7932b0'
     ## (as 'lib' is unspecified)
 
     ## package 'gdalBindings' successfully unpacked and MD5 sums checked
     ## 
     ## The downloaded binary packages are in
-    ##  C:\Users\caiohamamura\AppData\Local\Temp\RtmpAH0u9E\downloaded_packages
+    ##  C:\Users\caiohamamura\AppData\Local\Temp\RtmpUvaE2c\downloaded_packages
 
 ``` r
 # The r-universe version (recommended for the latest version)
@@ -742,18 +742,18 @@ the Harmonized Landsat Sentinel-2 dataset (hls).
 atl08_seg_dt <- lapply(atl08_h5, ATL08_seg_attributes_dt, attribute = "h_canopy")
 
 atl08_seg_dt <- rbindlist2(atl08_seg_dt)
-head(atl08_seg_dt)
-```
 
-``` r
+# Remove h_canopy values that are above 100m
+atl08_seg_dt <- atl08_seg_dt[h_canopy < 100]
+
 head(atl08_seg_dt)
 ```
 
 latitude longitude beam strong_beam h_canopy <num> <num> <char> <lgcl>
-<num> 1: 31.99992 -83.17574 gt1r TRUE 1.986016e+01 2: 32.04510 -83.18090
-gt1r TRUE 1.364077e+01 3: 32.04600 -83.18101 gt1r TRUE 1.072907e+01 4:
-32.04690 -83.18111 gt1r TRUE 1.140739e+01 5: 32.04780 -83.18121 gt1r
-TRUE 3.402823e+38 6: 32.05626 -83.18217 gt1r TRUE 3.402823e+38
+<num> 1: 31.99992 -83.17574 gt1r TRUE 19.86016 2: 32.04510 -83.18090
+gt1r TRUE 13.64077 3: 32.04600 -83.18101 gt1r TRUE 10.72907 4: 32.04690
+-83.18111 gt1r TRUE 11.40739 5: 32.05770 -83.18234 gt1r TRUE 12.93657 6:
+32.09549 -83.18666 gt1r TRUE 10.39240
 
 ### Visualizing the ‘h_canopy’ for the ATL08 dataset.
 
@@ -765,9 +765,6 @@ terra::plet(atl08_seg_vect, "h_canopy", col = grDevices::hcl.colors(9, "RdYlGn")
 ```
 
 <div align="center" style="display:flex;justify-content:center">
-
-    ## Warning in .get_breaks(out$v, out$breaks, out$breakby, out$range): probable
-    ## complete loss of accuracy in modulus
 
 <img src="figure/atl08_seg_vect_gee_modelling.png" width=500 />
 
@@ -891,20 +888,20 @@ For each segment extract the hls data:
 extracted_dt <- seg_gee_ancillary_dt_extract(hls, atl08_seg_vect)
 ```
 
-    ## Processing 1-983 of 983
+    ## Processing 1-706 of 706
 
 ``` r
 head(extracted_dt)
 ```
 
-| idx | beam |     h_canopy | strong_beam |    red |   green |    blue |     nir |   swir1 |  swir2 |       evi |
-|----:|:-----|-------------:|:------------|-------:|--------:|--------:|--------:|--------:|-------:|----------:|
-|   1 | gt1r | 1.986016e+01 | TRUE        | 0.0316 | 0.05070 | 0.02625 | 0.33685 | 0.14700 | 0.0684 | 0.5739616 |
-|   2 | gt1r | 1.364077e+01 | TRUE        | 0.0929 | 0.08440 | 0.06130 | 0.26820 | 0.36780 | 0.2278 | 0.3208625 |
-|   3 | gt1r | 1.072907e+01 | TRUE        | 0.0836 | 0.07990 | 0.05880 | 0.28860 | 0.33700 | 0.2036 | 0.3798547 |
-|   4 | gt1r | 1.140739e+01 | TRUE        | 0.0998 | 0.08920 | 0.05230 | 0.28910 | 0.35340 | 0.2213 | 0.3164176 |
-|   5 | gt1r | 9.223372e+18 | TRUE        | 0.0509 | 0.06020 | 0.03280 | 0.20580 | 0.15600 | 0.0864 | 0.3060781 |
-|   6 | gt1r | 9.223372e+18 | TRUE        | 0.0810 | 0.08065 | 0.04670 | 0.27750 | 0.27105 | 0.1623 | 0.3476030 |
+| idx | beam | h_canopy | strong_beam |     red |   green |    blue |     nir |   swir1 |   swir2 |       evi |
+|----:|:-----|---------:|:------------|--------:|--------:|--------:|--------:|--------:|--------:|----------:|
+|   1 | gt1r | 19.86016 | TRUE        | 0.03160 | 0.05070 | 0.02625 | 0.33685 | 0.14700 | 0.06840 | 0.5739616 |
+|   2 | gt1r | 13.64077 | TRUE        | 0.09290 | 0.08440 | 0.06130 | 0.26820 | 0.36780 | 0.22780 | 0.3208625 |
+|   3 | gt1r | 10.72907 | TRUE        | 0.08360 | 0.07990 | 0.05880 | 0.28860 | 0.33700 | 0.20360 | 0.3798547 |
+|   4 | gt1r | 11.40739 | TRUE        | 0.09980 | 0.08920 | 0.05230 | 0.28910 | 0.35340 | 0.22130 | 0.3164176 |
+|   5 | gt1r | 12.93657 | TRUE        | 0.06630 | 0.07555 | 0.03915 | 0.35055 | 0.26600 | 0.15005 | 0.4884944 |
+|   6 | gt1r | 10.39240 | TRUE        | 0.17975 | 0.14520 | 0.09220 | 0.29535 | 0.40075 | 0.31370 | 0.1717835 |
 
 ## Fit the randomForest model
 

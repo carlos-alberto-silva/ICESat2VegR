@@ -63,7 +63,8 @@ atl08_seg_dt <- atl08_seg_dt[h_canopy < 100]
 head(atl08_seg_dt)
 ```
 
-```{r, results = "asis"}
+```{r echo = FALSE, results = "asis"}
+atl08_seg_dt <- atl08_seg_dt[h_canopy < 100]
 head(atl08_seg_dt)
 ```
 
@@ -84,7 +85,7 @@ terra::plet(atl08_seg_vect, "h_canopy", col = grDevices::hcl.colors(9, "RdYlGn")
 library(terra)
 ```
 
-```{r, echo = FALSE, fig.cap = "Leaflet preview for segments h_canopy", out.height='400', out.width='500', fig.align = "center"}
+```{r, echo = FALSE, fig.cap = "Leaflet preview for segments h_canopy", out.height='400', out.width='500', fig.align = "center", warnings = FALSE}
 atl08_seg_vect <- to_vect(atl08_seg_dt)
 map <- terra::plet(atl08_seg_vect, "h_canopy", col = grDevices::hcl.colors(9, "RdYlGn"), tiles = c("Esri.WorldImagery"))
 printMapView(map, "atl08_seg_vect_gee_modelling")

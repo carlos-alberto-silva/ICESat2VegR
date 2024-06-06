@@ -166,7 +166,7 @@ map_temp <- mapview::mapView(
 )
 ```
 ```{r, echo = FALSE, fig.cap = 'Vectorized ATL03 segments', out.width="500", out.height="400", cache = FALSE}
-printMapView(map_temp, "atl03_seg_vect")
+printMapView(map_temp, "atl03_seg_vect", delay = 20)
 ```
 
 </div>
