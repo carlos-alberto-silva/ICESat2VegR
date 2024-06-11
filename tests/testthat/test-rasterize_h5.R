@@ -1,4 +1,3 @@
-devtools::load_all()
 library(testthat)
 
 
@@ -38,7 +37,7 @@ test_that("rasterize_h5 can be called with icesat2.predict_h5", {
   expect_error(rasterize_h5(predicted_h5))
   expect_error(rasterize_h5(predicted_h5, output))
   expect_error(rasterize_h5(predicted_h5, output, bbox = bbox))
-  expect_no_error(rasterize_h5(predicted_h5, "../output_tif.tif", bbox = bbox, res = res))
+  rasterize_h5(predicted_h5, output, bbox = bbox, res = res)
 
   close(predicted_h5)
 })

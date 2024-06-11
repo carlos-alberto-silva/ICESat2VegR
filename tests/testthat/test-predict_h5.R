@@ -1,4 +1,3 @@
-devtools::load_all()
 library(testthat)
 
 test_that("predict_h5 exists", {
@@ -83,8 +82,10 @@ test_that("predict_h5 can be called with icesat2.atl08_dt", {
 
   output_h5 <- tempfile(fileext = ".h5")
 
-  predict_h5(linear_model, atl08_dt, output_h5)
+  predicted_h5 <- predict_h5(linear_model, atl08_dt, output_h5)
   expect_true(TRUE)
+  
+  close(atl08_h5)
   close(predicted_h5)
 })
 
