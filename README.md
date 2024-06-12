@@ -1,5 +1,6 @@
 
 ![](https://github.com/carlos-alberto-silva/ICESat2VegR/blob/master/readme/cover.png)<br/>
+[![ICESat2VegR status badge](https://carlos-alberto-silva.r-universe.dev/badges/ICESat2VegR)](https://carlos-alberto-silva.r-universe.dev/ICESat2VegR)
 [![R-hub](https://github.com/carlos-alberto-silva/ICESat2VegR/actions/workflows/rhub.yaml/badge.svg)](https://github.com/carlos-alberto-silva/ICESat2VegR/actions/workflows/rhub.yaml)
 [![CRAN](https://www.r-pkg.org/badges/version/ICESat2VegR)](https://cran.r-project.org/package=ICESat2VegR)
 ![licence](https://img.shields.io/badge/Licence-GPL--3-blue.svg)
@@ -18,15 +19,6 @@ for Land and Vegetation Applications in R environment.
 
 # Getting started
 
-Install dependency for rasterizing functions:
-
-    ## Installing package into 'C:/Users/caiohamamura/AppData/Local/Temp/RtmpQZgPvD/temp_libpath8041c7932b0'
-    ## (as 'lib' is unspecified)
-
-    ## package 'gdalBindings' successfully unpacked and MD5 sums checked
-    ## 
-    ## The downloaded binary packages are in
-    ##  C:\Users\caiohamamura\AppData\Local\Temp\RtmpUvaE2c\downloaded_packages
 
 ``` r
 # The r-universe version (recommended for the latest version)
