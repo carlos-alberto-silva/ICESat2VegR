@@ -47,8 +47,15 @@ if (!exists("is_readme")) {
 ```{r child=child_setup}
 ```
 
+## Introduction
+
 In this example we will model the `h_canopy` of the ICESat-2 using only the Harmonized Landsat Sentinel-2 dataset (hls).
 
+## Initialize Google Earth Engine API
+
+``` r
+ee_initialize()
+```
 
 ## Extract ATL08 segment attributes h_canopy attribute
 

@@ -5,8 +5,6 @@
 ![Github](https://img.shields.io/badge/Github-0.1.12-green.svg)
 ![licence](https://img.shields.io/badge/Licence-GPL--3-blue.svg)
 ![Downloads](https://cranlogs.r-pkg.org/badges/grand-total/ICESat2VegR)
-[![Build
-Status](https://travis-ci.com/carlos-alberto-silva/ICESat2VegR.svg?token=Jqizwyc6gBxNafNccTdU&branch=master)](https://travis-ci.com/carlos-alberto-silva/ICESat2VegR)
 
 **ICESat2VegR: An R Package for NASA’s Ice, Cloud, and Elevation
 Satellite (ICESat-2) Data Processing and Visualization for Land and
@@ -100,7 +98,6 @@ ATLAS_dataDownload(
   "https://github.com/carlos-alberto-silva/ICESat2VegR/releases/download/example_datasets/Study_Site.zip",
   outdir
 )
-
 # Unzip the example dataset
 unzip(file.path(outdir, "Study_Site.zip"), exdir = outdir)
 ```
@@ -733,8 +730,16 @@ mapview::mapview(atl03_atl08_vect)
 
 # Upscalling ATL08 h_canopy data using Harmonized Landsat-Sentinel-2 (HLS) data
 
+## Introduction
+
 In this example we will model the `h_canopy` of the ICESat-2 using only
 the Harmonized Landsat Sentinel-2 dataset (hls).
+
+## Initialize Google Earth Engine API
+
+``` r
+ee_initialize()
+```
 
 ## Extract ATL08 segment attributes h_canopy attribute
 

@@ -1,7 +1,21 @@
 setRefClass("ee.imagecollection.ImageCollection")
 setRefClass("ee.image.Image")
 
+#' Initializes the Google Earth Engine API
+#'
+#' @return Nothing, it just initializes the Google Earth Engine API
+#'
+#' @export
+ee_initialize <- function() {
+  tryInitializeEarthEngine()
+}
 
+#' Returns the number of images in an ImageCollection
+#'
+#' @param x The `ImageCollection` to get the length of
+#'
+#' @return The number of images in the ImageCollection
+#'
 #' @export
 setMethod(
   "length",

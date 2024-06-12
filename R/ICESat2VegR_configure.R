@@ -71,3 +71,41 @@ ICESat2VegR_configure <- function() {
     return(TRUE)
   }
 }
+
+tryInitializeCloudCapabilities <- function() {
+  # Reload namespace
+  unloadNamespace("ICESat2VegR")
+  loadNamespace("ICESat2VegR")
+
+  if (is.null(h5py) || is.null(earthaccess)) {
+    warning("The package's earthaccess functions were not loaded properly")
+    warning("use ICESat2VegR_configure() function and reload the package!")
+  }
+}
+
+tryInitializeEarthEngine <- function() {
+  # Reload namespace
+  unloadNamespace("ICESat2VegR")
+  loadNamespace("ICESat2VegR")
+
+  if (is.null(ee)) {
+    warning("The package's earth-engine functions were not loaded properly")
+    warning("use ICESat2VegR_configure() function and reload the package!")
+  }
+
+  tryCatch(
+    {
+      ee$Initialize()
+    },
+    error = function(e) {
+      tryCatch(
+        {
+          ee$Authenticate()
+        },
+        error = function(e) {
+          stop("Could not authenticate within earth-engine")
+        }
+      )
+    }
+  )
+}

@@ -439,5 +439,6 @@ static ANNkd_ptr annReadTree(
 	}
 	else {
 		annError("Illegal node type in dump file", ANNabort);
+    return NULL;							// never gets here
 	}
 }

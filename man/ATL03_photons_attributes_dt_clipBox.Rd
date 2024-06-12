@@ -64,5 +64,5 @@ head(atl03_photons_dt_clip)
 close(atl03_h5)
 }
 \seealso{
-\url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_atl03_ATBD_r006.pdf}
+\url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
 }

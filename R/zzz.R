@@ -11,58 +11,71 @@ earthaccess <- NULL
 #' @export
 ee <- NULL
 
+# Private h5py module
+h5py <- NULL
 
+# Private package environment
+pkg_env <- environment()
+
+# Module with the Rcpp ANN indexing functions
 pkg_module <- Rcpp::Module("icesat2_module")
 
+# Private cache for the Earth Engine search
 ee_cache <- new.env(parent = emptyenv())
 ee_cache$search <- NULL
 
 .onLoad <- function(libname, pkgname) {
-  tryCatch(
-    {
-      reticulate::use_condaenv("r-reticulate")
-    },
-    error = function(err) {}
-  )
-
-  earthaccess <<- tryCatch(
-    {
-      reticulate::import("earthaccess", delay_load = TRUE, convert = FALSE)
-    },
-    error = function(err) {}
-  )
-
-  ee <<- tryCatch(
-    {
-      reticulate::import("ee", delay_load = TRUE, convert = TRUE)
-    },
-    error = function(err) {}
-  )
-
-  tryCatch(
-    {
-      ee$Initialize()
-    },
-    error = function(e) {
-      tryCatch({ee$Authenticate()}, error = function(e){
-        warning("Could not authenticate within earth-engine")
-      })
-    }
-  )
-  h5py <<- tryCatch(
-    {
-      reticulate::import("h5py", delay_load = TRUE)
-    },
-    error = function(err) {}
-  )
-
-
-  if (is.null(h5py) || is.null(ee) || is.null(earthaccess)) {
-    warning("The package earth-engine functions were not loaded properly")
-    warning("use ICESat2VegR_configure() function and reload the package!")
+  if (reticulate::py_module_available("earthaccess")) {
+    earthaccess <<- reticulate::import("earthaccess", convert = FALSE)
   }
+
+  if (reticulate::py_module_available("ee")) {
+    ee <<- reticulate::import("ee", convert = TRUE)
+    tryCatch(
+      {
+        ee$Initialize()
+      },
+      error = function(e) {
+        tryCatch(
+          {
+            ee$Authenticate()
+          },
+          error = function(e) {}
+        )
+      }
+    )
+  }
+
+  if (reticulate::py_module_available("h5py")) {
+    h5py <<- reticulate::import("h5py", convert = TRUE)
+  }
+
+  loadGdal(pkgname)
 }
 
+
+loadGdal <- function(pkg_name) {
+  Rcpp::loadModule("gdal_module", TRUE, TRUE)
+  proj_path <- ""
+  proj_version <- GetProjVersion()
+
+  major <- proj_version[1]
+  minor <- proj_version[2]
+
+  # Since PROJ 9.1, the data files are in PROJ_DATA instead of PROJ_LIB
+  if (major > 9 ||
+    (major == 9 && minor >= 1)) {
+    proj_path <- Sys.getenv("PROJ_DATA")
+  } else {
+    proj_path <- Sys.getenv("PROJ_LIB")
+  }
+
+  if (proj_path == "") {
+    proj_path <- system.file("proj", package = pkg_name)[1]
+  }
+
+  InitializeGDAL(proj_path)
+}
 
 .onUnload <- function(libpath) {
   library.dynam.unload("ICESat2VegR", libpath)
@@ -76,7 +89,7 @@ ee_cache$search <- NULL
   base::packageStartupMessage(
     paste("\n##----------------------------------------------------------------##\n",
       "##  ICESat2VegR package, version ", info$Version, ", Released ", info$Date,
-       "    #",
+      "    #",
       "\n##----------------------------------------------------------------##\n",
       "\n",
       "This package is developed by Carlos A. Silva (c.silva@ufl.edu) and \n",

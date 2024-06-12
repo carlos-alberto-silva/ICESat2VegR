@@ -195,27 +195,31 @@ default_agg_join <- function(x1, x2) {
 #'   range = "max-min"
 #' )
 #'
-#' ATL08_seg_attributes_h5_gridStat(
-#'   atl08_dir = dirname(atl08_path),
-#'   metrics = c("h_canopy"),
-#'   out_root = tempdir(),
-#'   ul_lat = ul_lat,
-#'   ul_lon = ul_lon,
-#'   lr_lat = lr_lat,
-#'   lr_lon = lr_lon,
-#'   res = c(xres, -yres),
-#'   creation_options = c(
-#'     "COMPRESS=DEFLATE",
-#'     "BIGTIFF=IF_SAFER",
-#'     "TILED=YES",
-#'     "BLOCKXSIZE=512",
-#'     "BLOCKYSIZE=512"
-#'   ),
-#'   agg_function = agg_function,
-#'   agg_join = agg_join,
-#'   finalizer = finalizer
-#' )
+#' outdir <- tempdir()
 #'
+# #' ATL08_seg_attributes_h5_gridStat(
+# #'   atl08_dir = dirname(atl08_path),
+# #'   metrics = c("h_canopy"),
+# #'   out_root = outdir,
+# #'   ul_lat = ul_lat,
+# #'   ul_lon = ul_lon,
+# #'   lr_lat = lr_lat,
+# #'   lr_lon = lr_lon,
+# #'   res = c(xres, -yres),
+# #'   creation_options = c(
+# #'     "COMPRESS=DEFLATE",
+# #'     "BIGTIFF=IF_SAFER",
+# #'     "TILED=YES",
+# #'     "BLOCKXSIZE=512",
+# #'     "BLOCKYSIZE=512"
+# #'   ),
+# #'   agg_function = agg_function,
+# #'   agg_join = agg_join,
+# #'   finalizer = finalizer
+# #' )
+#'
+#' gc()
+#' file.remove(list.files(outdir, "*.tif"))
 #' close(atl08_h5)
 #'
 #' @import data.table
@@ -261,8 +265,6 @@ ATL08_seg_attributes_h5_gridStat <- function(
     agg_join = default_agg_join,
     finalizer = default_finalizer) {
 
-      stopifnot("gdalBindings package is not installed. Please install it to use this function." = requireNamespace("gdalBindings", quietly = TRUE))
-
   block_inds <-
     block_xind <-
     block_yind <-
@@ -302,7 +304,7 @@ ATL08_seg_attributes_h5_gridStat <- function(
 
   call <- parse(text = as.character(eval.parent(substitute(agg_function)))[2])
   tempenv <- new.env()
-  tempenv$x <- c(1,1)
+  tempenv$x <- c(1, 1)
   stats <- eval(call, envir = tempenv)
   classes <- lapply(stats, class)
   stats_names <- names(stats)
@@ -317,13 +319,13 @@ ATL08_seg_attributes_h5_gridStat <- function(
 
     # stat_ind = 1
     for (stat_ind in seq_along(stats_names)) {
-      datatype <- gdalBindings::GDALDataType$GDT_Float64
+      datatype <- GDALDataType$GDT_Float64
       nodata <- -9999.0
       if (classes[[stat_ind]] == "integer") {
-        datatype <- gdalBindings::GDALDataType$GDT_Int32
+        datatype <- GDALDataType$GDT_Int32
         nodata <- 0
       }
-      rasts[[stats_names[[stat_ind]]]] <- gdalBindings::createDataset(
+      rasts[[stats_names[[stat_ind]]]] <- createDataset(
         raster_path = rast_paths[[stat_ind]],
         nbands = 1,
         datatype = datatype,
@@ -419,10 +421,10 @@ ATL08_seg_attributes_h5_gridStat <- function(
     invisible(lapply(names(finalizer), function(x) {
       rast_name <- sprintf("%s_%s_%s.tif", out_root, metric, x)
       message(sprintf("Writing raster: %s", rast_name))
-      rast <- gdalBindings::createDataset(
+      rast <- createDataset(
         raster_path = rast_name,
         nbands = 1,
-        datatype = gdalBindings::GDALDataType$GDT_Float64,
+        datatype = GDALDataType$GDT_Float64,
         projstring = projstring,
         lr_lat = lr_lat,
         ul_lat = ul_lat,
@@ -435,7 +437,7 @@ ATL08_seg_attributes_h5_gridStat <- function(
 
       band <- rast[[1]]
       formula <- finalizer[[x]]
-      gdalBindings::formulaCalculate(formula, bands, band)
+      formulaCalculate(formula, bands, band)
       rast$Close()
     }))
 

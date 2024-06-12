@@ -2,6 +2,7 @@
 % Please edit documentation in R/class.icesat2.R
 \name{plot,icesat2.atl03atl08_dt,character-method}
 \alias{plot,icesat2.atl03atl08_dt,character-method}
+\alias{plot,icesat2.atl03atl08_dt,missing-method}
 \alias{plot,icesat2.atl08_dt,character-method}
 \alias{plot,icesat2.atl03_dt,character-method}
 \title{Plot photons from ATL03 and ATL08 joined products}
@@ -14,6 +15,8 @@
   legend = "topleft",
   ...
 )
+
+\S4method{plot}{icesat2.atl03atl08_dt,missing}(x, y, ...)
 
 \S4method{plot}{icesat2.atl08_dt,character}(x, y, beam = "gt1l", col = "gray", xlim = NULL, ylim = NULL, ...)
 
@@ -46,8 +49,12 @@ No return value
 No return value
 
 No return value
+
+No return value
 }
 \description{
+This function plots photons along track
+
 This function plots photons along track
 
 This function plots photons along track
@@ -78,6 +85,35 @@ atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
 
 plot(
   atl03_atl08_dt, "ph_h",
+  colors = c("gray", "#bd8421", "forestgreen", "green"),
+  pch = 16, cex = 0.5
+)
+
+close(atl03_h5)
+close(atl08_h5)
+# Specifying the path to ATL03 file
+atl03_path <- system.file("extdata",
+  "atl03_clip.h5",
+  package = "ICESat2VegR"
+)
+
+# Specifying the path to ATL08 file
+atl08_path <- system.file("extdata",
+  "atl08_clip.h5",
+  package = "ICESat2VegR"
+)
+
+# Reading ATL03 data (h5 file)
+atl03_h5 <- ATL03_read(atl03_path = atl03_path)
+
+# Reading ATL08 data (h5 file)
+atl08_h5 <- ATL08_read(atl08_path = atl08_path)
+
+# Extracting ATL03 and ATL08 photons and heights
+atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
+
+plot(
+  atl03_atl08_dt,
   colors = c("gray", "#bd8421", "forestgreen", "green"),
   pch = 16, cex = 0.5
 )

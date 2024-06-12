@@ -85,8 +85,9 @@ ATLAS_dataFinder_cloud <- function(short_name,
     earthaccess <- reticulate::import("earthaccess", convert = FALSE)
   }
 
-  # Try different authentication mechanisms
-  py_to_r <- reticulate::py_to_r
+  if (is.null(earthaccess) || is.null(h5py)) {
+    tryInitializeCloudCapabilities()
+  }
 
   # Try to refresh login
   earthaccess_login(persist)

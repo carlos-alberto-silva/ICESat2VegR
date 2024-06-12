@@ -7,13 +7,6 @@
 \description{
 Class for ATL03 segment attributes
 }
-\section{Slots}{
-
-\describe{
-\item{\code{data.table}}{Object of class \code{\link[data.table:data.table-class]{data.table}} from \code{data.table} package
-containing the Extracted ICESat-2 ATL03 segment attributes}
-}}
-
 
 \seealso{
 \code{\link[data.table:data.table-class]{data.table}} in the \code{data.table} package and

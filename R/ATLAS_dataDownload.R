@@ -16,9 +16,10 @@
 #' \dontrun{
 #' # Set path to ICESat-2 data
 #' # herein we will only download xml metedata
+#' base_path <- "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected"
 #' url <- c(
-#'   "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/ATLAS/ATL08/006/2019/07/13/ATL08_20190713210015_02410406_006_02.h5",
-#'   "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/ATLAS/ATL08/006/2019/07/15/ATL08_20190715084425_02640402_006_02.h5"
+#'   paste0(base_path, "/ATLAS/ATL08/006/2019/07/13/ATL08_20190713210015_02410406_006_02.h5"),
+#'   paste0(base_path, "/ATLAS/ATL08/006/2019/07/15/ATL08_20190715084425_02640402_006_02.h5")
 #' )
 #'
 #' # Set dir to download files to

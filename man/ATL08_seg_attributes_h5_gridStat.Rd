@@ -166,27 +166,11 @@ finalizer <- list(
   range = "max-min"
 )
 
-ATL08_seg_attributes_h5_gridStat(
-  atl08_dir = dirname(atl08_path),
-  metrics = c("h_canopy"),
-  out_root = tempdir(),
-  ul_lat = ul_lat,
-  ul_lon = ul_lon,
-  lr_lat = lr_lat,
-  lr_lon = lr_lon,
-  res = c(xres, -yres),
-  creation_options = c(
-    "COMPRESS=DEFLATE",
-    "BIGTIFF=IF_SAFER",
-    "TILED=YES",
-    "BLOCKXSIZE=512",
-    "BLOCKYSIZE=512"
-  ),
-  agg_function = agg_function,
-  agg_join = agg_join,
-  finalizer = finalizer
-)
+outdir <- tempdir()
 
+
+gc()
+file.remove(list.files(outdir, "*.tif"))
 close(atl08_h5)
 
 }

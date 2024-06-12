@@ -1,3 +1,10 @@
+#' HDF5 prediction class
+#'
+#' This is a generic prediction class for HDF5 files to make type checking
+#' and method matching with S4 methods.
+#'
+#' @rdname icesat2.predict_h5
+#' @export
 setRefClass("icesat2.predict_h5")
 
 internal_predict_h5 <- new.env()
@@ -174,16 +181,21 @@ setMethod(
   }
 )
 
+#' @method length icesat2.predict_h5
 #' @export
 "length.icesat2.predict_h5" <- function(x) {
   exp(sum(log(x[["latitude"]]$dims)))
 }
 
+
+#' Closes the HDF5 file pointer to release resources
+#'
+#' @param con The HDF5 file pointer of class [`icesat2.predict_h5-class`]
+#' @param ... Additional parameters inherited from generic
+#'
+#' @return Nothing, just closes the HDF5 file pointer
+#' @method close icesat2.predict_h5
 #' @export
-setMethod(
-  "close",
-  signature = "icesat2.predict_h5",
-  definition = function(con, ...) {
-    con$close_all()
-  }
-)
+"close.icesat2.predict_h5" <- function(con, ...) {
+  con$close_all()
+}

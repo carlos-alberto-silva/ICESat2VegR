@@ -54,7 +54,6 @@ try with only one granule [i].")
       h5file <- h5py$File(granules[0])
       self$h5 <- h5file
       groups <- self$ls()
-      stop("Listou!")
       self$beams <- grep("gt[1-3][lr]", groups, value = TRUE)
       separated_beams <- list(
         grep("l$", self$beams, value = TRUE),

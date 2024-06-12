@@ -119,10 +119,6 @@ setRefClass("icesat2.atl08_dt")
 
 #' Class for ATL03 attributes
 #'
-#' @slot data.table Object of class [`data.table`][data.table::data.table-class] from `data.table` package
-#' containing the Extracted ICESat-2 ATL03 attributes
-
-#'
 #' @seealso [`data.table`][data.table::data.table-class] in the `data.table` package and
 #' \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
 #'
@@ -132,10 +128,6 @@ setRefClass("icesat2.atl08_dt")
 setRefClass("icesat2.atl03_dt")
 
 #' Class for ATL03 segment attributes
-#'
-#' @slot data.table Object of class [`data.table`][data.table::data.table-class] from `data.table` package
-#' containing the Extracted ICESat-2 ATL03 segment attributes
-
 #'
 #' @seealso [`data.table`][data.table::data.table-class] in the `data.table` package and
 #' \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
@@ -219,7 +211,6 @@ setMethod("close", signature = c("icesat2.h5"), h5closeall)
 #'
 #' close(atl03_h5)
 #' close(atl08_h5)
-#' @method plot icesat2.atl03atl08_dt
 #' @rdname plot
 #' @export
 setMethod(
@@ -274,6 +265,52 @@ setMethod(
   }
 )
 
+#' Plot photons from ATL03 and ATL08 joined products
+#'
+#' @description This function plots photons along track
+#'
+#' @param x An object of class [`ICESat2VegR::icesat2.atl03atl08_dt-class`]
+#' @param y should be missing in this case, defaults to "ph_h"
+#' @param beam Character vector indicating only one beam to process ("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r").
+#' Default is "gt1r"
+#' @param colors A vector containing colors for plotting noise, terrain, vegetation and top canopy photons
+#' (e.g. c("gray", "#bd8421", "forestgreen", "green")
+#' @param legend the position of the legend. 'bottomleft', 'bottomright', 'topleft', 'topright' or FALSE to omit
+#' @param ... will be passed to the main plot
+#'
+#' @return No return value
+#'
+#' @examples
+#' # Specifying the path to ATL03 file
+#' atl03_path <- system.file("extdata",
+#'   "atl03_clip.h5",
+#'   package = "ICESat2VegR"
+#' )
+#'
+#' # Specifying the path to ATL08 file
+#' atl08_path <- system.file("extdata",
+#'   "atl08_clip.h5",
+#'   package = "ICESat2VegR"
+#' )
+#'
+#' # Reading ATL03 data (h5 file)
+#' atl03_h5 <- ATL03_read(atl03_path = atl03_path)
+#'
+#' # Reading ATL08 data (h5 file)
+#' atl08_h5 <- ATL08_read(atl08_path = atl08_path)
+#'
+#' # Extracting ATL03 and ATL08 photons and heights
+#' atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
+#'
+#' plot(
+#'   atl03_atl08_dt,
+#'   colors = c("gray", "#bd8421", "forestgreen", "green"),
+#'   pch = 16, cex = 0.5
+#' )
+#'
+#' close(atl03_h5)
+#' close(atl08_h5)
+#' @rdname plot
 #' @export
 setMethod(
   f = "plot",
