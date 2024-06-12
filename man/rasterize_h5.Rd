@@ -86,23 +86,29 @@ based on the \code{variance} and \code{n} values. It is defined as:
 }
 \examples{
 atl08_path <- system.file(
- "extdata",
-"atl08_clip.h5",
-package = "ICESat2VegR"
+  "extdata",
+  "atl08_clip.h5",
+  package = "ICESat2VegR"
 )
 
 atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 atl08_dt <- ATL08_seg_attributes_dt(atl08_h5)
 
-xmin <- atl08_dt$longitude \%>\% min()
-xmax <- atl08_dt$longitude \%>\% max()
-ymin <- atl08_dt$latitude \%>\% min()
-ymax <- atl08_dt$latitude \%>\% max()
+xmin <- min(atl08_dt$longitude)
+xmax <- max(atl08_dt$longitude)
+ymin <- min(atl08_dt$latitude)
+ymax <- max(atl08_dt$latitude)
 
 linear_model <- stats::lm(h_canopy ~ canopy_openness, data = atl08_dt)
 output_h5 <- tempfile(fileext = ".h5")
 predicted_h5 <- predict_h5(linear_model, atl08_dt, output_h5)
 output_raster <- tempfile(fileext = ".tif")
-rasterize_h5(predicted_h5, output = output_raster, bbox = terra::ext(xmin, xmax, ymin, ymax), res = 0.003)
+
+rasterize_h5(
+  predicted_h5,
+  output = output_raster,
+  bbox = terra::ext(xmin, xmax, ymin, ymax),
+  res = 0.003
+)
 
 }

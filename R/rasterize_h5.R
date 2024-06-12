@@ -150,27 +150,33 @@ index_to_xy <- function(index, ysize) {
 #' )
 #' ```
 #'
-#' @examples 
+#' @examples
 #' atl08_path <- system.file(
-#'  "extdata",
-#' "atl08_clip.h5",
-#' package = "ICESat2VegR"
+#'   "extdata",
+#'   "atl08_clip.h5",
+#'   package = "ICESat2VegR"
 #' )
-#' 
+#'
 #' atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 #' atl08_dt <- ATL08_seg_attributes_dt(atl08_h5)
-#' 
-#' xmin <- atl08_dt$longitude %>% min()
-#' xmax <- atl08_dt$longitude %>% max()
-#' ymin <- atl08_dt$latitude %>% min()
-#' ymax <- atl08_dt$latitude %>% max()
-#' 
+#'
+#' xmin <- min(atl08_dt$longitude)
+#' xmax <- max(atl08_dt$longitude)
+#' ymin <- min(atl08_dt$latitude)
+#' ymax <- max(atl08_dt$latitude)
+#'
 #' linear_model <- stats::lm(h_canopy ~ canopy_openness, data = atl08_dt)
 #' output_h5 <- tempfile(fileext = ".h5")
 #' predicted_h5 <- predict_h5(linear_model, atl08_dt, output_h5)
 #' output_raster <- tempfile(fileext = ".tif")
-#' rasterize_h5(predicted_h5, output = output_raster, bbox = terra::ext(xmin, xmax, ymin, ymax), res = 0.003)
-#' 
+#'
+#' rasterize_h5(
+#'   predicted_h5,
+#'   output = output_raster,
+#'   bbox = terra::ext(xmin, xmax, ymin, ymax),
+#'   res = 0.003
+#' )
+#'
 #' @export
 setGeneric("rasterize_h5", function(
     h5_input,
@@ -182,7 +188,17 @@ setGeneric("rasterize_h5", function(
 })
 
 
-
+#' Rasterizes the model prediction saved in the HDF5 file
+#'
+#' @param h5_input The input HDF5 file path
+#' @param output The output raster file path
+#' @param bbox The bounding box of the raster
+#' @param res The resolution of the raster
+#' @param chunk_size The chunk size to read the HDF5 file
+#' @param agg_function The function to aggregate the data
+#' @param agg_join The function to join the aggregated data
+#' @param finalizer The function to finalize the raster
+#'
 #' @export
 setMethod("rasterize_h5",
   signature = c("icesat2.predict_h5", "character", "SpatExtent", "numeric"),
@@ -198,6 +214,8 @@ setMethod("rasterize_h5",
       res <- c(res, -res)
     }
 
+    `.` <- NA
+
     max_size <- length(h5_input)
     xsize <- ceiling((bbox$xmax - bbox$xmin) / abs(res[1]))
     ysize <- ceiling((bbox$ymax - bbox$ymin) / abs(res[2]))
@@ -211,7 +229,6 @@ setMethod("rasterize_h5",
 
     stats_names <- names(agg_function(0))
     for (name in stats_names) {
-      # temp_h5$link_delete(name)
       temp_h5[[name]] <- rep(nodata, xsize * ysize)
     }
 
@@ -247,11 +264,11 @@ setMethod("rasterize_h5",
     }
 
     finalizer_bands <- names(finalizer)
-    output_raster <- gdalBindings::createDataset(
+    output_raster <- createDataset(
       output,
       nbands = length(stats_names) + length(finalizer_bands),
       projstring = "epsg:4326",
-      datatype = gdalBindings::GDALDataType$GDT_Float32,
+      datatype = GDALDataType$GDT_Float32,
       lr_lat = bbox$ymin,
       ul_lat = bbox$ymax,
       lr_lon = bbox$xmax,
@@ -271,9 +288,6 @@ setMethod("rasterize_h5",
     n_y_blocks <- ceiling(ysize / block_ysize)
 
     band_index <- 0
-    # stat_name <- "mean"
-    # x_block_index <- 1
-    # y_block_index <- 1
     for (stat_name in stats_names) {
       band_index <- band_index + 1
       for (x_block_index in seq_len(n_x_blocks)) {
@@ -306,7 +320,7 @@ setMethod("rasterize_h5",
     for (finalizer_band in finalizer_bands) {
       band_index <- band_index + 1
       formula <- finalizer[[finalizer_band]]
-      gdalBindings::formulaCalculate(
+      formulaCalculate(
         formula,
         data = bands,
         updateBand = output_raster[[band_index]]
@@ -316,9 +330,3 @@ setMethod("rasterize_h5",
     close(output_raster)
   }
 )
-
-
-#' @export
-"close.icesat2.predict_h5" <- function(con, ...) {
-  con$close_all()
-}

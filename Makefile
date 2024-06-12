@@ -30,6 +30,11 @@ clean:
 
 vignettes: doc
 
+preprocess:
+	autoreconf
+	autoconf --output=configure.win configure.ac
+	./cleanup
+
 doc: 
 	Rscript -e 'devtools::build_vignettes()'
 	rm doc/*.Rmd

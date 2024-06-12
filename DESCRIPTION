@@ -3,8 +3,8 @@ Type: Package
 Title: NASA's Ice, Cloud, and Elevation Satellite (ICESat-2) Data Analysis for Land and Vegetation Applications
 Version: 0.0.1
 Authors@R: c(
-    person("Carlos Alberto", "Silva", email = "c.silva@ufl.edu", role = c("aut", "cph", "cre")),
-    person("Caio", "Hamamura", email = "caiohamamura@gmail.com", role = c("aut", "cph")))
+    person("Carlos Alberto", "Silva", email = "c.silva@ufl.edu", role = c("aut", "cph")),
+    person("Caio", "Hamamura", email = "caiohamamura@gmail.com", role = c("aut", "cph", "cre")))
 Description: Set of tools for downloading, reading, visualizing, processing and exporting NASA's ICESat-2 ATL03 (Global Geolocated Photon Data) and ATL08 (Land and Vegetation Height) products for Land and Vegetation Applications. 
 License: GPL (>= 3)
 Imports:
@@ -90,6 +90,7 @@ Collate:
     'class.icesat2.h5_local.R'
     'clip.R'
     'extract.R'
+    'gdalBindings.R'
     'gee-base-feature.R'
     'gee-base-list.R'
     'gee-base-number.R'
@@ -109,7 +110,6 @@ Suggests:
     chromote,
     devtools,
     e1071,
-    gdalBindings,
     ggplot2,
     grid,
     gridExtra,
@@ -131,3 +131,4 @@ Suggests:
 Config/testthat/edition: 3
 LinkingTo: 
     Rcpp
+VignetteBuilder: knitr
