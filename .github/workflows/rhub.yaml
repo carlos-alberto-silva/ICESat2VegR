@@ -58,9 +58,6 @@ jobs:
         with:
           token: ${{ secrets.RHUB_TOKEN }}
           job-config: ${{ matrix.config.job-config }}
-      - name: Add r-universe as default package repository
-        run: |
-          Rscript -e "writeLines(c('options(repos = c(\'https://caiohamamura.r-universe.dev\', \'https://cran.r-project.org\'))'), file.path(Sys.getenv('HOME'), '.Rprofile'))"
       - uses: r-hub/actions/setup-deps@v1
         with:
           job-config: ${{ matrix.config.job-config }}
