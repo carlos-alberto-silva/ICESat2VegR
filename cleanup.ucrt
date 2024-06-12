@@ -1,0 +1,15 @@
+#!/bin/sh
+rm -f src/Makevars
+rm -f src/Makevars.ucrt
+rm -f src/Makevars.ucrt.in
+rm -f aclocal.m4
+rm -rf inst/proj
+rm -f configure.win~
+rm -f configure~
+rm -f src/*.o
+rm -f src/*.dll
+rm -f src/*.so
+rm -f config.*
+
+exit 0
+

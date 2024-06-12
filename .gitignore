@@ -10,3 +10,7 @@ vignettes/*.html
 */.ipynb_checkpoints/*
 /doc/
 /Meta/
+config.log
+config.status
+autom4te.cache
+inst/proj
