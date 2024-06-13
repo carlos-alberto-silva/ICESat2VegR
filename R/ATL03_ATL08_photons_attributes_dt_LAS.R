@@ -34,11 +34,13 @@
 #' # Extracting ATL03 and ATL08 photons and heights
 #' atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
 #'
-#' ATL03_ATL08_photons_attributes_dt_LAS(
-#'   atl03_atl08_dt,
-#'   output = file.path(outdir, "output.laz"),
-#'   normalized = TRUE
-#' )
+#' if (require("lidR")) {
+#'   ATL03_ATL08_photons_attributes_dt_LAS(
+#'     atl03_atl08_dt,
+#'     output = file.path(outdir, "output.laz"),
+#'     normalized = TRUE
+#'   )
+#' }
 #'
 #' close(atl03_h5)
 #' close(atl08_h5)

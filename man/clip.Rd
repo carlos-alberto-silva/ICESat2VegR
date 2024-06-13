@@ -87,14 +87,14 @@ but keeps metadata and ancillary data the same.
 
 }}
 \examples{
-# ATL03 file path
-atl03_path <- system.file("extdata",
-  "atl03_clip.h5",
+# ATL08 file path
+atl08_path <- system.file("extdata",
+  "atl08_clip.h5",
   package = "ICESat2VegR"
 )
 
-# Reading ATL03 data (h5 file)
-atl03_h5 <- ATL03_read(atl03_path = atl03_path)
+# Reading ATL08 data (h5 file)
+atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 
 output <- tempfile(fileext = ".h5")
 
@@ -106,24 +106,24 @@ vect_path <- system.file("extdata",
 vect <- terra::vect(vect_path)
 ext <- terra::ext(vect)
 
-# Clipping ATL03 photons by boundary box extent
-atl03_clip <- clip(
-  atl03_h5,
+# Clipping ATL08 photons by boundary box extent
+atl08_clip <- clip(
+  atl08_h5,
   output,
   ext
 )
 
-close(atl03_clip)
+close(atl08_clip)
 
-# Clipping ATL03 photons by geometry
-atl03_clip_geom <- clip(
-  atl03_h5,
+# Clipping ATL08 photons by geometry
+atl08_clip_geom <- clip(
+  atl08_h5,
   output,
   vect,
   polygon_id = "id"
 )
 
-close(atl03_clip_geom, close)
+close(atl08_clip_geom, close)
 }
 \seealso{
 \code{\link[=ATL03_h5_clipBox]{ATL03_h5_clipBox()}}, \code{\link[=ATL03_h5_clipGeometry]{ATL03_h5_clipGeometry()}},

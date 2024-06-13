@@ -2,7 +2,7 @@
 title: "Upscalling ICESat-2 with Google Earth Engine"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{v05_GeeModelling}
+  %\VignetteIndexEntry{v06GeeModelling}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

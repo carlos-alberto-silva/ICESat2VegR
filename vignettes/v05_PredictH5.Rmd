@@ -2,7 +2,7 @@
 title: "Creating prediction combining large amount of data"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{v06_PredictH5}
+  %\VignetteIndexEntry{v05PredictH5}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

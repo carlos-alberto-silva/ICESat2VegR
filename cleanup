@@ -12,4 +12,3 @@ rm -f src/*.so
 rm -f config.*
 
 exit 0
-

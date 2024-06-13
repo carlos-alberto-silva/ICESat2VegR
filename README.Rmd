@@ -64,15 +64,16 @@ do_close <- FALSE
 ```{r child="vignettes/intermediate/04.1differentSizeSegments.Rmd"}
 ```
 
+# Predicting and rasterizing ATL08 h_canopy data using machine learning models
+
+```{r child="vignettes/intermediate/06predict_h5.Rmd"}
+```
+
 # Upscalling ATL08 h_canopy data using Harmonized Landsat-Sentinel-2 (HLS) data
 
 ```{r child="vignettes/intermediate/05gee_modelling.Rmd"}
 ```
 
-# Predicting and rasterizing ATL08 h_canopy data using Machine Learning models
-
-```{r child="vignettes/intermediate/06predict_h5.Rmd"}
-```
 
 ```{r include=FALSE}
 do_close <- TRUE
@@ -88,10 +89,10 @@ hide_close08 <- FALSE
 We gratefully acknowledge funding from NASA’s ICESat-2 (ICESat-2, grant 22-ICESat2_22-0006), Carbon Monitoring System (CMS, grant 22-CMS22-0015) and Commercial Smallsat Data Scientific Analysis(CSDSA, grant 22-CSDSA22_2-0080). 
 
 # Reporting Issues 
-Please report any issue regarding the ICESat2VegR package to Dr. Silva (c.silva@ufl.edu)
+Please report any issue regarding the ICESat2VegR package to Dr. Silva (c.silva@ufl.edu) or Caio Hamamura (hamamura.caio@ifsp.edu).
 
 # Citing ICESat2VegR
-Silva,C.A; Hamamura,C. ICESat2VegR: An R Package for NASA's Ice, Cloud, and Elevation Satellite (ICESat-2) Data Processing and Visualization for Terrestrial Applications.version 0.0.1, accessed on November. 22 2023, available at: <https://CRAN.R-project.org/package=ICESat2VegR>
+Silva,C.A; Hamamura,C. ICESat2VegR: An R Package for NASA's Ice, Cloud, and Elevation Satellite (ICESat-2) Data Processing and Visualization for Terrestrial Applications.version 0.0.1, accessed on Jun. 13 2024, available at: <https://CRAN.R-project.org/package=ICESat2VegR>
 
 # Disclaimer
 **ICESat2VegR package comes with no guarantee, expressed or implied, and the authors hold no responsibility for its use or reliability of its outputs.**

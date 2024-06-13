@@ -118,6 +118,7 @@ Suggests:
     leaflet,
     leafsync,
     lidR,
+    lwgeom,
     mapview,
     nnet,
     png,

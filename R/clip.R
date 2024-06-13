@@ -67,7 +67,13 @@ setGeneric(
   }
 )
 
+#' Default clip method
 #' @describeIn default clip will dispatch to [`graphics::clip()`]
+#' 
+#' @param x Maps to x1 from [`graphics::clip()`]
+#' @param output Maps to x2 from [`graphics::clip()`]
+#' @param clip_obj Maps to y1 from [`graphics::clip()`]
+#' @param ... Maps first element of list to y2 of [`graphics::clip()`]
 #' @export
 setMethod(
   "clip",

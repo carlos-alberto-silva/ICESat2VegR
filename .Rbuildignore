@@ -14,4 +14,6 @@
 ^Makefile$
 ^.github$
 ^README_files$
-
+^src/Makefile$
+^Makefile.ucrt$
+^Makefile.ucrt.in$

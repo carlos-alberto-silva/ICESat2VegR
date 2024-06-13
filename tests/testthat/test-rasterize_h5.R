@@ -1,5 +1,5 @@
 library(testthat)
-
+library(ICESat2VegR)
 
 atl03_path <- system.file(
   "extdata",

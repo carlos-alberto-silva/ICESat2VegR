@@ -18,7 +18,7 @@ An R6 object of GDALDataset class.
 Function to open GDAL Dataset
 }
 \examples{
-ds_path <- system.file("extdata", "example.tif", package = "gdalBindings")
+ds_path <- system.file("extdata", "example.tif", package = "ICESat2VegR")
 
 ds <- GDALOpen(ds_path)
 ds$Close()
