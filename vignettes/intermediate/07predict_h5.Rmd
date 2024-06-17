@@ -87,7 +87,7 @@ mapview::mapview(
 
 <div align="center">
 
-```{r agbd_model_mean, fig.align='center', message = FALSE, warnings = FALSE, fig.width = 10, fig.height = 8, out.width = "100%"}
+```{r agbd_model_mean, echo = FALSE, fig.align='center', message = FALSE, warnings = FALSE, fig.width = 10, fig.height = 8, out.width = "100%"}
 printMapView(
   mapview::mapview(stars_rast,
     layer.name = "AGBD mean",

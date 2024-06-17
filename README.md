@@ -750,19 +750,6 @@ for (atl08_h5_item in atl08_h5) {
 
 <div align="center">
 
-``` r
-printMapView(
-  mapview::mapview(stars_rast,
-    layer.name = "AGBD mean",
-    col.regions = forest_height_palette,
-    na.alpha = 0.1,
-    map = leaflet::leaflet() %>% leaflet::addProviderTiles("Esri.WorldImagery") %>%
-    setView(lng = mean(x), lat = mean(y), zoom = 12)
-  ),
-  "agbd_model_mean"
-)
-```
-
 <img src="man/figures/agbd_model_mean.png" width=500 />
 
 </div>
