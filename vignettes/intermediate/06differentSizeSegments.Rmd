@@ -1,47 +1,6 @@
 ```{r include = FALSE}
 child_setup <- file.path("../basic/00setup.Rmd")
 child_close <- file.path("../basic/01close.Rmd")
-
-if (!exists("is_readme")) {
-  printMapView <- function(mapviewObj, name, output = TRUE, delay = 0.2, full = FALSE) {
-    mapviewObj
-  }
-} else {
-  library(chromote)
-  chromeSession <- ChromoteSession$new(width = 800, height = 800)
-
-
-  printMapView <- function(mapviewObj, name, output = TRUE, delay = 5, full = FALSE, width = "500") {
-    html_temp <- tempfile(fileext = ".html")
-    if (inherits(mapviewObj, "mapview")) {
-      htmlwidgets::saveWidget(mapviewObj@map, html_temp)
-    } else if (inherits(mapviewObj, "htmlwidget")) {
-      htmlwidgets::saveWidget(mapviewObj, html_temp)
-    } else {
-      stop("printMapView don't know how to handle this!")
-    }
-
-    chromeSession$Page$navigate(html_temp)
-
-    Sys.sleep(delay)
-    if (full == TRUE) {
-      chromeSession$screenshot(name)
-    } else {
-      name <- gsub("\\.png$", "", name)
-      full_path <- file.path("../..", gettextf("figure/%s.png", name))
-
-      chromeSession$screenshot(full_path)
-    }
-    if (output == TRUE) {
-      if (width != "") {
-        width <- gettextf("width=%s ", width)
-      }
-
-      result <- knitr::asis_output(gettextf('<img src="figure/%s.png" %s/>\n', name, width))
-      return(result)
-    }
-  }
-}
 ```
 
 ## Introduction
@@ -122,7 +81,7 @@ print(head(atl03_atl08_seg_dt))
 Now, we convert the data.table to a SpatVector object.
 
 ```{r}
-atl03_atl08_vect <- to_vect(atl03_atl08_seg_dt)
+atl03_atl08_vect <- to_vect(atl03_atl08_seg_dt[h_canopy_gt0 <= 31])
 ```
 
 ## Visualize the segments
@@ -130,15 +89,28 @@ atl03_atl08_vect <- to_vect(atl03_atl08_seg_dt)
 Finally, we visualize the SpatVector interactively using mapview.
 
 
-```{r, eval = FALSE}
-mapview::mapview(atl03_atl08_vect)
+```{r, eval = c(1:3)}
+centroid <- atl03_atl08_dt[, .(x = mean(lon_ph), y = mean(lat_ph))]
+
+map_output <- mapview::mapview(
+  atl03_atl08_vect,
+  zcol = "h_canopy_gt0",
+  col.regions = grDevices::hcl.colors(9, "RdYlGn"),
+  alpha = 0,
+  layer.name = "h_canopy",
+  map.types = c("Esri.WorldImagery"),
+  cex = 4
+)@map %>%
+  setView(lng = centroid$x, lat = centroid$y, zoom = 13)
+
+map_output
 ```
 
 <div align="center">
 
-```{r, echo = FALSE, fig.cap = "Leaflet preview for segments h_canopy", out.height='400', out.width='500', fig.align = "center"}
+```{r segments_h_canopy, echo = FALSE, fig.cap = "Leaflet preview for segments h_canopy", out.height='400', out.width='500', fig.align = "center"}
 if (requireNamespace("mapview")) {
-  printMapView(mapview::mapview(atl03_atl08_vect), "atl03_atl08_vect", output = TRUE, delay = 5)
+  printMapView(map_output, "atl03_atl08_vect", output = TRUE, delay = 10)
 }
 ```
 

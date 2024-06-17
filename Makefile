@@ -4,18 +4,13 @@
 # https://cran.r-project.org/doc/manuals/r-release/R-exts.html#Writing-portable-packages
 PKGNAME = `sed -n "s/Package: *\([^ ]*\)/\1/p" DESCRIPTION`
 PKGVERS = `sed -n "s/Version: *\([^ ]*\)/\1/p" DESCRIPTION`
-
+input_vignettes = $(wildcard vignettes/*.Rmd)
+output_vignettes = inst/doc/$(input_vignettes:.Rmd=.html)
 
 all: check
 
 build: install_deps
 	R CMD build .
-
-check1:
-	Rscript -e "zz <- file('check_output.log', 'wt'); sink(zz, type = 'output'); sink(zz, type='message'); devtools::check(); sink(); close(zz)"
-
-check2:
-	Rscript -e "zz <- file('check_output2.log', 'wt'); sink(zz, type = 'output'); sink(zz, type='message'); devtools::check(); sink(); close(zz)"
 
 install_deps:
 	Rscript \
@@ -27,15 +22,17 @@ install: build
 
 clean:
 	@rm -rf $(PKGNAME)_$(PKGVERS).tar.gz $(PKGNAME).Rcheck
+	./cleanup
 
-vignettes: doc
+vignettes: $(output_vignettes)
 
 preprocess:
 	autoreconf
 	autoconf --output=configure.win configure.ac
 	./cleanup
 
-doc: 
+$(output_vignettes): $(input_vignettes)
+	Rscript -e 'knitr::knit("vignettes/v08_GeeModelling.Rmd.orig", output = "vignettes/v08_GeeModelling.Rmd")'
 	Rscript -e 'devtools::build_vignettes()'
 	rm doc/*.Rmd
 	rm doc/*.R

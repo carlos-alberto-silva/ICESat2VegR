@@ -17,3 +17,6 @@
 ^src/Makefile$
 ^Makefile.ucrt$
 ^Makefile.ucrt.in$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

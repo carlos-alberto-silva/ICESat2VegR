@@ -38,6 +38,9 @@ hide_close08 <- TRUE
 do_close <- FALSE
 ```
 
+```{r child="vignettes/basic/02print_mapview.Rmd"}
+```
+
 ```{r child="vignettes/v01_Installation.Rmd"}
 ```
 
@@ -51,27 +54,27 @@ do_close <- FALSE
 
 # Clipping ATL03 and ATL08 data
 
-```{r child="vignettes/intermediate/02.1clipping_data.Rmd"}
+```{r child="vignettes/intermediate/04clipping_data.Rmd"}
 ```
 
 # Joining ATL03 and ATL08 data
 
-```{r child="vignettes/intermediate/04joining_photons.Rmd"}
+```{r child="vignettes/intermediate/05joining_photons.Rmd"}
 ```
 
 # Calculating ATL08 metrics for different size segments other than 100m and 20m
 
-```{r child="vignettes/intermediate/04.1differentSizeSegments.Rmd"}
+```{r child="vignettes/intermediate/06differentSizeSegments.Rmd"}
 ```
 
 # Predicting and rasterizing ATL08 h_canopy data using machine learning models
 
-```{r child="vignettes/intermediate/06predict_h5.Rmd"}
+```{r child="vignettes/intermediate/07predict_h5.Rmd"}
 ```
 
 # Upscalling ATL08 h_canopy data using Harmonized Landsat-Sentinel-2 (HLS) data
 
-```{r child="vignettes/intermediate/05gee_modelling.Rmd"}
+```{r child="vignettes/intermediate/08gee_modelling.Rmd"}
 ```
 
 

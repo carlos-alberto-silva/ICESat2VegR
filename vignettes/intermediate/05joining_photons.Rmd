@@ -74,7 +74,7 @@ par(
 
 <div align="center">
 
-```{r, echo = FALSE, fig.align = 'center', fig.cap = 'Classified ATL03 photons using ATL08 labels', fig.width=5, fig.height=5}
+```{r classified_photons, echo = FALSE, fig.align = 'center', fig.cap = 'Classified ATL03 photons using ATL08 labels', fig.width=5, fig.height=5}
 oldpar <- par(no.readonly = TRUE)
 par(oma = c(0, 0, 0, 0))
 par(mar = c(2, 3, 1, 1))
@@ -131,7 +131,7 @@ plot(h_canopy,
 
 <div align="center">
 
-```{r, echo = FALSE, fig.align = 'center', fig.cap = 'Rasterized ATL03_ATL08 data for canopy height (h_canopy) and number of photons (n)', echo = FALSE, fig.width=5, fig.height=4}
+```{r rasterized_atl03_atl08, echo = FALSE, fig.align = 'center', fig.cap = 'Rasterized ATL03_ATL08 data for canopy height (h_canopy) and number of photons (n)', echo = FALSE, fig.width=5, fig.height=4}
 h_canopy <- ATL03_ATL08_photons_attributes_dt_gridStat(
   atl03_atl08_dt[ph_h < 50 & ph_h > 0],
   func = list(

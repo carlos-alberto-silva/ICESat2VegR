@@ -1,47 +1,6 @@
 ```{r include = FALSE}
 child_setup <- file.path("../basic/00setup.Rmd")
 child_close <- file.path("../basic/01close.Rmd")
-
-if (!exists("is_readme")) {
-  printMapView <- function(mapviewObj, name, output = TRUE, delay = 0.2, full = FALSE) {
-    mapviewObj
-  }
-} else {
-  library(chromote)
-  chromeSession <- ChromoteSession$new(width = 800, height = 800)
-
-
-  printMapView <- function(mapviewObj, name, output = TRUE, delay = 5, full = FALSE, width = "500") {
-    html_temp <- tempfile(fileext = ".html")
-    if (inherits(mapviewObj, "mapview")) {
-      htmlwidgets::saveWidget(mapviewObj@map, html_temp)
-    } else if (inherits(mapviewObj, "htmlwidget")) {
-      htmlwidgets::saveWidget(mapviewObj, html_temp)
-    } else {
-      stop("printMapView don't know how to handle this!")
-    }
-
-    chromeSession$Page$navigate(html_temp)
-
-    Sys.sleep(delay)
-    if (full == TRUE) {
-      chromeSession$screenshot(name)
-    } else {
-      name <- gsub("\\.png$", "", name)
-      full_path <- file.path("../..", gettextf("figure/%s.png", name))
-
-      chromeSession$screenshot(full_path)
-    }
-    if (output == TRUE) {
-      if (width != "") {
-        width <- gettextf("width=%s ", width)
-      }
-
-      result <- knitr::asis_output(gettextf('<img src="figure/%s.png" %s/>\n', name, width))
-      return(result)
-    }
-  }
-}
 ```
 
 ```{r child=child_setup}
@@ -79,22 +38,22 @@ head(atl08_seg_dt)
 
 ### Visualizing the 'h_canopy' for the ATL08 dataset.
 
-```{r, out.width = '400', fig.align="center", eval = FALSE}
+```{r, include = FALSE, echo = TRUE}
 library(terra)
+library(leaflet)
 
 atl08_seg_vect <- to_vect(atl08_seg_dt)
-terra::plet(atl08_seg_vect, "h_canopy", col = grDevices::hcl.colors(9, "RdYlGn"), tiles = c("Esri.WorldImagery"))
+centroid <- geom(centroids(vect(ext(atl08_seg_vect))))
+
+map <- terra::plet(atl08_seg_vect, "h_canopy", col = grDevices::hcl.colors(9, "RdYlGn"), tiles = c("Esri.WorldImagery")) %>%
+  setView(lng = centroid[, "x"][[1]], lat = centroid[, "y"][[1]], zoom = 12)
+
+map
 ```
 
 <div align="center" style="display:flex;justify-content:center">
 
-```{r include = FALSE}
-library(terra)
-```
-
-```{r, echo = FALSE, fig.cap = "Leaflet preview for segments h_canopy", out.height='400', out.width='500', fig.align = "center", warnings = FALSE}
-atl08_seg_vect <- to_vect(atl08_seg_dt)
-map <- terra::plet(atl08_seg_vect, "h_canopy", col = grDevices::hcl.colors(9, "RdYlGn"), tiles = c("Esri.WorldImagery"))
+```{r segments_h_canopy2, echo = FALSE, fig.cap = "Leaflet preview for segments h_canopy", out.height='400', out.width='500', fig.align = "center", warnings = FALSE}
 printMapView(map, "atl08_seg_vect_gee_modelling")
 ```
 
@@ -165,7 +124,7 @@ print(hls)
 
 ## Visualize the resulting image
 
-```{r, eval = FALSE}
+```{r, include = FALSE, echo = TRUE}
 library(leaflet)
 
 forest_height_palette <- c("#ffffff", "#99cc99", "#006600", "#004d00")
@@ -186,23 +145,39 @@ map
 
 <div align="center" style="display:flex;justify-content:center">
 
-```{r echo = FALSE, fig.cap = 'Mask and unmasked image difference', out.height='400', out.width='500', fig.align = "center"}
-library(leaflet)
+```{r ee_mask_unmasked, echo = FALSE, fig.cap = 'Mask and unmasked image difference', out.height='800', out.width='800', fig.align = "center"}
+if (!exists("is_readme")) {
+  printMapView(map, "mask_unmasked_hls")
+} else {
+  library(png)
+  library(grid)
+  library(gridExtra)
 
-forest_height_palette <- c("#ffffff", "#99cc99", "#006600", "#004d00")
-palette_colors <- colorNumeric(forest_height_palette, range(atl08_seg_dt$h_canopy))(atl08_seg_dt[order(h_canopy), h_canopy])
 
-centroid <- mean(bbox)
-map <- leaflet::leaflet() |>
-  addEEImage(hls, bands = list("red", "green", "blue"), group = "masked", max = 0.6) |>
-  addEEImage(hls_unmasked, bands = list("red", "green", "blue"), group = "unmasked", max = 0.6) |>
-  setView(lng = centroid[1], lat = centroid[2], zoom = 13) |>
-  addLayersControl(
-    baseGroups = c("unmasked", "masked"),
-    options = layersControlOptions(collapsed = FALSE)
+  png_files <- c(
+    tempfile(fileext = ".png"),
+    tempfile(fileext = ".png")
   )
 
-printMapView(map, "mask_unmasked_hls")
+  printMapView(map, png_files[1], output = FALSE, full = TRUE)
+  printMapView(map %>% showGroup("masked"), png_files[2], output = FALSE, full = TRUE)
+
+  # Read the PNG images
+  png_images <- lapply(png_files, readPNG)
+
+  # Create plots for each PNG image
+  plots <- lapply(png_images, function(img) {
+    grid::rasterGrob(img, interpolate = TRUE)
+  })
+
+  # Arrange the plots in a 2x2 grid
+  pngoutput <- file.path("../../man/figures", "unmasked_masked.png")
+  # stop(gettextf("The path of the file is:%s", pngoutput))
+  png(pngoutput, height = 800, width = 800 * 2)
+  res <- grid.arrange(grobs = plots, ncol = 2)
+  dev.off()
+  knitr::asis_output("![multi](man/figures/unmasked_masked.png)\n\n")
+}
 ```
 
 </div>
@@ -250,7 +225,7 @@ barplot(rf_importance[, "IncNodePurity"], main = "Variable importance (Increase 
 
 <div align="center">
 
-```{r echo = FALSE, fig.cap = 'Random forests variable importance (increase node impurity).', message = FALSE, warning = FALSE, fig.width = 7, fig.height = 5.6, out.width = '500', fig.align="center"}
+```{r rf_variable_importance, echo = FALSE, fig.cap = 'Random forests variable importance (increase node impurity).', message = FALSE, warning = FALSE, fig.width = 7, fig.height = 5.6, out.width = '500', fig.align="center"}
 library(randomForest)
 rf_importance <- importance(rf_model)
 
@@ -318,7 +293,7 @@ modelled_map
 gee_model <- build_ee_forest(rf_model)
 ```
 
-```{r echo = FALSE, fig.cap = 'Upscalling of ICESat-2 ATL08 h_canopy data', message = FALSE, warning = FALSE, out.height='400', out.width='500', fig.align="center"}
+```{r upscalled_h_canopy, echo = FALSE, fig.cap = 'Upscalling of ICESat-2 ATL08 h_canopy data', message = FALSE, warning = FALSE, out.height='400', out.width='500', fig.align="center"}
 result <- hls$classify(gee_model)
 min_hcanopy <- min(atl08_seg_dt$h_canopy)
 max_hcanopy <- 20

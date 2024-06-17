@@ -61,7 +61,7 @@ hist(atl08_seg_dt$h_canopy, col = "green", xlab = "Height (m)", main = "ATL08 h_
 
 <div align="center">
 
-```{r echo = FALSE, fig.cap = 'Histograms for ATL03 elevation and ATL08 h_canopy', fig.align="center", fig.width=5, fig.height=4}
+```{r segments_histogram, echo = FALSE, fig.cap = 'Histograms for ATL03 elevation and ATL08 h_canopy', fig.align="center", fig.width=5, fig.height=4}
 layout(t(1:2))
 
 # ATL03 height histogram
@@ -87,8 +87,8 @@ set.seed(123)
 mask <- sample(seq_len(nrow(atl03_seg_dt)), 50)
 atl03_seg_vect <- to_vect(atl03_seg_dt)
 
-# Plot with terra::plet
-mapview::mapView(
+# Plot with mapview
+mapview::mapview(
   atl03_seg_vect[mask],
   zcol = "h_ph",
   layer.name = "h_ph",
@@ -106,57 +106,17 @@ greenYellowRed <- function(n) {
 }
 blueYellowRed <- function(n) grDevices::hcl.colors(n, "RdYlBu")
 
-
-if (!exists("is_readme")) {
-  printMapView <- function(mapviewObj, name, output = TRUE, delay = 0.2, full = FALSE) {
-    mapviewObj
-  }
-} else {
-  library(chromote)
-  chromeSession <- ChromoteSession$new(width = 800, height = 800)
-
-  printMapView <- function(mapviewObj, name, output = TRUE, delay = 1, full = FALSE, width = "500") {
-    html_temp <- tempfile(fileext = ".html")
-    if (inherits(mapviewObj, "mapview")) {
-      htmlwidgets::saveWidget(mapviewObj@map, html_temp)
-    } else if (inherits(mapviewObj, "htmlwidgets")) {
-      htmlwidgets::saveWidget(mapviewObj, html_temp)
-    } else {
-      stop("printMapView don't know how to handle this!")
-    }
-
-    chromeSession$Page$navigate(html_temp)
-
-    Sys.sleep(delay)
-    if (full == TRUE) {
-      chromeSession$screenshot(name)
-    } else {
-      name <- gsub("\\.png$", "", name)
-      full_path <- file.path("../..", gettextf("figure/%s.png", name))
-
-      chromeSession$screenshot(full_path)
-    }
-    if (output == TRUE) {
-      if (width != "") {
-        width <- gettextf("width=%s ", width)
-      }
-
-      result <- knitr::asis_output(gettextf('<img src="figure/%s.png" %s/>\n', name, width))
-      return(result)
-    }
-  }
-}
-
 library(terra)
 library(mapview)
+library(leaflet)
 
 set.seed(123)
 mask <- sample(seq_len(nrow(atl03_seg_dt)), 50)
 atl03_seg_vect <- to_vect(atl03_seg_dt)
+centroid <- geom(centroids(vect(ext(atl03_seg_vect))))
 
-
-# Plot with terra::plet
-map_temp <- mapview::mapView(
+# Plot with terra::mapview
+map_temp <- mapview::mapview(
   atl03_seg_vect[mask],
   zcol = "h_ph",
   layer.name = "h_ph",
@@ -164,9 +124,13 @@ map_temp <- mapview::mapView(
   breaks = 3,
   map.types = c("Esri.WorldImagery")
 )
+
+
+map_temp <- map_temp@map %>% 
+  leaflet::setView(lng = centroid[,'x'][[1]], lat = centroid[,'y'][[1]], zoom = 11)
 ```
 ```{r, echo = FALSE, fig.cap = 'Vectorized ATL03 segments', out.width="500", out.height="400", cache = FALSE}
-printMapView(map_temp, "atl03_seg_vect", delay = 20)
+printMapView(map_temp, "atl03_seg_vect")
 ```
 
 </div>
@@ -395,17 +359,15 @@ plots <- lapply(png_images, function(img) {
 })
 
 # Arrange the plots in a 2x2 grid
-pngoutput <- file.path("../../figure", "output_multi.png")
+pngoutput <- file.path("../../man/figures", "output_multi.png")
 # stop(gettextf("The path of the file is:%s", pngoutput))
 png(pngoutput, height = 800 * 2, width = 800 * 2)
 res <- grid.arrange(grobs = plots, ncol = 2)
 dev.off()
-
-chromeSession$close()
 ```
 
 ```{r eval = (exists("is_readme")), echo = FALSE}
-knitr::asis_output("![multi](figure/output_multi.png)\n\n")
+knitr::asis_output("![multi](man/figures/output_multi.png)\n\n")
 ```
 
 </div>

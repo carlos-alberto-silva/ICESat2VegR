@@ -14,3 +14,4 @@ config.log
 config.status
 autom4te.cache
 inst/proj
+docs

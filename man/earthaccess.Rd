@@ -5,7 +5,7 @@
 \alias{earthaccess}
 \title{The pointer to the \code{earthaccess} python reticulate module}
 \format{
-An object of class \code{NULL} of length 0.
+An object of class \code{python.builtin.module} (inherits from \code{python.builtin.object}) of length 1.
 }
 \usage{
 earthaccess

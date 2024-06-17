@@ -1,8 +1,8 @@
 ---
-title: "Upscalling ICESat-2 with Google Earth Engine"
+title: "Creating prediction combining large amount of data"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{v06GeeModelling}
+  %\VignetteIndexEntry{v07_PredictH5}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -13,7 +13,8 @@ if (!exists("vignettes_path")) {
 }
 
 children_run <- file.path(vignettes_path, c(
-  "intermediate/05gee_modelling.Rmd"
+  "basic/02print_mapview.Rmd",
+  "intermediate/07predict_h5.Rmd"
 ))
 
 hide_close03 <- TRUE

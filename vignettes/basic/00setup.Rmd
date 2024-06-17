@@ -1,4 +1,9 @@
 ```{r include = FALSE}
+knitr::opts_chunk$set(
+  fig.path = "man/figures/",
+  message = FALSE, warning = FALSE, error = FALSE
+)
+
 if (!exists("kable_defined")) {
   kable_defined <- TRUE
   type <- "pipe"

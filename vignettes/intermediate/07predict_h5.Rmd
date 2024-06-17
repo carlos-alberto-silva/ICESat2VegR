@@ -14,10 +14,10 @@ if (!exists("do_close")) {
 
 ## Creating a simple model for ATL08 data
 
-Here, we will create a simple model to predict the canopy openness of ATL08 data based on the height of the canopy. 
+Here, we will create a simple model to predict the AGBD of ATL08 data based on the height of the canopy. 
 We will use the `randomForest` package to create the model.
 
-Let's assume we will fit the model on a subset of the ATL08 data and then predict the canopy openness for the rest of the data.
+Let's assume we have the following tabular data from ATL08 and field data.
 
 ```{r, message = FALSE}
 # For the sake of the example, we will train and test the model with the same data
@@ -50,7 +50,7 @@ as large as you want. This will create or append the predicted values to an H5 f
 out_h5 <- tempfile(fileext = ".h5")
 
 for (atl08_h5_item in atl08_h5) {
-  atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5_item, attributes = c("h_canopy", "canopy_openness"))
+  atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5_item, attributes = c("h_canopy"))
   atl08_seg_dt[h_canopy > 100, h_canopy := NA_real_]
   atl08_seg_dt <- na.omit(atl08_seg_dt)
   predicted_h5 <- predict_h5(model, atl08_seg_dt, out_h5)
@@ -73,6 +73,8 @@ rasterize_h5(predicted_h5, output_raster, bbox = bbox, res = res)
 forest_height_palette <- c("#ffffff", "#4d994d", "#004d00")
 
 # Open band 2 only (mean AGBD)
+library(leaflet)
+
 stars_rast <- stars::read_stars(output_raster, RasterIO = list(bands = 2))
 mapview::mapview(
   stars_rast,
@@ -83,15 +85,22 @@ mapview::mapview(
 )
 ```
 
-```{r, fig.align='center', message = FALSE, warnings = FALSE, fig.width = 10, fig.height = 8, out.width = "100%"}
+<div align="center">
+
+```{r agbd_model_mean, fig.align='center', message = FALSE, warnings = FALSE, fig.width = 10, fig.height = 8, out.width = "100%"}
 printMapView(
-  stars_rast,
-  layer.name = "AGBD mean",
-  col.regions = forest_height_palette,
-  na.alpha = 0.1,
-  map = leaflet::leaflet() %>% leaflet::addProviderTiles("Esri.WorldImagery")
+  mapview::mapview(stars_rast,
+    layer.name = "AGBD mean",
+    col.regions = forest_height_palette,
+    na.alpha = 0.1,
+    map = leaflet::leaflet() %>% leaflet::addProviderTiles("Esri.WorldImagery") %>%
+    setView(lng = mean(x), lat = mean(y), zoom = 12)
+  ),
+  "agbd_model_mean"
 )
 ```
+
+</div>
 
 ```{r child=child_close}
 ```

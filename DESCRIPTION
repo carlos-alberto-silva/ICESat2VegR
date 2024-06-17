@@ -125,6 +125,7 @@ Suggests:
     rmarkdown,
     rstudioapi,
     signal,
+    stars,
     testthat (>= 3.0.0),
     webshot,
     viridis,

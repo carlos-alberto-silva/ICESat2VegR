@@ -1,6 +1,7 @@
 
 ![](https://github.com/carlos-alberto-silva/ICESat2VegR/blob/master/readme/cover.png)<br/>
-[![ICESat2VegR status badge](https://carlos-alberto-silva.r-universe.dev/badges/ICESat2VegR)](https://carlos-alberto-silva.r-universe.dev/ICESat2VegR)
+[![ICESat2VegR status
+badge](https://carlos-alberto-silva.r-universe.dev/badges/ICESat2VegR)](https://carlos-alberto-silva.r-universe.dev/ICESat2VegR)
 [![R-hub](https://github.com/carlos-alberto-silva/ICESat2VegR/actions/workflows/rhub.yaml/badge.svg)](https://github.com/carlos-alberto-silva/ICESat2VegR/actions/workflows/rhub.yaml)
 [![CRAN](https://www.r-pkg.org/badges/version/ICESat2VegR)](https://cran.r-project.org/package=ICESat2VegR)
 ![licence](https://img.shields.io/badge/Licence-GPL--3-blue.svg)
@@ -19,6 +20,11 @@ for Land and Vegetation Applications in R environment.
 
 # Getting started
 
+``` r
+message("Running mapview print`")
+```
+
+    ## Running mapview print`
 
 ``` r
 # The r-universe version (recommended for the latest version)
@@ -89,6 +95,7 @@ ATLAS_dataDownload(
   "https://github.com/carlos-alberto-silva/ICESat2VegR/releases/download/example_datasets/Study_Site.zip",
   outdir
 )
+
 # Unzip the example dataset
 unzip(file.path(outdir, "Study_Site.zip"), exdir = outdir)
 ```
@@ -265,7 +272,7 @@ hist(atl08_seg_dt$h_canopy, col = "green", xlab = "Height (m)", main = "ATL08 h_
 
 <div class="figure" style="text-align: center">
 
-<img src="README_files/figure-gfm/unnamed-chunk-71-1.png" alt="Histograms for ATL03 elevation and ATL08 h_canopy"  />
+<img src="man/figures/segments_histogram-1.png" alt="Histograms for ATL03 elevation and ATL08 h_canopy"  />
 <p class="caption">
 Histograms for ATL03 elevation and ATL08 h_canopy
 </p>
@@ -287,8 +294,8 @@ set.seed(123)
 mask <- sample(seq_len(nrow(atl03_seg_dt)), 50)
 atl03_seg_vect <- to_vect(atl03_seg_dt)
 
-# Plot with terra::plet
-mapview::mapView(
+# Plot with mapview
+mapview::mapview(
   atl03_seg_vect[mask],
   zcol = "h_ph",
   layer.name = "h_ph",
@@ -300,7 +307,7 @@ mapview::mapView(
 
 <div align="center">
 
-<img src="figure/atl03_seg_vect.png" width=500 />
+<img src="man/figures/atl03_seg_vect.png" width=500 />
 
 </div>
 
@@ -327,7 +334,7 @@ map_vect
 
 <div align="center">
 
-<img src="figure/atl08_seg_vect.png" width=500 />
+<img src="man/figures/atl08_seg_vect.png" width=500 />
 
 </div>
 
@@ -356,7 +363,7 @@ mapview::mapView(
 
 <div align="center">
 
-<img src="figure/atl08_max_h_canopy.png" width=500 />
+<img src="man/figures/atl08_max_h_canopy.png" width=500 />
 
 </div>
 
@@ -400,7 +407,7 @@ leafsync::sync(m1, m2, m3, m4)
 <div align="center" style="width:100%;">
 
 <figure>
-<img src="figure/output_multi.png" alt="multi" />
+<img src="man/figures/output_multi.png" alt="multi" />
 <figcaption aria-hidden="true">multi</figcaption>
 </figure>
 
@@ -444,62 +451,19 @@ clip the raw HDF5 and the extracted attributes.
 
 ## Clipping raw hdf5 data from ATL08
 
-``` r
-# Define bbox
-clip_region <- terra::ext(-83.2, -83.14, 32.12, 32.18)
+<div align="center">
 
-# Define hdf5 output file
-output <- tempfile(fileext = ".h5")
+<img src="man/figures/atl08_clip_bbox.png" width=500 />
 
-# Clip the data for only the first atl08 file
-atl08_clipped <- ATL08_h5_clipBox(atl08_h5[[1]], output, bbox = clip_region)
-
-atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5[[1]], attributes = c("h_canopy"))
-atl08_seg_dt_clip <- ATL08_seg_attributes_dt(atl08_clipped, attributes = c("h_canopy"))
-
-# Display location of clipped data
-plot(
-  atl08_seg_dt$longitude,
-  atl08_seg_dt$latitude,
-  pch = 20,
-  xlab = "longitude",
-  ylab = "latitude"
-)
-points(atl08_seg_dt_clip$longitude, atl08_seg_dt_clip$latitude, col = "purple", pch = 3, cex = 1)
-rect(clip_region$xmin, clip_region$ymin, clip_region$xmax, clip_region$ymax, lty = 2)
-
-legend(col = c("black", "purple", "black"), legend = c("Original", "Clipped", "AOI"), pch = c(20, 3, NA), lty = c(NA, NA, 2), cex = 1, x = "topright")
-```
-
-<img src="README_files/figure-gfm/unnamed-chunk-129-1.png" width="260" style="display: block; margin: auto;" />
+</div>
 
 ## Clipping extracted attributes from ATL08 segments data
 
-``` r
-aoi <- file.path(outdir, "example_aoi.gpkg")
-aoi_vect <- terra::vect(aoi)
+<div align="center">
 
-# Extract the h_canopy attribute from the first ATL08 file
-atl08_seg_dt <- lapply(atl08_h5, ATL08_seg_attributes_dt, attributes = c("h_canopy"))
-atl08_seg_dt <- rbindlist2(atl08_seg_dt)
+<img src="man/figures/atl08_clip_geom.png" width=500 />
 
-# Clip the data for only the first atl08 file
-atl08_seg_dt_clip <- ATL08_seg_attributes_dt_clipGeometry(atl08_seg_dt, aoi_vect)
-
-plot(
-  atl08_seg_dt$longitude,
-  atl08_seg_dt$latitude,
-  pch = 20,
-  xlab = "longitude",
-  ylab = "latitude"
-)
-points(atl08_seg_dt_clip$longitude, atl08_seg_dt_clip$latitude, col = "purple", pch = 3, cex = 1)
-aoi_geom <- terra::geom(aoi_vect)
-polygon(aoi_geom[,"x"], aoi_geom[,"y"], lty = 2)
-legend(col = c("black", "purple", "black"), legend = c("Original", "Clipped", "AOI"), pch = c(20, 3, NA), lty = c(NA, NA, 2), cex = 1, x = "topright")
-```
-
-<img src="README_files/figure-gfm/unnamed-chunk-130-1.png" width="260" style="display: block; margin: auto;" />
+</div>
 
 # Joining ATL03 and ATL08 data
 
@@ -578,7 +542,7 @@ par(
 
 <div class="figure" style="text-align: center">
 
-<img src="README_files/figure-gfm/unnamed-chunk-163-1.png" alt="Classified ATL03 photons using ATL08 labels"  />
+<img src="man/figures/classified_photons-1.png" alt="Classified ATL03 photons using ATL08 labels"  />
 <p class="caption">
 Classified ATL03 photons using ATL08 labels
 </p>
@@ -611,7 +575,7 @@ plot(h_canopy,
 
 <div class="figure" style="text-align: center">
 
-<img src="README_files/figure-gfm/unnamed-chunk-165-1.png" alt="Rasterized ATL03_ATL08 data for canopy height (h_canopy) and number of photons (n)"  />
+<img src="man/figures/rasterized_atl03_atl08-1.png" alt="Rasterized ATL03_ATL08 data for canopy height (h_canopy) and number of photons (n)"  />
 <p class="caption">
 Rasterized ATL03_ATL08 data for canopy height (h_canopy) and number of
 photons (n)
@@ -702,7 +666,7 @@ head(atl03_atl08_seg_dt)
 Now, we convert the data.table to a SpatVector object.
 
 ``` r
-atl03_atl08_vect <- to_vect(atl03_atl08_seg_dt)
+atl03_atl08_vect <- to_vect(atl03_atl08_seg_dt[h_canopy_gt0 <= 31])
 ```
 
 ## Visualize the segments
@@ -710,12 +674,96 @@ atl03_atl08_vect <- to_vect(atl03_atl08_seg_dt)
 Finally, we visualize the SpatVector interactively using mapview.
 
 ``` r
-mapview::mapview(atl03_atl08_vect)
+centroid <- atl03_atl08_dt[, .(x = mean(lon_ph), y = mean(lat_ph))]
+
+map_output <- mapview::mapview(
+  atl03_atl08_vect,
+  zcol = "h_canopy_gt0",
+  col.regions = grDevices::hcl.colors(9, "RdYlGn"),
+  alpha = 0,
+  layer.name = "h_canopy",
+  map.types = c("Esri.WorldImagery"),
+  cex = 4
+)@map %>%
+  setView(lng = centroid$x, lat = centroid$y, zoom = 13)
+## 
+## map_output
 ```
 
 <div align="center">
 
-<img src="figure/atl03_atl08_vect.png" width=500 />
+<img src="man/figures/atl03_atl08_vect.png" width=500 />
+
+</div>
+
+# Predicting and rasterizing ATL08 h_canopy data using machine learning models
+
+## Creating a simple model for ATL08 data
+
+Here, we will create a simple model to predict the AGBD of ATL08 data
+based on the height of the canopy. We will use the `randomForest`
+package to create the model.
+
+Let’s assume we have the following tabular data from ATL08 and field
+data.
+
+``` r
+# For the sake of the example, we will train and test the model with the same data
+library(randomForest)
+
+h_canopy <- c(
+  13.9, 3.1, 2.2, 4.6, 21.6,
+  7.2, 5, 7.7, 0.8, 9.7,
+  11, 11.3, 15.5, 5.1, 10.4,
+  0.6, 14.6, 13.3, 9.8, 14.7
+)
+
+agbd <- c(
+  144.8, 27.5, 51.6, 60.5, 232.3,
+  102.8, 33.1, 91.3, 23, 120.1,
+  125.7, 127.2, 147.4, 48.8, 103.3,
+  55.9, 181.8, 139.9, 120.1, 162.8
+)
+
+set.seed(172783946)
+model <- randomForest::randomForest(data.frame(h_canopy = h_canopy), agbd)
+```
+
+## Predicting ATL08 data
+
+Now we will predict the data for the entire ATL08 dataset, this can be
+as large as you want. This will create or append the predicted values to
+an H5 file.
+
+``` r
+out_h5 <- tempfile(fileext = ".h5")
+
+for (atl08_h5_item in atl08_h5) {
+  atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5_item, attributes = c("h_canopy"))
+  atl08_seg_dt[h_canopy > 100, h_canopy := NA_real_]
+  atl08_seg_dt <- na.omit(atl08_seg_dt)
+  predicted_h5 <- predict_h5(model, atl08_seg_dt, out_h5)
+}
+```
+
+## Rasterizing the predicted data
+
+<div align="center">
+
+``` r
+printMapView(
+  mapview::mapview(stars_rast,
+    layer.name = "AGBD mean",
+    col.regions = forest_height_palette,
+    na.alpha = 0.1,
+    map = leaflet::leaflet() %>% leaflet::addProviderTiles("Esri.WorldImagery") %>%
+    setView(lng = mean(x), lat = mean(y), zoom = 12)
+  ),
+  "agbd_model_mean"
+)
+```
+
+<img src="man/figures/agbd_model_mean.png" width=500 />
 
 </div>
 
@@ -746,23 +794,16 @@ head(atl08_seg_dt)
 ```
 
 latitude longitude beam strong_beam h_canopy <num> <num> <char> <lgcl>
-<num> 1: 31.99992 -83.17574 gt1r TRUE 19.86016 2: 32.04510 -83.18090
-gt1r TRUE 13.64077 3: 32.04600 -83.18101 gt1r TRUE 10.72907 4: 32.04690
--83.18111 gt1r TRUE 11.40739 5: 32.05770 -83.18234 gt1r TRUE 12.93657 6:
-32.09549 -83.18666 gt1r TRUE 10.39240
+<num> 1: 32.35687 -83.13213 gt1r TRUE 3.375763 2: 32.34967 -83.13296
+gt1r TRUE 3.256882 3: 32.34877 -83.13306 gt1r TRUE 4.273857 4: 32.34787
+-83.13316 gt1r TRUE 2.742630 5: 32.34427 -83.13358 gt1r TRUE 6.318420 6:
+32.34337 -83.13367 gt1r TRUE 16.272888
 
 ### Visualizing the ‘h_canopy’ for the ATL08 dataset.
 
-``` r
-library(terra)
-
-atl08_seg_vect <- to_vect(atl08_seg_dt)
-terra::plet(atl08_seg_vect, "h_canopy", col = grDevices::hcl.colors(9, "RdYlGn"), tiles = c("Esri.WorldImagery"))
-```
-
 <div align="center" style="display:flex;justify-content:center">
 
-<img src="figure/atl08_seg_vect_gee_modelling.png" width=500 />
+<img src="man/figures/atl08_seg_vect_gee_modelling.png" width=500 />
 
 </div>
 
@@ -851,28 +892,12 @@ print(hls)
 
 ## Visualize the resulting image
 
-``` r
-library(leaflet)
-
-forest_height_palette <- c("#ffffff", "#99cc99", "#006600", "#004d00")
-palette_colors <- colorNumeric(forest_height_palette, range(atl08_seg_dt$h_canopy))(atl08_seg_dt[order(h_canopy), h_canopy])
-
-centroid <- mean(bbox)
-map <- leaflet::leaflet() |>
-  addEEImage(hls, bands = list("red", "green", "blue"), group = "masked", max = 0.6) |>
-  addEEImage(hls_unmasked, bands = list("red", "green", "blue"), group = "unmasked", max = 0.6) |>
-  setView(lng = centroid[1], lat = centroid[2], zoom = 13) |>
-  addLayersControl(
-    baseGroups = c("unmasked", "masked"),
-    options = layersControlOptions(collapsed = FALSE)
-  )
-
-map
-```
-
 <div align="center" style="display:flex;justify-content:center">
 
-<img src="figure/mask_unmasked_hls.png" width=500 />
+<figure>
+<img src="man/figures/unmasked_masked.png" alt="multi" />
+<figcaption aria-hidden="true">multi</figcaption>
+</figure>
 
 </div>
 
@@ -882,22 +907,18 @@ For each segment extract the hls data:
 
 ``` r
 extracted_dt <- seg_gee_ancillary_dt_extract(hls, atl08_seg_vect)
-```
 
-    ## Processing 1-706 of 706
-
-``` r
 head(extracted_dt)
 ```
 
-| idx | beam | h_canopy | strong_beam |     red |   green |    blue |     nir |   swir1 |   swir2 |       evi |
-|----:|:-----|---------:|:------------|--------:|--------:|--------:|--------:|--------:|--------:|----------:|
-|   1 | gt1r | 19.86016 | TRUE        | 0.03160 | 0.05070 | 0.02625 | 0.33685 | 0.14700 | 0.06840 | 0.5739616 |
-|   2 | gt1r | 13.64077 | TRUE        | 0.09290 | 0.08440 | 0.06130 | 0.26820 | 0.36780 | 0.22780 | 0.3208625 |
-|   3 | gt1r | 10.72907 | TRUE        | 0.08360 | 0.07990 | 0.05880 | 0.28860 | 0.33700 | 0.20360 | 0.3798547 |
-|   4 | gt1r | 11.40739 | TRUE        | 0.09980 | 0.08920 | 0.05230 | 0.28910 | 0.35340 | 0.22130 | 0.3164176 |
-|   5 | gt1r | 12.93657 | TRUE        | 0.06630 | 0.07555 | 0.03915 | 0.35055 | 0.26600 | 0.15005 | 0.4884944 |
-|   6 | gt1r | 10.39240 | TRUE        | 0.17975 | 0.14520 | 0.09220 | 0.29535 | 0.40075 | 0.31370 | 0.1717835 |
+| idx | beam |  h_canopy | strong_beam |    red |  green |   blue |    nir |  swir1 |  swir2 |       evi |
+|----:|:-----|----------:|:------------|-------:|-------:|-------:|-------:|-------:|-------:|----------:|
+|   1 | gt1r |  3.375763 | TRUE        | 0.0652 | 0.0675 | 0.0390 | 0.3125 | 0.2251 | 0.1265 | 0.4381023 |
+|   2 | gt1r |  3.256882 | TRUE        | 0.1435 | 0.1206 | 0.0768 | 0.2780 | 0.3518 | 0.3000 | 0.2151312 |
+|   3 | gt1r |  4.273857 | TRUE        | 0.1973 | 0.1675 | 0.1060 | 0.3066 | 0.4445 | 0.3807 | 0.1611714 |
+|   4 | gt1r |  2.742630 | TRUE        | 0.0667 | 0.0723 | 0.0337 | 0.2721 | 0.2431 | 0.1444 | 0.3617344 |
+|   5 | gt1r |  6.318420 | TRUE        | 0.0489 | 0.0488 | 0.0263 | 0.2571 | 0.1929 | 0.0994 | 0.3846296 |
+|   6 | gt1r | 16.272888 | TRUE        | 0.0719 | 0.0624 | 0.0323 | 0.2634 | 0.2349 | 0.1326 | 0.3295928 |
 
 ## Fit the randomForest model
 
@@ -925,8 +946,8 @@ print(rf_model)
     ##                      Number of trees: 300
     ## No. of variables tried at each split: 1
     ## 
-    ##           Mean of squared residuals: 53.50407
-    ##                     % Var explained: 16.65
+    ##           Mean of squared residuals: 48.81011
+    ##                     % Var explained: 16.5
 
 ``` r
 library(randomForest)
@@ -939,7 +960,7 @@ barplot(rf_importance[, "IncNodePurity"], main = "Variable importance (Increase 
 
 <div class="figure" style="text-align: center">
 
-<img src="README_files/figure-gfm/unnamed-chunk-256-1.png" alt="Random forests variable importance (increase node impurity)." width="500" />
+<img src="man/figures/rf_variable_importance-1.png" alt="Random forests variable importance (increase node impurity)." width="500" />
 <p class="caption">
 Random forests variable importance (increase node impurity).
 </p>
@@ -1003,78 +1024,9 @@ modelled_map
 
 <div align="center" style="display:flex;justify-content:center">
 
-<img src="figure/upscalled_gee_map.png" width=500 />
+<img src="man/figures/upscalled_gee_map.png" width=500 />
 
 </div>
-
-# Predicting and rasterizing ATL08 h_canopy data using Machine Learning models
-
-## Creating a simple model for ATL08 data
-
-Here, we will create a simple model to predict the canopy openness of
-ATL08 data based on the height of the canopy. We will use the
-`randomForest` package to create the model.
-
-Let’s assume we will fit the model on a subset of the ATL08 data and
-then predict the canopy openness for the rest of the data.
-
-``` r
-# Extract atl08 data from the first file
-atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5[[1]], attributes = c("h_canopy", "canopy_openness"))
-
-# Avoid the weird NA values
-atl08_seg_dt[h_canopy > 100, h_canopy := NA_real_]
-atl08_seg_dt[is.na(h_canopy), canopy_openness := NA_real_]
-atl08_seg_dt <- na.omit(atl08_seg_dt)
-
-training <- sample(atl08_seg_dt, method = randomSampling(0.7))
-
-# For the sake of the example, we will train and test the model with the same data
-library(randomForest)
-model <- randomForest::randomForest(canopy_openness ~ h_canopy, atl08_seg_dt)
-```
-
-## Predicting ATL08 data
-
-Now we will predict the data for the entire ATL08 dataset, this can be
-as large as you want. This will create or append the predicted values to
-an H5 file.
-
-``` r
-out_h5 <- tempfile(fileext = ".h5")
-
-for (atl08_h5_item in atl08_h5) {
-  atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5_item, attributes = c("h_canopy", "canopy_openness"))
-  atl08_seg_dt[h_canopy > 100, h_canopy := NA_real_]
-  atl08_seg_dt[is.na(h_canopy), canopy_openness := NA_real_]
-  atl08_seg_dt <- na.omit(atl08_seg_dt)
-  predicted_h5 <- predict_h5(model, atl08_seg_dt, out_h5)
-}
-```
-
-## Rasterizing the predicted data
-
-``` r
-output_raster <- tempfile(fileext = ".tif")
-x <- predicted_h5[["longitude"]][]
-y <- predicted_h5[["latitude"]][]
-bbox <- terra::ext(min(x), max(x), min(y), max(y))
-
-# Creates the raster with statistics
-res <- 0.005
-rasterize_h5(predicted_h5, output_raster, bbox = bbox, res = res)
-```
-
-    ## Warning in sqrt(variance/(n - 1)): NaNs produced
-
-``` r
-# Open the raster by file path
-out_rast <- terra::rast(output_raster)
-names(out_rast) <- c("n", "mean", "var", "min", "max", "sd")
-terra::plot(out_rast)
-```
-
-<img src="README_files/figure-gfm/unnamed-chunk-309-1.png" width="100%" style="display: block; margin: auto;" />
 
 ## Close the files
 
@@ -1104,13 +1056,13 @@ and Commercial Smallsat Data Scientific Analysis(CSDSA, grant
 # Reporting Issues
 
 Please report any issue regarding the ICESat2VegR package to Dr. Silva
-(<c.silva@ufl.edu>)
+(<c.silva@ufl.edu>) or Caio Hamamura (<hamamura.caio@ifsp.edu>).
 
 # Citing ICESat2VegR
 
 Silva,C.A; Hamamura,C. ICESat2VegR: An R Package for NASA’s Ice, Cloud,
 and Elevation Satellite (ICESat-2) Data Processing and Visualization for
-Terrestrial Applications.version 0.0.1, accessed on November. 22 2023,
+Terrestrial Applications.version 0.0.1, accessed on Jun. 13 2024,
 available at: <https://CRAN.R-project.org/package=ICESat2VegR>
 
 # Disclaimer
