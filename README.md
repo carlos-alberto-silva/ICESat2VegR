@@ -451,6 +451,46 @@ clip the raw HDF5 and the extracted attributes.
 
 ## Clipping raw hdf5 data from ATL08
 
+``` r
+leaflet_available <- require("leaflet")
+if (!leaflet_available) stop("leaflet not found!")
+
+# Define bbox
+clip_region <- terra::ext(-83.2, -83.14, 32.12, 32.18)
+
+# Define hdf5 output file
+output <- tempfile(fileext = ".h5")
+
+# Clip the data for only the first atl08 file
+atl08_clipped <- ATL08_h5_clipBox(atl08_h5[[1]], output, bbox = clip_region)
+
+atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5[[1]], attributes = c("h_canopy"))
+atl08_seg_dt_clip <- ATL08_seg_attributes_dt(atl08_clipped, attributes = c("h_canopy"))
+
+# Display location of clipped data
+atl08_seg_vect <- to_vect(atl08_seg_dt)
+atl08_seg_clip_vect <- to_vect(atl08_seg_dt_clip)
+
+bbox <- terra::vect(terra::ext(atl08_seg_clip_vect), crs = "epsg:4326")
+centroid <- terra::geom(terra::centroids(bbox))
+
+map1 <- mapview::mapview(atl08_seg_clip_vect, col.regions = "yellow", alpha.regions = 1, lwd = 5, map.types = c("Esri.WorldImagery"), alpha = 0, cex = 2, legend = FALSE)
+
+# Final map
+final_map <- map1@map %>%
+  leaflet::addCircleMarkers(data = atl08_seg_vect, radius = 2) %>%
+  leaflet::addPolygons(
+    data = bbox, fillOpacity = 0, weight = 3, color = "white", opacity = 1, dashArray = "5, 1, 0"
+  ) %>%
+  leaflet::addLegend(
+    position = "topright",
+    colors = c("blue", "yellow", "white"),
+    labels = c("atl08_segment", "atl08_segment_clipped", "bbox"),
+    opacity = 1
+  ) %>%
+  leaflet::setView(centroid[, "x"][[1]], centroid[, "y"][[1]], zoom = 13)
+```
+
 <div align="center">
 
 <img src="man/figures/atl08_clip_bbox.png" width=500 />
@@ -458,6 +498,48 @@ clip the raw HDF5 and the extracted attributes.
 </div>
 
 ## Clipping extracted attributes from ATL08 segments data
+
+``` r
+aoi <- file.path(outdir, "example_aoi.gpkg")
+aoi_vect <- terra::vect(aoi)
+
+centroid <- terra::geom(terra::centroids(aoi_vect))
+
+# Extract the h_canopy attribute from the first ATL08 file
+atl08_seg_dt <- lapply(atl08_h5, ATL08_seg_attributes_dt, attributes = c("h_canopy"))
+atl08_seg_dt <- rbindlist2(atl08_seg_dt)
+atl08_seg_vect <- to_vect(atl08_seg_dt)
+
+# Clip the data for only the first atl08 file
+atl08_seg_dt_clip <- ATL08_seg_attributes_dt_clipGeometry(atl08_seg_dt, aoi_vect, split_by = "id")
+atl08_seg_clip_vect <- to_vect(atl08_seg_dt_clip)
+
+colors <- c("#00FF00", "#FF00FF")
+map1 <- mapview::mapview(
+  atl08_seg_clip_vect,
+  alpha = 0,
+  col.regions = colors,
+  alpha.regions = 1,
+  zcol = "poly_id",
+  lwd = 5, map.types = c("Esri.WorldImagery"),
+  cex = 2,
+  legend = FALSE
+)
+
+# Final map
+final_map <- map1@map %>%
+  leaflet::addCircleMarkers(data = atl08_seg_vect, color = "blue", radius = 2) %>%
+  leaflet::addPolygons(
+    data = aoi_vect, fillOpacity = 0, weight = 3, color = colors, opacity = 1, dashArray = "5, 1, 0"
+  ) %>%
+  leaflet::addLegend(
+    position = "topright",
+    colors = c("blue", "yellow", colors),
+    labels = c("atl08_segment", "atl08_segment_clipped", "aoi_1", "aoi_2"),
+    opacity = 1
+  ) %>%
+  leaflet::setView(centroid[, "x"][[1]], centroid[, "y"][[1]], zoom = 13)
+```
 
 <div align="center">
 
@@ -748,6 +830,34 @@ for (atl08_h5_item in atl08_h5) {
 
 ## Rasterizing the predicted data
 
+``` r
+output_raster <- tempfile(fileext = ".tif")
+x <- predicted_h5[["longitude"]][]
+y <- predicted_h5[["latitude"]][]
+bbox <- terra::ext(min(x), max(x), min(y), max(y))
+
+# Creates the raster with statistics
+res <- 0.005
+rasterize_h5(predicted_h5, output_raster, bbox = bbox, res = res)
+
+# Open the raster by file path
+forest_height_palette <- c("#ffffff", "#4d994d", "#004d00")
+
+# Open band 2 only (mean AGBD)
+library(leaflet)
+
+stars_rast <- stars::read_stars(output_raster, RasterIO = list(bands = 2))
+res_map <- mapview::mapview(
+  stars_rast,
+  layer.name = "AGBD mean",
+  col.regions = forest_height_palette,
+  na.alpha = 0.1,
+  map = leaflet::leaflet() %>% leaflet::addProviderTiles("Esri.WorldImagery")
+)
+
+#res_map
+```
+
 <div align="center">
 
 <img src="man/figures/agbd_model_mean.png" width=500 />
@@ -780,13 +890,29 @@ atl08_seg_dt <- atl08_seg_dt[h_canopy < 100]
 head(atl08_seg_dt)
 ```
 
-latitude longitude beam strong_beam h_canopy <num> <num> <char> <lgcl>
-<num> 1: 32.35687 -83.13213 gt1r TRUE 3.375763 2: 32.34967 -83.13296
-gt1r TRUE 3.256882 3: 32.34877 -83.13306 gt1r TRUE 4.273857 4: 32.34787
--83.13316 gt1r TRUE 2.742630 5: 32.34427 -83.13358 gt1r TRUE 6.318420 6:
-32.34337 -83.13367 gt1r TRUE 16.272888
+| latitude | longitude | beam | strong_beam |  h_canopy |
+|---------:|----------:|:-----|:------------|----------:|
+| 32.35687 | -83.13213 | gt1r | TRUE        |  3.375763 |
+| 32.34967 | -83.13296 | gt1r | TRUE        |  3.256882 |
+| 32.34877 | -83.13306 | gt1r | TRUE        |  4.273857 |
+| 32.34787 | -83.13316 | gt1r | TRUE        |  2.742630 |
+| 32.34427 | -83.13358 | gt1r | TRUE        |  6.318420 |
+| 32.34337 | -83.13367 | gt1r | TRUE        | 16.272888 |
 
 ### Visualizing the ‘h_canopy’ for the ATL08 dataset.
+
+``` r
+library(terra)
+library(leaflet)
+
+atl08_seg_vect <- to_vect(atl08_seg_dt)
+centroid <- geom(centroids(vect(ext(atl08_seg_vect))))
+
+map <- terra::plet(atl08_seg_vect, "h_canopy", col = grDevices::hcl.colors(9, "RdYlGn"), tiles = c("Esri.WorldImagery")) %>%
+  setView(lng = centroid[, "x"][[1]], lat = centroid[, "y"][[1]], zoom = 12)
+
+# map
+```
 
 <div align="center" style="display:flex;justify-content:center">
 
@@ -878,6 +1004,25 @@ print(hls)
     ## [1] "blue"  "green" "red"   "nir"   "swir1" "swir2" "evi"
 
 ## Visualize the resulting image
+
+``` r
+library(leaflet)
+
+forest_height_palette <- c("#ffffff", "#99cc99", "#006600", "#004d00")
+palette_colors <- colorNumeric(forest_height_palette, range(atl08_seg_dt$h_canopy))(atl08_seg_dt[order(h_canopy), h_canopy])
+
+centroid <- mean(bbox)
+map <- leaflet::leaflet() |>
+  addEEImage(hls, bands = list("red", "green", "blue"), group = "masked", max = 0.6) |>
+  addEEImage(hls_unmasked, bands = list("red", "green", "blue"), group = "unmasked", max = 0.6) |>
+  setView(lng = centroid[1], lat = centroid[2], zoom = 13) |>
+  addLayersControl(
+    baseGroups = c("unmasked", "masked"),
+    options = layersControlOptions(collapsed = FALSE)
+  )
+
+# map
+```
 
 <div align="center" style="display:flex;justify-content:center">
 

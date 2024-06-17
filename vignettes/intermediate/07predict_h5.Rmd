@@ -59,7 +59,7 @@ for (atl08_h5_item in atl08_h5) {
 
 ## Rasterizing the predicted data
 
-```{r include = FALSE, echo = TRUE}
+```{r echo = TRUE, results = 'hide', message = FALSE, warnings = FALSE}
 output_raster <- tempfile(fileext = ".tif")
 x <- predicted_h5[["longitude"]][]
 y <- predicted_h5[["latitude"]][]
@@ -76,26 +76,22 @@ forest_height_palette <- c("#ffffff", "#4d994d", "#004d00")
 library(leaflet)
 
 stars_rast <- stars::read_stars(output_raster, RasterIO = list(bands = 2))
-mapview::mapview(
-  stars_rast,
+res_map <- mapview::mapview(stars_rast,
   layer.name = "AGBD mean",
   col.regions = forest_height_palette,
   na.alpha = 0.1,
-  map = leaflet::leaflet() %>% leaflet::addProviderTiles("Esri.WorldImagery")
+  map = leaflet::leaflet() %>% leaflet::addProviderTiles("Esri.WorldImagery") %>%
+    setView(lng = mean(x), lat = mean(y), zoom = 12)
 )
+
+# res_map
 ```
 
 <div align="center">
 
 ```{r agbd_model_mean, echo = FALSE, fig.align='center', message = FALSE, warnings = FALSE, fig.width = 10, fig.height = 8, out.width = "100%"}
 printMapView(
-  mapview::mapview(stars_rast,
-    layer.name = "AGBD mean",
-    col.regions = forest_height_palette,
-    na.alpha = 0.1,
-    map = leaflet::leaflet() %>% leaflet::addProviderTiles("Esri.WorldImagery") %>%
-    setView(lng = mean(x), lat = mean(y), zoom = 12)
-  ),
+  res_map,
   "agbd_model_mean"
 )
 ```

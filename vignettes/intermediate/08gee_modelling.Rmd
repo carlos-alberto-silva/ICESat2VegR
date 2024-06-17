@@ -38,7 +38,7 @@ head(atl08_seg_dt)
 
 ### Visualizing the 'h_canopy' for the ATL08 dataset.
 
-```{r, include = FALSE, echo = TRUE}
+```{r, echo = TRUE, results = 'hide', message = FALSE, warnings = FALSE}
 library(terra)
 library(leaflet)
 
@@ -48,7 +48,7 @@ centroid <- geom(centroids(vect(ext(atl08_seg_vect))))
 map <- terra::plet(atl08_seg_vect, "h_canopy", col = grDevices::hcl.colors(9, "RdYlGn"), tiles = c("Esri.WorldImagery")) %>%
   setView(lng = centroid[, "x"][[1]], lat = centroid[, "y"][[1]], zoom = 12)
 
-map
+# map
 ```
 
 <div align="center" style="display:flex;justify-content:center">
@@ -124,7 +124,7 @@ print(hls)
 
 ## Visualize the resulting image
 
-```{r, include = FALSE, echo = TRUE}
+```{r, echo = TRUE, results = 'hide', message = FALSE, warnings = FALSE}
 library(leaflet)
 
 forest_height_palette <- c("#ffffff", "#99cc99", "#006600", "#004d00")
@@ -140,7 +140,7 @@ map <- leaflet::leaflet() |>
     options = layersControlOptions(collapsed = FALSE)
   )
 
-map
+# map
 ```
 
 <div align="center" style="display:flex;justify-content:center">

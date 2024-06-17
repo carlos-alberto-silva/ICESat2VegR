@@ -45,7 +45,7 @@ on how to clip the raw HDF5 and the extracted attributes.
 ## Clipping raw hdf5 data from ATL08
 
 
-```{r include = FALSE, echo = TRUE}
+```{r echo = TRUE, results = 'hide', message = FALSE, warnings = FALSE}
 leaflet_available <- require("leaflet")
 if (!leaflet_available) stop("leaflet not found!")
 
@@ -94,7 +94,7 @@ printMapView(final_map, "atl08_clip_bbox")
 </div>
 
 ## Clipping extracted attributes from ATL08 segments data
-```{r include = FALSE, echo = TRUE}
+```{r echo = TRUE, results = 'hide', message = FALSE, warnings = FALSE}
 aoi <- file.path(outdir, "example_aoi.gpkg")
 aoi_vect <- terra::vect(aoi)
 
