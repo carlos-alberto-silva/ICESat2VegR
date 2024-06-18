@@ -89,7 +89,10 @@ atl03_atl08_vect <- to_vect(atl03_atl08_seg_dt[h_canopy_gt0 <= 31])
 Finally, we visualize the SpatVector interactively using mapview.
 
 
-```{r, eval = c(1:3)}
+```{r, eval = c(1:6)}
+require(mapview)
+require(leaflet)
+
 centroid <- atl03_atl08_dt[, .(x = mean(lon_ph), y = mean(lat_ph))]
 
 map_output <- mapview::mapview(

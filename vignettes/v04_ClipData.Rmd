@@ -17,6 +17,7 @@ if (!exists("vignettes_path")) {
 }
 
 children_run <- file.path(vignettes_path, c(
+  "basic/02print_mapview.Rmd",
   "intermediate/04clipping_data.Rmd"
 ))
 suppressWarnings(rm("first_setup_run", "hide_close08", "is_readme"))
