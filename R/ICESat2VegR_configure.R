@@ -37,7 +37,7 @@ ICESat2VegR_configure <- function() {
   }
 
   if (!is.null(check_conda())) {
-    reticulate::use_condaenv("r-reticulate")
+    reticulate::use_condaenv("r-reticulate", required = FALSE)
     if (reticulate::py_module_available("h5py") == FALSE) {
       reticulate::py_install("h5py")
     }
