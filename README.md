@@ -21,12 +21,6 @@ for Land and Vegetation Applications in R environment.
 # Getting started
 
 ``` r
-message("Running mapview print`")
-```
-
-    ## Running mapview print`
-
-``` r
 # The r-universe version (recommended for the latest version)
 install.packages("ICESat2VegR", , repos = c("https://caiohamamura.r-universe.dev", "https://cloud.r-project.org"))
 
