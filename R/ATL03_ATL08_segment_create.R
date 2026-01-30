@@ -5,6 +5,7 @@
 #' the output from [`ATL03_ATL08_segment_create()`], which means the dataset will contain
 #' the needed structure for computing value for the computing the stats with
 #' [`ATL03_ATL08_compute_seg_attributes_dt_segStat()`]
+#' @keywords internal
 setRefClass("icesat2.atl03_atl08_seg_dt")
 
 #' Compute segments id for a given segment length

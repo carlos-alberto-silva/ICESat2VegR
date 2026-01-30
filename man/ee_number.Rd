@@ -18,3 +18,4 @@ Creates an \verb{Earth Engine} server number
 \seealso{
 https://developers.google.com/earth-engine/apidocs/ee-number
 }
+\keyword{internal}

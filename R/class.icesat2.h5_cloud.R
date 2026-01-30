@@ -20,7 +20,7 @@
 #'
 #' @include class.icesat2.R class.icesat2.h5ds_cloud.R earthaccess.R
 #' @import R6 reticulate
-#' @export
+#' @keywords internal
 ICESat2.h5_cloud <- R6::R6Class("ICESat2.h5_cloud", list(
   h5 = NULL,
   beams = NULL,
@@ -177,7 +177,7 @@ try with only one granule [i].")
   }
 ))
 
-#' @export
+#' @keywords internal
 "[[.ICESat2.h5_cloud" <- function(x, i = NULL) {
   res <- x$h5[[i]]
   if (inherits(res, "h5py._hl.dataset.Dataset")) {

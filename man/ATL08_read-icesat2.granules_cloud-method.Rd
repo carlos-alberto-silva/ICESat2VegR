@@ -7,22 +7,15 @@
 \S4method{ATL08_read}{icesat2.granules_cloud}(atl08_path)
 }
 \arguments{
-\item{atl08_path}{Object of class \code{icesat2.granules_cloud}. This parameter represents multiple granules of ICESat-2 ATL08 data.}
+\item{atl08_path}{Object of class \code{icesat2.granules_cloud}. This parameter represents
+multiple ICESat-2 ATL08 granules.}
 }
 \value{
-This method stops execution with an error message indicating that the package works with only one granule at a time.
+This method always stops with an error indicating that only one
+granule at a time is supported.
 }
 \description{
-This method stops the process when multiple granules are provided.
+This method stops execution when multiple granules are provided,
+because the package currently supports only one granule at a time.
 }
-\examples{
-# Specifying the path to ATL08 file
-atl08_path <- system.file("extdata",
-  "atl08_clip.h5",
-  package = "ICESat2VegR"
-)
-
-# Reading ICESat-2 ATL08 data (h5 file)
-atl08 <- ATL08_read(atl08_path = atl08_path)
-close(atl08)
-}
+\keyword{internal}

@@ -7,22 +7,15 @@
 \S4method{ATL08_read}{icesat2.granule_cloud}(atl08_path)
 }
 \arguments{
-\item{atl08_path}{Object of class \code{icesat2.granule_cloud}. This parameter represents a single granule of ICESat-2 ATL08 data.}
+\item{atl08_path}{Object of class \code{icesat2.granule_cloud}. This parameter represents
+a single ICESat-2 ATL08 granule in the cloud.}
 }
 \value{
-Returns an S4 object of class \code{\linkS4class{icesat2.atl08_h5}} containing ICESat-2 ATL08 data.
+An S4 object of class \code{\linkS4class{icesat2.atl08_h5}} containing ICESat-2
+ATL08 data.
 }
 \description{
-This method reads the ICESat-2 Land and Vegetation Along-Track Products (ATL08) from a single granule in the cloud.
+Read the ICESat-2 Land and Vegetation Along-Track Product (ATL08)
+from a single granule accessible in the cloud.
 }
-\examples{
-# Specifying the path to ATL08 file
-atl08_path <- system.file("extdata",
-  "atl08_clip.h5",
-  package = "ICESat2VegR"
-)
-
-# Reading ICESat-2 ATL08 data (h5 file)
-atl08 <- ATL08_read(atl08_path = atl08_path)
-close(atl08)
-}
+\keyword{internal}

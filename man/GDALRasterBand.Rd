@@ -11,6 +11,7 @@ WriteBlock for better IO speed.
 This constructor must not be called at all, this is automatically called
 from GDALDataset$GetRasterBand function.
 }
+\keyword{internal}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{

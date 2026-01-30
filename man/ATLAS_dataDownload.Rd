@@ -2,66 +2,80 @@
 % Please edit documentation in R/ATLAS_dataDownload.R
 \name{ATLAS_dataDownload}
 \alias{ATLAS_dataDownload}
-\title{Download CESat-2 ATL03 and ALT08 data}
+\title{Download ICESat-2 ATL03/ATL08 data}
 \usage{
 ATLAS_dataDownload(
   url,
   outdir = NULL,
   overwrite = FALSE,
   buffer_size = 512,
-  timeout = 10
+  timeout = 10,
+  retries = 3,
+  backoff = 2,
+  quiet = FALSE,
+  use_home_netrc = TRUE
 )
 }
 \arguments{
-\item{url}{character vector object; url to ATL03 or ALT08 data, or both (output of \code{\link[=ATLAS_dataFinder]{ATLAS_dataFinder()}})}
+\item{url}{Character vector; URLs to ATL03/ATL08 files
+(e.g., returned by \code{ATLAS_dataFinder()}).}
 
-\item{outdir}{Vector object, output directory for downloading GEDI data, default \code{\link[=tempdir]{tempdir()}}}
+\item{outdir}{Character; output directory (default: \code{\link[=tempdir]{tempdir()}}).}
 
-\item{overwrite}{logical; overwrite file if they already exists in destination, default FALSE}
+\item{overwrite}{Logical; overwrite existing files? Default \code{FALSE}.}
 
-\item{buffer_size}{integer; the size of download chunk in KB to hold in memory before writing to file, default 512.}
+\item{buffer_size}{Integer; chunk size in KB per \code{readBin} call
+(default 512).}
 
-\item{timeout}{integer; connection timeout in seconds.}
+\item{timeout}{Numeric; connection timeout (seconds) for establishing
+the connection (default 10).}
+
+\item{retries}{Integer; maximum attempts per file (default 3).}
+
+\item{backoff}{Numeric; exponential backoff base used as
+\code{sleep = backoff^(attempt - 1)} (default 2).}
+
+\item{quiet}{Logical; suppress per-file messages (default \code{FALSE}).}
+
+\item{use_home_netrc}{Logical; if \code{TRUE} (default), use a single
+\file{~/.netrc} file in the user's home directory for Earthdata
+credentials so they can be reused across projects. If \code{FALSE},
+a \file{.netrc} file is created in \code{outdir}.}
 }
 \value{
-No return value on success, on failure it will \code{\link[=stop]{stop()}}
+(invisibly) a \code{data.frame} with columns:
+\itemize{
+\item \code{file}: file name
+\item \code{dest}: full destination path
+\item \code{status}: one of \code{"ok"}, \code{"failed"}, \code{"skipped"}
+\item \code{attempts}: number of attempts used
+\item \code{error}: error message (if any)
+}
 }
 \description{
-Download ICESat-2 ATL03 and ALT08 data from LP DAAC Data Pool. Users will need to enter their
-Earth Explore login Information for downloading the data.
+Download ICESat-2 ATL03 and ATL08 data from the LP DAAC / NSIDC endpoints.
+Handles connection drops by resuming partial files and retrying with
+exponential backoff. Authentication is handled via a \code{.netrc} file:
+if it does not exist, the user is prompted for Earthdata Login credentials.
+If authentication fails (e.g., wrong username/password), the user is
+informed and can choose to re-enter credentials or cancel.
 }
 \examples{
 \dontrun{
-# Set path to ICESat-2 data
-# herein we will only download xml metedata
-base_path <- "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected"
-url <- c(
-  paste0(base_path, "/ATLAS/ATL08/006/2019/07/13/ATL08_20190713210015_02410406_006_02.h5"),
-  paste0(base_path, "/ATLAS/ATL08/006/2019/07/15/ATL08_20190715084425_02640402_006_02.h5")
+urls <- c(
+  "https://example.com/path/to/ATL03_001.h5",
+  "https://example.com/path/to/ATL08_001.h5"
 )
-
-# Set dir to download files to
-outdir <- tempdir()
-
-# Create .netrc file
-netrc <- file.path(outdir, ".netrc")
-netrc_conn <- file(netrc)
-
-# Assuming login data is saved in the
-# environmental variables EARTHDATA_USERNAME and EARTHDATA_PASSWORD
-writeLines(c(
-  "machine urs.earthdata.nasa.gov",
-  sprintf("login \%s", Sys.getenv("EARTHDATA_USERNAME")),
-  sprintf("password \%s", Sys.getenv("EARTHDATA_PASSWORD"))
-), netrc_conn)
-
-close(netrc_conn)
-
-#' Downloading ICEsat-2 data
-ATLAS_dataDownload(url, outdir)
+status <- ATLAS_dataDownload(urls,
+                             outdir        = "data",
+                             retries       = 5,
+                             backoff       = 2,
+                             use_home_netrc = TRUE)
+subset(status, status == "failed")
 }
+
 }
 \references{
-Credits to Cole Krehbiel. Code adapted from
+Credits to Cole Krehbiel. Code adapted from:
 \url{https://git.earthdata.nasa.gov/projects/LPDUR/repos/daac_data_download_r/browse/DAACDataDownload.R}
 }

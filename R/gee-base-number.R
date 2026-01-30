@@ -5,15 +5,15 @@
 #' @return The Earth Engine number
 #'
 #' @seealso https://developers.google.com/earth-engine/apidocs/ee-number
-#' @export
+#' @keywords internal
 ee_number <- function(x) {
   UseMethod("ee_number")
 }
 
-#' @export
+#' @keywords internal
 "ee_number.numeric" <- function(x) if (!is.null(ee)) ee$Number(x)
 
-#' @export
+#' @keywords internal
 `+.ee.ee_number.Number` <- function(x, e2) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -24,7 +24,7 @@ ee_number <- function(x) {
   }
 }
 
-#' @export
+#' @keywords internal
 `-.ee.ee_number.Number` <- function(x, e2) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -35,7 +35,7 @@ ee_number <- function(x) {
   }
 }
 
-#' @export
+#' @keywords internal
 `*.ee.ee_number.Number` <- function(x, e2) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -46,7 +46,7 @@ ee_number <- function(x) {
   }
 }
 
-#' @export
+#' @keywords internal
 `/.ee.ee_number.Number` <- function(x, e2) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -57,7 +57,7 @@ ee_number <- function(x) {
   }
 }
 
-#' @export
+#' @keywords internal
 `abs.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -67,7 +67,7 @@ ee_number <- function(x) {
     x$abs()
   }
 }
-#' @export
+#' @keywords internal
 `acos.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -77,7 +77,7 @@ ee_number <- function(x) {
     x$acos()
   }
 }
-#' @export
+#' @keywords internal
 `asin.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -87,7 +87,7 @@ ee_number <- function(x) {
     x$asin()
   }
 }
-#' @export
+#' @keywords internal
 `atan.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -104,7 +104,7 @@ ee_number <- function(x) {
 #'
 #' @return The resulting ee.Number with the results from `atan2`.
 #'
-#' @export
+#' @keywords internal
 `atan2.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -114,7 +114,7 @@ ee_number <- function(x) {
     x$atan2()
   }
 }
-#' @export
+#' @keywords internal
 `floor.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -124,7 +124,7 @@ ee_number <- function(x) {
     x$floor()
   }
 }
-#' @export
+#' @keywords internal
 `ceiling.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -134,7 +134,7 @@ ee_number <- function(x) {
     x$ceil()
   }
 }
-#' @export
+#' @keywords internal
 `&.ee.ee_number.Number` <- function(x, e2) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -144,11 +144,11 @@ ee_number <- function(x) {
     x$bitwiseAnd(e2)
   }
 }
-#' @export
+#' @keywords internal
 `!.ee.ee_number.Number` <- function(x) {
   x$bitwiseNot()
 }
-#' @export
+#' @keywords internal
 `|.ee.ee_number.Number` <- function(x, e2) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -158,7 +158,7 @@ ee_number <- function(x) {
     x$bitwiseOr(e2)
   }
 }
-#' @export
+#' @keywords internal
 `^.ee.ee_number.Number` <- function(x, e2) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -168,7 +168,7 @@ ee_number <- function(x) {
     x$bitwiseXor(e2)
   }
 }
-#' @export
+#' @keywords internal
 `cos.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -178,7 +178,7 @@ ee_number <- function(x) {
     x$cos()
   }
 }
-#' @export
+#' @keywords internal
 `cosh.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -188,7 +188,7 @@ ee_number <- function(x) {
     x$cosh()
   }
 }
-#' @export
+#' @keywords internal
 `digamma.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -198,7 +198,7 @@ ee_number <- function(x) {
     x$digamma()
   }
 }
-#' @export
+#' @keywords internal
 `exp.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -208,7 +208,7 @@ ee_number <- function(x) {
     x$exp()
   }
 }
-#' @export
+#' @keywords internal
 `as.numeric.ee.ee_number.Number` <- function(x, ...) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -218,7 +218,7 @@ ee_number <- function(x) {
     x$double()
   }
 }
-#' @export
+#' @keywords internal
 `gamma.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -228,7 +228,7 @@ ee_number <- function(x) {
     x$gamma()
   }
 }
-#' @export
+#' @keywords internal
 `>.ee.ee_number.Number` <- function(x, e2) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -238,7 +238,7 @@ ee_number <- function(x) {
     x$gt(e2)
   }
 }
-#' @export
+#' @keywords internal
 `>=.ee.ee_number.Number` <- function(x, e2) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -248,7 +248,7 @@ ee_number <- function(x) {
     x$gte(e2)
   }
 }
-#' @export
+#' @keywords internal
 `<.ee.ee_number.Number` <- function(x, e2) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -258,7 +258,7 @@ ee_number <- function(x) {
     x$lt(e2)
   }
 }
-#' @export
+#' @keywords internal
 `<=.ee.ee_number.Number` <- function(x, e2) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -268,7 +268,7 @@ ee_number <- function(x) {
     x$lte(e2)
   }
 }
-#' @export
+#' @keywords internal
 `==.ee.ee_number.Number` <- function(x, e2) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -278,7 +278,7 @@ ee_number <- function(x) {
     x$eq(e2)
   }
 }
-#' @export
+#' @keywords internal
 `!=.ee.ee_number.Number` <- function(x, e2) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -288,7 +288,7 @@ ee_number <- function(x) {
     x$neq(e2)
   }
 }
-#' @export
+#' @keywords internal
 `as.integer.ee.ee_number.Number` <- function(x, ...) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -298,7 +298,7 @@ ee_number <- function(x) {
     x$int()
   }
 }
-#' @export
+#' @keywords internal
 `log.ee.ee_number.Number` <- function(x, base = NULL) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -308,7 +308,7 @@ ee_number <- function(x) {
     x$log()
   }
 }
-#' @export
+#' @keywords internal
 `log10.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -318,7 +318,7 @@ ee_number <- function(x) {
     x$log10()
   }
 }
-#' @export
+#' @keywords internal
 `max.ee.ee_number.Number` <- function(x, ..., na.rm = FALSE) {
   args <- list(...)
   stopifnot("Expected exactly two arguments for max within GEE" = length(args) == 1)
@@ -331,14 +331,14 @@ ee_number <- function(x) {
     x$max(args[[2]])
   }
 }
-#' @export
+#' @keywords internal
 `min.ee.ee_number.Number` <- function(x, ..., na.rm = FALSE) {
   args <- list(...)
   stopifnot("Expected exactly two arguments for min within GEE" = length(args) == 1)
 
   x$min(args[[1]])
 }
-#' @export
+#' @keywords internal
 `%%.ee.ee_number.Number` <- function(x, e2) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -348,7 +348,7 @@ ee_number <- function(x) {
     x$mod(e2)
   }
 }
-#' @export
+#' @keywords internal
 `^.ee.ee_number.Number` <- function(x, e2) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -359,7 +359,7 @@ ee_number <- function(x) {
   }
 }
 
-#' @export
+#' @keywords internal
 `round.ee.ee_number.Number` <- function(x, digits = NULL) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -369,7 +369,7 @@ ee_number <- function(x) {
     x$round()
   }
 }
-#' @export
+#' @keywords internal
 `sin.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -379,7 +379,7 @@ ee_number <- function(x) {
     x$sin()
   }
 }
-#' @export
+#' @keywords internal
 `sinh.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -389,7 +389,7 @@ ee_number <- function(x) {
     x$sinh()
   }
 }
-#' @export
+#' @keywords internal
 `sqrt.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -399,7 +399,7 @@ ee_number <- function(x) {
     x$sqrt()
   }
 }
-#' @export
+#' @keywords internal
 `tan.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -409,7 +409,7 @@ ee_number <- function(x) {
     x$tan()
   }
 }
-#' @export
+#' @keywords internal
 `tanh.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
@@ -419,7 +419,7 @@ ee_number <- function(x) {
     x$tanh()
   }
 }
-#' @export
+#' @keywords internal
 `trigamma.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {

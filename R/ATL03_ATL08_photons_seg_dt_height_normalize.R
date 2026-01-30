@@ -41,11 +41,11 @@
 #'   xout = 1:30
 #' )
 #' ```
-#'
-#' For example, to interpolate the values for the 1:30 vector. But other functions
-#' may name the parameter differently, such as [`signal::pchip()`], which name
-#' the parameter as `xi` instead of `xout`. [`signal::pchip()`] is the
-#' algorithm used by ATL08 ATBD.
+#' For example, to interpolate the values for the 1:30 vector. However, other
+#' functions may name the parameter differently, such as \code{signal::pchip()},
+#' which calls the parameter \code{xi} instead of \code{xout}.
+#' The \code{pchip} algorithm (as implemented in the \strong{signal} package)
+#' is the one used by the ATL08 ATBD.
 #'
 #' The `smoothing_window` can be left NA, which will use the ATBD algoritm
 #' for calculating the window size:

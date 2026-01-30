@@ -2,20 +2,20 @@
 % Please edit documentation in R/to_vect.R
 \name{to_vect}
 \alias{to_vect}
-\title{Generic function to export icesat2 classes to \code{\link[terra:SpatVector-class]{terra::SpatVector}}}
+\title{Generic function to convert ICESat-2 classes and sf to \code{\link[terra:SpatVector-class]{terra::SpatVector}}}
 \usage{
 to_vect(x, ...)
 }
 \arguments{
-\item{x}{The icesat2 object to convert to \code{\link[terra:SpatVector-class]{terra::SpatVector}}}
+\item{x}{The ICESat-2 or sf object to convert to \code{\link[terra:SpatVector-class]{terra::SpatVector}}}
 
 \item{...}{other potential parameters needed.}
 }
 \value{
-The icesat2 object as the appropriate \code{\link[terra:SpatVector-class]{terra::SpatVector}}
+The ICESat-2 or sf object as the appropriate \code{\link[terra:SpatVector-class]{terra::SpatVector}}
 }
 \description{
-Generic function to export icesat2 classes to \code{\link[terra:SpatVector-class]{terra::SpatVector}}
+Generic function to convert ICESat-2 classes and sf to \code{\link[terra:SpatVector-class]{terra::SpatVector}}
 }
 \examples{
 # Get path to ATL03 h5 file
@@ -26,7 +26,7 @@ atl03_path <- system.file("extdata",
 # Reading ATL03 data (h5 file)
 atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 # Extracting ATL03 segment attributes
-atl03_segment_dt <- ATL03_seg_attributes_dt(atl03_h5 = atl03_h5)
+atl03_segment_dt <- ATL03_seg_metadata_dt(atl03_h5 = atl03_h5)
 
 # Extract vector
 atl03_segment_vect <- to_vect(atl03_segment_dt)

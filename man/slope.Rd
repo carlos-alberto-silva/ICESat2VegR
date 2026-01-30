@@ -2,17 +2,32 @@
 % Please edit documentation in R/gee-base.R
 \name{slope}
 \alias{slope}
-\title{Calculates slope in degrees from a terrain DEM.}
+\title{Compute terrain slope (degrees) from a DEM image}
 \usage{
 slope(x)
 }
 \arguments{
-\item{x}{The \code{ee.Image} on which to apply the aspect function.}
+\item{x}{An \code{ee$Image} representing a DEM from which slope will be derived.}
 }
 \value{
-An \code{ee.Image} with a single band named "Slope".
+An \code{ee$Image} with one band named \code{"slope"} containing terrain
+slope values in degrees.
 }
 \description{
-The local gradient is computed using the 4-connected neighbors of each pixel,
-so missing values will occur around the edges of an image.
+Computes the terrain \emph{slope} in degrees for each pixel of an Earth Engine
+\code{ee$Image} representing a digital elevation model (DEM).
+
+This method is a thin wrapper around \code{ee$Terrain$slope()} and returns the
+same output structure. Slope is computed using Earth Engine’s internal
+gradient operator, which relies on the 4-connected neighborhood around each
+pixel. As a result, edge pixels may contain missing values depending on the
+input DEM.
+}
+\examples{
+\dontrun{
+  ee <- reticulate::import("ee")
+  dem <- ee$Image("NASA/NASADEM_HGT/001")
+  slp <- slope(dem)
+}
+
 }

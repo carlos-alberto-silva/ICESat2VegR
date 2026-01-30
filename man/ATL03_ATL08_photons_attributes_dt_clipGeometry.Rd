@@ -7,7 +7,7 @@
 \usage{
 ATL03_ATL08_photons_attributes_dt_clipGeometry(
   atl03_atl08_dt,
-  polygon,
+  clip_obj,
   split_by = NULL
 )
 }
@@ -15,10 +15,10 @@ ATL03_ATL08_photons_attributes_dt_clipGeometry(
 \item{atl03_atl08_dt}{An S4 object of class \code{\linkS4class{icesat2.atl03atl08_dt}} containing ATL03 and ATL08 data
 (output of \code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}} function).}
 
-\item{polygon}{An object of class \code{\link[terra:SpatVector-class]{terra::SpatVector}}, which can be loaded as an ESRI shapefile using \link[terra:vect]{terra::vect} function.}
+\item{clip_obj}{An object of class \code{\link[terra:SpatVector-class]{terra::SpatVector}}, which can be loaded as an ESRI shapefile using \link[terra:vect]{terra::vect} function.}
 
-\item{split_by}{Optional. Polygon ID. If defined, the data will be clipped by each polygon using
-the polygon ID from the attribute table.}
+\item{split_by}{Optional. clip_obj ID. If defined, the data will be clipped by each clip_obj using
+the clip_obj ID from the attribute table.}
 }
 \value{
 Returns an S4 object of class \code{\linkS4class{icesat2.atl03atl08_dt}}
@@ -41,15 +41,15 @@ atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
 head(atl03_atl08_dt)
 
 # Specifying the path to the shapefile
-polygon_filepath <- system.file("extdata", "clip_geom.shp", package = "ICESat2VegR")
+clip_obj_filepath <- system.file("extdata", "clip_geom.shp", package = "ICESat2VegR")
 
 # Reading shapefile as a SpatVector object
-polygon <- terra::vect(polygon_filepath)
+clip_obj <- terra::vect(clip_obj_filepath)
 
 # Clipping ATL08 terrain attributes by geometry
 atl03_atl08_dt_clip <- ATL03_ATL08_photons_attributes_dt_clipGeometry(
   atl03_atl08_dt,
-  polygon,
+  clip_obj,
   split_by = "id"
 )
 head(atl03_atl08_dt_clip)

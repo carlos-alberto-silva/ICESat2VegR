@@ -1,0 +1,315 @@
+\begin{theindex}
+
+  \item \texttt  {.as\_ee\_geom}, \hyperpage{3}
+  \item \texttt  {.ee\_ping}, \hyperpage{5}
+
+  \indexspace
+
+  \item \texttt  {addEEImage}, \hyperpage{6}
+  \item \texttt  {ANNIndex}, \hyperindexformat{\textit}{89}
+  \item \texttt  {aspect}, \hyperpage{7}
+  \item \texttt  {ATL03\_ATL08\_compute\_seg\_attributes\_dt\_segStat}, 
+		\hyperpage{7}
+  \item \texttt  {ATL03\_ATL08\_photons\_attributes\_dt\_clipBox}, 
+		\hyperpage{9}
+  \item \texttt  {ATL03\_ATL08\_photons\_attributes\_dt\_clipGeometry}, 
+		\hyperpage{11}
+  \item \texttt  {ATL03\_ATL08\_photons\_attributes\_dt\_gridStat}, 
+		\hyperpage{12}
+  \item \texttt  {ATL03\_ATL08\_photons\_attributes\_dt\_join}, 
+		\hyperpage{14}
+  \item \texttt  {ATL03\_ATL08\_photons\_attributes\_dt\_join()}, 
+		\hyperindexformat{\textit}{8, 9}, 
+		\hyperindexformat{\textit}{11, 12}, 
+		\hyperindexformat{\textit}{16, 17}, 
+		\hyperindexformat{\textit}{19, 20}, 
+		\hyperindexformat{\textit}{22, 23}, 
+		\hyperindexformat{\textit}{47}
+  \item \texttt  {ATL03\_ATL08\_photons\_attributes\_dt\_join\_clipBox}, 
+		\hyperindexformat{\textit}{57, 58}
+  \item \texttt  {ATL03\_ATL08\_photons\_attributes\_dt\_join\_clipGeometry}, 
+		\hyperindexformat{\textit}{57, 58}
+  \item \texttt  {ATL03\_ATL08\_photons\_attributes\_dt\_LAS}, 
+		\hyperpage{16}
+  \item \texttt  {ATL03\_ATL08\_photons\_attributes\_dt\_polyStat}, 
+		\hyperpage{17}
+  \item \texttt  {ATL03\_ATL08\_photons\_dt\_height\_normalize}, 
+		\hyperpage{18}
+  \item \texttt  {ATL03\_ATL08\_photons\_seg\_dt\_fitground}, 
+		\hyperpage{20}
+  \item \texttt  {ATL03\_ATL08\_photons\_seg\_dt\_fitground()}, 
+		\hyperindexformat{\textit}{19}
+  \item \texttt  {ATL03\_ATL08\_seg\_cover\_dt\_compute}, 
+		\hyperpage{23}
+  \item \texttt  {ATL03\_ATL08\_segment\_create}, \hyperpage{22}
+  \item \texttt  {ATL03\_h5\_clipBox}, \hyperpage{24}, 
+		\hyperindexformat{\textit}{56}, 
+		\hyperindexformat{\textit}{58}
+  \item \texttt  {ATL03\_h5\_clipGeometry}, \hyperpage{25}, 
+		\hyperindexformat{\textit}{56}, 
+		\hyperindexformat{\textit}{58}
+  \item \texttt  {ATL03\_photon\_attributes\_dt\_clipBox}, 
+		\hyperindexformat{\textit}{56}, 
+		\hyperindexformat{\textit}{58}
+  \item \texttt  {ATL03\_photon\_attributes\_dt\_clipGeometry}, 
+		\hyperindexformat{\textit}{56}, 
+		\hyperindexformat{\textit}{58}
+  \item \texttt  {ATL03\_photons\_attributes\_dt}, \hyperpage{26}
+  \item \texttt  {ATL03\_photons\_attributes\_dt()}, 
+		\hyperindexformat{\textit}{28}, 
+		\hyperindexformat{\textit}{31}
+  \item \texttt  {ATL03\_photons\_attributes\_dt\_clipBox}, 
+		\hyperpage{28}
+  \item \texttt  {ATL03\_photons\_attributes\_dt\_clipGeometry}, 
+		\hyperpage{29}
+  \item \texttt  {ATL03\_photons\_attributes\_dt\_LAS}, \hyperpage{31}
+  \item \texttt  {ATL03\_read}, \hyperpage{32}
+  \item \texttt  {ATL03\_read()}, \hyperindexformat{\textit}{14}, 
+		\hyperindexformat{\textit}{24}, 
+		\hyperindexformat{\textit}{26, 27}, 
+		\hyperindexformat{\textit}{33}, 
+		\hyperindexformat{\textit}{84}
+  \item \texttt  {ATL03\_seg\_metadata\_dt}, \hyperpage{33}
+  \item \texttt  {ATL08\_attributes\_dt\_LAS}, \hyperpage{35}
+  \item \texttt  {ATL08\_h5\_clipBox}, \hyperpage{36}, 
+		\hyperindexformat{\textit}{57, 58}
+  \item \texttt  {ATL08\_h5\_clipGeometry}, \hyperpage{37}, 
+		\hyperindexformat{\textit}{57, 58}
+  \item \texttt  {ATL08\_photons\_attributes\_dt}, \hyperpage{38}
+  \item \texttt  {ATL08\_read}, \hyperpage{40}
+  \item \texttt  {ATL08\_read()}, \hyperindexformat{\textit}{14}, 
+		\hyperindexformat{\textit}{36}, 
+		\hyperindexformat{\textit}{38, 39}, 
+		\hyperindexformat{\textit}{41}, 
+		\hyperindexformat{\textit}{84}
+  \item \texttt  {ATL08\_seg\_attributes\_dt}, \hyperpage{41}
+  \item \texttt  {ATL08\_seg\_attributes\_dt()}, 
+		\hyperindexformat{\textit}{43, 44}, 
+		\hyperindexformat{\textit}{46}, 
+		\hyperindexformat{\textit}{48}
+  \item \texttt  {ATL08\_seg\_attributes\_dt\_clipBox}, \hyperpage{43}, 
+		\hyperindexformat{\textit}{57, 58}
+  \item \texttt  {ATL08\_seg\_attributes\_dt\_clipGeometry}, 
+		\hyperpage{44}, \hyperindexformat{\textit}{57, 58}
+  \item \texttt  {ATL08\_seg\_attributes\_dt\_gridStat}, \hyperpage{46}
+  \item \texttt  {ATL08\_seg\_attributes\_dt\_LAS}, \hyperpage{47}
+  \item \texttt  {ATL08\_seg\_attributes\_dt\_polyStat}, \hyperpage{48}
+  \item \texttt  {ATL08\_seg\_attributes\_h5\_gridStat}, \hyperpage{50}
+  \item \texttt  {ATLAS\_dataDownload}, \hyperpage{53}, 
+		\hyperindexformat{\textit}{55}
+  \item \texttt  {ATLAS\_dataFinder}, \hyperpage{55}
+  \item \texttt  {ATLAS\_dataFinder()}, \hyperindexformat{\textit}{32}
+
+  \indexspace
+
+  \item \texttt  {barplot}, \hyperindexformat{\textit}{79}
+  \item \texttt  {build\_ee\_forest}, 
+		\hyperindexformat{\textit}{74, 75}
+
+  \indexspace
+
+  \item \texttt  {character}, \hyperindexformat{\textit}{25, 26}, 
+		\hyperindexformat{\textit}{36}, 
+		\hyperindexformat{\textit}{38, 39}, 
+		\hyperindexformat{\textit}{81}
+  \item \texttt  {clip}, \hyperpage{56}
+  \item \texttt  {clip,icesat2.atl03\_dt,ANY-method} \textit  {(\texttt  {clip})}, 
+		\hyperpage{56}
+  \item \texttt  {clip,icesat2.atl03\_dt,numeric-method} \textit  {(\texttt  {clip})}, 
+		\hyperpage{56}
+  \item \texttt  {clip,icesat2.atl03\_h5,ANY-method} \textit  {(\texttt  {clip})}, 
+		\hyperpage{56}
+  \item \texttt  {clip,icesat2.atl03\_h5,numeric-method} \textit  {(\texttt  {clip})}, 
+		\hyperpage{56}
+  \item \texttt  {clip,icesat2.atl03atl08\_dt,ANY-method} \textit  {(\texttt  {clip})}, 
+		\hyperpage{56}
+  \item \texttt  {clip,icesat2.atl03atl08\_dt,numeric-method} \textit  {(\texttt  {clip})}, 
+		\hyperpage{56}
+  \item \texttt  {clip,icesat2.atl08\_dt,ANY-method} \textit  {(\texttt  {clip})}, 
+		\hyperpage{56}
+  \item \texttt  {clip,icesat2.atl08\_dt,numeric-method} \textit  {(\texttt  {clip})}, 
+		\hyperpage{56}
+  \item \texttt  {clip,icesat2.atl08\_h5,ANY-method} \textit  {(\texttt  {clip})}, 
+		\hyperpage{56}
+  \item \texttt  {clip,icesat2.atl08\_h5,numeric-method} \textit  {(\texttt  {clip})}, 
+		\hyperpage{56}
+  \item \texttt  {colorRampPalette}, \hyperindexformat{\textit}{79}
+
+  \indexspace
+
+  \item \texttt  {data.table::data.table}, 
+		\hyperindexformat{\textit}{24}, 
+		\hyperindexformat{\textit}{27}, 
+		\hyperindexformat{\textit}{35}, 
+		\hyperindexformat{\textit}{39}, 
+		\hyperindexformat{\textit}{88}
+
+  \indexspace
+
+  \item \texttt  {ee\_build\_AlphaEarth\_embedding\_terrain\_stack}, 
+		\hyperpage{59}
+  \item \texttt  {ee\_build\_hls\_s1c\_terrain\_stack}, \hyperpage{62}
+  \item \texttt  {ee\_initialize}, \hyperpage{65}
+  \item \texttt  {ee\_rect\_to\_sf}, \hyperpage{66}
+  \item \texttt  {ext\_to\_ee}, \hyperpage{66}
+
+  \indexspace
+
+  \item \texttt  {fit\_metrics}, \hyperpage{67}
+  \item \texttt  {fit\_model}, \hyperpage{68}
+
+  \indexspace
+
+  \item \texttt  {geomSampling}, \hyperpage{71}
+  \item \texttt  {geomSampling()}, \hyperindexformat{\textit}{85}
+  \item \texttt  {get\_catalog\_id}, \hyperpage{71}
+  \item \texttt  {get\_catalog\_id()}, \hyperindexformat{\textit}{63}
+  \item \texttt  {graphics::hist()}, \hyperindexformat{\textit}{90}
+  \item \texttt  {graphics::plot()}, \hyperindexformat{\textit}{67}
+  \item \texttt  {gridSampling}, \hyperpage{72}
+  \item \texttt  {gridSampling()}, \hyperindexformat{\textit}{72}, 
+		\hyperindexformat{\textit}{85}
+
+  \indexspace
+
+  \item \texttt  {icesat2.atl03\_atl08\_seg\_dt}, 
+		\hyperindexformat{\textit}{8}, 
+		\hyperindexformat{\textit}{19, 20}
+  \item \texttt  {icesat2.atl03\_dt}, \hyperindexformat{\textit}{14}, 
+		\hyperindexformat{\textit}{28--32}, 
+		\hyperindexformat{\textit}{84}
+  \item \texttt  {icesat2.atl03\_h5}, 
+		\hyperindexformat{\textit}{24--27}, 
+		\hyperindexformat{\textit}{33}
+  \item \texttt  {icesat2.atl03atl08\_dt}, 
+		\hyperindexformat{\textit}{9--12}, 
+		\hyperindexformat{\textit}{15}, 
+		\hyperindexformat{\textit}{22, 23}
+  \item \texttt  {icesat2.atl08\_dt}, \hyperindexformat{\textit}{8}, 
+		\hyperindexformat{\textit}{14}, 
+		\hyperindexformat{\textit}{16, 17}, 
+		\hyperindexformat{\textit}{36}, 
+		\hyperindexformat{\textit}{39}, 
+		\hyperindexformat{\textit}{41--48}, 
+		\hyperindexformat{\textit}{84}
+  \item \texttt  {icesat2.atl08\_h5}, 
+		\hyperindexformat{\textit}{36--38}, 
+		\hyperindexformat{\textit}{40}
+  \item \texttt  {icesat2.predict\_h5}, \hyperindexformat{\textit}{80}
+  \item \texttt  {icesat2\_sampling\_method}, 
+		\hyperindexformat{\textit}{71, 72}, 
+		\hyperindexformat{\textit}{81}, 
+		\hyperindexformat{\textit}{84}, 
+		\hyperindexformat{\textit}{89, 90}
+  \item \texttt  {ICESat2VegR} \textit  {(\texttt  {ICESat2VegR-package})}, 
+		\hyperpage{3}
+  \item \texttt  {ICESat2VegR-package}, \hyperpage{3}
+  \item \texttt  {ICESat2VegR\_configure}, \hyperpage{72}
+
+  \indexspace
+
+  \item \texttt  {map\_create}, \hyperpage{74}
+  \item \texttt  {map\_download}, \hyperpage{76}
+  \item \texttt  {map\_view}, \hyperpage{77}
+
+  \indexspace
+
+  \item \texttt  {numeric}, \hyperindexformat{\textit}{22}, 
+		\hyperindexformat{\textit}{24}, 
+		\hyperindexformat{\textit}{36}
+
+  \indexspace
+
+  \item \texttt  {plot.varSel}, \hyperpage{78}, 
+		\hyperindexformat{\textit}{92}
+  \item \texttt  {predict\_h5}, \hyperpage{80}
+  \item \texttt  {predict\_h5()}, \hyperindexformat{\textit}{82}
+  \item \texttt  {prepend\_class}, \hyperpage{81}
+
+  \indexspace
+
+  \item \texttt  {randomForest}, \hyperindexformat{\textit}{92}
+  \item \texttt  {randomForest::randomForest()}, 
+		\hyperindexformat{\textit}{70}
+  \item \texttt  {randomSampling}, \hyperpage{81}
+  \item \texttt  {randomSampling()}, \hyperindexformat{\textit}{71, 72}, 
+		\hyperindexformat{\textit}{84, 85}, 
+		\hyperindexformat{\textit}{89, 90}
+  \item \texttt  {rasterize\_h5}, \hyperpage{82}
+  \item \texttt  {rasterSampling}, \hyperpage{84}
+  \item \texttt  {rasterSampling()}, \hyperindexformat{\textit}{85}
+  \item \texttt  {rgt\_extract}, \hyperpage{84}
+
+  \indexspace
+
+  \item \texttt  {sample}, \hyperpage{85}
+  \item \texttt  {sample()}, \hyperindexformat{\textit}{71, 72}, 
+		\hyperindexformat{\textit}{81}, 
+		\hyperindexformat{\textit}{84}, 
+		\hyperindexformat{\textit}{89, 90}
+  \item \texttt  {sample\_ATL\_granules\_by\_year}, \hyperpage{86}
+  \item \texttt  {search\_datasets}, \hyperpage{87}
+  \item \texttt  {search\_datasets()}, \hyperindexformat{\textit}{63}, 
+		\hyperindexformat{\textit}{71}
+  \item \texttt  {seg\_ancillary\_extract}, \hyperpage{88}
+  \item \texttt  {sf::sf}, \hyperindexformat{\textit}{62}
+  \item \texttt  {sf::sfc}, \hyperindexformat{\textit}{62}
+  \item \texttt  {sf::st\_make\_valid()}, 
+		\hyperindexformat{\textit}{94}
+  \item \texttt  {sf::st\_write()}, \hyperindexformat{\textit}{94}
+  \item \texttt  {slope}, \hyperpage{88}
+  \item \texttt  {spacedSampling}, \hyperpage{89}
+  \item \texttt  {spacedSampling()}, \hyperindexformat{\textit}{71, 72}, 
+		\hyperindexformat{\textit}{84, 85}, 
+		\hyperindexformat{\textit}{89, 90}
+  \item \texttt  {stats::approx()}, \hyperindexformat{\textit}{19}
+  \item \texttt  {stats::cor()}, \hyperindexformat{\textit}{70}
+  \item \texttt  {stats::lm()}, \hyperindexformat{\textit}{70}
+  \item \texttt  {stratifiedSampling}, \hyperpage{89}
+  \item \texttt  {stratifiedSampling()}, 
+		\hyperindexformat{\textit}{71, 72}, 
+		\hyperindexformat{\textit}{84, 85}, 
+		\hyperindexformat{\textit}{89, 90}
+
+  \indexspace
+
+  \item \texttt  {tempdir()}, \hyperindexformat{\textit}{54}
+  \item \texttt  {terra::ext()}, \hyperindexformat{\textit}{62}
+  \item \texttt  {terra::makeValid()}, \hyperindexformat{\textit}{94}
+  \item \texttt  {terra::rast()}, \hyperindexformat{\textit}{84}
+  \item \texttt  {terra::SpatExtent}, \hyperindexformat{\textit}{24}, 
+		\hyperindexformat{\textit}{36}, 
+		\hyperindexformat{\textit}{62}
+  \item \texttt  {terra::SpatRaster}, \hyperindexformat{\textit}{62}, 
+		\hyperindexformat{\textit}{84}
+  \item \texttt  {terra::SpatVector}, \hyperindexformat{\textit}{11}, 
+		\hyperindexformat{\textit}{26}, 
+		\hyperindexformat{\textit}{30}, 
+		\hyperindexformat{\textit}{38}, 
+		\hyperindexformat{\textit}{44}, 
+		\hyperindexformat{\textit}{62}, 
+		\hyperindexformat{\textit}{71}, 
+		\hyperindexformat{\textit}{85}, 
+		\hyperindexformat{\textit}{88}, 
+		\hyperindexformat{\textit}{90}, 
+		\hyperindexformat{\textit}{93}
+  \item \texttt  {terra::vect}, \hyperindexformat{\textit}{11}, 
+		\hyperindexformat{\textit}{30}, 
+		\hyperindexformat{\textit}{44}, 
+		\hyperindexformat{\textit}{88}
+  \item \texttt  {terra::vect()}, \hyperindexformat{\textit}{62}, 
+		\hyperindexformat{\textit}{71}
+  \item \texttt  {terra::writeVector()}, \hyperindexformat{\textit}{22}
+  \item \texttt  {to\_vect}, \hyperpage{90}
+
+  \indexspace
+
+  \item \texttt  {varSel}, \hyperindexformat{\textit}{78}, 
+		\hyperpage{91}
+  \item \texttt  {vect\_as\_ee}, \hyperpage{93}
+
+  \indexspace
+
+  \item \texttt  {write\_geojson}, \hyperpage{95}
+
+\end{theindex}

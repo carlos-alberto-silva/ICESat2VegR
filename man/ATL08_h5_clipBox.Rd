@@ -2,39 +2,63 @@
 % Please edit documentation in R/ATL08_h5_clipBox.R
 \name{ATL08_h5_clipBox}
 \alias{ATL08_h5_clipBox}
-\title{Clips ICESat-2 ATL08 data}
+\title{Clip ICESat-2 ATL08 HDF5 Data Using a Bounding Extent}
 \usage{
 ATL08_h5_clipBox(
   atl08,
   output,
-  bbox,
+  clip_obj,
   beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
   additional_groups = c("orbit_info")
 )
 }
 \arguments{
-\item{atl08}{\code{\linkS4class{icesat2.atl08_h5}} object, obtained through \code{\link[=ATL08_read]{ATL08_read()}}
-for clipping}
+\item{atl08}{An \code{\linkS4class{icesat2.atl08_h5}} object obtained via
+\code{\link[=ATL08_read]{ATL08_read()}}, representing the ATL08 HDF5 file to be clipped.}
 
-\item{output}{character. Path to the output h5 file.}
+\item{output}{Character path specifying where the clipped HDF5 file should be
+written.}
 
-\item{bbox}{\code{\linkS4class{numeric}} or \code{\link[terra:SpatExtent-class]{terra::SpatExtent}} for clipping, the
-order of the bbox is the default from NASA's ICESat-2 CMS searching:
-(ul_lat, ul_lon, lr_lat, lr_lon).}
+\item{clip_obj}{Bounding extent used for clipping. Supported inputs:
+\itemize{
+\item A numeric vector of length 4:
+\code{c(ul_lat, ul_lon, lr_lat, lr_lon)}, following the ICESat-2 CMS
+bounding-box convention (upper-left latitude/longitude and
+lower-right latitude/longitude).
+\item A \code{\link[terra:SpatExtent-class]{terra::SpatExtent}} object.
+}}
 
-\item{beam}{\code{\linkS4class{character}}. The vector of beams to include, default
-all c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")}
+\item{beam}{Character vector specifying which ATL08 beams to include.
+Defaults to:
+\code{c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")}.}
 
-\item{additional_groups}{\code{\linkS4class{character}}. Other addional groups that should be included, default
-c("orbit_info")}
+\item{additional_groups}{Character vector specifying additional non-beam
+HDF5 groups to copy unchanged into the output file. Defaults to:
+\code{c("orbit_info")}.}
 }
 \value{
-Returns the clipped S4 object of class \code{\linkS4class{icesat2.atl08_h5}}
+An S4 object of class \code{\linkS4class{icesat2.atl08_h5}} representing
+the clipped ATL08 HDF5 file.
 }
 \description{
-This function clips the ATl08 HDF5 file. This function
-will only clip the beam groups within hdf5, it won't change metadata
-or ancillary data.
+Clips an ICESat-2 ATL08 HDF5 file to a specified spatial extent. Only
+segment-level datasets within the ATL08 beam groups are clipped; all metadata,
+orbit information, and ancillary groups are preserved unchanged. This
+function is the bounding-box-based counterpart to geometry-based clipping
+functions.
+}
+\details{
+The function performs the following steps:
+\enumerate{
+\item Copies file-level attributes and all requested non-beam groups.
+\item Clips beam-level datasets based on latitude/longitude coordinates and
+the supplied spatial extent.
+\item Reconstructs dependent indexing datasets (e.g., photon index ranges)
+when necessary to maintain valid ATL08 structure.
+}
+
+The resulting HDF5 file remains fully compliant with the ATL08 product
+structure, but contains only data within the specified bounding extent.
 }
 \examples{
 # ATL08 file path
@@ -43,22 +67,23 @@ atl08_path <- system.file("extdata",
   package = "ICESat2VegR"
 )
 
-# Reading ATL08 data (h5 file)
-atl08_h5 <- ATL08_read(atl08_path = atl08_path)
+# Read ATL08 data
+atl08_h5 <- ATL08_read(atl08_path)
 
-# Bounding rectangle coordinates
+# Bounding rectangle coordinates (ul_lat, ul_lon, lr_lat, lr_lon)
 ul_lon <- -106.5723
 lr_lon <- -106.5693
 lr_lat <- 41.533
 ul_lat <- 41.537
 
-# Clipping ATL08 terrain and canopy attributes by boundary box
-atl08_seg_att_dt_clip <- ATL08_h5_clipBox(
+# Clip ATL08 data using the bounding extent
+atl08_clip <- ATL08_h5_clipBox(
   atl08_h5,
   output = tempfile(fileext = ".h5"),
-  c(ul_lat, ul_lon, lr_lat, lr_lon)
+  clip_obj = c(ul_lat, ul_lon, lr_lat, lr_lon)
 )
 
 close(atl08_h5)
-close(atl08_seg_att_dt_clip)
+close(atl08_clip)
+
 }

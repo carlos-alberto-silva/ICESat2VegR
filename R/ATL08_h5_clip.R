@@ -1,22 +1,3 @@
-# #' Clips ICESat-2 ATL08 H5 data
-# #'
-# #' @param x [`ICESat2VegR::icesat2.atl08_h5-class`] object,
-# #' obtained through [`ATL08_read()`] for clipping
-# #' @param output character. Path to the output h5 file.
-# #' @param bbox [`numeric-class`] or [`terra::SpatExtent`] for clipping, the
-# #' order of the bbox is the default from NASA's ICESat-2 CMS searching:
-# #' (ul_lat, ul_lon, lr_lat, lr_lon).
-# #' @param beam [`character-class`]. The vector of beams to include, default
-# #' all c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")
-# #' @param additional_groups [`character-class`]. Other addional groups that should be included, default
-# #' c("METADATA", "orbit_info", "quality_assessment", "ancillary_data")
-# #'
-# #' @return Returns the clipped S4 object of class [`ICESat2VegR::icesat2.atl08_h5-class`]
-# #'
-# #' @description This function clips ATL08 HDF5 file within beam groups,
-# #' but keeps metada and ancillary data the same.
-# #'
-# #' @export
 #' @include class.icesat2.R ATL08_read.R
 #' @import data.table hdf5r
 ATL08_h5_clip <- function(
@@ -42,7 +23,7 @@ ATL08_h5_clip <- function(
   for (group in groups) {
     grp <- newFile$create_group(group)
 
-    # Create all atributes within group
+    # Create all attributes within group
     attributes <- atl08[[group]]$ls_attrs()
     for (attribute in attributes) {
       grp$create_attr(attribute, atl08[[group]]$attr(attribute))
@@ -136,7 +117,7 @@ ATL08_h5_clip <- function(
     qtyList <- lapply(datasets_dt$dataset.dims, function(x) eval(parse(text = gsub("x", "*", x))))
     qty <- sum(unlist(qtyList))
 
-    pb <- utils::txtProgressBar(min = 0, max = qty, style = 3, file = stderr())
+    pb <- utils::txtProgressBar(min = 0, max = qty, style = 3)
 
     # Do clipping and copying
     if (length(landSegmentsMask) == 0) {

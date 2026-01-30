@@ -1,217 +1,186 @@
-#' Clip ICESat-2 Data
+# =============================================================================
+# Generic: clip
+# =============================================================================
+
+#' Clip ICESat-2 data (h5, attributes, or ATL03–ATL08 join) by box or geometry
 #'
-#' Generic function for clipping ICESat-2 ATL03 and ATL08 H5 data.
+#' @description
+#' Unified clipping interface for ICESat-2 ATL03/ATL08 data. The generic
+#' `clip()` dispatches on the class of `x` and internally calls appropriate
+#' `_clipBox()` or `_clipGeometry()` helpers.
 #'
-#' @description This function clips ATL03 and ATL08 HDF5 file within beam groups,
-#' but keeps metada and ancillary data the same.
+#' @param x ICESat-2 object (ATL03/ATL08 h5, attributes, or joined table)
 #'
-#' @param x [`ICESat2VegR::icesat2.atl03_h5-class`] or
-#' [`ICESat2VegR::icesat2.atl08_h5-class`] object, obtained through
-#' [`ATL03_read()`] or [`ATL08_read()`] for clipping
-#' @param output character. Path to the output h5 file.
-#' @param clip_obj [`numeric-class`], [`terra::SpatExtent`] or [`terra::SpatVector`]
-#' object for clipping. The bbox order is the default from NASA's ICESat-2 data searching:
-#' (ul_lat, ul_lon, lr_lat, lr_lon).
-#' @param ... Forwards to specific method implementation.
+#' @param clip_obj Clipping object. Supported for box-based clipping:
+#'   * numeric bounding box: c(xmin, ymin, xmax, ymax)
+#'   * `terra::SpatExtent`
 #'
-#' @return Returns the clipped S4 object of the same class as the input file
+#'   For geometry-based clipping:
+#'   * `sf`, `sfc`, `terra::SpatVector`, etc.
 #'
-#' @seealso
-#' [`ATL03_h5_clipBox()`], [`ATL03_h5_clipGeometry()`],
-#' [`ATL08_h5_clipBox()`], [`ATL08_h5_clipGeometry()`]
+#'   To clip by a spatial object's extent, extract its bbox first.
 #'
-#' @examples
-#' # ATL08 file path
-#' atl08_path <- system.file("extdata",
-#'   "atl08_clip.h5",
-#'   package = "ICESat2VegR"
-#' )
-#'
-#' # Reading ATL08 data (h5 file)
-#' atl08_h5 <- ATL08_read(atl08_path = atl08_path)
-#'
-#' output <- tempfile(fileext = ".h5")
-#'
-#' vect_path <- system.file("extdata",
-#'   "clip_geom.shp",
-#'   package = "ICESat2VegR"
-#' )
-#'
-#' vect <- terra::vect(vect_path)
-#' ext <- terra::ext(vect)
-#'
-#' # Clipping ATL08 photons by boundary box extent
-#' atl08_clip <- clip(
-#'   atl08_h5,
-#'   output,
-#'   ext
-#' )
-#'
-#' close(atl08_clip)
-#'
-#' # Clipping ATL08 photons by geometry
-#' atl08_clip_geom <- clip(
-#'   atl08_h5,
-#'   output,
-#'   vect,
-#'   polygon_id = "id"
-#' )
-#'
-#' close(atl08_clip_geom, close)
-#' @import hdf5r
 #' @export
 setGeneric(
   "clip",
-  function(x, output, clip_obj, ...) {
-    standardGeneric("clip")
+  function(x, clip_obj, ...) standardGeneric("clip")
+)
+
+# =============================================================================
+# Methods: clip() for ATL03/ATL08 HDF5 handles
+# =============================================================================
+
+# --- ATL03 H5 by numeric bbox ---
+setMethod(
+  "clip",
+  signature = c(x = "icesat2.atl03_h5", clip_obj = "numeric"),
+  function(x, clip_obj, ...) {
+    ATL03_h5_clipBox(x, clip_obj = clip_obj, ...)
   }
 )
 
-#' Default clip method
-#' @describeIn default clip will dispatch to [`graphics::clip()`]
-#' 
-#' @param x Maps to x1 from [`graphics::clip()`]
-#' @param output Maps to x2 from [`graphics::clip()`]
-#' @param clip_obj Maps to y1 from [`graphics::clip()`]
-#' @param ... Maps first element of list to y2 of [`graphics::clip()`]
-#' @export
+# --- ATL03 H5 by SpatExtent ---
 setMethod(
   "clip",
-  signature = c("ANY", "ANY", "ANY"),
-  function(x, output, clip_obj, ...) {
-    graphics::clip(x, output, clip_obj, list(...)[[1]])
+  signature = c(x = "icesat2.atl03_h5", clip_obj = "SpatExtent"),
+  function(x, clip_obj, ...) {
+    ATL03_h5_clipBox(x, clip_obj = clip_obj, ...)
   }
 )
 
-#' @describeIn clip Clips ATL03 data using a `SpatExtent`.
-#'
-#' @param x An `icesat2.atl03_h5` object.
-#' @param output A character string specifying the path to the output H5 file.
-#' @param clip_obj A `terra::SpatExtent` object for clipping.
-#' @param ... Additional arguments passed to the method implementation.
-#' @export
+# --- ATL03 H5 by geometry ---
 setMethod(
   "clip",
-  signature = c("icesat2.atl03_h5", "character", "SpatExtent"),
-  function(x, output, clip_obj, ...) {
-    ATL03_h5_clipBox(x, output, clip_obj, ...)
+  signature = c(x = "icesat2.atl03_h5", clip_obj = "ANY"),
+  function(x, clip_obj, ...) {
+    ATL03_h5_clipGeometry(x, clip_obj = clip_obj, ...)
   }
 )
 
-
-
-#' @describeIn clip Clips ATL03 data using a `SpatVector`.
-#'
-#' This method clips ATL03 HDF5 data within beam groups using a `terra::SpatVector` object,
-#' but keeps metadata and ancillary data the same.
-#'
-#' @param x An `icesat2.atl03_h5` object, obtained through `ATL03_read()`.
-#' @param output A character string specifying the path to the output H5 file.
-#' @param clip_obj A `terra::SpatVector` object for clipping. The bounding box order is the
-#' default from NASA's ICESat-2 data searching: (ul_lat, ul_lon, lr_lat, lr_lon).
-#' @param polygon_id A character string specifying the ID of the polygon for clipping.
-#' @param ... Additional arguments passed to specific method implementation.
-#'
-#' @return Returns the clipped `icesat2.atl03_h5` object.
-#'
-#' @importClassesFrom terra SpatVector
-#' @export
+# --- ATL08 H5 by numeric bbox ---
 setMethod(
   "clip",
-  signature = c("icesat2.atl03_h5", "character", "SpatVector"),
-  function(x, output, clip_obj, polygon_id = "id", ...) {
-    ATL03_h5_clipGeometry(x, output, clip_obj, polygon_id, ...)
+  signature = c(x = "icesat2.atl08_h5", clip_obj = "numeric"),
+  function(x, clip_obj, ...) {
+    ATL08_h5_clipBox(x, clip_obj = clip_obj, ...)
   }
 )
 
-#' @describeIn clip Clips ATL03 data using numeric coordinates.
-#'
-#' This method clips ATL03 HDF5 data within beam groups using numeric coordinates,
-#' but keeps metadata and ancillary data the same.
-#'
-#' @param x An `icesat2.atl03_h5` object, obtained through `ATL03_read()`.
-#' @param output A character string specifying the path to the output H5 file.
-#' @param clip_obj A numeric vector specifying the bounding box for clipping.
-#' The bounding box order is the default from NASA's ICESat-2 data searching:
-#' (ul_lat, ul_lon, lr_lat, lr_lon).
-#' @param ... Additional arguments passed to specific method implementation.
-#'
-#' @return Returns the clipped `icesat2.atl03_h5` object.
-#' @include class.icesat2.R
-#' @importClassesFrom terra SpatVector
-#' @exportMethod clip
+# --- ATL08 H5 by SpatExtent ---
 setMethod(
   "clip",
-  signature = c("icesat2.atl03_h5", "character", "numeric"),
-  function(x, output, clip_obj, ...) {
-    bbox_ext <- terra::ext(clip_obj[c(2, 4, 3, 1)])
-    ATL03_h5_clipBox(x, output, bbox_ext, ...)
+  signature = c(x = "icesat2.atl08_h5", clip_obj = "SpatExtent"),
+  function(x, clip_obj, ...) {
+    ATL08_h5_clipBox(x, clip_obj = clip_obj, ...)
   }
 )
 
-#' @describeIn clip Clips ATL08 data using a `SpatExtent`.
-#'
-#' This method clips ATL08 HDF5 data within beam groups using a `terra::SpatExtent` object,
-#' but keeps metadata and ancillary data the same.
-#'
-#' @param x An `icesat2.atl08_h5` object, obtained through `ATL08_read()`.
-#' @param output A character string specifying the path to the output H5 file.
-#' @param clip_obj A `terra::SpatExtent` object for clipping.
-#' @param ... Additional arguments passed to specific method implementation.
-#' @return Returns the clipped `icesat2.atl08_h5` object.
-#' @export
+# --- ATL08 H5 by geometry ---
 setMethod(
   "clip",
-  signature = c("icesat2.atl08_h5", "character", "SpatExtent"),
-  function(x, output, clip_obj, ...) {
-    ATL08_h5_clipBox(x, output, clip_obj, ...)
+  signature = c(x = "icesat2.atl08_h5", clip_obj = "ANY"),
+  function(x, clip_obj, ...) {
+    ATL08_h5_clipGeometry(x, clip_obj = clip_obj, ...)
   }
 )
 
-#' @describeIn clip Clips ATL08 data using numeric coordinates.
-#'
-#' This method clips ATL08 HDF5 data within beam groups using numeric coordinates,
-#' but keeps metadata and ancillary data the same.
-#'
-#' @param x An `icesat2.atl08_h5` object, obtained through `ATL08_read()`.
-#' @param output A character string specifying the path to the output H5 file.
-#' @param clip_obj A numeric vector specifying the bounding box for clipping.
-#' The bounding box order is the default from NASA's ICESat-2 data searching:
-#' (ul_lat, ul_lon, lr_lat, lr_lon).
-#' @param ... Additional arguments passed to specific method implementation.
-#'
-#' @return Returns the clipped `icesat2.atl08_h5` object.
+# =============================================================================
+# Methods: clip() for ATL03/ATL08 attribute tables
+# =============================================================================
+
+# --- ATL03 DT by numeric bbox ---
 setMethod(
   "clip",
-  signature = c("icesat2.atl08_h5", "character", "numeric"),
-  function(x, output, clip_obj, ...) {
-    print("clipping by bbox")
-    bbox_ext <- terra::ext(clip_obj[c(2, 4, 3, 1)])
-    ATL08_h5_clipBox(x, output, bbox_ext, ...)
+  signature = c(x = "icesat2.atl03_dt", clip_obj = "numeric"),
+  function(x, clip_obj, ...) {
+    ATL03_photons_attributes_dt_clipBox(x, clip_obj = clip_obj, ...)
   }
 )
 
-#' @describeIn clip Clips ATL08 data using a `SpatVector`.
-#'
-#' This method clips ATL08 HDF5 data within beam groups using a `terra::SpatVector` object,
-#' but keeps metadata and ancillary data the same.
-#'
-#' @param x An `icesat2.atl08_h5` object, obtained through `ATL08_read()`.
-#' @param output A character string specifying the path to the output H5 file.
-#' @param clip_obj A `terra::SpatVector` object for clipping. The bounding box order is the
-#' default from NASA's ICESat-2 data searching: (ul_lat, ul_lon, lr_lat, lr_lon).
-#' @param polygon_id A character string specifying the ID of the polygon for clipping.
-#' @param ... Additional arguments passed to specific method implementation.
-#'
-#' @return Returns the clipped `icesat2.atl08_h5` object.
-#'
-#' @include class.icesat2.R
-#' @importClassesFrom terra SpatVector
-#' @export
+# --- ATL03 DT by SpatExtent ---
 setMethod(
   "clip",
-  signature = c("icesat2.atl08_h5", "character", "SpatVector"),
-  function(x, output, clip_obj, polygon_id, ...) {
-    ATL08_h5_clipGeometry(x, output, clip_obj, polygon_id, ...)
+  signature = c(x = "icesat2.atl03_dt", clip_obj = "SpatExtent"),
+  function(x, clip_obj, ...) {
+    ATL03_photons_attributes_dt_clipBox(x, clip_obj = clip_obj, ...)
+  }
+)
+
+# --- ATL03 DT by geometry ---
+setMethod(
+  "clip",
+  signature = c(x = "icesat2.atl03_dt", clip_obj = "ANY"),
+  function(x, clip_obj, ...) {
+    ATL03_photons_attributes_dt_clipGeometry(x, clip_obj = clip_obj, ...)
+  }
+)
+
+# --- ATL08 DT by numeric bbox ---
+setMethod(
+  "clip",
+  signature = c(x = "icesat2.atl08_dt", clip_obj = "numeric"),
+  function(x, clip_obj, ...) {
+    ATL08_seg_attributes_dt_clipBox(x, clip_obj = clip_obj, ...)
+  }
+)
+
+# --- ATL08 DT by SpatExtent ---
+setMethod(
+  "clip",
+  signature = c(x = "icesat2.atl08_dt", clip_obj = "SpatExtent"),
+  function(x, clip_obj, ...) {
+    ATL08_seg_attributes_dt_clipBox(x, clip_obj = clip_obj, ...)
+  }
+)
+
+# --- ATL08 DT by geometry ---
+setMethod(
+  "clip",
+  signature = c(x = "icesat2.atl08_dt", clip_obj = "ANY"),
+  function(x, clip_obj, ...) {
+    ATL08_seg_attributes_dt_clipGeometry(x, clip_obj = clip_obj, ...)
+  }
+)
+
+# =============================================================================
+# Methods: clip() for joined ATL03–ATL08 photons
+# =============================================================================
+
+# --- ATL03-ATL08 joined DT by numeric bbox ---
+setMethod(
+  "clip",
+  signature = c(x = "icesat2.atl03atl08_dt", clip_obj = "numeric"),
+  function(x, clip_obj, ...) {
+    ATL03_ATL08_photons_attributes_dt_clipBox(
+      atl03_atl08_dt = x,
+      clip_obj       = clip_obj,
+      ...
+    )
+  }
+)
+
+# --- ATL03-ATL08 joined DT by SpatExtent ---
+setMethod(
+  "clip",
+  signature = c(x = "icesat2.atl03atl08_dt", clip_obj = "SpatExtent"),
+  function(x, clip_obj, ...) {
+    ATL03_ATL08_photons_attributes_dt_clipBox(
+      atl03_atl08_dt = x,
+      clip_obj       = clip_obj,
+      ...
+    )
+  }
+)
+
+# --- ATL03-ATL08 joined DT by geometry ---
+setMethod(
+  "clip",
+  signature = c(x = "icesat2.atl03atl08_dt", clip_obj = "ANY"),
+  function(x, clip_obj, ...) {
+    ATL03_ATL08_photons_attributes_dt_clipGeometry(
+      atl03_atl08_dt = x,
+      clip_obj       = clip_obj,
+      ...
+    )
   }
 )

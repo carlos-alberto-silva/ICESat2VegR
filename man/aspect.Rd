@@ -2,17 +2,32 @@
 % Please edit documentation in R/gee-base.R
 \name{aspect}
 \alias{aspect}
-\title{Calculates aspect in degrees from a terrain DEM.}
+\title{Compute terrain aspect (degrees) from a DEM image}
 \usage{
 aspect(x)
 }
 \arguments{
-\item{x}{The \code{ee.Image} on which to apply the aspect function.}
+\item{x}{An \code{ee$Image} representing a DEM from which aspect will be derived.}
 }
 \value{
-An \code{ee.Image} with a single band named "Aspect".
+An \code{ee$Image} with one band named \code{"aspect"} containing aspect
+values in degrees clockwise from north.
 }
 \description{
-The local gradient is computed using the 4-connected neighbors of each
-pixel, so missing values will occur around the edges of an image.
+Computes the terrain \emph{aspect} in degrees for each pixel of an Earth Engine
+\code{ee$Image} representing a digital elevation model (DEM).
+
+Aspect describes the downslope direction of the steepest gradient and is
+expressed in degrees clockwise from north. The computation is performed
+using Earth Engine’s built-in \code{ee$Terrain$aspect()} function. As with slope,
+Earth Engine uses the 4-connected neighborhood, so missing values may occur
+near image edges.
+}
+\examples{
+\dontrun{
+  ee <- reticulate::import("ee")
+  dem <- ee$Image("NASA/NASADEM_HGT/001")
+  asp <- aspect(dem)
+}
+
 }

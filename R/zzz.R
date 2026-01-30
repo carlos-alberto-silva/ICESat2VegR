@@ -1,14 +1,15 @@
 #' The pointer to the `earthaccess` python reticulate module
+#'
 #' @useDynLib ICESat2VegR
 #' @import Rcpp Rdpack
 #' @importFrom Rdpack reprompt
-#' @export
+#' @keywords internal
 earthaccess <- NULL
 
 #' The pointer to the `earth-engine-api` python reticulate module
 #'
 #' @seealso https://developers.google.com/earth-engine/apidocs
-#' @export
+#' @keywords internal
 ee <- NULL
 
 # Private h5py module
@@ -17,40 +18,41 @@ h5py <- NULL
 # Private package environment
 pkg_env <- environment()
 
-# Module with the Rcpp ANN indexing functions
-pkg_module <- Rcpp::Module("icesat2_module")
+# We no longer keep a long-lived Rcpp Module external pointer here.
+# The icesat2_module is loaded on .onLoad() and accessed via Rcpp::Module()
+# when needed (see .get_pkg_module()).
+pkg_module <- NULL
 
 # Private cache for the Earth Engine search
 ee_cache <- new.env(parent = emptyenv())
 ee_cache$search <- NULL
 
 .onLoad <- function(libname, pkgname) {
+
+  # Python modules ..
   if (reticulate::py_module_available("earthaccess")) {
     earthaccess <<- reticulate::import("earthaccess", convert = FALSE)
   }
-
   if (reticulate::py_module_available("ee")) {
     ee <<- reticulate::import("ee", convert = TRUE)
-    tryCatch(
-      {
-        ee$Initialize()
-      },
-      error = function(e) {
-        tryCatch(
-          {
-            ee$Authenticate()
-          },
-          error = function(e) {}
-        )
-      }
-    )
+    tryCatch(ee$Initialize(), error = function(e) {
+      tryCatch(ee$Authenticate(), error = function(e) {})
+    })
   }
-
   if (reticulate::py_module_available("h5py")) {
     h5py <<- reticulate::import("h5py", convert = TRUE)
   }
 
+  # GDAL module load
   loadGdal(pkgname)
+
+  # -------------------------------------------------------------------
+  #  Load the ICESat2 C++ module (NO PACKAGE argument here)
+  # -------------------------------------------------------------------
+  Rcpp::loadModule("icesat2_module", TRUE, TRUE)
+
+  # We do NOT assign pkg_module here because that pointer becomes stale
+  # after devtools::load_all() reloads the DLL.
 }
 
 
@@ -63,8 +65,7 @@ loadGdal <- function(pkg_name) {
   minor <- proj_version[2]
 
   # Since PROJ 9.1, the data files are in PROJ_DATA instead of PROJ_LIB
-  if (major > 9 ||
-    (major == 9 && minor >= 1)) {
+  if (major > 9 || (major == 9 && minor >= 1)) {
     proj_path <- Sys.getenv("PROJ_DATA")
   } else {
     proj_path <- Sys.getenv("PROJ_LIB")
@@ -87,7 +88,8 @@ loadGdal <- function(pkg_name) {
     info$Date <- "2024-03-06 UTC"
   }
   base::packageStartupMessage(
-    paste("\n##----------------------------------------------------------------##\n",
+    paste(
+      "\n##----------------------------------------------------------------##\n",
       "##  ICESat2VegR package, version ", info$Version, ", Released ", info$Date,
       "    #",
       "\n##----------------------------------------------------------------##\n",

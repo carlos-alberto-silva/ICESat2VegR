@@ -13,4 +13,4 @@ earthaccess
 \description{
 The pointer to the \code{earthaccess} python reticulate module
 }
-\keyword{datasets}
+\keyword{internal}

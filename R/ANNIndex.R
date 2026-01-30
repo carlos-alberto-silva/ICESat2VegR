@@ -8,7 +8,7 @@
 #' Mount, D. M.; Arya, S. ANN: A Library for Approximate Nearest Neighbor Searching,
 #' available in <https://www.cs.umd.edu/~mount/ANN/>
 #'
-#' @export
+#' @keywords internal
 ANNIndex <- R6::R6Class("ANNIndex",
   public = list(
     #' @field tree The C++ pointer for the built tree

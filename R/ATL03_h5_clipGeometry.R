@@ -1,21 +1,43 @@
-#' Clips ICESat-2 ATL03 H5 data
+#' Clip ICESat-2 ATL03 HDF5 Data Using Geometry-Based Boundaries
 #'
-#' @param atl03 [`ICESat2VegR::icesat2.atl03_h5-class`] object,
-#' obtained through [`ATL03_read()`] for clipping
-#' @param output character. Path to the output h5 file, the attribute for polygons
-#' will be appended to the file name.
-#' @param vect [`terra::SpatVector-class`] for clipping
-#' @param polygon_id [`character-class`]. The attribute name used for identifying
-#' the different polygons. Default is "id"
-#' @param beam [`character-class`]. The vector of beams to include, default
-#' all c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")
-#' @param additional_groups [`character-class`]. Other addional groups that should be included, default
-#' c("orbit_info")
+#' @description
+#' Clips an ICESat-2 ATL03 HDF5 file using one or more geometry-based clipping
+#' objects provided as a [`terra::SpatVector`]. Each geometry in \code{vect}
+#' defines an individual clipping region. The function iteratively clips the
+#' ATL03 data for each region and writes a separate output HDF5 file for every
+#' geometry. The name of each output file is automatically appended with the
+#' value of the attribute specified in \code{split_by}.
 #'
-#' @return Returns a list of clipped S4 object of class [`ICESat2VegR::icesat2.atl03_h5-class`]
+#' Only datasets within the ATL03 beam groups are spatially clipped; metadata
+#' and ancillary non-beam groups remain unchanged in the resulting files.
 #'
-#' @description This function clips ATL03 HDF5 file within beam groups,
-#' but keeps metada and ancillary data the same.
+#' @param atl03 An [`ICESat2VegR::icesat2.atl03_h5-class`] object obtained using
+#'   [`ATL03_read()`], representing the ATL03 HDF5 file to be clipped.
+#'
+#' @param output Character. Path to the output filename. The final written files
+#'   will append the unique value of \code{split_by} for each clipping geometry,
+#'   for example:
+#'   \code{"output_id1.h5"}, \code{"output_id2.h5"}, etc.
+#'
+#' @param vect A [`terra::SpatVector`] object containing the geometric clip
+#'   boundaries. Each feature (row) in the SpatVector defines an independent
+#'   clipping region.
+#'
+#' @param split_by Character. The SpatVector attribute whose values are used to
+#'   identify and name each clipping geometry. Defaults to \code{"id"}.
+#'
+#' @param beam Character vector specifying which ATL03 beams to include. The
+#'   default includes all six beams:
+#'   \code{c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")}.
+#'
+#' @param additional_groups Character vector of non-beam HDF5 groups that should
+#'   be copied unchanged into each clipped file. Defaults to:
+#'   \code{c("orbit_info")}.
+#'
+#' @return
+#' Returns a list of clipped S4 objects of class
+#' [`ICESat2VegR::icesat2.atl03_h5-class`], one for each clipping geometry
+#' contained in \code{vect}.
 #'
 #' @examples
 #' # ATL03 file path
@@ -24,32 +46,34 @@
 #'   package = "ICESat2VegR"
 #' )
 #'
-#' # Reading ATL03 data (h5 file)
-#' atl03_h5 <- ATL03_read(atl03_path = atl03_path)
+#' # Read ATL03 file
+#' atl03_h5 <- ATL03_read(atl03_path)
 #'
+#' # Output base filename
 #' output <- tempfile(fileext = ".h5")
 #'
-#' vect_path <- system.file("extdata",
-#'   "polygons.shp",
+#' # Load clipping geometries
+#' vect_path <- system.file("extdata", "clip_objs.shp",
 #'   package = "ICESat2VegR"
 #' )
+#' vect <- terra::vect(vect_path)
 #'
-#' vect <- terra::vect()
-#'
-#' # Clipping ATL03 photons  by boundary box extent
-#' atl03_photons_dt_clip <- ATL03_h5_clipGeometry(
+#' # Clip ATL03 data using polygon geometries
+#' atl03_clipped_list <- ATL03_h5_clipGeometry(
 #'   atl03_h5,
 #'   output,
 #'   vect,
-#'   polygon_id = "id"
+#'   split_by = "id"
 #' )
 #'
 #' close(atl03_h5)
+#'
 #' @import hdf5r
 #' @include clipTools.R
 #' @export
+#' @export
 ATL03_h5_clipGeometry <- function(
-    atl03, output, vect, polygon_id = NULL, beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
+    atl03, output, vect, split_by = NULL, beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
     additional_groups = c("orbit_info")) {
   geom <- terra::aggregate(vect)
 

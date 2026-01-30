@@ -29,7 +29,7 @@ atl03_path <- system.file(
 )
 
 atl03_h5 <- ATL03_read(atl03_path = atl03_path)
-atl03_seg_dt <- ATL03_seg_attributes_dt(atl03_h5)
+atl03_seg_dt <- ATL03_seg_metadata_dt(atl03_h5)
 
 linear_model <- stats::lm(h_ph ~ segment_ph_cnt, data = atl03_seg_dt)
 output_h5 <- tempfile(fileext = ".h5")
@@ -44,3 +44,4 @@ head(predicted_h5[["prediction"]][])
 # Close the file
 close(predicted_h5)
 }
+\keyword{internal}

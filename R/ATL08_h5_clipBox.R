@@ -1,21 +1,51 @@
-#' Clips ICESat-2 ATL08 data
+#' Clip ICESat-2 ATL08 HDF5 Data Using a Bounding Extent
 #'
-#' @param atl08 [`ICESat2VegR::icesat2.atl08_h5-class`] object, obtained through [`ATL08_read()`]
-#' for clipping
-#' @param output character. Path to the output h5 file.
-#' @param bbox [`numeric-class`] or [`terra::SpatExtent`] for clipping, the
-#' order of the bbox is the default from NASA's ICESat-2 CMS searching:
-#' (ul_lat, ul_lon, lr_lat, lr_lon).
-#' @param beam [`character-class`]. The vector of beams to include, default
-#' all c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")
-#' @param additional_groups [`character-class`]. Other addional groups that should be included, default
-#' c("orbit_info")
+#' @description
+#' Clips an ICESat-2 ATL08 HDF5 file to a specified spatial extent. Only
+#' segment-level datasets within the ATL08 beam groups are clipped; all metadata,
+#' orbit information, and ancillary groups are preserved unchanged. This
+#' function is the bounding-box-based counterpart to geometry-based clipping
+#' functions.
 #'
-#' @return Returns the clipped S4 object of class [`ICESat2VegR::icesat2.atl08_h5-class`]
+#' @param atl08 An [`ICESat2VegR::icesat2.atl08_h5-class`] object obtained via
+#'   [`ATL08_read()`], representing the ATL08 HDF5 file to be clipped.
 #'
-#' @description This function clips the ATl08 HDF5 file. This function
-#' will only clip the beam groups within hdf5, it won't change metadata
-#' or ancillary data.
+#' @param output Character path specifying where the clipped HDF5 file should be
+#'   written.
+#'
+#' @param clip_obj Bounding extent used for clipping. Supported inputs:
+#'   \itemize{
+#'     \item A numeric vector of length 4:
+#'       \code{c(ul_lat, ul_lon, lr_lat, lr_lon)}, following the ICESat-2 CMS
+#'       bounding-box convention (upper-left latitude/longitude and
+#'       lower-right latitude/longitude).
+#'     \item A [`terra::SpatExtent`] object.
+#'   }
+#'
+#' @param beam Character vector specifying which ATL08 beams to include.
+#'   Defaults to:
+#'   \code{c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")}.
+#'
+#' @param additional_groups Character vector specifying additional non-beam
+#'   HDF5 groups to copy unchanged into the output file. Defaults to:
+#'   \code{c("orbit_info")}.
+#'
+#' @return
+#' An S4 object of class [`ICESat2VegR::icesat2.atl08_h5-class`] representing
+#' the clipped ATL08 HDF5 file.
+#'
+#' @details
+#' The function performs the following steps:
+#' \enumerate{
+#'   \item Copies file-level attributes and all requested non-beam groups.
+#'   \item Clips beam-level datasets based on latitude/longitude coordinates and
+#'         the supplied spatial extent.
+#'   \item Reconstructs dependent indexing datasets (e.g., photon index ranges)
+#'         when necessary to maintain valid ATL08 structure.
+#' }
+#'
+#' The resulting HDF5 file remains fully compliant with the ATL08 product
+#' structure, but contains only data within the specified bounding extent.
 #'
 #' @examples
 #' # ATL08 file path
@@ -24,35 +54,36 @@
 #'   package = "ICESat2VegR"
 #' )
 #'
-#' # Reading ATL08 data (h5 file)
-#' atl08_h5 <- ATL08_read(atl08_path = atl08_path)
+#' # Read ATL08 data
+#' atl08_h5 <- ATL08_read(atl08_path)
 #'
-#' # Bounding rectangle coordinates
+#' # Bounding rectangle coordinates (ul_lat, ul_lon, lr_lat, lr_lon)
 #' ul_lon <- -106.5723
 #' lr_lon <- -106.5693
 #' lr_lat <- 41.533
 #' ul_lat <- 41.537
 #'
-#' # Clipping ATL08 terrain and canopy attributes by boundary box
-#' atl08_seg_att_dt_clip <- ATL08_h5_clipBox(
+#' # Clip ATL08 data using the bounding extent
+#' atl08_clip <- ATL08_h5_clipBox(
 #'   atl08_h5,
 #'   output = tempfile(fileext = ".h5"),
-#'   c(ul_lat, ul_lon, lr_lat, lr_lon)
+#'   clip_obj = c(ul_lat, ul_lon, lr_lat, lr_lon)
 #' )
 #'
 #' close(atl08_h5)
-#' close(atl08_seg_att_dt_clip)
+#' close(atl08_clip)
+#'
 #' @import hdf5r
 #' @export
 ATL08_h5_clipBox <- function(
-    atl08, output, bbox,
+    atl08, output, clip_obj,
     beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
     additional_groups = c("orbit_info")) {
-  if (inherits(bbox, "numeric")) {
-    bbox <- terra::ext(bbox[2], bbox[4], bbox[3], bbox[1])
+  if (inherits(clip_obj, "numeric")) {
+    clip_obj <- terra::ext(clip_obj[2], clip_obj[4], clip_obj[3], clip_obj[1])
   }
 
-  ATL08_h5_clip(atl08, output, bbox, landsegmentsMask_bbox, beam, additional_groups)
+  ATL08_h5_clip(atl08, output, clip_obj, landsegmentsMask_clip_obj, beam, additional_groups)
 }
 
 #' Clips ICESat-2 ATL08 data
@@ -61,8 +92,8 @@ ATL08_h5_clipBox <- function(
 #' for clipping
 #' @param output character. Path to the output h5 file.
 #' @param vect [`terra::SpatVector-class`] for clipping
-#' @param polygon_id [`character-class`]. The attribute name used for identifying
-#' the different polygons. Default is "id"
+#' @param split_by [`character-class`]. The attribute name used for identifying
+#' the different clip_objs. Default is "id"
 #' @param beam [`character-class`]. The vector of beams to include, default
 #' all c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")
 #' @param additional_groups [`character-class`]. Other addional groups that should be included, default
@@ -97,21 +128,21 @@ ATL08_h5_clipBox <- function(
 #'   atl08_h5,
 #'   output,
 #'   vect,
-#'   polygon_id = "id"
+#'   split_by = "id"
 #' )
 #'
 #' close(atl08_h5)
 #' @import hdf5r
 #' @export
 ATL08_h5_clipGeometry <- function(
-    atl08, output, vect, polygon_id = "id",
+    atl08, output, vect, split_by = "id",
     beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
     additional_groups = c("orbit_info")) {
   geom <- terra::aggregate(vect)
   ATL08_h5_clip(atl08, output, clip_obj = geom, landSegmentsMask_fn = landsegmentsMask_geom, beam, additional_groups)
 }
 
-landSegments_bbox <- function(beam, bbox) {
+landSegments_clip_obj <- function(beam, clip_obj) {
   latitude <- longitude <- NA
   .I <- data.table::.I
 
@@ -121,27 +152,27 @@ landSegments_bbox <- function(beam, bbox) {
   )
 
   landSegmentsDt <- land_segments_dt[, list(latitude, longitude, .I)][
-    longitude >= bbox$xmin &
-      longitude <= bbox$xmax &
-      latitude >= bbox$ymin &
-      latitude <= bbox$ymax
+    longitude >= clip_obj$xmin &
+      longitude <= clip_obj$xmax &
+      latitude >= clip_obj$ymin &
+      latitude <= clip_obj$ymax
   ]
 
   landSegmentsDt
 }
 
-landsegmentsMask_bbox <- function(beam, bbox) {
-  landSegmentsBbox <- landSegments_bbox(beam, bbox)
+landsegmentsMask_clip_obj <- function(beam, clip_obj) {
+  landSegmentsclip_obj <- landSegments_clip_obj(beam, clip_obj)
 
-  landSegmentsBbox$I
+  landSegmentsclip_obj$I
 }
 
 landsegmentsMask_geom <- function(beam, geom) {
-  bbox <- terra::ext(geom)
-  landSegmentsBbox <- landSegments_bbox(beam, bbox)
+  clip_obj <- terra::ext(geom)
+  landSegmentsclip_obj <- landSegments_clip_obj(beam, clip_obj)
 
   pts <- terra::vect(
-    landSegmentsBbox,
+    landSegmentsclip_obj,
     geom = c("longitude", "latitude"),
     crs = "epsg:4326"
   )

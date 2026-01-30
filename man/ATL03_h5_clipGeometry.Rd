@@ -2,41 +2,56 @@
 % Please edit documentation in R/ATL03_h5_clipGeometry.R
 \name{ATL03_h5_clipGeometry}
 \alias{ATL03_h5_clipGeometry}
-\title{Clips ICESat-2 ATL03 H5 data}
+\title{Clip ICESat-2 ATL03 HDF5 Data Using Geometry-Based Boundaries}
 \usage{
 ATL03_h5_clipGeometry(
   atl03,
   output,
   vect,
-  polygon_id = NULL,
+  split_by = NULL,
   beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
   additional_groups = c("orbit_info")
 )
 }
 \arguments{
-\item{atl03}{\code{\linkS4class{icesat2.atl03_h5}} object,
-obtained through \code{\link[=ATL03_read]{ATL03_read()}} for clipping}
+\item{atl03}{An \code{\linkS4class{icesat2.atl03_h5}} object obtained using
+\code{\link[=ATL03_read]{ATL03_read()}}, representing the ATL03 HDF5 file to be clipped.}
 
-\item{output}{character. Path to the output h5 file, the attribute for polygons
-will be appended to the file name.}
+\item{output}{Character. Path to the output filename. The final written files
+will append the unique value of \code{split_by} for each clipping geometry,
+for example:
+\code{"output_id1.h5"}, \code{"output_id2.h5"}, etc.}
 
-\item{vect}{\code{\link[terra:SpatVector-class]{terra::SpatVector}} for clipping}
+\item{vect}{A \code{\link[terra:SpatVector-class]{terra::SpatVector}} object containing the geometric clip
+boundaries. Each feature (row) in the SpatVector defines an independent
+clipping region.}
 
-\item{polygon_id}{\code{\linkS4class{character}}. The attribute name used for identifying
-the different polygons. Default is "id"}
+\item{split_by}{Character. The SpatVector attribute whose values are used to
+identify and name each clipping geometry. Defaults to \code{"id"}.}
 
-\item{beam}{\code{\linkS4class{character}}. The vector of beams to include, default
-all c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")}
+\item{beam}{Character vector specifying which ATL03 beams to include. The
+default includes all six beams:
+\code{c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")}.}
 
-\item{additional_groups}{\code{\linkS4class{character}}. Other addional groups that should be included, default
-c("orbit_info")}
+\item{additional_groups}{Character vector of non-beam HDF5 groups that should
+be copied unchanged into each clipped file. Defaults to:
+\code{c("orbit_info")}.}
 }
 \value{
-Returns a list of clipped S4 object of class \code{\linkS4class{icesat2.atl03_h5}}
+Returns a list of clipped S4 objects of class
+\code{\linkS4class{icesat2.atl03_h5}}, one for each clipping geometry
+contained in \code{vect}.
 }
 \description{
-This function clips ATL03 HDF5 file within beam groups,
-but keeps metada and ancillary data the same.
+Clips an ICESat-2 ATL03 HDF5 file using one or more geometry-based clipping
+objects provided as a \code{\link[terra:SpatVector-class]{terra::SpatVector}}. Each geometry in \code{vect}
+defines an individual clipping region. The function iteratively clips the
+ATL03 data for each region and writes a separate output HDF5 file for every
+geometry. The name of each output file is automatically appended with the
+value of the attribute specified in \code{split_by}.
+
+Only datasets within the ATL03 beam groups are spatially clipped; metadata
+and ancillary non-beam groups remain unchanged in the resulting files.
 }
 \examples{
 # ATL03 file path
@@ -45,25 +60,26 @@ atl03_path <- system.file("extdata",
   package = "ICESat2VegR"
 )
 
-# Reading ATL03 data (h5 file)
-atl03_h5 <- ATL03_read(atl03_path = atl03_path)
+# Read ATL03 file
+atl03_h5 <- ATL03_read(atl03_path)
 
+# Output base filename
 output <- tempfile(fileext = ".h5")
 
-vect_path <- system.file("extdata",
-  "polygons.shp",
+# Load clipping geometries
+vect_path <- system.file("extdata", "clip_objs.shp",
   package = "ICESat2VegR"
 )
+vect <- terra::vect(vect_path)
 
-vect <- terra::vect()
-
-# Clipping ATL03 photons  by boundary box extent
-atl03_photons_dt_clip <- ATL03_h5_clipGeometry(
+# Clip ATL03 data using polygon geometries
+atl03_clipped_list <- ATL03_h5_clipGeometry(
   atl03_h5,
   output,
   vect,
-  polygon_id = "id"
+  split_by = "id"
 )
 
 close(atl03_h5)
+
 }

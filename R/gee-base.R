@@ -2,13 +2,34 @@ setRefClass("ee.imagecollection.ImageCollection")
 setRefClass("ee.image.Image")
 
 #' Initializes the Google Earth Engine API
+#' Initialize Earth Engine for this R session
 #'
-#' @return Nothing, it just initializes the Google Earth Engine API
-#'
+#' @param project Character. **GCP Project ID** (e.g., "ice-map-2025") or a numeric project **number**.
+#'   If NULL/NA, falls back to Sys.getenv("EE_PROJECT").
+#' @param service_account Optional service account email (use with `keyfile`).
+#' @param keyfile Path to service-account JSON key (required if `service_account` is set).
+#' @param quiet Logical. Suppress messages.
+#' @param force_auth Logical. If TRUE, perform OAuth before Initialize().
+#' @return TRUE on success; FALSE otherwise (invisibly).
 #' @export
-ee_initialize <- function() {
-  tryInitializeEarthEngine()
+ee_initialize <- function(project = Sys.getenv("EE_PROJECT", unset = NA),
+                          service_account = NULL,
+                          keyfile = NULL,
+                          quiet = FALSE,
+                          force_auth = FALSE) {
+  ok <- try(
+    tryInitializeEarthEngine(
+      project         = project,
+      service_account = service_account,
+      keyfile         = keyfile,
+      quiet           = quiet,
+      force_auth      = force_auth
+    ),
+    silent = TRUE
+  )
+  isTRUE(ok)
 }
+
 
 #' Returns the number of images in an ImageCollection
 #'
@@ -16,7 +37,7 @@ ee_initialize <- function() {
 #'
 #' @return The number of images in the ImageCollection
 #'
-#' @export
+#' @keywords internal
 setMethod(
   "length",
   signature = c("ee.imagecollection.ImageCollection"),
@@ -31,12 +52,12 @@ setMethod(
 #'
 #' @return The url for the tile service.
 #'
-#' @export
+#' @keywords internal
 getTileUrl <- function(img) {
   img$getMapId()$tile_fetcher$url_format
 }
 
-#' @export
+#' @keywords internal
 "*.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
     return(invisible(ee$Image$constant(e1)$multiply(e2)))
@@ -44,7 +65,7 @@ getTileUrl <- function(img) {
   return(invisible(e1$multiply(e2)))
 }
 
-#' @export
+#' @keywords internal
 "/.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
     return(invisible(ee$Image$constant(e1)$divide(e2)))
@@ -52,7 +73,7 @@ getTileUrl <- function(img) {
   return(invisible(e1$divide(e2)))
 }
 
-#' @export
+#' @keywords internal
 "+.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
     return(invisible(ee$Image$constant(e1)$add(e2)))
@@ -60,7 +81,7 @@ getTileUrl <- function(img) {
   return(invisible(e1$add(e2)))
 }
 
-#' @export
+#' @keywords internal
 "-.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
     return(invisible(ee$Image$constant(e1)$subtract(e2)))
@@ -68,7 +89,7 @@ getTileUrl <- function(img) {
   return(invisible(e1$subtract(e2)))
 }
 
-#' @export
+#' @keywords internal
 "|.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
     return(invisible(ee$Image$constant(e1)$bitwiseOr(e2)))
@@ -76,7 +97,7 @@ getTileUrl <- function(img) {
   return(invisible(e1$bitwiseOr(e2)))
 }
 
-#' @export
+#' @keywords internal
 "&.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
     return(invisible(ee$Image$constant(e1)$bitwiseAnd(e2)))
@@ -84,10 +105,10 @@ getTileUrl <- function(img) {
   return(invisible(e1$bitwiseAnd(e2)))
 }
 
-#' @export
+#' @keywords internal
 "!.ee.image.Image" <- function(e1) e1$Not()
 
-#' @export
+#' @keywords internal
 "^.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
     return(invisible(ee$Image$constant(e1)$pow(e2)))
@@ -95,17 +116,17 @@ getTileUrl <- function(img) {
   return(invisible(e1$pow(e2)))
 }
 
-#' @export
+#' @keywords internal
 "exp.ee.image.Image" <- function(x) {
   return(invisible(x$exp()))
 }
 
-#' @export
+#' @keywords internal
 "log.ee.image.Image" <- function(x, base = NULL) {
   return(invisible(x$log()))
 }
 
-#' @export
+#' @keywords internal
 ">.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
     return(invisible(ee$Image$constant(e1)$gt(e2)))
@@ -113,7 +134,7 @@ getTileUrl <- function(img) {
   return(invisible(e1$gt(e2)))
 }
 
-#' @export
+#' @keywords internal
 "<.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
     return(invisible(ee$Image$constant(e1)$lt(e2)))
@@ -121,7 +142,7 @@ getTileUrl <- function(img) {
   return(invisible(e1$lt(e2)))
 }
 
-#' @export
+#' @keywords internal
 ">=.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
     return(invisible(ee$Image$constant(e1)$gte(e2)))
@@ -129,7 +150,7 @@ getTileUrl <- function(img) {
   return(invisible(e1$gte(e2)))
 }
 
-#' @export
+#' @keywords internal
 "<=.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
     return(invisible(ee$Image$constant(e1)$lte(e2)))
@@ -137,7 +158,7 @@ getTileUrl <- function(img) {
   return(invisible(e1$lte(e2)))
 }
 
-#' @export
+#' @keywords internal
 "%%.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
     return(invisible(ee$Image$constant(e1)$mod(e2)))
@@ -145,33 +166,33 @@ getTileUrl <- function(img) {
   return(invisible(e1$mod(e2)))
 }
 
-#' @export
+#' @keywords internal
 "as.integer.ee.image.Image" <- function(x, ...) {
   return(invisible(x$int()))
 }
 
-#' @export
+#' @keywords internal
 "[[.ee.image.Image" <- function(x, ...) {
   return(invisible(do.call(x$select, list(...))))
 }
 
-#' @export
+#' @keywords internal
 "names.ee.imagecollection.ImageCollection" <- function(x) {
   return(invisible(x$first()$bandNames()$getInfo()))
 }
 
 
-#' @export
+#' @keywords internal
 "names.ee.image.Image" <- function(x) {
   return(invisible(x$bandNames()$getInfo()))
 }
 
-#' @export
+#' @keywords internal
 "names<-.ee.image.Image" <- function(x, value) {
   return(invisible(x$select(names(x), value)))
 }
 
-#' @export
+#' @keywords internal
 "[[<-.ee.image.Image" <- function(x, i, j, ..., value) {
   if (is.character(i) && i != "") {
     value2 <- value$rename(i)
@@ -181,12 +202,12 @@ getTileUrl <- function(img) {
   return(invisible(x$addBands(value2, overwrite = TRUE)))
 }
 
-#' @export
+#' @keywords internal
 "mean.ee.image.Image" <- function(x, ...) {
   return(invisible(x$getMapId()$tile_fetcher$url_format))
 }
 
-#' @export
+#' @keywords internal
 "min.ee.image.Image" <- function(x, ...) {
   args <- list(...)
   args[["na.rm"]] <- NULL
@@ -205,7 +226,7 @@ getTileUrl <- function(img) {
   )))
 }
 
-#' @export
+#' @keywords internal
 "max.ee.image.Image" <- function(x, ...) {
   args <- list(...)
   args[["na.rm"]] <- NULL
@@ -224,7 +245,7 @@ getTileUrl <- function(img) {
   )))
 }
 
-#' @export
+#' @keywords internal
 "range.ee.image.Image" <- function(x, ...) {
   return(invisible(rev(unlist(x$reduceRegion(
     reducer = ee$Reducer$minMax(),
@@ -237,7 +258,7 @@ getTileUrl <- function(img) {
   )$getInfo()))))
 }
 
-#' @export
+#' @keywords internal
 "sqrt.ee.image.Image" <- function(x, ...) {
   return(invisible(x$sqrt()))
 }
@@ -303,18 +324,18 @@ getTileUrl <- function(img) {
 #'
 #' https://developers.google.com/earth-engine/apidocs/ee-image-glcmtexture
 #'
-#' @export
+#' @keywords internal
 glcmTexture <- function(x, size = 1, kernel = NULL, average = TRUE) {
   UseMethod("glcmTexture")
 }
 
-#' @export
+#' @keywords internal
 "glcmTexture.ee.image.Image" <- function(x, size = 1, kernel = NULL, average = TRUE) {
   return(invisible(x$glcmTexture(size = size, kernel = kernel, average = average)))
 }
 
 
-#' @export
+#' @keywords internal
 "c.ee.imagecollection.ImageCollection" <- function(x, ...) {
   args <- list(...)
   result <- x
@@ -325,13 +346,13 @@ glcmTexture <- function(x, size = 1, kernel = NULL, average = TRUE) {
 }
 
 
-#' @export
+#' @keywords internal
 "c.ee.image.Image" <- function(x, ...) {
   return(invisible(ee$Image$cat(x, ...)))
 }
 
 
-#' @export
+#' @keywords internal
 "print.ee.image.Image" <- function(x, ...) {
   cat("ee.image.Image\n\n")
   cat("Bands\n")
@@ -339,41 +360,71 @@ glcmTexture <- function(x, size = 1, kernel = NULL, average = TRUE) {
   invisible()
 }
 
-#' Calculates slope in degrees from a terrain DEM.
+#' Compute terrain slope (degrees) from a DEM image
 #'
-#' The local gradient is computed using the 4-connected neighbors of each pixel,
-#' so missing values will occur around the edges of an image.
+#' @description
+#' Computes the terrain *slope* in degrees for each pixel of an Earth Engine
+#' `ee$Image` representing a digital elevation model (DEM).
 #'
-#' @param x The `ee.Image` on which to apply the aspect function.
+#' This method is a thin wrapper around `ee$Terrain$slope()` and returns the
+#' same output structure. Slope is computed using Earth Engine’s internal
+#' gradient operator, which relies on the 4-connected neighborhood around each
+#' pixel. As a result, edge pixels may contain missing values depending on the
+#' input DEM.
 #'
-#' @return An `ee.Image` with a single band named "Slope".
+#' @param x An `ee$Image` representing a DEM from which slope will be derived.
+#'
+#' @return An `ee$Image` with one band named `"slope"` containing terrain
+#'   slope values in degrees.
+#'
+#' @examples
+#' \dontrun{
+#'   ee <- reticulate::import("ee")
+#'   dem <- ee$Image("NASA/NASADEM_HGT/001")
+#'   slp <- slope(dem)
+#' }
 #'
 #' @export
 slope <- function(x) {
   UseMethod("slope")
 }
 
-
-#' @export
+#' @keywords internal
 "slope.ee.image.Image" <- function(x) {
-  return(invisible(ee$Terrain$slope(x)))
+  invisible(ee$Terrain$slope(x))
 }
 
-#' Calculates aspect in degrees from a terrain DEM.
+
+#' Compute terrain aspect (degrees) from a DEM image
 #'
-#' The local gradient is computed using the 4-connected neighbors of each
-#' pixel, so missing values will occur around the edges of an image.
+#' @description
+#' Computes the terrain *aspect* in degrees for each pixel of an Earth Engine
+#' `ee$Image` representing a digital elevation model (DEM).
 #'
-#' @param x The `ee.Image` on which to apply the aspect function.
+#' Aspect describes the downslope direction of the steepest gradient and is
+#' expressed in degrees clockwise from north. The computation is performed
+#' using Earth Engine’s built-in `ee$Terrain$aspect()` function. As with slope,
+#' Earth Engine uses the 4-connected neighborhood, so missing values may occur
+#' near image edges.
 #'
-#' @return An `ee.Image` with a single band named "Aspect".
+#' @param x An `ee$Image` representing a DEM from which aspect will be derived.
+#'
+#' @return An `ee$Image` with one band named `"aspect"` containing aspect
+#'   values in degrees clockwise from north.
+#'
+#' @examples
+#' \dontrun{
+#'   ee <- reticulate::import("ee")
+#'   dem <- ee$Image("NASA/NASADEM_HGT/001")
+#'   asp <- aspect(dem)
+#' }
 #'
 #' @export
 aspect <- function(x) {
   UseMethod("aspect")
 }
 
-#' @export
+#' @keywords internal
 "aspect.ee.image.Image" <- function(x) {
-  return(invisible(ee$Terrain$aspect(x)))
+  invisible(ee$Terrain$aspect(x))
 }

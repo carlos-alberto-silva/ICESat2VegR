@@ -15,3 +15,4 @@ The number of images in the ImageCollection
 \description{
 Returns the number of images in an ImageCollection
 }
+\keyword{internal}

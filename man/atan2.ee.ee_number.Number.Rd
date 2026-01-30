@@ -15,3 +15,4 @@ The resulting ee.Number with the results from \code{atan2}.
 \description{
 Calculates the angle formed by the 2D vector x, y.
 }
+\keyword{internal}

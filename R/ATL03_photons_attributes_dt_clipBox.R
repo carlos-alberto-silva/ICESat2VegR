@@ -1,77 +1,123 @@
-#' Clip ATL03 photons by Coordinates
+#' Clip ATL03 photons by bounding extent
 #'
-#' @description This function clips ATL03 photons attributes within a given bounding coordinates
+#' @description
+#' Clips ATL03 photon attributes within a given bounding extent, defined by a
+#' single \code{clip_obj} argument. The clipping extent can be provided as:
 #'
-#' @param atl03_photons_dt A atl03_photons_dt object (output of [ATL03_photons_attributes_dt()] function).
-#' An S4 object of class [`ICESat2VegR::icesat2.atl03_dt-class`]
-#' @param lower_left_lon Numeric. West longitude (x) coordinate of bounding rectangle, in decimal degrees.
-#' @param upper_right_lon Numeric. East longitude (x) coordinate of bounding rectangle, in decimal degrees.
-#' @param lower_left_lat Numeric. South latitude (y) coordinate of bounding rectangle, in decimal degrees.
-#' @param upper_right_lat Numeric. North latitude (y) coordinate of bounding rectangle, in decimal degrees.
+#' \itemize{
+#'   \item (i) a numeric bounding box, or
+#'   \item (ii) a spatial extent object.
+#' }
 #'
-#' @return Returns an S4 object of class [`ICESat2VegR::icesat2.atl03_dt-class`]
-#' containing the ATL03 photons attributes.
+#' @param atl03_photons_dt An \code{icesat2.atl03_dt} object (output of
+#'   [ATL03_photons_attributes_dt()]).
 #'
-#' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
+#' @param clip_obj Bounding extent used to perform the clipping. Supported
+#'   inputs:
+#'   \itemize{
+#'     \item Numeric vector of length 4: \code{c(xmin, ymin, xmax, ymax)} in
+#'           decimal degrees.
+#'     \item \code{SpatExtent} (package **terra**): the extent is used directly.
+#'   }
+#'
+#' @return
+#' Returns a subset of the original \code{icesat2.atl03_dt} object containing
+#' only photons within the bounding box.
+#'
+#' @details
+#' When \code{clip_obj} is a \code{SpatExtent}, the package \pkg{terra} must be
+#' installed. If not found, the function stops with an informative message.
+#'
+#' @seealso
+#'  \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
 #'
 #' @examples
-#' # Specifying the path to ATL03 file
-#' atl03_path <- system.file("extdata",
-#'   "atl03_clip.h5",
-#'   package = "ICESat2VegR"
-#' )
+#' \dontrun{
+#' atl03_path <- system.file("extdata", "atl03_clip.h5",
+#'                           package = "ICESat2VegR")
 #'
-#' # Reading ATL03 data (h5 file)
 #' atl03_h5 <- ATL03_read(atl03_path = atl03_path)
-#'
-#' # Extracting ATL03 photons attributes
 #' atl03_photons_dt <- ATL03_photons_attributes_dt(atl03_h5 = atl03_h5)
 #'
-#' # Bounding rectangle coordinates
-#' lower_left_lon <- -106.57
-#' lower_left_lat <- 41.53
-#' upper_right_lon <- -106.5698
-#' upper_right_lat <- 41.54
-#'
-#' # Clipping ATL08-derived canopy metrics by boundary box extent
-#' atl03_photons_dt_clip <- ATL03_photons_attributes_dt_clipBox(
-#'   atl03_photons_dt,
-#'   lower_left_lon,
-#'   upper_right_lon,
-#'   lower_left_lat,
-#'   upper_right_lat
+#' # 1) Using a numeric bbox: xmin ymin xmax ymax
+#' bbox <- c(-106.57, 41.53, -106.5698, 41.54)
+#' atl03_clip_bbox <- ATL03_photons_attributes_dt_clipBox(
+#'   atl03_photons_dt = atl03_photons_dt,
+#'   clip_obj = bbox
 #' )
 #'
-#' head(atl03_photons_dt_clip)
+#' # 2) Using a SpatExtent
+#' # library(terra)
+#' # ext <- terra::ext(-106.57, -106.5698, 41.53, 41.54)
+#' # atl03_clip_ext <- ATL03_photons_attributes_dt_clipBox(
+#' #   atl03_photons_dt = atl03_photons_dt,
+#' #   clip_obj = ext
+#' # )
 #'
 #' close(atl03_h5)
+#' }
+#'
 #' @import hdf5r stats
 #' @export
 ATL03_photons_attributes_dt_clipBox <- function(atl03_photons_dt,
-                                                lower_left_lon,
-                                                upper_right_lon,
-                                                lower_left_lat,
-                                                upper_right_lat) {
+                                                clip_obj) {
+
   if (!inherits(atl03_photons_dt, "icesat2.atl03_dt")) {
-    stop("atl03_photons_dt needs to be an object of class 'icesat2.atl03_dt' ")
+    stop("atl03_photons_dt must be an object of class 'icesat2.atl03_dt'.")
   }
 
+  if (missing(clip_obj) || is.null(clip_obj)) {
+    stop("Argument 'clip_obj' must be provided.")
+  }
+
+  # ---------------------------------------------------------------------------
+  # Determine bounding box from clip_obj
+  # ---------------------------------------------------------------------------
+
+  # Case 1: numeric bbox
+  if (is.numeric(clip_obj)) {
+    if (length(clip_obj) != 4L) {
+      stop("When numeric, 'clip_obj' must be a vector of length 4: c(xmin, ymin, xmax, ymax).")
+    }
+    xmin <- clip_obj[1]
+    ymin <- clip_obj[2]
+    xmax <- clip_obj[3]
+    ymax <- clip_obj[4]
+
+    # Case 2: terra SpatExtent
+  } else if (inherits(clip_obj, "SpatExtent")) {
+    if (!requireNamespace("terra", quietly = TRUE)) {
+      stop("Package 'terra' is required when using a 'SpatExtent' clip_obj.")
+    }
+    xmin <- terra::xmin(clip_obj)
+    ymin <- terra::ymin(clip_obj)
+    xmax <- terra::xmax(clip_obj)
+    ymax <- terra::ymax(clip_obj)
+
+  } else {
+    stop(
+      "Unsupported 'clip_obj' type. ",
+      "Supported types are: numeric bbox (length 4) or 'SpatExtent'."
+    )
+  }
+
+  # ---------------------------------------------------------------------------
+  # Clean and clip
+  # ---------------------------------------------------------------------------
   if (any(is.na(atl03_photons_dt))) {
     atl03_photons_dt <- na.omit(atl03_photons_dt)
   }
 
-
-  # xmin ymin xmax ymax
   mask <-
-    atl03_photons_dt$lon_ph >= lower_left_lon &
-      atl03_photons_dt$lon_ph <= upper_right_lon &
-      atl03_photons_dt$lat_ph >= lower_left_lat &
-      atl03_photons_dt$lat_ph <= upper_right_lat
+    atl03_photons_dt$lon_ph >= xmin &
+    atl03_photons_dt$lon_ph <= xmax &
+    atl03_photons_dt$lat_ph >= ymin &
+    atl03_photons_dt$lat_ph <= ymax
 
   mask[!stats::complete.cases(mask)] <- FALSE
-  mask <- (seq_along(atl03_photons_dt$lat_ph))[mask]
-  newFile <- atl03_photons_dt[mask, ]
+  mask <- which(mask)
 
-  # newFile<- new("gedi.level1b.dt", dt = level1bdt[mask,])
-  return(newFile)
+  clipped <- atl03_photons_dt[mask, ]
+
+  return(clipped)
 }

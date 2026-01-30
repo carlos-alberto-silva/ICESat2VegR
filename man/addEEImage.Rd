@@ -2,72 +2,40 @@
 % Please edit documentation in R/addEEImage.R
 \name{addEEImage}
 \alias{addEEImage}
-\title{Adds Earth Engine Image class to leaflet}
+\title{Add an Earth Engine Image to a leaflet map}
 \usage{
 addEEImage(
   map,
-  x,
-  bands,
+  img,
+  bands = NULL,
   min_value = 0,
   max_value = 1,
-  palette = c("red", "green"),
+  palette = c("#d55e00", "#cc79a7", "#f0e442", "#0072b2", "#009e73"),
+  group = NULL,
+  aoi = NULL,
   ...
 )
 }
 \arguments{
-\item{map}{\code{leaflet::leaflet}. A leaflet class map.}
+\item{map}{A \code{leaflet::leaflet} widget.}
 
-\item{x}{Earth Engine Image open with \code{ee$Image}.}
+\item{img}{An Earth Engine image (reticulate \code{python.builtin.object} with \verb{$visualize}, \verb{$select}).}
 
-\item{bands}{define the bands that should be used for visualization, default NULL,
-will use the available bands from the Image.}
+\item{bands}{Character or numeric vector (length 1 or 3). If \code{NULL}, uses all bands from the image.}
 
-\item{min_value}{The minimum value to represent for visualization purposes}
+\item{min_value, }{max_value Numeric visualization range. Aliases: \code{min}, \code{max}.}
 
-\item{max_value}{The maximum value to represent for visualization purposes}
+\item{palette}{Character vector of colors for single-band rendering.}
 
-\item{palette}{A \code{\linkS4class{character}} describing a list of colors in either
-hexadecimal or valid CSS color names.}
+\item{group}{Optional overlay group name.}
 
-\item{...}{Other parameters to be passed to \code{leaflet::addTiles()} function.}
+\item{aoi}{Optional EE geometry to clip before rendering.}
+
+\item{...}{Passed to \code{leaflet::addTiles()} (e.g., \code{options = leaflet::tileOptions(opacity = 0.8)}).}
 }
 \value{
-A \code{leaflet::leaflet}/\code{htmlwidget} with the Earth Engine image added.
+The input \code{leaflet} map with the EE image layer added.
 }
 \description{
-Adds Earth Engine Image class to leaflet
-}
-\examples{
-\dontrun{
-collection_id <- "NASA/HLS/HLSL30/v002"
-
-ee_collection <- ee$ImageCollection(collection_id)
-
-cloudMask <-
-  2^1 +
-  2^2 +
-  2^3
-
-hlsMask <- function(image) {
-  image$updateMask(
-    !(image[["Fmask"]] & cloudMask)
-  )
-}
-
-image <- c(
-  ee_collection$filterDate("2020-04-01", "2020-07-31")$map(hlsMask),
-  ee_collection$filterDate("2021-04-01", "2021-07-31")$map(hlsMask)
-)$filter("CLOUD_COVERAGE < 30")$median()
-
-if (require("leaflet")) {
-  leaflet() \%>\%
-    addEEImage(
-      image,
-      bands = list(3, 2, 1),
-      min_value = 0.001,
-      max_value = 0.2
-    ) \%>\%
-    setView(lng = -82.2345, lat = 29.6552, zoom = 10)
-  }
-}
+Add an Earth Engine Image to a leaflet map
 }

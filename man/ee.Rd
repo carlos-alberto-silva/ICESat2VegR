@@ -16,4 +16,4 @@ The pointer to the \code{earth-engine-api} python reticulate module
 \seealso{
 https://developers.google.com/earth-engine/apidocs
 }
-\keyword{datasets}
+\keyword{internal}

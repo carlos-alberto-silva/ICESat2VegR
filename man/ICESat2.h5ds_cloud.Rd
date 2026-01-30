@@ -13,6 +13,7 @@ This class should not be instanced by the user, instead it is
 automatically handled when the user opens a dataset using \verb{[[]]}
 operator from a h5 file.
 }
+\keyword{internal}
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{

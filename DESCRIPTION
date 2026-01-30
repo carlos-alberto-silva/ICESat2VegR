@@ -1,37 +1,28 @@
 Package: ICESat2VegR
 Type: Package
-Title: NASA's Ice, Cloud, and Elevation Satellite (ICESat-2) Data Analysis for Land and Vegetation Applications
+Title: NASA's Ice, Cloud, and Elevation Satellite (ICESat-2) Data Analysis for Land and Vegetation
+           Applications
 Version: 0.0.1
-Authors@R: c(
-    person("Carlos Alberto", "Silva", email = "c.silva@ufl.edu", role = c("aut", "cph")),
-    person("Caio", "Hamamura", email = "caiohamamura@gmail.com", role = c("aut", "cph", "cre")))
-Description: Set of tools for downloading, reading, visualizing, processing and exporting NASA's ICESat-2 ATL03 (Global Geolocated Photon Data) and ATL08 (Land and Vegetation Height) products for Land and Vegetation Applications. 
+Authors@R: c( person("Carlos Alberto", "Silva", email = "c.silva@ufl.edu", role = c("aut", "cph")),
+           person("Caio", "Hamamura", email = "caiohamamura@gmail.com", role = c("aut", "cph", "cre")))
+Description: Set of tools for downloading, reading, visualizing, processing and exporting NASA's
+           ICESat-2 ATL03 (Global Geolocated Photon Data) and ATL08 (Land and Vegetation Height)
+           products for Land and Vegetation Applications.
 License: GPL (>= 3)
-Imports:
-  curl,
-  data.table,
-  fs,
-  getPass,
-  jsonlite,
-  hdf5r,
-  httr2,
-  magrittr,
-  methods,
-  Rcpp,
-  Rdpack,
-  R6,
-  randomForest,
-  reticulate,
-  terra,
-  xml2
+Imports: curl, data.table, sf, fs, getPass, jsonlite, hdf5r, httr2, magrittr, methods, Rcpp, Rdpack, R6,
+           randomForest, reticulate, terra, xml2
 Encoding: UTF-8
 URL: https://github.com/carlos-alberto-silva/ICESat2VegR
 BugReports: https://github.com/carlos-alberto-silva/ICESat2VegR/issues
 LazyData: true
 NeedsCompilation: yes
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.3
 Roxygen: list(markdown = TRUE)
 RdMacros: Rdpack
+Suggests: chromote,  devtools,  ggplot2, grid, gridExtra, htmlwidgets, knitr, leaflet, leafsync,
+           lidR, lwgeom, mapview,  png, rmarkdown, rstudioapi, signal, stars, testthat (>= 3.0.0),
+           webshot, viridis
+LinkingTo: Rcpp
 Collate: 
     'ANNIndex.R'
     'lazy_applier.R'
@@ -45,6 +36,7 @@ Collate:
     'ATL03_ATL08_photons_attributes_dt_polyStat.R'
     'ATL03_ATL08_photons_seg_dt_fitground.R'
     'ATL03_ATL08_photons_seg_dt_height_normalize.R'
+    'ATL03_ATL08_seg_attributes_dt_clip.R'
     'ATL03_ATL08_seg_cover_dt_compute.R'
     'ATL03_ATL08_segment_create.R'
     'ATL03_h5_clip.R'
@@ -56,16 +48,15 @@ Collate:
     'ATL03_photons_attributes_dt_LAS.R'
     'ATL03_photons_attributes_dt_clipBox.R'
     'ATL03_photons_attributes_dt_clipGeometry.R'
-    'ATL03_photons_dt_classify.R'
-    'ATL03_photons_plot.R'
     'class_tools.R'
     'class.icesat2.R'
     'zzz.R'
     'ATL03_read.R'
-    'ATL03_seg_attributes_dt.R'
+    'ATL03_seg_metadata_dt.R'
     'ATL08_read.R'
     'ATL08_h5_clip.R'
     'ATL08_h5_clipBox.R'
+    'ATL08_h5_clipGeometry.R'
     'ATL08_photons_attributes_dt.R'
     'ATL08_photons_attributes_dt_LAS.R'
     'ATL08_seg_attributes_dt.R'
@@ -80,8 +71,8 @@ Collate:
     'earthaccess.R'
     'ATLAS_dataFinder_cloud.R'
     'ATLAS_dataFinder_direct.R'
+    'ICESat2VegR-package.R'
     'ICESat2VegR_configure.R'
-    'gee-base.R'
     'addEEImage.R'
     'argParse.R'
     'class.icesat2.h5ds_cloud.R'
@@ -89,48 +80,23 @@ Collate:
     'class.icesat2.h5ds_local.R'
     'class.icesat2.h5_local.R'
     'clip.R'
+    'ee_build_AlphaEarth_embedding_terrain_stack.R'
+    'ee_build_hls_s1c_terrain_stack.R'
     'extract.R'
+    'fit_metrics.R'
+    'fit_model.R'
     'gdalBindings.R'
     'gee-base-feature.R'
     'gee-base-list.R'
     'gee-base-number.R'
+    'gee-base.R'
     'gee-search.R'
-    'map_create.R'
-    'model_fit.R'
+    'map_tools.R'
     'model_tools.R'
-    'predict.R'
     'predict_h5.R'
     'rasterize_h5.R'
     'rgt_extract.R'
     'sample.R'
-    'stats_model.R'
     'to_vect.R'
-    'var_select.R'
-Suggests: 
-    chromote,
-    devtools,
-    e1071,
-    ggplot2,
-    grid,
-    gridExtra,
-    htmlwidgets,
-    knitr,
-    leaflet,
-    leafsync,
-    lidR,
-    lwgeom,
-    mapview,
-    nnet,
-    png,
-    rmarkdown,
-    rstudioapi,
-    signal,
-    stars,
-    testthat (>= 3.0.0),
-    webshot,
-    viridis,
-    yaImpute
-Config/testthat/edition: 3
-LinkingTo: 
-    Rcpp
-VignetteBuilder: knitr
+    'varSel.R'
+    'vect_as_ee.R'

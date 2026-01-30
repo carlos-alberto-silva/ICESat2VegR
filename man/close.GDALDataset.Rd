@@ -15,3 +15,4 @@
 Closing ensures the data is actually flushed (saved) to  the dataset
 also it releases the lock from the file.
 }
+\keyword{internal}

@@ -15,7 +15,7 @@ sample <- function(x, ..., method) {
   UseMethod("sample")
 }
 
-#' @export
+#' @keywords internal
 sample.default <- function(x, ...) base::sample(x, ...)
 
 # #' Sampling function which accepts a method for sampling
@@ -33,7 +33,7 @@ sample.default <- function(x, ...) base::sample(x, ...)
 # #' [`randomSampling()`], [`spacedSampling()`], [`gridSampling()`],
 # #' [`stratifiedSampling()`], [`geomSampling()`], [`rasterSampling()`]
 # #'
-#' @export
+#' @keywords internal
 `sample.icesat2.atl08_dt` <- function(x, ..., method) {
   do.call(method$fn, c(list(x), method$params))
 }
@@ -53,21 +53,22 @@ sample.default <- function(x, ...) base::sample(x, ...)
 # #' [`randomSampling()`], [`spacedSampling()`], [`gridSampling()`],
 # #' [`stratifiedSampling()`], [`geomSampling()`], [`rasterSampling()`]
 # #'
-#' @export
+#' @keywords internal
 `sample.icesat2.atl03_seg_dt` <- function(x, ..., method) {
   method <- list(...)[["method"]]
   do.call(method$fn, c(list(x), method$params))
 }
 
-#' @export
+#' @keywords internal
 `sample.icesat2.atl03_atl08_seg_dt` <- function(x, ..., method) {
   do.call(method$fn, c(list(x), method$params))
 }
 
 #' Class for sampling methods to be passed on for the sample function
+#' @keywords internal
 setRefClass("icesat2_sampling_method")
 
-#' @export
+#' @keywords internal
 "+.icesat2_sampling_method" <- function(e1, e2) {
   ii <- 1
   chainSampling <- e1
@@ -118,9 +119,9 @@ spacedSamplingWorker <- function(dt, size, radius, spatialIndex = NULL, chainSam
   )
 
   if (is.null(chainSampling)) {
-    return(dt[idx])
+    return(dt[idx,])
   }
-  return(do.call(chainSampling$fn, c(list(dt[idx]), chainSampling$params)))
+  return(do.call(chainSampling$fn, c(list(dt[idx,]), chainSampling$params)))
 }
 
 gridSamplingWorker <- function(dt, size, grid_size, chainSampling = NULL) {

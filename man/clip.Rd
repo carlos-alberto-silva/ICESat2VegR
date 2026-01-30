@@ -2,130 +2,28 @@
 % Please edit documentation in R/clip.R
 \name{clip}
 \alias{clip}
-\alias{clip,icesat2.atl03_h5,character,SpatExtent-method}
-\alias{clip,icesat2.atl03_h5,character,SpatVector-method}
-\alias{clip,icesat2.atl03_h5,character,numeric-method}
-\alias{clip,icesat2.atl08_h5,character,SpatExtent-method}
-\alias{clip,icesat2.atl08_h5,character,numeric-method}
-\alias{clip,icesat2.atl08_h5,character,SpatVector-method}
-\title{Clip ICESat-2 Data}
+\title{Clip ICESat-2 data (h5, attributes, or ATL03–ATL08 join) by box or geometry}
 \usage{
-clip(x, output, clip_obj, ...)
-
-\S4method{clip}{icesat2.atl03_h5,character,SpatExtent}(x, output, clip_obj, ...)
-
-\S4method{clip}{icesat2.atl03_h5,character,SpatVector}(x, output, clip_obj, polygon_id = "id", ...)
-
-\S4method{clip}{icesat2.atl03_h5,character,numeric}(x, output, clip_obj, ...)
-
-\S4method{clip}{icesat2.atl08_h5,character,SpatExtent}(x, output, clip_obj, ...)
-
-\S4method{clip}{icesat2.atl08_h5,character,numeric}(x, output, clip_obj, ...)
-
-\S4method{clip}{icesat2.atl08_h5,character,SpatVector}(x, output, clip_obj, polygon_id, ...)
+clip(x, clip_obj, ...)
 }
 \arguments{
-\item{x}{An \code{icesat2.atl08_h5} object, obtained through \code{ATL08_read()}.}
+\item{x}{ICESat-2 object (ATL03/ATL08 h5, attributes, or joined table)}
 
-\item{output}{A character string specifying the path to the output H5 file.}
-
-\item{clip_obj}{A \code{terra::SpatVector} object for clipping. The bounding box order is the
-default from NASA's ICESat-2 data searching: (ul_lat, ul_lon, lr_lat, lr_lon).}
-
-\item{...}{Additional arguments passed to specific method implementation.}
-
-\item{polygon_id}{A character string specifying the ID of the polygon for clipping.}
+\item{clip_obj}{Clipping object. Supported for box-based clipping:
+\itemize{
+\item numeric bounding box: c(xmin, ymin, xmax, ymax)
+\item \code{terra::SpatExtent}
 }
-\value{
-Returns the clipped S4 object of the same class as the input file
 
-Returns the clipped \code{icesat2.atl03_h5} object.
+For geometry-based clipping:
+\itemize{
+\item \code{sf}, \code{sfc}, \code{terra::SpatVector}, etc.
+}
 
-Returns the clipped \code{icesat2.atl03_h5} object.
-
-Returns the clipped \code{icesat2.atl08_h5} object.
-
-Returns the clipped \code{icesat2.atl08_h5} object.
-
-Returns the clipped \code{icesat2.atl08_h5} object.
+To clip by a spatial object's extent, extract its bbox first.}
 }
 \description{
-This function clips ATL03 and ATL08 HDF5 file within beam groups,
-but keeps metada and ancillary data the same.
-}
-\details{
-Generic function for clipping ICESat-2 ATL03 and ATL08 H5 data.
-}
-\section{Functions}{
-\itemize{
-\item \code{clip(x = icesat2.atl03_h5, output = character, clip_obj = SpatExtent)}: Clips ATL03 data using a \code{SpatExtent}.
-
-\item \code{clip(x = icesat2.atl03_h5, output = character, clip_obj = SpatVector)}: Clips ATL03 data using a \code{SpatVector}.
-
-This method clips ATL03 HDF5 data within beam groups using a \code{terra::SpatVector} object,
-but keeps metadata and ancillary data the same.
-
-\item \code{clip(x = icesat2.atl03_h5, output = character, clip_obj = numeric)}: Clips ATL03 data using numeric coordinates.
-
-This method clips ATL03 HDF5 data within beam groups using numeric coordinates,
-but keeps metadata and ancillary data the same.
-
-\item \code{clip(x = icesat2.atl08_h5, output = character, clip_obj = SpatExtent)}: Clips ATL08 data using a \code{SpatExtent}.
-
-This method clips ATL08 HDF5 data within beam groups using a \code{terra::SpatExtent} object,
-but keeps metadata and ancillary data the same.
-
-\item \code{clip(x = icesat2.atl08_h5, output = character, clip_obj = numeric)}: Clips ATL08 data using numeric coordinates.
-
-This method clips ATL08 HDF5 data within beam groups using numeric coordinates,
-but keeps metadata and ancillary data the same.
-
-\item \code{clip(x = icesat2.atl08_h5, output = character, clip_obj = SpatVector)}: Clips ATL08 data using a \code{SpatVector}.
-
-This method clips ATL08 HDF5 data within beam groups using a \code{terra::SpatVector} object,
-but keeps metadata and ancillary data the same.
-
-}}
-\examples{
-# ATL08 file path
-atl08_path <- system.file("extdata",
-  "atl08_clip.h5",
-  package = "ICESat2VegR"
-)
-
-# Reading ATL08 data (h5 file)
-atl08_h5 <- ATL08_read(atl08_path = atl08_path)
-
-output <- tempfile(fileext = ".h5")
-
-vect_path <- system.file("extdata",
-  "clip_geom.shp",
-  package = "ICESat2VegR"
-)
-
-vect <- terra::vect(vect_path)
-ext <- terra::ext(vect)
-
-# Clipping ATL08 photons by boundary box extent
-atl08_clip <- clip(
-  atl08_h5,
-  output,
-  ext
-)
-
-close(atl08_clip)
-
-# Clipping ATL08 photons by geometry
-atl08_clip_geom <- clip(
-  atl08_h5,
-  output,
-  vect,
-  polygon_id = "id"
-)
-
-close(atl08_clip_geom, close)
-}
-\seealso{
-\code{\link[=ATL03_h5_clipBox]{ATL03_h5_clipBox()}}, \code{\link[=ATL03_h5_clipGeometry]{ATL03_h5_clipGeometry()}},
-\code{\link[=ATL08_h5_clipBox]{ATL08_h5_clipBox()}}, \code{\link[=ATL08_h5_clipGeometry]{ATL08_h5_clipGeometry()}}
+Unified clipping interface for ICESat-2 ATL03/ATL08 data. The generic
+\code{clip()} dispatches on the class of \code{x} and internally calls appropriate
+\verb{_clipBox()} or \verb{_clipGeometry()} helpers.
 }

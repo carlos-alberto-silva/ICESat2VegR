@@ -15,3 +15,4 @@ The url for the tile service.
 \description{
 Retrieve Google Earth Engine's tile url for an Image or ImageCollection
 }
+\keyword{internal}

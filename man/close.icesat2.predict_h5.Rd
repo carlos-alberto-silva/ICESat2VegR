@@ -17,3 +17,4 @@ Nothing, just closes the HDF5 file pointer
 \description{
 Closes the HDF5 file pointer to release resources
 }
+\keyword{internal}

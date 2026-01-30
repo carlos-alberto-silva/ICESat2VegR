@@ -18,3 +18,4 @@
 This method converts data from various ICESat-2 data types to a \code{terra::SpatVector-class} object,
 facilitating geographic operations and visualizations within the terra package.
 }
+\keyword{internal}

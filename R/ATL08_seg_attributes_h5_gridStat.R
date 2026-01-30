@@ -53,8 +53,8 @@ default_agg_join <- function(x1, x2) {
   # combined$M4 <- combined$M4 + 6.0 * delta2 * (x1$n * x1$n * x2$variance + x2$n * x2$n * x1$variance) / (combined$n * combined$n) +
   #   4.0 * delta * (x1$n * x2$M3 - x2$n * x1$M3) / combined$n
 
-  combined$min <- pmin(x1$min, x2$min, na.rm = F)
-  combined$max <- pmax(x1$max, x2$max, na.rm = F)
+  combined$min <- pmin(x1$min, x2$min, na.rm = FALSE)
+  combined$max <- pmax(x1$max, x2$max, na.rm = FALSE)
   return(combined)
 }
 
@@ -68,10 +68,18 @@ default_agg_join <- function(x1, x2) {
 #' @param out_root Character. The root name for the raster output files, the pattern is
 #' \{out_root\}_\{metric\}_\{count/m1/m2\}.tif. This should include the full path for the file.
 #' @param beam Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
-#' @param ul_lat Numeric. Upper left latitude for the bounding box
-#' @param ul_lon Numeric. Upper left longitude for the bounding box
-#' @param lr_lat Numeric. Lower right latitude for the bounding box
-#' @param lr_lon Numeric. Lower right longitude for the bounding box
+#' @param clip_obj Bounding extent or spatial object used to define the clipping area.
+#'   Supported inputs:
+#'   \itemize{
+#'     \item Numeric vector of length 4: \code{c(xmin, ymin, xmax, ymax)} in decimal degrees.
+#'     \item \code{terra::SpatExtent}.
+#'     \item \code{terra::SpatVector} (polygon/multipolygon).
+#'     \item \code{sf} / \code{sfc} object.
+#'   }
+#'   When a polygon object is provided (\code{SpatVector}, \code{sf}, \code{sfc}),
+#'   ATL08 segments are clipped using \code{ATL08_seg_attributes_dt_clipBoundary()}.
+#'   Otherwise (numeric bbox or \code{SpatExtent}), clipping is done with
+#'   \code{ATL08_seg_attributes_dt_clipBox()}.
 #' @param res NumericVector. Resolution lon lat for the output raster in coordinates decimal degrees
 #' @param creation_options CharacterVector. The GDAL creation options for the tif file. Default c("COMPRESS=PACKBITS", "BIGTIFF=IF_SAFER", "TILED=YES", "BLOCKXSIZE=512", "BLOCKYSIZE=512") will create BIGTIFF if needed, with DEFLATE compression and tiled by 512x512 pixels.
 #' @param agg_function Formula function-like. An aggregate function which should return a data.table with the aggregate statistics
@@ -148,7 +156,7 @@ default_agg_join <- function(x1, x2) {
 #' @return Nothing. It outputs multiple raster tif files to the out_root specified path.
 #'
 #' @examples
-#' # Specifying the path to GEDI leveatl08_canopy_dt data (zip file)
+#' \dontrun{
 #' library(ICESat2VegR)
 #' library(data.table)
 #'
@@ -161,11 +169,13 @@ default_agg_join <- function(x1, x2) {
 #' # Reading ATL08 data (h5 file)
 #' atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 #'
-#' # Bounding rectangle coordinates
-#' ul_lat <- 41.5386848449707031
-#' ul_lon <- -106.5708541870117188
-#' lr_lat <- 41.5314979553222656
-#' lr_lon <- -106.5699081420898438
+#' # Bounding rectangle as numeric bbox: c(xmin, ymin, xmax, ymax)
+#' clip_obj <- c(
+#'   xmin = -106.5708541870117188,
+#'   ymin =  41.5314979553222656,
+#'   xmax = -106.5699081420898438,
+#'   ymax =  41.5386848449707031
+#' )
 #'
 #' res <- 100 # meters
 #' lat_to_met_factor <- 1 / 110540
@@ -191,36 +201,35 @@ default_agg_join <- function(x1, x2) {
 #' }
 #'
 #' finalizer <- list(
-#'   mean = "sum/n",
+#'   mean  = "sum/n",
 #'   range = "max-min"
 #' )
 #'
 #' outdir <- tempdir()
 #'
-# #' ATL08_seg_attributes_h5_gridStat(
-# #'   atl08_dir = dirname(atl08_path),
-# #'   metrics = c("h_canopy"),
-# #'   out_root = outdir,
-# #'   ul_lat = ul_lat,
-# #'   ul_lon = ul_lon,
-# #'   lr_lat = lr_lat,
-# #'   lr_lon = lr_lon,
-# #'   res = c(xres, -yres),
-# #'   creation_options = c(
-# #'     "COMPRESS=DEFLATE",
-# #'     "BIGTIFF=IF_SAFER",
-# #'     "TILED=YES",
-# #'     "BLOCKXSIZE=512",
-# #'     "BLOCKYSIZE=512"
-# #'   ),
-# #'   agg_function = agg_function,
-# #'   agg_join = agg_join,
-# #'   finalizer = finalizer
-# #' )
+#' # ATL08_seg_attributes_h5_gridStat(
+#' #   atl08_dir        = dirname(atl08_path),
+#' #   metrics          = c("h_canopy"),
+#' #   out_root         = outdir,
+#' #   beam             = c("gt1l","gt1r","gt2l","gt2r","gt3l","gt3r"),
+#' #   clip_obj         = clip_obj,
+#' #   res              = c(xres, -yres),
+#' #   creation_options = c(
+#' #     "COMPRESS=DEFLATE",
+#' #     "BIGTIFF=IF_SAFER",
+#' #     "TILED=YES",
+#' #     "BLOCKXSIZE=512",
+#' #     "BLOCKYSIZE=512"
+#' #   ),
+#' #   agg_function     = agg_function,
+#' #   agg_join         = agg_join,
+#' #   finalizer        = finalizer
+#' # )
 #'
 #' gc()
 #' file.remove(list.files(outdir, "*.tif"))
 #' close(atl08_h5)
+#' }
 #'
 #' @import data.table
 #' @export
@@ -255,10 +264,7 @@ ATL08_seg_attributes_h5_gridStat <- function(
     ),
     beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
     out_root,
-    ul_lat,
-    ul_lon,
-    lr_lat,
-    lr_lon,
+    clip_obj,
     res,
     creation_options = def_co,
     agg_function = default_agg_function,
@@ -276,6 +282,72 @@ ATL08_seg_attributes_h5_gridStat <- function(
     x_ind <-
     y_ind <-
     NULL
+
+  # ---------------------------------------------------------------------------
+  # Derive extent (xmin, ymin, xmax, ymax) and detect clip mode
+  # ---------------------------------------------------------------------------
+  if (missing(clip_obj) || is.null(clip_obj)) {
+    stop("Argument 'clip_obj' must be provided.")
+  }
+
+  boundary_obj <- NULL
+  clip_mode <- "box"  # "box" or "boundary"
+
+  if (is.numeric(clip_obj)) {
+    if (length(clip_obj) != 4L) {
+      stop("When numeric, 'clip_obj' must be c(xmin, ymin, xmax, ymax).")
+    }
+    xmin <- clip_obj[1]
+    ymin <- clip_obj[2]
+    xmax <- clip_obj[3]
+    ymax <- clip_obj[4]
+
+  } else if (inherits(clip_obj, "SpatExtent")) {
+    if (!requireNamespace("terra", quietly = TRUE)) {
+      stop("Package 'terra' is required when using a 'SpatExtent' clip_obj.")
+    }
+    xmin <- terra::xmin(clip_obj)
+    ymin <- terra::ymin(clip_obj)
+    xmax <- terra::xmax(clip_obj)
+    ymax <- terra::ymax(clip_obj)
+
+  } else if (inherits(clip_obj, "SpatVector")) {
+    if (!requireNamespace("terra", quietly = TRUE)) {
+      stop("Package 'terra' is required when using a 'SpatVector' clip_obj.")
+    }
+    ext <- terra::ext(clip_obj)
+    xmin <- ext$xmin
+    ymin <- ext$ymin
+    xmax <- ext$xmax
+    ymax <- ext$ymax
+    boundary_obj <- clip_obj
+    clip_mode <- "boundary"
+
+  } else if (inherits(clip_obj, "sf") || inherits(clip_obj, "sfc")) {
+    if (!requireNamespace("sf", quietly = TRUE)) {
+      stop("Package 'sf' is required when using an 'sf'/'sfc' clip_obj.")
+    }
+    bb <- sf::st_bbox(clip_obj)
+    xmin <- as.numeric(bb["xmin"])
+    ymin <- as.numeric(bb["ymin"])
+    xmax <- as.numeric(bb["xmax"])
+    ymax <- as.numeric(bb["ymax"])
+    boundary_obj <- clip_obj
+    clip_mode <- "boundary"
+
+  } else {
+    stop(
+      "Unsupported 'clip_obj' type. Supported: numeric bbox c(xmin,ymin,xmax,ymax), ",
+      "'SpatExtent', 'SpatVector', 'sf', or 'sfc'."
+    )
+  }
+
+  # Map to corners for raster creation
+  ul_lon <- xmin
+  lr_lon <- xmax
+  lr_lat <- ymin
+  ul_lat <- ymax
+
   projstring <- 'GEOGCS["WGS 84",
     DATUM["WGS_1984",
         SPHEROID["WGS 84",6378137,298.257223563,
@@ -286,6 +358,7 @@ ATL08_seg_attributes_h5_gridStat <- function(
     UNIT["degree",0.01745329251994328,
         AUTHORITY["EPSG","9122"]],
     AUTHORITY["EPSG","4326"]]'
+
   atl08_list <- sapply(atl08_dir, function(search_path) {
     list.files(search_path,
       pattern = "08.*h5",
@@ -308,6 +381,7 @@ ATL08_seg_attributes_h5_gridStat <- function(
   stats <- eval(call, envir = tempenv)
   classes <- lapply(stats, class)
   stats_names <- names(stats)
+
   # metric = metrics[1]
   for (metric in metrics) {
     metricCounter <- metricCounter + 1
@@ -340,7 +414,6 @@ ATL08_seg_attributes_h5_gridStat <- function(
       )
     }
 
-
     bands <- lapply(rasts, function(x) x[[1]])
 
     block_x_size <- bands[[1]]$GetBlockXSize()
@@ -355,21 +428,34 @@ ATL08_seg_attributes_h5_gridStat <- function(
       # read H5
       atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 
-      vals <- ATL08_seg_attributes_dt(atl08_h5, beam = beam, attributes = cols[-c(1:2)])
-      vals <- ATL08_seg_attributes_dt_clipBox(vals, lower_left_lon = ul_lon, upper_right_lon = lr_lon, lower_left_lat = lr_lat, upper_right_lat = ul_lat)
-      # Use only night photons
-      # cols_night_flag = c(setdiff(cols, "night_flag"))
-      # vals = vals[night_flag == 1, cols_night_flag, with = FALSE]
+      vals <- ATL08_seg_attributes_dt(
+        atl08_h5,
+        beam       = beam,
+        attributes = cols[-c(1:2)]
+      )
 
-      # vals = vals[vals@data$agbd >= 0]
-
+      # --- unified clipping: bbox/extent vs polygon boundary ---
+      if (clip_mode == "boundary") {
+        vals <- ATL08_seg_attributes_dt_clipBoundary(
+          atl08_seg_att_dt = vals,
+          boundary         = boundary_obj
+        )
+      } else {
+        vals <- ATL08_seg_attributes_dt_clipBox(
+          atl08_seg_att_dt = vals,
+          clip_obj         = c(xmin, ymin, xmax, ymax)
+        )
+      }
 
       # Goto next file if no data is available after clipping
-      if (nrow(vals) == 0) next
+      if (nrow(vals) == 0) {
+        close(atl08_h5)
+        next
+      }
 
       # Compute x/y indices (0-based) from lon/lat
       vals[, x_ind := as.integer(vals[, floor((longitude - ul_lon) / xres)])]
-      vals[, y_ind := as.integer(vals[, floor((latitude - ul_lat) / yres)])]
+      vals[, y_ind := as.integer(vals[, floor((latitude  - ul_lat) / yres)])]
       # Compute single index (1-based) aggregating x/y indices based on block size
       vals[, inds := 1 + x_ind + y_ind * block_x_size]
       names(vals) <- gsub(metric, "x", names(vals))
@@ -401,12 +487,15 @@ ATL08_seg_attributes_h5_gridStat <- function(
         ii <- get("ii", thisEnv) + 1
         assign("ii", ii, thisEnv)
 
-        message(sprintf("\rProcessing blocks...%.2f%%", (100.0 * ii) / total_rows), appendLF = F)
+        message(sprintf("\rProcessing blocks...%.2f%%", (100.0 * ii) / total_rows), appendLF = FALSE)
         agg1 <- data.table::as.data.table(
           lapply(bands, function(x) x[[row$x_block, row$y_block]])
         )
 
-        agg1[row$vals$block_inds] <- agg_join(agg1[row$vals$block_inds], row$vals[, 1:(ncol(row$vals) - 1)])
+        agg1[row$vals$block_inds] <- agg_join(
+          agg1[row$vals$block_inds],
+          row$vals[, 1:(ncol(row$vals) - 1)]
+        )
         lapply(stats_names, function(x) bands[[x]][[row$x_block, row$y_block]] <- agg1[[x]])
       }))
       message()

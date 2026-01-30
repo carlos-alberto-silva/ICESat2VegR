@@ -99,6 +99,6 @@ ATL08_seg_attributes_dt_polyStat <- function(atl08_seg_att_dt, func, poly_id = N
     }
   }
 
-  prepend_class(metrics, "icesat2.atl08_dt")
+  prepend_class(metrics, c("icesat2.atl08_dt","data.table","data.frame"))
   return(metrics)
 }

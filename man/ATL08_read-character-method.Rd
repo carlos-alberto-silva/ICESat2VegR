@@ -2,28 +2,32 @@
 % Please edit documentation in R/ATL08_read.R
 \name{ATL08_read,character-method}
 \alias{ATL08_read,character-method}
-\title{Read ICESat-2 ATL08 data from local HDF5 file}
+\title{Read ICESat-2 ATL08 data from a local HDF5 file}
 \usage{
 \S4method{ATL08_read}{character}(atl08_path)
 }
 \arguments{
-\item{atl08_path}{Character. File path pointing to ICESat-2 ATL08 data in HDF5 format (.h5).}
+\item{atl08_path}{Character. File path to ICESat-2 ATL08 data in HDF5 format (.h5).}
 }
 \value{
-Returns an S4 object of class \code{\linkS4class{icesat2.atl08_h5}} containing ICESat-2 ATL08 data.
+An S4 object of class \code{\linkS4class{icesat2.atl08_h5}} containing ICESat-2
+ATL08 data.
 }
 \description{
-This method reads the ICESat-2 Land and
-Vegetation Along-Track Products (ATL08) from a local HDF5 file.
+Read the ICESat-2 Land and Vegetation Along-Track Product (ATL08)
+from a local HDF5 (.h5) file.
 }
 \examples{
-# Specifying the path to ATL08 file
-atl08_path <- system.file("extdata",
+# Specify the path to an example ATL08 file
+atl08_path <- system.file(
+  "extdata",
   "atl08_clip.h5",
   package = "ICESat2VegR"
 )
 
-# Reading ICESat-2 ATL08 data (h5 file)
+# Read ICESat-2 ATL08 data (HDF5 file)
 atl08 <- ATL08_read(atl08_path = atl08_path)
 close(atl08)
+
 }
+\keyword{internal}

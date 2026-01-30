@@ -21,3 +21,4 @@ Nothing, this is a setter
 \description{
 This function gives access to the GDALRasterBand using [[i]], where i is the band index to return.
 }
+\keyword{internal}

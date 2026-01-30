@@ -2,66 +2,65 @@
 % Please edit documentation in R/ATL03_photons_attributes_dt_clipBox.R
 \name{ATL03_photons_attributes_dt_clipBox}
 \alias{ATL03_photons_attributes_dt_clipBox}
-\title{Clip ATL03 photons by Coordinates}
+\title{Clip ATL03 photons by bounding extent}
 \usage{
-ATL03_photons_attributes_dt_clipBox(
-  atl03_photons_dt,
-  lower_left_lon,
-  upper_right_lon,
-  lower_left_lat,
-  upper_right_lat
-)
+ATL03_photons_attributes_dt_clipBox(atl03_photons_dt, clip_obj)
 }
 \arguments{
-\item{atl03_photons_dt}{A atl03_photons_dt object (output of \code{\link[=ATL03_photons_attributes_dt]{ATL03_photons_attributes_dt()}} function).
-An S4 object of class \code{\linkS4class{icesat2.atl03_dt}}}
+\item{atl03_photons_dt}{An \code{icesat2.atl03_dt} object (output of
+\code{\link[=ATL03_photons_attributes_dt]{ATL03_photons_attributes_dt()}}).}
 
-\item{lower_left_lon}{Numeric. West longitude (x) coordinate of bounding rectangle, in decimal degrees.}
-
-\item{upper_right_lon}{Numeric. East longitude (x) coordinate of bounding rectangle, in decimal degrees.}
-
-\item{lower_left_lat}{Numeric. South latitude (y) coordinate of bounding rectangle, in decimal degrees.}
-
-\item{upper_right_lat}{Numeric. North latitude (y) coordinate of bounding rectangle, in decimal degrees.}
+\item{clip_obj}{Bounding extent used to perform the clipping. Supported
+inputs:
+\itemize{
+\item Numeric vector of length 4: \code{c(xmin, ymin, xmax, ymax)} in
+decimal degrees.
+\item \code{SpatExtent} (package \strong{terra}): the extent is used directly.
+}}
 }
 \value{
-Returns an S4 object of class \code{\linkS4class{icesat2.atl03_dt}}
-containing the ATL03 photons attributes.
+Returns a subset of the original \code{icesat2.atl03_dt} object containing
+only photons within the bounding box.
 }
 \description{
-This function clips ATL03 photons attributes within a given bounding coordinates
+Clips ATL03 photon attributes within a given bounding extent, defined by a
+single \code{clip_obj} argument. The clipping extent can be provided as:
+
+\itemize{
+\item (i) a numeric bounding box, or
+\item (ii) a spatial extent object.
+}
+}
+\details{
+When \code{clip_obj} is a \code{SpatExtent}, the package \pkg{terra} must be
+installed. If not found, the function stops with an informative message.
 }
 \examples{
-# Specifying the path to ATL03 file
-atl03_path <- system.file("extdata",
-  "atl03_clip.h5",
-  package = "ICESat2VegR"
-)
+\dontrun{
+atl03_path <- system.file("extdata", "atl03_clip.h5",
+                          package = "ICESat2VegR")
 
-# Reading ATL03 data (h5 file)
 atl03_h5 <- ATL03_read(atl03_path = atl03_path)
-
-# Extracting ATL03 photons attributes
 atl03_photons_dt <- ATL03_photons_attributes_dt(atl03_h5 = atl03_h5)
 
-# Bounding rectangle coordinates
-lower_left_lon <- -106.57
-lower_left_lat <- 41.53
-upper_right_lon <- -106.5698
-upper_right_lat <- 41.54
-
-# Clipping ATL08-derived canopy metrics by boundary box extent
-atl03_photons_dt_clip <- ATL03_photons_attributes_dt_clipBox(
-  atl03_photons_dt,
-  lower_left_lon,
-  upper_right_lon,
-  lower_left_lat,
-  upper_right_lat
+# 1) Using a numeric bbox: xmin ymin xmax ymax
+bbox <- c(-106.57, 41.53, -106.5698, 41.54)
+atl03_clip_bbox <- ATL03_photons_attributes_dt_clipBox(
+  atl03_photons_dt = atl03_photons_dt,
+  clip_obj = bbox
 )
 
-head(atl03_photons_dt_clip)
+# 2) Using a SpatExtent
+# library(terra)
+# ext <- terra::ext(-106.57, -106.5698, 41.53, 41.54)
+# atl03_clip_ext <- ATL03_photons_attributes_dt_clipBox(
+#   atl03_photons_dt = atl03_photons_dt,
+#   clip_obj = ext
+# )
 
 close(atl03_h5)
+}
+
 }
 \seealso{
 \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}

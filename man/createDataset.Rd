@@ -85,3 +85,4 @@ band[[0, 0]] <- 1:(512 * 512)
 
 ds$Close()
 }
+\keyword{internal}

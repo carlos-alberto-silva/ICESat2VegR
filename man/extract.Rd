@@ -22,3 +22,4 @@ stack of images from ee.
 Given a geometry with point samples and images from Earth Engine
 retrieve the point geometry with values for the images
 }
+\keyword{internal}

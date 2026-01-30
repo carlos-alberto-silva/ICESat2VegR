@@ -2,16 +2,26 @@
 % Please edit documentation in R/model_tools.R
 \name{build_ee_forest}
 \alias{build_ee_forest}
-\title{Given an R \code{\link[randomForest:randomForest]{randomForest::randomForest()}} model, transform to a Google Earth Engine randomForest model}
+\title{Convert an R randomForest model to a Google Earth Engine randomForest classifier}
 \usage{
 build_ee_forest(rf)
 }
 \arguments{
-\item{rf}{the \code{\link[randomForest:randomForest]{randomForest::randomForest()}} model object.}
+\item{rf}{A fitted \code{\link[randomForest]{randomForest}} model object.}
 }
 \value{
-The Google Earth Engine classifier
+An Earth Engine \code{ee$Classifier} object created with
+\code{ee$Classifier$decisionTreeEnsemble()} that can be used with
+\code{ee$Image$classify()}.
 }
 \description{
-Given an R \code{\link[randomForest:randomForest]{randomForest::randomForest()}} model, transform to a Google Earth Engine randomForest model
+Given a fitted \code{\link[randomForest]{randomForest}} object, this function
+serializes the forest using the internal Rcpp module \code{icesat2_module}
+and constructs a corresponding Google Earth Engine random forest
+\strong{classifier} via
+\code{ee$Classifier$decisionTreeEnsemble(rf_strings)}.
+
+This implementation always returns an \code{ee$Classifier} and does not use
+\code{ee$Regressor}.
 }
+\keyword{internal}

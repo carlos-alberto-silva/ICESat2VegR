@@ -19,3 +19,4 @@ ICESat-2 Global Geolocated Photon Data (ATL03)}
 \code{\link[hdf5r:H5File-class]{H5File}} in the \code{hdf5r} package and
 \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
 }
+\keyword{internal}

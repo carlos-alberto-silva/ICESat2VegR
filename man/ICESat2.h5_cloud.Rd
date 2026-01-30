@@ -20,6 +20,7 @@ The regular usage does not require the user to work with those classes
 as most other provided functions will actually give access to the most
 common necessities for working with ICESat-2 data.
 }
+\keyword{internal}
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{

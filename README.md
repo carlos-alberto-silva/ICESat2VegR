@@ -13,10 +13,8 @@ Vegetation Applications.**
 
 Authors: Carlos Alberto Silva and Caio Hamamura
 
-The ICESat2VegR package provides functions for downloading, reading,
-visualizing, processing and exporting NASA’s ICESat-2 ATL03 (Global
-Geolocated Photon Data) and ATL08 (Land and Vegetation Height) products
-for Land and Vegetation Applications in R environment.
+The ICESat2VegR package provides functions for downloading, reading, visualizing, processing, and exporting NASA’s ICESat-2 ATL03 (Global Geolocated Photon Data) and 
+ATL08 (Land and Vegetation Height) products for land and vegetation applications in the R environment.
 
 # Getting started
 
@@ -43,55 +41,49 @@ This package uses three Python packages through `reticulate`:
 2.  [h5py](https://github.com/h5py/h5py): for reading hdf5 content from
     the cloud
 3.  [earthengine-api](https://github.com/google/earthengine-api):
-    integration with Google Earth Engine for sampling and extracting
-    raster data and upscalling models.
+    integration with Google Earth Engine for sampling, extracting raster data, and upscaling models.
 
-For configuring the package you can use:
+To configure the package, use:
 
 ``` r
 ICESat2VegR_configure()
 ```
 
-This will install miniconda if not available and the necessary packages.
+This will install Miniconda if it is not already available, along with the necessary Python packages.
 
 ### Notes
 
-- There are some issues regarding some Python packages not being
-  compatible with the Python version. The above configure function will
-  also try to update python version in that case.
-- The configure function may warn you about the need to restart R after
-  installing some packages, restart if needed.
+- Some Python packages may not be compatible with the installed Python version. 
+  The configuration function will attempt to update Python automatically if needed.
+
+- The configuration function may warn you about the need to restart R after installing some packages. 
+  Please restart R if advised.
 
 ## Introduction
 
-There are two different ways of working with the ICESat-2 data. Locally
-or using cloud computing. Common users should work locally, unless they
-are working within an AWS cloud computing within zone us-west-2.
+There are two different ways of working with ICESat-2 data: locally or using cloud computing. 
+Most users should work locally unless they are operating within an AWS cloud-computing environment in the us-west-2 region.
 
 ## Opening the example dataset
 
-As we will be working with multiple h5 granules, we will be using
-`lapply` for reading and extracting information from the granules.
-
-If you are working with a single granule you can execute the simpler
-instructions without `lapply` as per the function documentation examples
-instead.
+As we will be working with multiple HDF5 granules, we will use `lapply()` for reading and extracting information from the granules.
+If you are working with a single granule, you can follow the simpler instructions provided in the function documentation examples without using `lapply()`.
 
 ``` r
 # Load the ICESat2VegR package
 library(ICESat2VegR)
 
 # Set output directory
-outdir <- tempdir()
+#  outdir <- tempdir()
+  outdir<-"C:\\Users\\c.silva\\Documents\\test_ICESat2"
 
 # Download example dataset
-ATLAS_dataDownload(
-  "https://github.com/carlos-alberto-silva/ICESat2VegR/releases/download/example_datasets/Study_Site.zip",
-  outdir
-)
+url <- "https://github.com/carlos-alberto-silva/ICESat2VegR/releases/download/example_datasets/Study_Site.zip"
+zip_file <- file.path(outdir, "Study_Site.zip")
+download.file(url, zip_file, mode = "wb")
 
 # Unzip the example dataset
-unzip(file.path(outdir, "Study_Site.zip"), exdir = outdir)
+unzip(zip_file, exdir = outdir)
 ```
 
 ## Search parameters
@@ -136,11 +128,36 @@ head(atl03_granules_local)
     ## [5,] "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/ATLAS/ATL03/006/2021/10/02/ATL03_20211002032533_01481302_006_01.h5"
     ## [6,] "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/ATLAS/ATL03/006/2021/10/02/ATL03_20211002035002_01481306_006_01.h5"
 
+``` r
+atl08_granules_local <- ATLAS_dataFinder(
+  short_name = "ATL08",
+  lower_left_lon,
+  lower_left_lat,
+  upper_right_lon,
+  upper_right_lat,
+  version = "006",
+  daterange = daterange,
+  persist = TRUE,
+  cloud_computing = FALSE
+)
+
+head(atl08_granules_local)
+```
+
+    ##      C2613553260-NSIDC_CPRD                                                                                                                     
+    ## [1,] "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/ATLAS/ATL08/006/2021/10/02/ATL08_20211002004127_01461306_006_01.h5"
+    ## [2,] "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/ATLAS/ATL08/006/2021/10/02/ATL08_20211002032533_01481302_006_01.h5"
+    ## [3,] "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/ATLAS/ATL08/006/2021/10/02/ATL08_20211002045950_01491302_006_01.h5"
+    ## [4,] "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/ATLAS/ATL08/006/2021/10/02/ATL08_20211002052420_01491306_006_01.h5"
+    ## [5,] "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/ATLAS/ATL08/006/2021/10/02/ATL08_20211002063408_01501302_006_01.h5"
+    ## [6,] "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/ATLAS/ATL08/006/2021/10/02/ATL08_20211002065837_01501306_006_01.h5"
+
 Now we download the granules:
 
 ``` r
 # Download all granules
-ATLAS_dataDownload(atl03_granules_local, outdir)
+ATLAS_dataDownload(atl03_granules_local[1:3], outdir)
+ATLAS_dataDownload(atl08_granules_local[c(2,4,5)],  outdir)
 ```
 
 And then we can open and work with them
@@ -200,15 +217,34 @@ atl03_h5_cloud$beams
 close(atl03_h5_cloud)
 ```
 
-# Working with segments attributes form ATL03 and ATL08
+# Extracting ATL03 photons attributes
 
-## Extract attributes
+``` r
+atl03_photons_dt <- lapply(atl03_h5,ATL03_photons_attributes_dt)
+atl03_photons_dt <- rbindlist2(atl03_photons_dt)
+
+head(atl03_photons_dt)
+``` 
+| beam | strong_beam |    lon_ph |   lat_ph |    h_ph | quality_ph | solar_elevation | dist_ph_along | nid |
+|:-----|:------------|----------:|---------:|--------:|------------:|----------------:|---------------:|----:|
+| gt1r | TRUE        | -106.5700 | 41.53862 | 2586.681 |           0 |        33.53411 |       57.03034 |   1 |
+| gt1r | TRUE        | -106.5700 | 41.53862 | 2590.325 |           0 |        33.53411 |       57.04520 |   2 |
+| gt1r | TRUE        | -106.5700 | 41.53862 | 2569.251 |           0 |        33.53411 |       56.96353 |   3 |
+| gt1r | TRUE        | -106.5700 | 41.53862 | 2547.401 |           0 |        33.53411 |       56.88038 |   4 |
+| gt1r | TRUE        | -106.5700 | 41.53862 | 2548.977 |           0 |        33.53411 |       56.88631 |   5 |
+| gt1r | TRUE        | -106.5699 | 41.53862 | 2476.900 |           0 |        33.53411 |       56.61007 |   6 |
+
+``` r
+plot(atl03_photons_dt$dist_ph_along,atl03_photons_dt$h_ph, xlab="dist_ph_along", ylab="Elevation (m)", pch=16, cex=0.2)
+``` 
+
+# Segment-Level Extraction of ATL03 Metadata and ATL08 Attributes
 
 ``` r
 # ATL03 seg attributes
 atl03_seg_att_ls <- lapply(
   atl03_h5,
-  ATL03_seg_attributes_dt,
+  ATL03_seg_metadata_dt,
   attributes = c("delta_time", "solar_elevation", "pitch", "h_ph", "ref_elev")
 )
 atl03_seg_dt <- rbindlist2(atl03_seg_att_ls)
@@ -285,7 +321,7 @@ library(terra)
 blueYellowRed <- function(n) grDevices::hcl.colors(n, "RdYlBu")
 
 set.seed(123)
-mask <- sample(seq_len(nrow(atl03_seg_dt)), 50)
+mask <- base::sample(seq_len(nrow(atl03_seg_dt)), 50)
 atl03_seg_vect <- to_vect(atl03_seg_dt)
 
 # Plot with mapview
@@ -307,6 +343,7 @@ mapview::mapview(
 
 ``` r
 # Extract vector from atl08_seg_dt
+class(atl08_seg_dt)
 atl08_seg_vect <- to_vect(atl08_seg_dt)
 
 # Palette function
@@ -314,7 +351,11 @@ greenYellowRed <- function(n) {
   grDevices::hcl.colors(n, "RdYlGn")
 }
 
+
 # Plot with mapview
+leaflet_available <- require("leaflet")
+if (!leaflet_available) stop("leaflet not found!")
+
 map_vect <- mapview::mapView(
   atl08_seg_vect,
   layer.name = "h_canopy",
@@ -361,10 +402,11 @@ mapview::mapView(
 
 </div>
 
-### Multiple data:
+
+Multiple attributes:
 
 ``` r
-multiple_data <- ATL08_seg_attributes_dt_gridStat(atl08_seg_dt, func = list(
+multiple_attributes <- ATL08_seg_attributes_dt_gridStat(atl08_seg_dt, func = list(
   max_h_canopy = max(h_canopy),
   min_h_canopy = min(h_canopy),
   mean_canopy_openness = mean(canopy_openness),
@@ -390,10 +432,10 @@ map_vect_terrain <- mapview::mapView(
 )
 
 
-m1 <- mapview::mapView(multiple_data[[1]], layer.name = "Max h_canopy", map = map_vect, col.regions = redYellowGreen)
-m2 <- mapview::mapView(multiple_data[[2]], layer.name = "Min h_canopy", map = map_vect, col.regions = redYellowGreen)
-m3 <- mapview::mapView(multiple_data[[3]], layer.name = "Mean canopy openness", map = map_vect_openness, col.regions = redYellowGreen)
-m4 <- mapview::mapView(multiple_data[[4]], layer.name = "Mean h_te_mean", col.regions = blueYellowRed, map = map_vect_terrain)
+m1 <- mapview::mapView(multiple_attributes[[1]], layer.name = "Max h_canopy", map = map_vect, col.regions = redYellowGreen)
+m2 <- mapview::mapView(multiple_attributes[[2]], layer.name = "Min h_canopy", map = map_vect, col.regions = redYellowGreen)
+m3 <- mapview::mapView(multiple_attributes[[3]], layer.name = "Mean canopy openness", map = map_vect_openness, col.regions = redYellowGreen)
+m4 <- mapview::mapView(multiple_attributes[[4]], layer.name = "Mean h_te_mean", col.regions = blueYellowRed, map = map_vect_terrain)
 
 leafsync::sync(m1, m2, m3, m4)
 ```
@@ -409,36 +451,32 @@ leafsync::sync(m1, m2, m3, m4)
 
 # Clipping ATL03 and ATL08 data
 
-## Introduction
+Now we will use the clipping functions. There are two ways of clipping data in ICESat2VegR:
 
-Now we will use the clipping functions. There are two ways of clipping
-data in ICESat2VegR:
+1.Clipping raw HDF5 data from ATL03 and ATL08 files
+2.Clipping extracted attributes produced by the extraction functions, such as:
 
-1.  Clipping raw hdf5 data from ATL03 and ATL08 files
-2.  Clipping extracted attributes resulting from extraction functions: -
-    `ATL03_seg_attributes_dt` - `ATL03_photon_attributes_dt` -
-    `ATL08_seg_attributes_dt` - `ATL03_ATL08_photons_attributes_dt_join`
+`ATL03_seg_metadata_dt`
+`ATL03_photon_attributes_dt`
+`ATL08_seg_attributes_dt`
+`ATL03_ATL08_photons_attributes_dt_join`
 
-The second method is preffered as it is faster and more efficient
-because it does not require reading the hdf5 and will clip only the
-subset of extracted attributes, while hdf5 has a lot of attributes that
-might not be needed.
+The second method is preferred because it is faster and more efficient. It does not require re-reading the HDF5 file and clips only the extracted attributes, whereas the raw HDF5 structure contains many additional variables that may not be needed.
+There are multiple clipping variants that operate either on a bounding box or a geometry, using the suffixes _clipBox or _clipGeometry:
 
-There are multiple variants using either the bounding box or the geomtry
-to clip the data suffixed with \_clipBox or \_clipGeometry:
+1.`ATL03_h5_clipBox`
+2.`ATL03_h5_clipGeometry`
+3.`ATL03_seg_metadata_dt_clipBox`
+4.`ATL03_seg_metadata_dt_clipGeometry`
+5.`ATL03_photon_attributes_dt_clipBox`
+6.`ATL03_photon_attributes_dt_clipGeometry`
+7.`ATL08_h5_clipBox`
+8.`ATL08_h5_clipGeometry`
+9.`ATL08_seg_attributes_dt_clipBox`
+10.`ATL08_seg_attributes_dt_clipGeometry`
+11.`ATL03_ATL08_photons_attributes_dt_join_clipBox`
+12.`ATL03_ATL08_photons_attributes_dt_join_clipGeometry`
 
-1.  `ATL03_h5_clipBox`
-2.  `ATL03_h5_clipGeometry`
-3.  `ATL03_seg_attributes_dt_clipBox`
-4.  `ATL03_seg_attributes_dt_clipGeometry`
-5.  `ATL03_photon_attributes_dt_clipBox`
-6.  `ATL03_photon_attributes_dt_clipGeometry`
-7.  `ATL08_h5_clipBox`
-8.  `ATL08_h5_clipGeometry`
-9.  `ATL08_seg_attributes_dt_clipBox`
-10. `ATL08_seg_attributes_dt_clipGeometry`
-11. `ATL03_ATL08_photons_attributes_dt_join_clipBox`
-12. `ATL03_ATL08_photons_attributes_dt_join_clipGeometry`
 
 In the following two sections there are two small examples on how to
 clip the raw HDF5 and the extracted attributes.
@@ -446,17 +484,18 @@ clip the raw HDF5 and the extracted attributes.
 ## Clipping raw hdf5 data from ATL08
 
 ``` r
-leaflet_available <- require("leaflet")
-if (!leaflet_available) stop("leaflet not found!")
-
 # Define bbox
 clip_region <- terra::ext(-83.2, -83.14, 32.12, 32.18)
+aoi <- file.path(outdir, "example_aoi.gpkg")
+aoi_vect <- terra::vect(aoi)
 
 # Define hdf5 output file
-output <- tempfile(fileext = ".h5")
+output <- tempfile(pattern = "alt08_h5_clip_", fileext = ".h5")
 
-# Clip the data for only the first atl08 file
-atl08_clipped <- ATL08_h5_clipBox(atl08_h5[[1]], output, bbox = clip_region)
+# Clip the data for only the first ATL08 file
+atl08_clipped <- ATL08_h5_clipBox(atl08_h5[[1]], output, clip_obj = clip_region)
+
+atl08_clippeds <- ATL08_h5_clipGeometry(kk, output, clip_obj = aoi_vect, split_by="id")
 
 atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5[[1]], attributes = c("h_canopy"))
 atl08_seg_dt_clip <- ATL08_seg_attributes_dt(atl08_clipped, attributes = c("h_canopy"))
@@ -468,13 +507,28 @@ atl08_seg_clip_vect <- to_vect(atl08_seg_dt_clip)
 bbox <- terra::vect(terra::ext(atl08_seg_clip_vect), crs = "epsg:4326")
 centroid <- terra::geom(terra::centroids(bbox))
 
-map1 <- mapview::mapview(atl08_seg_clip_vect, col.regions = "yellow", alpha.regions = 1, lwd = 5, map.types = c("Esri.WorldImagery"), alpha = 0, cex = 2, legend = FALSE)
+map1 <- mapview::mapview(
+  atl08_seg_clip_vect,
+  col.regions = "yellow",
+  alpha.regions = 1,
+  lwd = 5,
+  map.types = c("Esri.WorldImagery"),
+  alpha = 0,
+  cex = 2,
+  legend = FALSE
+)
+
+map1
+
+dplyr_available <- require("dplyr")
+if (!dplyr_available) stop("dplyr not found!")
 
 # Final map
 final_map <- map1@map %>%
   leaflet::addCircleMarkers(data = atl08_seg_vect, radius = 2) %>%
   leaflet::addPolygons(
-    data = bbox, fillOpacity = 0, weight = 3, color = "white", opacity = 1, dashArray = "5, 1, 0"
+    data = bbox, fillOpacity = 0, weight = 3, color = "white",
+    opacity = 1, dashArray = "5, 1, 0"
   ) %>%
   leaflet::addLegend(
     position = "topright",
@@ -483,8 +537,10 @@ final_map <- map1@map %>%
     opacity = 1
   ) %>%
   leaflet::setView(centroid[, "x"][[1]], centroid[, "y"][[1]], zoom = 13)
-```
 
+final_map
+```
+  
 <div align="center">
 
 <img src="man/figures/atl08_clip_bbox.png" width=500 />
@@ -504,18 +560,23 @@ atl08_seg_dt <- lapply(atl08_h5, ATL08_seg_attributes_dt, attributes = c("h_cano
 atl08_seg_dt <- rbindlist2(atl08_seg_dt)
 atl08_seg_vect <- to_vect(atl08_seg_dt)
 
-# Clip the data for only the first atl08 file
-atl08_seg_dt_clip <- ATL08_seg_attributes_dt_clipGeometry(atl08_seg_dt, aoi_vect, split_by = "id")
+# Clip using geometry
+atl08_seg_dt_clip <- ATL08_seg_attributes_dt_clipGeometry(
+  atl08_seg_dt, aoi_vect, split_by = "id"
+)
+
 atl08_seg_clip_vect <- to_vect(atl08_seg_dt_clip)
 
 colors <- c("#00FF00", "#FF00FF")
+
 map1 <- mapview::mapview(
   atl08_seg_clip_vect,
   alpha = 0,
   col.regions = colors,
   alpha.regions = 1,
   zcol = "poly_id",
-  lwd = 5, map.types = c("Esri.WorldImagery"),
+  lwd = 5,
+  map.types = c("Esri.WorldImagery"),
   cex = 2,
   legend = FALSE
 )
@@ -524,7 +585,8 @@ map1 <- mapview::mapview(
 final_map <- map1@map %>%
   leaflet::addCircleMarkers(data = atl08_seg_vect, color = "blue", radius = 2) %>%
   leaflet::addPolygons(
-    data = aoi_vect, fillOpacity = 0, weight = 3, color = colors, opacity = 1, dashArray = "5, 1, 0"
+    data = aoi_vect, fillOpacity = 0, weight = 3, color = colors,
+    opacity = 1, dashArray = "5, 1, 0"
   ) %>%
   leaflet::addLegend(
     position = "topright",
@@ -533,7 +595,83 @@ final_map <- map1@map %>%
     opacity = 1
   ) %>%
   leaflet::setView(centroid[, "x"][[1]], centroid[, "y"][[1]], zoom = 13)
+  
+final_map
 ```
+
+Using the Generic clip() Function
+
+Instead of manually choosing from the many _clipBox or _clipGeometry functions, ICESat2VegR provides a unified clipping interface using the generic clip() function. The generic automatically:
+detects the class of the input object (x),
+determines whether the clipping object is a bounding box or a geometry,
+dispatches to the appropriate helper function internally.
+
+This allows simpler and cleaner code:
+
+```r
+clipped <- clip(data_object, clip_obj = aoi)
+```
+which internally routes the request to the correct clipping function — for example, ATL08_seg_attributes_dt_clipGeometry() or ATL03_h5_clipBox(), depending on the objects supplied.
+
+
+The clip() function automatically:
+
+detects the class of the ICESat-2 object (x),
+determines whether the clipping object is a bounding box or a geometry,
+and dispatches to the appropriate specialized clipping helper.
+
+This makes your workflow much simpler and more consistent, especially when switching between ATL03/ATL08 HDF5 objects and extracted attribute tables.
+
+Example 1: Using clip() on Extracted ATL08 Segment Attributes
+```r
+# Extract ATL08 segment attributes
+atl08_seg <- ATL08_seg_attributes_dt(atl08_h5[[1]], attributes = "h_canopy")
+
+# Define area of interest
+aoi <- file.path(outdir, "example_aoi.gpkg")
+aoi_vect <- terra::vect(aoi)
+
+# Clip using the generic function
+atl08_seg_clip <- clip(atl08_seg, clip_obj = aoi_vect)
+
+# Convert to vector for visualization
+atl08_seg_clip_vect <- to_vect(atl08_seg_clip)
+```
+
+
+Example 2: Using clip() on Raw ATL03 HDF5 Data
+```r
+# ATL03 HDF5 object
+atl03 <- ATL03_read(atl03_path)
+
+# Define bounding box
+bbox <- c(-83.2, -83.14, 32.12, 32.18)
+
+# Clip using generic clip()
+atl03_clipped <- clip(atl03, clip_obj = bbox)
+```
+
+
+Comparison: Generic `clip()` vs. Direct Helper Functions
+
+| Task                                      | Generic `clip()`              | Specific Helper Function                                                   |
+|-------------------------------------------|-------------------------------|-----------------------------------------------------------------------------|
+| Clip ATL03 HDF5 by bounding box           | `clip(atl03, bbox)`          | `ATL03_h5_clipBox(atl03, bbox)`                                            |
+| Clip ATL03 HDF5 by geometry               | `clip(atl03, geom)`          | `ATL03_h5_clipGeometry(atl03, geom)`                                       |
+| Clip ATL03 extracted attributes           | `clip(atl03_dt, geom)`       | `ATL03_photon_attributes_dt_clipGeometry(atl03_dt, geom)`                  |
+| Clip ATL08 extracted attributes           | `clip(atl08_dt, geom)`       | `ATL08_seg_attributes_dt_clipGeometry(atl08_dt, geom)`                     |
+| Clip ATL03–ATL08 joined attributes        | `clip(join_obj, geom)`       | `ATL03_ATL08_photons_attributes_dt_join_clipGeometry(join_obj, geom)`      |
+
+---
+
+Why Use `clip()`?
+
+- Avoids memorizing many different clipping helper function names  
+- Ensures consistent behavior across ATL03, ATL08, and joined datasets  
+- Reduces code duplication and improves maintainability  
+- Automatically selects the correct clipping method based on inputs  
+- Produces cleaner and more readable workflows  
+
 
 <div align="center">
 

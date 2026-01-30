@@ -23,3 +23,4 @@ ds_path <- system.file("extdata", "example.tif", package = "ICESat2VegR")
 ds <- GDALOpen(ds_path)
 ds$Close()
 }
+\keyword{internal}

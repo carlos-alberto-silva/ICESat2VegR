@@ -3,11 +3,11 @@
 #' @description This function clips ATL03 photon attributes within given bounding coordinates.
 #'
 #' @param atl03_photons_dt An ATL03 photon data table. An S4 object of class [`ICESat2VegR::icesat2.atl03_dt-class`].
-#' @param sppoly Spatial Polygon. An object of class [`terra::SpatVector`],
+#' @param clip_obj Spatial clip_obj. An object of class [`terra::SpatVector`],
 #'   which can be loaded as an ESRI shapefile using the [terra::vect] function in the
 #'   \emph{sf} package.
-#' @param split_by Polygon id. If defined, GEDI data will be clipped by each polygon using
-#'   the polygon id from the attribute table defined by the user.
+#' @param split_by clip_obj id. If defined, GEDI data will be clipped by each clip_obj using
+#'   the clip_obj id from the attribute table defined by the user.
 #'
 #' @return Returns an S4 object of class [`ICESat2VegR::icesat2.atl03_dt-class`]
 #'   containing the ATL03 photon attributes.
@@ -28,7 +28,7 @@
 #' atl03_photons_dt <- ATL03_photons_attributes_dt(atl03_h5 = atl03_h5)
 #'
 #' # Specifying the path to shapefile
-#' polygon_filepath <-
+#' clip_obj_filepath <-
 #'   system.file(
 #'     "extdata",
 #'     "clip_geom.shp",
@@ -36,33 +36,30 @@
 #'   )
 #'
 #' # Reading shapefile as sf object
-#' sppoly <- terra::vect(polygon_filepath)
+#' clip_obj <- terra::vect(clip_obj_filepath)
 #'
 #' # Clipping ATL03 photon attributes by Geometry
 #' atl03_photons_dt_clip <-
-#'   ATL03_photons_attributes_dt_clipGeometry(atl03_photons_dt, sppoly, split_by = "id")
+#'   ATL03_photons_attributes_dt_clipGeometry(atl03_photons_dt, clip_obj, split_by = "id")
 #'
 #' head(atl03_photons_dt_clip)
 #'
 #' close(atl03_h5)
 #' @import hdf5r stats
 #' @export
-ATL03_photons_attributes_dt_clipGeometry <- function(atl03_photons_dt, sppoly, split_by = "id") {
+ATL03_photons_attributes_dt_clipGeometry <- function(atl03_photons_dt, clip_obj, split_by = "id") {
   # Check if atl03_photons_dt is of the correct class
   if (!inherits(atl03_photons_dt, "icesat2.atl03_dt")) {
     stop("atl03_photons_dt needs to be an object of class 'icesat2.atl03_dt'")
   }
 
-  # Extract the bounding box of the spatial polygon
-  exshp <- terra::ext(sppoly)
+  # Extract the bounding box of the spatial clip_obj
+  exshp <- terra::ext(clip_obj)
 
-  # Clip ATL03 photons using the bounding box of the spatial polygon
+  # Clip ATL03 photons using the bounding box of the spatial clip_obj
   atl03_photons_dt <- ATL03_photons_attributes_dt_clipBox(
     atl03_photons_dt,
-    exshp$xmin,
-    exshp$xmax,
-    exshp$ymin,
-    exshp$ymax
+    clip_obj=exshp
   )
 
   # Remove any rows with NA values
@@ -75,7 +72,7 @@ ATL03_photons_attributes_dt_clipGeometry <- function(atl03_photons_dt, sppoly, s
 
   # Check if any data remains after clipping
   if (nrow(atl03_photons_dt) == 0) {
-    warning("The polygon does not overlap the ATL03 data")
+    warning("The clip_obj does not overlap the ATL03 data")
   } else {
     # Convert the ATL03 photon coordinates to a spatial vector
     points <- terra::vect(
@@ -84,25 +81,25 @@ ATL03_photons_attributes_dt_clipGeometry <- function(atl03_photons_dt, sppoly, s
         lat_ph = atl03_photons_dt$lat_ph
       ),
       geom = c("lon_ph", "lat_ph"),
-      crs = terra::crs(sppoly)
+      crs = terra::crs(clip_obj)
     )
 
     # Add a row number to each point
     points$rowNumber <- as.integer(seq_along(points))
 
-    # Intersect the points with the spatial polygon
-    pts <- terra::intersect(terra::makeValid(points), terra::makeValid(sppoly))
+    # Intersect the points with the spatial clip_obj
+    pts <- terra::intersect(terra::makeValid(points), terra::makeValid(clip_obj))
 
-    # If split_by is defined, clip the data by each polygon id
+    # If split_by is defined, clip the data by each clip_obj id
     if (!is.null(split_by)) {
-      if (any(names(sppoly) == split_by)) {
-        newFile <- atl03_photons_dt[pts$nid, ]
+      if (any(names(clip_obj) == split_by)) {
+        newFile <- atl03_photons_dt[pts$rowNumber, ]
         newFile$poly_id <- pts[[split_by]]
       } else {
         stop("The ", split_by, " is not included in the attribute table. Please check the names in the attribute table")
       }
     } else {
-      newFile <- atl03_photons_dt[pts$nid, ]
+      newFile <- atl03_photons_dt[pts$rowNumber, ]
     }
 
     return(newFile)

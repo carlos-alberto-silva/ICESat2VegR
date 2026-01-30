@@ -8,9 +8,10 @@
 Class that represent custom segments created from ATL03 and ATL08 joined data
 }
 \details{
-This class is actually just a wrap around the \code{\linkS4class{data.table}}, but it indicates
+This class is actually just a wrap around the \code{\link[data.table:data.table-class]{data.table::data.table}}, but it indicates
 the output from \code{\link[=ATL03_ATL08_segment_create]{ATL03_ATL08_segment_create()}}, which means the dataset will contain
 the needed structure for computing value for the computing the stats with
 \code{\link[=ATL03_ATL08_compute_seg_attributes_dt_segStat]{ATL03_ATL08_compute_seg_attributes_dt_segStat()}}
 }
 
+\keyword{internal}

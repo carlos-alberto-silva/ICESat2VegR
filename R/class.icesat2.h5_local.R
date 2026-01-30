@@ -19,6 +19,7 @@
 #'
 #' @include class.icesat2.R class.icesat2.h5ds_local.R
 #' @import R6 reticulate hdf5r
+#' @keywords internal
 ICESat2.h5_local <- R6::R6Class("ICESat2.h5_local", list(
   h5 = NULL,
   beams = NULL,
@@ -135,7 +136,7 @@ ICESat2.h5_local <- R6::R6Class("ICESat2.h5_local", list(
   }
 ))
 
-#' @export
+#' @keywords internal
 "[[.ICESat2.h5_local" <- function(x, i) {
   res <- x$h5[[i]]
   if (inherits(res, "H5D")) {

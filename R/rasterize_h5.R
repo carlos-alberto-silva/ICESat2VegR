@@ -199,7 +199,7 @@ setGeneric("rasterize_h5", function(
 #' @param agg_join The function to join the aggregated data
 #' @param finalizer The function to finalize the raster
 #'
-#' @export
+#' @keywords internal
 setMethod("rasterize_h5",
   signature = c("icesat2.predict_h5", "character", "SpatExtent", "numeric"),
   function(h5_input,

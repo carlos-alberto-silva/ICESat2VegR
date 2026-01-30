@@ -19,7 +19,7 @@ h5dtypes[["float64"]] <- hdf5r::h5types$H5T_IEEE_F64LE
 #' operator from a h5 file.
 #'
 #' @import R6
-#' @export
+#' @keywords internal
 ICESat2.h5ds_cloud <- R6::R6Class("ICESat2.h5ds_cloud", list(
   ds = NULL,
   dims = NULL,
@@ -65,7 +65,7 @@ ICESat2.h5ds_cloud <- R6::R6Class("ICESat2.h5ds_cloud", list(
   }
 ))
 
-#' @export
+#' @keywords internal
 "[.ICESat2.h5ds_cloud" <- function(x, ...) {
   args <- eval(substitute(alist(...)))
   for (ii in seq_along(args)) {
@@ -77,7 +77,7 @@ ICESat2.h5ds_cloud <- R6::R6Class("ICESat2.h5ds_cloud", list(
   do.call("[", c(list(x$ds), args))
 }
 
-#' @export
+#' @keywords internal
 "length.ICESat2.h5ds_cloud" <- function(x) {
   exp(sum(log(x$dims)))
 }

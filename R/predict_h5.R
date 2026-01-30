@@ -4,7 +4,7 @@
 #' and method matching with S4 methods.
 #'
 #' @rdname icesat2.predict_h5
-#' @export
+#' @keywords internal
 setRefClass("icesat2.predict_h5")
 
 internal_predict_h5 <- new.env()
@@ -34,7 +34,7 @@ internal_predict_h5$h5 <- NULL
 #' )
 #'
 #' atl03_h5 <- ATL03_read(atl03_path = atl03_path)
-#' atl03_seg_dt <- ATL03_seg_attributes_dt(atl03_h5)
+#' atl03_seg_dt <- ATL03_seg_metadata_dt(atl03_h5)
 #'
 #' linear_model <- stats::lm(h_ph ~ segment_ph_cnt, data = atl03_seg_dt)
 #' output_h5 <- tempfile(fileext = ".h5")
@@ -74,7 +74,7 @@ setGeneric("predict_h5", function(model, dt, output) {
 #' )
 #'
 #' atl03_h5 <- ATL03_read(atl03_path = atl03_path)
-#' atl03_seg_dt <- ATL03_seg_attributes_dt(atl03_h5)
+#' atl03_seg_dt <- ATL03_seg_metadata_dt(atl03_h5)
 #'
 #' linear_model <- stats::lm(h_ph ~ segment_ph_cnt, data = atl03_seg_dt)
 #' output_h5 <- tempfile(fileext = ".h5")
@@ -88,7 +88,7 @@ setGeneric("predict_h5", function(model, dt, output) {
 #'
 #' # Close the file
 #' close(predicted_h5)
-#' @export
+#' @keywords internal
 setMethod(
   "predict_h5",
   signature(model = "ANY", dt = "icesat2.atl03_seg_dt", output = "character"),
@@ -145,7 +145,7 @@ setMethod(
 #' # Close the file
 #' close(predicted_h5)
 #'
-#' @export
+#' @keywords internal
 setMethod(
   "predict_h5",
   signature(model = "ANY", dt = "icesat2.atl08_dt", output = "character"),
@@ -182,7 +182,7 @@ setMethod(
 )
 
 #' @method length icesat2.predict_h5
-#' @export
+#' @keywords internal
 "length.icesat2.predict_h5" <- function(x) {
   exp(sum(log(x[["latitude"]]$dims)))
 }
@@ -195,7 +195,7 @@ setMethod(
 #'
 #' @return Nothing, just closes the HDF5 file pointer
 #' @method close icesat2.predict_h5
-#' @export
+#' @keywords internal
 "close.icesat2.predict_h5" <- function(con, ...) {
   con$close_all()
 }

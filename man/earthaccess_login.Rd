@@ -23,3 +23,4 @@ earthaccess_login()
 }
 
 }
+\keyword{internal}

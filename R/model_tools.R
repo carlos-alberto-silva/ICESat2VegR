@@ -14,34 +14,140 @@ build_fc <- function(x, y = NULL) {
 #
 # NOT EXPORTED
 ee_to_dt <- function(sampled) {
-  sampled <- sampled$map(function(x) {
-    id <- x$getString("system:index")
-    id <- ee$Number(id$replace("_0", "")$decodeJSON())
-    x$set(list(
-      "idx" = id$add(1)
-    ))
-  })
-  columns <- sampled$first()$propertyNames()
-  columns <- columns$remove("system:index")
+  # Get size safely
+  sz <- tryCatch(sampled$size()$getInfo(), error = function(e) 0L)
+  if (is.null(sz) || sz == 0L) return(data.table::data.table())
 
-  all_list <- list()
-  sampled$size()$getInfo()
-  nested_list <- sampled$reduceColumns(ee$Reducer$toList(columns$size()), columns)$values()$get(0)
-  dt <- data.table::rbindlist(nested_list$getInfo())
-  names(dt) <- columns$getInfo()
+  # Bring features to R without using ee module
+  feats <- sampled$toList(sz)$getInfo()  # list of ee.Feature dicts
+  props <- lapply(feats, function(f) f$properties)
 
-  return(dt)
+  # Bind with fill to handle missing props across features
+  dt <- data.table::rbindlist(props, use.names = TRUE, fill = TRUE)
+
+  # Build idx in R from system:index (no ee ops)
+  if ("system:index" %in% names(dt)) {
+    # Example: "123_0" -> 123 + 1
+    dt[, idx := as.integer(gsub("_0.*", "", `system:index`)) + 1L ]
+    dt[, `system:index` := NULL]
+  }
+
+  dt
+}
+
+# ee_to_dt <- function(sampled) {
+#   sampled <- sampled$map(function(x) {
+#     id <- x$getString("system:index")
+#     id <- ee$Number(id$replace("_0", "")$decodeJSON())
+#     x$set(list(
+#       "idx" = id$add(1)
+#     ))
+#   })
+#   columns <- sampled$first()$propertyNames()
+#   columns <- columns$remove("system:index")
+#
+#   all_list <- list()
+#   sampled$size()$getInfo()
+#   nested_list <- sampled$reduceColumns(ee$Reducer$toList(columns$size()), columns)$values()$get(0)
+#   dt <- data.table::rbindlist(nested_list$getInfo())
+#   names(dt) <- columns$getInfo()
+#
+#   return(dt)
+# }
+
+
+
+#' @keywords internal
+.get_pkg_module <- function() {
+  Rcpp::Module("icesat2_module", PACKAGE = "ICESat2VegR")
 }
 
 
-#' Given an R [`randomForest::randomForest()`] model, transform to a Google Earth Engine randomForest model
+#' Convert an R randomForest model to a Google Earth Engine randomForest classifier
 #'
-#' @param rf the [`randomForest::randomForest()`] model object.
+#' @description
+#' Given a fitted \code{\link[randomForest]{randomForest}} object, this function
+#' serializes the forest using the internal Rcpp module \code{icesat2_module}
+#' and constructs a corresponding Google Earth Engine random forest
+#' \strong{classifier} via
+#' \code{ee$Classifier$decisionTreeEnsemble(rf_strings)}.
 #'
-#' @return The Google Earth Engine classifier
+#' This implementation always returns an \code{ee$Classifier} and does not use
+#' \code{ee$Regressor}.
 #'
-#' @export
+#' @param rf A fitted \code{\link[randomForest]{randomForest}} model object.
+#'
+#' @return
+#' An Earth Engine \code{ee$Classifier} object created with
+#' \code{ee$Classifier$decisionTreeEnsemble()} that can be used with
+#' \code{ee$Image$classify()}.
+#'
+#' @keywords internal
 build_ee_forest <- function(rf) {
-  rf_strings <- pkg_module$buildForest(rf)
-  ee$Classifier$decisionTreeEnsemble(rf_strings)
+  if (!inherits(rf, "randomForest")) {
+    stop("'rf' must be a randomForest::randomForest object.")
+  }
+
+  # ---------------------------------------------------------------------------
+  # 1) Get the Rcpp module and the buildForest function
+  # ---------------------------------------------------------------------------
+  mod <- tryCatch(
+    Rcpp::Module("icesat2_module", PACKAGE = "ICESat2VegR"),
+    error = function(e) {
+      stop(
+        "Could not load Rcpp module 'icesat2_module' from ICESat2VegR.\n",
+        "Make sure the package is installed and its shared library is loaded.\n",
+        "Original error: ", conditionMessage(e)
+      )
+    }
+  )
+
+  bf_fun <- tryCatch(
+    mod$buildForest,
+    error = function(e) {
+      stop(
+        "Rcpp module 'icesat2_module' does not expose 'buildForest'.\n",
+        "Module summary:\n",
+        paste(capture.output(print(mod)), collapse = "\n")
+      )
+    }
+  )
+
+  # ---------------------------------------------------------------------------
+  # 2) Serialize RF into a list/vector of tree strings
+  # ---------------------------------------------------------------------------
+  rf_strings <- tryCatch(
+    bf_fun(rf),
+    error = function(e) {
+      stop("Error calling 'buildForest' in Rcpp module: ", conditionMessage(e))
+    }
+  )
+
+  ok_list <- is.list(rf_strings) ||
+    is.vector(rf_strings) ||
+    inherits(rf_strings, "python.builtin.list")
+
+  if (!ok_list) {
+    stop(
+      "buildForest(rf) must return a list/vector of serialized tree strings.\n",
+      "Got object of class: ", paste(class(rf_strings), collapse = " ")
+    )
+  }
+
+  # ---------------------------------------------------------------------------
+  # 3) Build the Earth Engine classifier
+  #    (assumes `ee` is already a valid Python Earth Engine module)
+  # ---------------------------------------------------------------------------
+  est <- tryCatch(
+    ee$Classifier$decisionTreeEnsemble(rf_strings),
+    error = function(e) {
+      stop(
+        "Failed to construct ee.Classifier.decisionTreeEnsemble from rf_strings.\n",
+        "Check that your Earth Engine Python API supports this constructor.\n",
+        "Original error: ", conditionMessage(e)
+      )
+    }
+  )
+
+  est
 }

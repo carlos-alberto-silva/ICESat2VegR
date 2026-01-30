@@ -2,43 +2,44 @@
 % Please edit documentation in R/ATL08_seg_attributes_dt_clipBox.R
 \name{ATL08_seg_attributes_dt_clipBox}
 \alias{ATL08_seg_attributes_dt_clipBox}
-\title{Clip ATL08 Terrain and Canopy Attributes by Bounding Box}
+\title{Clip ATL08 terrain and canopy attributes by bounding extent}
 \usage{
-ATL08_seg_attributes_dt_clipBox(
-  atl08_seg_att_dt,
-  lower_left_lon,
-  upper_right_lon,
-  lower_left_lat,
-  upper_right_lat
-)
+ATL08_seg_attributes_dt_clipBox(atl08_seg_att_dt, clip_obj)
 }
 \arguments{
-\item{atl08_seg_att_dt}{A atl08_seg_att_dt object (output of
-\code{\link[=ATL08_seg_attributes_dt]{ATL08_seg_attributes_dt()}} function).
-An S4 object of class \code{\linkS4class{icesat2.atl08_dt}}}
+\item{atl08_seg_att_dt}{An \code{icesat2.atl08_dt} object (output of
+\code{\link[=ATL08_seg_attributes_dt]{ATL08_seg_attributes_dt()}} function).}
 
-\item{lower_left_lon}{Numeric. West longitude (x) coordinate of bounding rectangle,
-in decimal degrees.}
-
-\item{upper_right_lon}{Numeric. East longitude (x) coordinate of bounding rectangle,
-in decimal degrees.}
-
-\item{lower_left_lat}{Numeric. South latitude (y) coordinate of bounding rectangle,
-in decimal degrees.}
-
-\item{upper_right_lat}{Numeric. North latitude (y) coordinate of bounding rectangle,
-in decimal degrees.}
+\item{clip_obj}{Bounding extent used to perform the clipping. Supported
+inputs:
+\itemize{
+\item Numeric vector of length 4: \code{c(xmin, ymin, xmax, ymax)} in
+decimal degrees.
+\item \code{SpatExtent} (package \strong{terra}): the extent is used directly.
+}}
 }
 \value{
-Returns an S4 object of class \code{\linkS4class{icesat2.atl08_dt}}
+Returns an S4 object of class
+\code{\linkS4class{icesat2.atl08_dt}}
 containing the clipped ATL08 terrain and canopy attributes.
 }
 \description{
-This function clips ATL08 Terrain and Canopy Attributes within a
-given bounding box coordinates
+Clips ATL08 terrain and canopy segment attributes within a given bounding
+extent, defined by a single \code{clip_obj} argument. The clipping extent can
+be provided as:
+
+\itemize{
+\item (i) a numeric bounding box, or
+\item (ii) a spatial extent object.
+}
+}
+\details{
+When \code{clip_obj} is a \code{SpatExtent}, the package \pkg{terra} must be
+installed. If not found, the function stops with an informative message.
 }
 \examples{
-# Specifying the path to ATL08 file
+\dontrun{
+# Specifying the path to the ATL08 file
 atl08_path <- system.file("extdata",
   "atl08_clip.h5",
   package = "ICESat2VegR"
@@ -47,23 +48,26 @@ atl08_path <- system.file("extdata",
 # Reading ATL08 data (h5 file)
 atl08_h5 <- ATL08_read(atl08_path)
 
-# Extracting ATL08-derived Canopy Metrics
+# Extracting ATL08-derived segment attributes
 atl08_seg_att_dt <- ATL08_seg_attributes_dt(atl08_h5 = atl08_h5)
 
-# Bounding rectangle coordinates
-lower_left_lon <- -103.7604
-lower_left_lat <- 59.4672
-upper_right_lon <- -103.7600
-upper_right_lat <- 59.4680
+# 1) Using a numeric bounding box: xmin ymin xmax ymax
+bbox <- c(-103.7604, 59.4672, -103.7600, 59.4680)
 
-# Clipping ATL08 terrain and canopy attributes by boundary box
 atl08_seg_att_dt_clip <- ATL08_seg_attributes_dt_clipBox(
-  atl08_seg_att_dt,
-  lower_left_lon,
-  upper_right_lon,
-  lower_left_lat,
-  upper_right_lat
+  atl08_seg_att_dt = atl08_seg_att_dt,
+  clip_obj = bbox
 )
 
+# 2) Using a SpatExtent
+# library(terra)
+# ext <- terra::ext(-103.7604, -103.7600, 59.4672, 59.4680)
+# atl08_seg_att_dt_clip_ext <- ATL08_seg_attributes_dt_clipBox(
+#   atl08_seg_att_dt = atl08_seg_att_dt,
+#   clip_obj = ext
+# )
+
 close(atl08_h5)
+}
+
 }

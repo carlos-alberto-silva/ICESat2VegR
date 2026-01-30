@@ -2,75 +2,81 @@
 % Please edit documentation in R/ATL03_ATL08_photons_attributes_dt_clipBox.R
 \name{ATL03_ATL08_photons_attributes_dt_clipBox}
 \alias{ATL03_ATL08_photons_attributes_dt_clipBox}
-\title{Clip joined ATL03 and ATL08 photons by Bounding Box}
+\title{Clip joined ATL03 and ATL08 photons by bounding extent}
 \usage{
-ATL03_ATL08_photons_attributes_dt_clipBox(
-  atl03_atl08_dt,
-  lower_left_lon,
-  upper_right_lon,
-  upper_right_lat,
-  lower_left_lat
-)
+ATL03_ATL08_photons_attributes_dt_clipBox(atl03_atl08_dt, clip_obj)
 }
 \arguments{
-\item{atl03_atl08_dt}{An S4 object of class \code{\linkS4class{icesat2.atl03atl08_dt}} containing ATL03 and ATL08 data
-(output of \code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}} function).}
+\item{atl03_atl08_dt}{An S4 object of class
+\code{\linkS4class{icesat2.atl03atl08_dt}} containing joined ATL03 and
+ATL08 data (output of
+\code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}} function).}
 
-\item{lower_left_lon}{Numeric. West longitude (x) coordinate of bounding rectangle, in decimal degrees.}
-
-\item{upper_right_lon}{Numeric. East longitude (x) coordinate of bounding rectangle, in decimal degrees.}
-
-\item{upper_right_lat}{Numeric. North latitude (y) coordinate of bounding rectangle, in decimal degrees.}
-
-\item{lower_left_lat}{Numeric. South latitude (y) coordinate of bounding rectangle, in decimal degrees.}
+\item{clip_obj}{Bounding extent used to perform the clipping. Supported
+inputs:
+\itemize{
+\item Numeric vector of length 4: \code{c(xmin, ymin, xmax, ymax)} in
+decimal degrees.
+\item \code{SpatExtent} (package \strong{terra}): the extent is used directly.
+}}
 }
 \value{
-Returns an S4 object of class \code{\linkS4class{icesat2.atl03atl08_dt}}
-containing a subset of the ATL03 and ATL08 photon attributes.
+Returns an S4 object of class
+\code{\linkS4class{icesat2.atl03atl08_dt}} containing a subset of the
+joined ATL03 and ATL08 photon attributes restricted to the clipping extent.
 }
 \description{
-This function clips joined ATL03 and ATL08 photon attributes within a given Bounding Box
+Clips joined ATL03 and ATL08 photon attributes within a given bounding
+extent, defined by a single \code{clip_obj} argument. The clipping extent can
+be provided as:
+
+\itemize{
+\item (i) a numeric bounding box, or
+\item (ii) a spatial extent object.
+}
+}
+\details{
+When \code{clip_obj} is a \code{SpatExtent}, the package \pkg{terra} must be
+installed. If not found, the function stops with an informative message.
 }
 \examples{
-# Specifying the path to ATL03 and ATL08 file
-atl03_path <- system.file("extdata",
-  "atl03_clip.h5",
-  package = "ICESat2VegR"
-)
+\dontrun{
+# Specifying the path to ATL03 and ATL08 files
+atl03_path <- system.file("extdata", "atl03_clip.h5",
+                          package = "ICESat2VegR")
 
-atl08_path <- system.file("extdata",
-  "atl08_clip.h5",
-  package = "ICESat2VegR"
-)
+atl08_path <- system.file("extdata", "atl08_clip.h5",
+                          package = "ICESat2VegR")
 
-# Reading ATL03 data (h5 file)
+# Reading ATL03 and ATL08 data (h5 files)
 atl03_h5 <- ATL03_read(atl03_path = atl03_path)
-
-# Reading ATL08 data (h5 file)
 atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 
 # Joining ATL03 and ATL08 photons and heights
 atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
 head(atl03_atl08_dt)
 
-# Bounding rectangle coordinates
-lower_left_lon <- -103.7604
-lower_left_lat <- 59.4672
-upper_right_lon <- -103.7600
-upper_right_lat <- 59.4680
+# 1) Using a numeric bounding box: xmin ymin xmax ymax
+bbox <- c(-103.7604, 59.4672, -103.7600, 59.4680)
 
-# Clipping ATL08-derived canopy metrics by boundary box extent
 atl03_atl08_dt_clip <- ATL03_ATL08_photons_attributes_dt_clipBox(
-  atl03_atl08_dt,
-  lower_left_lon,
-  upper_right_lon,
-  upper_right_lat,
-  lower_left_lat
+  atl03_atl08_dt = atl03_atl08_dt,
+  clip_obj = bbox
 )
 head(atl03_atl08_dt_clip)
 
+# 2) Using a SpatExtent (example)
+# library(terra)
+# ext <- terra::ext(-103.7604, -103.7600, 59.4672, 59.4680)
+# atl03_atl08_dt_clip_ext <- ATL03_ATL08_photons_attributes_dt_clipBox(
+#   atl03_atl08_dt = atl03_atl08_dt,
+#   clip_obj = ext
+# )
+
 close(atl03_h5)
 close(atl08_h5)
+}
+
 }
 \seealso{
 \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}

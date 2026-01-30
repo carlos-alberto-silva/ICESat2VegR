@@ -11,7 +11,7 @@
 #' earthaccess_login()
 #' }
 #'
-#' @export
+#' @keywords internal
 earthaccess_login <- function(persist = TRUE) {
   # Test if earthaccess was loaded
   if (is.null(earthaccess)) {
