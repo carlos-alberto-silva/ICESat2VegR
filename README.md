@@ -302,7 +302,7 @@ hist(atl08_seg_dt$h_canopy, col = "green", xlab = "Height (m)", main = "ATL08 h_
 
 <div class="figure" style="text-align: center">
 
-<img src="man/figures/segments_histogram-1.png" alt="Histograms for ATL03 elevation and ATL08 h_canopy"  />
+<img src="readme/segments_histogram-1.png" alt="Histograms for ATL03 elevation and ATL08 h_canopy"  />
 <p class="caption">
 Histograms for ATL03 elevation and ATL08 h_canopy
 </p>
@@ -337,7 +337,7 @@ mapview::mapview(
 
 <div align="center">
 
-<img src="man/figures/atl03_seg_vect.png" width=500 />
+<img src="readme/atl03_seg_vect.png" width=500 />
 
 </div>
 
@@ -369,7 +369,7 @@ map_vect
 
 <div align="center">
 
-<img src="man/figures/atl08_seg_vect.png" width=500 />
+<img src="readme/atl08_seg_vect.png" width=500 />
 
 </div>
 
@@ -398,7 +398,7 @@ mapview::mapView(
 
 <div align="center">
 
-<img src="man/figures/atl08_max_h_canopy.png" width=500 />
+<img src="readme/atl08_max_h_canopy.png" width=500 />
 
 </div>
 
@@ -443,7 +443,7 @@ leafsync::sync(m1, m2, m3, m4)
 <div align="center" style="width:100%;">
 
 <figure>
-<img src="man/figures/output_multi.png" alt="multi" />
+<img src="readme/output_multi.png" alt="multi" />
 <figcaption aria-hidden="true">multi</figcaption>
 </figure>
 
@@ -543,7 +543,7 @@ final_map
   
 <div align="center">
 
-<img src="man/figures/atl08_clip_bbox.png" width=500 />
+<img src="readme/atl08_clip_bbox.png" width=500 />
 
 </div>
 
@@ -675,7 +675,7 @@ Why Use `clip()`?
 
 <div align="center">
 
-<img src="man/figures/atl08_clip_geom.png" width=500 />
+<img src="readme/atl08_clip_geom.png" width=500 />
 
 </div>
 
@@ -756,7 +756,7 @@ par(
 
 <div class="figure" style="text-align: center">
 
-<img src="man/figures/classified_photons-1.png" alt="Classified ATL03 photons using ATL08 labels"  />
+<img src="readme/classified_photons-1.png" alt="Classified ATL03 photons using ATL08 labels"  />
 <p class="caption">
 Classified ATL03 photons using ATL08 labels
 </p>
@@ -789,7 +789,7 @@ plot(h_canopy,
 
 <div class="figure" style="text-align: center">
 
-<img src="man/figures/rasterized_atl03_atl08-1.png" alt="Rasterized ATL03_ATL08 data for canopy height (h_canopy) and number of photons (n)"  />
+<img src="readme/rasterized_atl03_atl08-1.png" alt="Rasterized ATL03_ATL08 data for canopy height (h_canopy) and number of photons (n)"  />
 <p class="caption">
 Rasterized ATL03_ATL08 data for canopy height (h_canopy) and number of
 photons (n)
@@ -906,7 +906,7 @@ map_output <- mapview::mapview(
 
 <div align="center">
 
-<img src="man/figures/atl03_atl08_vect.png" width=500 />
+<img src="readme/atl03_atl08_vect.png" width=500 />
 
 </div>
 
@@ -992,7 +992,7 @@ res_map <- mapview::mapview(
 
 <div align="center">
 
-<img src="man/figures/agbd_model_mean.png" width=500 />
+<img src="readme/agbd_model_mean.png" width=500 />
 
 </div>
 
@@ -1048,7 +1048,7 @@ map <- terra::plet(atl08_seg_vect, "h_canopy", col = grDevices::hcl.colors(9, "R
 
 <div align="center" style="display:flex;justify-content:center">
 
-<img src="man/figures/atl08_seg_vect_gee_modelling.png" width=500 />
+<img src="readme/atl08_seg_vect_gee_modelling.png" width=500 />
 
 </div>
 
@@ -1159,7 +1159,7 @@ map <- leaflet::leaflet() |>
 <div align="center" style="display:flex;justify-content:center">
 
 <figure>
-<img src="man/figures/unmasked_masked.png" alt="multi" />
+<img src="readme/unmasked_masked.png" alt="multi" />
 <figcaption aria-hidden="true">multi</figcaption>
 </figure>
 
@@ -1224,7 +1224,7 @@ barplot(rf_importance[, "IncNodePurity"], main = "Variable importance (Increase 
 
 <div class="figure" style="text-align: center">
 
-<img src="man/figures/rf_variable_importance-1.png" alt="Random forests variable importance (increase node impurity)." width="500" />
+<img src="readme/rf_variable_importance-1.png" alt="Random forests variable importance (increase node impurity)." width="500" />
 <p class="caption">
 Random forests variable importance (increase node impurity).
 </p>
@@ -1288,7 +1288,7 @@ modelled_map
 
 <div align="center" style="display:flex;justify-content:center">
 
-<img src="man/figures/upscalled_gee_map.png" width=500 />
+<img src="readme/upscalled_gee_map.png" width=500 />
 
 </div>
 
