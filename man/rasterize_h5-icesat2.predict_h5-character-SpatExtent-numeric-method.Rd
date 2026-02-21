@@ -35,4 +35,3 @@
 \description{
 Rasterizes the model prediction saved in the HDF5 file
 }
-\keyword{internal}

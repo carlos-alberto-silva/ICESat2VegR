@@ -43,4 +43,3 @@ An unstarted EE \code{Task} (Python object).
 Thin wrapper over \code{ee$batch$Export$image$toDrive()} that supports
 optional time-based prefixes. Returns an unstarted task.
 }
-\keyword{internal}

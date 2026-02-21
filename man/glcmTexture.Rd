@@ -68,4 +68,3 @@ operators', http://doi.org/10.1016/0734-189X(84)90197-X.
 
 https://developers.google.com/earth-engine/apidocs/ee-image-glcmtexture
 }
-\keyword{internal}

@@ -12,5 +12,3 @@ Class for ATL08 attributes
 \code{\link[data.table:data.table-class]{data.table}} in the \code{data.table} package and
 \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
 }
-\keyword{icesat2.atl08_dt}
-\keyword{internal}

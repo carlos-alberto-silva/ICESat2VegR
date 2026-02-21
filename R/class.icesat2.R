@@ -20,7 +20,7 @@ setRefClass("icesat2.granule_cloud")
 #' @param drop Unused, just to match the generic signature.
 #' @param ... Additional arguments (not used).
 #' @return An object of class `icesat2.granule_cloud`.
-#' @keywords internal
+#' @export
 setMethod(
   "[",
   signature = c("icesat2.granules_cloud"),
@@ -107,7 +107,7 @@ icesat2.atl03_h5 <- setClass(
 #' \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
 #'
 #' @import methods
-#' @keywords internal
+#' @export
 icesat2.atl08_h5 <- setClass(
   Class = "icesat2.atl08_h5",
   contains = "icesat2.h5"
@@ -121,7 +121,7 @@ setRefClass("icesat2.h5_cloud")
 #' \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
 #'
 #' @import methods
-#' @keywords internal icesat2.atl08_dt
+#' @export
 setRefClass("icesat2.atl08_dt")
 
 #' Class for ATL03 attributes
@@ -131,7 +131,7 @@ setRefClass("icesat2.atl08_dt")
 #'
 #' @import methods
 #' @importClassesFrom data.table data.table
-#' @keywords internal
+#' @export
 setRefClass("icesat2.atl03_dt")
 
 #' Class for ATL03 segment attributes
@@ -141,7 +141,7 @@ setRefClass("icesat2.atl03_dt")
 #'
 #' @import methods
 #' @importClassesFrom data.table data.table
-#' @keywords internal
+#' @export
 setRefClass("icesat2.atl03_seg_dt")
 
 #' Class for joined ATL03 and ATL08 attributes
@@ -150,7 +150,7 @@ setRefClass("icesat2.atl03_seg_dt")
 #' \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
 #'
 #' @import methods
-#' @keywords internal
+#' @export
 setRefClass("icesat2.atl03atl08_dt")
 
 

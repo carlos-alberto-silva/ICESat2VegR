@@ -195,7 +195,7 @@ setMethod(
 )
 
 #' @method length icesat2.predict_h5
-#' @keywords internal
+#' @export
 "length.icesat2.predict_h5" <- function(x) {
   exp(sum(log(x[["latitude"]]$dims)))
 }
@@ -208,7 +208,7 @@ setMethod(
 #'
 #' @return Nothing, just closes the HDF5 file pointer
 #' @method close icesat2.predict_h5
-#' @keywords internal
+#' @export
 "close.icesat2.predict_h5" <- function(con, ...) {
   con$close_all()
 }

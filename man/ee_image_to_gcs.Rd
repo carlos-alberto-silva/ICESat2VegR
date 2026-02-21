@@ -42,4 +42,3 @@ An unstarted EE \code{Task} (Python object).
 \description{
 Thin wrapper over \code{ee$batch$Export$image$toCloudStorage()}.
 }
-\keyword{internal}

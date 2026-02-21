@@ -34,4 +34,3 @@ An unstarted EE \code{Task} (Python object).
 Thin wrapper over \code{ee$batch$Export$image$toAsset()}. Optionally
 deletes an existing asset when \code{overwrite=TRUE} (requires appropriate perms).
 }
-\keyword{internal}

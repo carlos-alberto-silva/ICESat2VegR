@@ -24,4 +24,3 @@ and constructs a corresponding Google Earth Engine random forest
 This implementation always returns an \code{ee$Classifier} and does not use
 \code{ee$Regressor}.
 }
-\keyword{internal}

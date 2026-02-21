@@ -10,7 +10,7 @@
 #' operator from a h5 file.
 #'
 #' @import R6
-#' @keywords internal
+#' @export
 ICESat2.h5ds_local <- R6::R6Class("ICESat2.h5ds_local", list(
   ds = NULL,
   dims = NULL,
@@ -55,7 +55,7 @@ ICESat2.h5ds_local <- R6::R6Class("ICESat2.h5ds_local", list(
   }
 ))
 
-#' @keywords internal
+#' @export
 "[.ICESat2.h5ds_local" <- function(x, ...) {
   args <- eval(substitute(alist(...)))
   for (ii in seq_along(args)) {
@@ -67,7 +67,7 @@ ICESat2.h5ds_local <- R6::R6Class("ICESat2.h5ds_local", list(
   do.call("[", c(list(x$ds), args))
 }
 
-#' @keywords internal
+#' @export
 "length.ICESat2.h5ds_local" <- function(x) {
   exp(sum(log(x$dims)))
 }

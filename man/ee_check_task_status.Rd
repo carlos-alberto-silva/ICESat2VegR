@@ -17,4 +17,3 @@ The task status (list).
 \description{
 One-shot task status check
 }
-\keyword{internal}

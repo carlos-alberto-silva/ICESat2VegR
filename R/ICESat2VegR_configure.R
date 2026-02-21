@@ -65,49 +65,49 @@
   project
 }
 
-#' Lightweight Earth Engine initialization helper
-#'
-#' This function is a low-level helper to initialize the Python
-#' `earthengine-api` client through `reticulate`. It supports both:
-#'
-#' \itemize{
-#'   \item Service Account (SA) authentication via JSON key file.
-#'   \item User OAuth authentication (browser flow).
-#' }
-#'
-#' It validates and normalizes the Google Cloud project ID, initializes the
-#' Earth Engine client, and sets `EE_PROJECT` in the environment for
-#' downstream use (e.g., in Python code).
-#'
-#' @param project Character. GCP Project ID or numeric project number. If
-#'   `NULL` or empty, the environment variable `EE_PROJECT` is used
-#'   (and must be set).
-#' @param service_account Optional service account email. If provided, a
-#'   `keyfile` must also be supplied.
-#' @param keyfile Optional path to the service account JSON key file (required
-#'   if `service_account` is provided).
-#' @param quiet Logical. Suppress messages if `TRUE`.
-#' @param force_auth Logical. If `TRUE`, force a user OAuth flow prior to
-#'   calling `ee$Initialize()`.
-#'
-#' @return Logical `TRUE` on success; otherwise an error is raised.
-#' @keywords internal
-#'
-#' @examples
-#' \dontrun{
-#'   # Using user OAuth and EE_PROJECT from environment:
-#'   tryInitializeEarthEngine()
-#'
-#'   # Using explicit project id and OAuth
-#'   tryInitializeEarthEngine(project = "my-ee-project")
-#'
-#'   # Using a service account
-#'   tryInitializeEarthEngine(
-#'     project         = "my-ee-project",
-#'     service_account = "my-sa@my-ee-project.iam.gserviceaccount.com",
-#'     keyfile         = "path/to/key.json"
-#'   )
-#' }
+# Lightweight Earth Engine initialization helper
+#
+# This function is a low-level helper to initialize the Python
+# `earthengine-api` client through `reticulate`. It supports both:
+#
+# \itemize{
+#   \item Service Account (SA) authentication via JSON key file.
+#   \item User OAuth authentication (browser flow).
+# }
+#
+# It validates and normalizes the Google Cloud project ID, initializes the
+# Earth Engine client, and sets `EE_PROJECT` in the environment for
+# downstream use (e.g., in Python code).
+#
+# @param project Character. GCP Project ID or numeric project number. If
+#   `NULL` or empty, the environment variable `EE_PROJECT` is used
+#   (and must be set).
+# @param service_account Optional service account email. If provided, a
+#   `keyfile` must also be supplied.
+# @param keyfile Optional path to the service account JSON key file (required
+#   if `service_account` is provided).
+# @param quiet Logical. Suppress messages if `TRUE`.
+# @param force_auth Logical. If `TRUE`, force a user OAuth flow prior to
+#   calling `ee$Initialize()`.
+#
+# @return Logical `TRUE` on success; otherwise an error is raised.
+# @keywords internal
+#
+# @examples
+# \dontrun{
+#   # Using user OAuth and EE_PROJECT from environment:
+#   tryInitializeEarthEngine()
+#
+#   # Using explicit project id and OAuth
+#   tryInitializeEarthEngine(project = "my-ee-project")
+#
+#   # Using a service account
+#   tryInitializeEarthEngine(
+#     project         = "my-ee-project",
+#     service_account = "my-sa@my-ee-project.iam.gserviceaccount.com",
+#     keyfile         = "path/to/key.json"
+#   )
+# }
 tryInitializeEarthEngine <- function(
     project = Sys.getenv("EE_PROJECT", unset = NA),
     service_account = NULL,

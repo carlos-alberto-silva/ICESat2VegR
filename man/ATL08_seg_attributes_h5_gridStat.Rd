@@ -121,7 +121,6 @@ values. It is defined as:
 }
 \examples{
 \dontrun{
-library(ICESat2VegR)
 library(data.table)
 
 # Specifying the path to ATL08 file

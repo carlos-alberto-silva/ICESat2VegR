@@ -45,10 +45,8 @@ seg_ancillary_extract <- function(stack, geom, scale = 10, chunk_size = 1000) {
 #' @return An ee.FeatureCollection with the properties extracted from the
 #' stack of images from ee.
 #'
-#' @keywords internal
+#' @export
 extract <- function(stack, geom, scale) {
-  ee <- reticulate::import("ee", delay_load = FALSE)
-
   img <- .compose_ee_image(stack)    # ee.Image
   fc  <- .points_to_ee_fc(geom)      # ee.FeatureCollection of points
 

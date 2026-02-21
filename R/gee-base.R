@@ -37,7 +37,7 @@ ee_initialize <- function(project = Sys.getenv("EE_PROJECT", unset = NA),
 #'
 #' @return The number of images in the ImageCollection
 #'
-#' @keywords internal
+#' @export
 setMethod(
   "length",
   signature = c("ee.imagecollection.ImageCollection"),
@@ -52,12 +52,12 @@ setMethod(
 #'
 #' @return The url for the tile service.
 #'
-#' @keywords internal
+#' @export
 getTileUrl <- function(img) {
   img$getMapId()$tile_fetcher$url_format
 }
 
-#' @keywords internal
+#' @export
 "*.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
     return(invisible(ee$Image$constant(e1)$multiply(e2)))
@@ -65,7 +65,7 @@ getTileUrl <- function(img) {
   return(invisible(e1$multiply(e2)))
 }
 
-#' @keywords internal
+#' @export
 "/.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
     return(invisible(ee$Image$constant(e1)$divide(e2)))
@@ -73,7 +73,7 @@ getTileUrl <- function(img) {
   return(invisible(e1$divide(e2)))
 }
 
-#' @keywords internal
+#' @export
 "+.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
     return(invisible(ee$Image$constant(e1)$add(e2)))
@@ -81,7 +81,7 @@ getTileUrl <- function(img) {
   return(invisible(e1$add(e2)))
 }
 
-#' @keywords internal
+#' @export
 "-.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
     return(invisible(ee$Image$constant(e1)$subtract(e2)))
@@ -89,7 +89,7 @@ getTileUrl <- function(img) {
   return(invisible(e1$subtract(e2)))
 }
 
-#' @keywords internal
+#' @export
 "|.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
     return(invisible(ee$Image$constant(e1)$bitwiseOr(e2)))
@@ -97,7 +97,7 @@ getTileUrl <- function(img) {
   return(invisible(e1$bitwiseOr(e2)))
 }
 
-#' @keywords internal
+#' @export
 "&.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
     return(invisible(ee$Image$constant(e1)$bitwiseAnd(e2)))
@@ -105,10 +105,10 @@ getTileUrl <- function(img) {
   return(invisible(e1$bitwiseAnd(e2)))
 }
 
-#' @keywords internal
+#' @export
 "!.ee.image.Image" <- function(e1) e1$Not()
 
-#' @keywords internal
+#' @export
 "^.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
     return(invisible(ee$Image$constant(e1)$pow(e2)))
@@ -116,17 +116,17 @@ getTileUrl <- function(img) {
   return(invisible(e1$pow(e2)))
 }
 
-#' @keywords internal
+#' @export
 "exp.ee.image.Image" <- function(x) {
   return(invisible(x$exp()))
 }
 
-#' @keywords internal
+#' @export
 "log.ee.image.Image" <- function(x, base = NULL) {
   return(invisible(x$log()))
 }
 
-#' @keywords internal
+#' @export
 ">.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
     return(invisible(ee$Image$constant(e1)$gt(e2)))
@@ -134,7 +134,7 @@ getTileUrl <- function(img) {
   return(invisible(e1$gt(e2)))
 }
 
-#' @keywords internal
+#' @export
 "<.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
     return(invisible(ee$Image$constant(e1)$lt(e2)))
@@ -142,7 +142,7 @@ getTileUrl <- function(img) {
   return(invisible(e1$lt(e2)))
 }
 
-#' @keywords internal
+#' @export
 ">=.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
     return(invisible(ee$Image$constant(e1)$gte(e2)))
@@ -150,7 +150,7 @@ getTileUrl <- function(img) {
   return(invisible(e1$gte(e2)))
 }
 
-#' @keywords internal
+#' @export
 "<=.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
     return(invisible(ee$Image$constant(e1)$lte(e2)))
@@ -158,7 +158,7 @@ getTileUrl <- function(img) {
   return(invisible(e1$lte(e2)))
 }
 
-#' @keywords internal
+#' @export
 "%%.ee.image.Image" <- function(e1, e2) {
   if (!inherits(e1, "ee.image.Image")) {
     return(invisible(ee$Image$constant(e1)$mod(e2)))
@@ -166,33 +166,33 @@ getTileUrl <- function(img) {
   return(invisible(e1$mod(e2)))
 }
 
-#' @keywords internal
+#' @export
 "as.integer.ee.image.Image" <- function(x, ...) {
   return(invisible(x$int()))
 }
 
-#' @keywords internal
+#' @export
 "[[.ee.image.Image" <- function(x, ...) {
   return(invisible(do.call(x$select, list(...))))
 }
 
-#' @keywords internal
+#' @export
 "names.ee.imagecollection.ImageCollection" <- function(x) {
   return(invisible(x$first()$bandNames()$getInfo()))
 }
 
 
-#' @keywords internal
+#' @export
 "names.ee.image.Image" <- function(x) {
   return(invisible(x$bandNames()$getInfo()))
 }
 
-#' @keywords internal
+#' @export
 "names<-.ee.image.Image" <- function(x, value) {
   return(invisible(x$select(names(x), value)))
 }
 
-#' @keywords internal
+#' @export
 "[[<-.ee.image.Image" <- function(x, i, j, ..., value) {
   if (is.character(i) && i != "") {
     value2 <- value$rename(i)
@@ -202,12 +202,12 @@ getTileUrl <- function(img) {
   return(invisible(x$addBands(value2, overwrite = TRUE)))
 }
 
-#' @keywords internal
+#' @export
 "mean.ee.image.Image" <- function(x, ...) {
   return(invisible(x$getMapId()$tile_fetcher$url_format))
 }
 
-#' @keywords internal
+#' @export
 "min.ee.image.Image" <- function(x, ...) {
   args <- list(...)
   args[["na.rm"]] <- NULL
@@ -226,7 +226,7 @@ getTileUrl <- function(img) {
   )))
 }
 
-#' @keywords internal
+#' @export
 "max.ee.image.Image" <- function(x, ...) {
   args <- list(...)
   args[["na.rm"]] <- NULL
@@ -245,7 +245,7 @@ getTileUrl <- function(img) {
   )))
 }
 
-#' @keywords internal
+#' @export
 "range.ee.image.Image" <- function(x, ...) {
   return(invisible(rev(unlist(x$reduceRegion(
     reducer = ee$Reducer$minMax(),
@@ -258,7 +258,7 @@ getTileUrl <- function(img) {
   )$getInfo()))))
 }
 
-#' @keywords internal
+#' @export
 "sqrt.ee.image.Image" <- function(x, ...) {
   return(invisible(x$sqrt()))
 }
@@ -324,18 +324,18 @@ getTileUrl <- function(img) {
 #'
 #' https://developers.google.com/earth-engine/apidocs/ee-image-glcmtexture
 #'
-#' @keywords internal
+#' @export
 glcmTexture <- function(x, size = 1, kernel = NULL, average = TRUE) {
   UseMethod("glcmTexture")
 }
 
-#' @keywords internal
+#' @export
 "glcmTexture.ee.image.Image" <- function(x, size = 1, kernel = NULL, average = TRUE) {
   return(invisible(x$glcmTexture(size = size, kernel = kernel, average = average)))
 }
 
 
-#' @keywords internal
+#' @export
 "c.ee.imagecollection.ImageCollection" <- function(x, ...) {
   args <- list(...)
   result <- x
@@ -346,13 +346,13 @@ glcmTexture <- function(x, size = 1, kernel = NULL, average = TRUE) {
 }
 
 
-#' @keywords internal
+#' @export
 "c.ee.image.Image" <- function(x, ...) {
   return(invisible(ee$Image$cat(x, ...)))
 }
 
 
-#' @keywords internal
+#' @export
 "print.ee.image.Image" <- function(x, ...) {
   cat("ee.image.Image\n\n")
   cat("Bands\n")

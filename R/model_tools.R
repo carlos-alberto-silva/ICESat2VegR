@@ -83,7 +83,7 @@ ee_to_dt <- function(sampled) {
 #' `ee$Classifier$decisionTreeEnsemble()` that can be used with
 #' `ee$Image$classify()`.
 #'
-#' @keywords internal
+#' @export
 build_ee_forest <- function(rf) {
   if (!inherits(rf, "randomForest")) {
     stop("'rf' must be a randomForest::randomForest object.")

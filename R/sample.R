@@ -68,7 +68,7 @@ sample.default <- function(x, ...) base::sample(x, ...)
 #' @keywords internal
 setRefClass("icesat2_sampling_method")
 
-#' @keywords internal
+#' @export
 "+.icesat2_sampling_method" <- function(e1, e2) {
   ii <- 1
   chainSampling <- e1
