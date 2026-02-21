@@ -19,7 +19,7 @@ seg_ancillary_extract <- function(stack, geom, scale = 10, chunk_size = 1000) {
 
   for (ii in seq.int(1L, n, by = chunk_size)) {
     tail <- min(ii + chunk_size - 1L, n)
-    message(sprintf("Processing %d–%d of %d", ii, tail, n))
+    message(sprintf("Processing %d-%d of %d", ii, tail, n))
 
     sampled <- extract(stack, geom[ii:tail], scale)
 

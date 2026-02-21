@@ -1,4 +1,4 @@
-#' The class representing the h5 file opened from the cloud for cloud computing.
+#' The class representing the h5 file opened from the cloud for cloud computing
 #'
 #' @field h5 A pointer to `h5py` in case the user wants to access features not
 #' implemented yet

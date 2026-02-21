@@ -7,28 +7,28 @@
 .rfImpScale(x, scaling = c("mir", "se"), sort = FALSE)
 }
 \arguments{
-\item{x}{A \code{\link[randomForest]{randomForest}} object (classification
+\item{x}{A \link[randomForest:randomForest]{randomForest::randomForest} object (classification
 or regression) with permutation importance computed.}
 
-\item{scaling}{Character; type of importance scaling, either \code{"mir"} or
-\code{"se"}.}
+\item{scaling}{Character; type of importance scaling, either \code{mir} or
+\code{se}.}
 
 \item{sort}{Logical; if \code{TRUE}, the output is sorted by importance.}
 }
 \value{
 A data.frame with:
 \itemize{
-\item \code{parameter} – variable name
-\item \code{importance} – scaled importance value
+\item \code{parameter} - variable name
+\item \code{importance} - scaled importance value
 }
 }
 \description{
-Internal helper for scaling permutation-based \pkg{randomForest} importance
-values. Supports the "mir" and "se" scaling options.
+Internal helper for scaling permutation-based \strong{randomForest} importance
+values. Supports the \code{mir} and `se`` scaling options.
 }
 \details{
 The scaled importance measures are calculated as:
-\deqn{ \mathrm{mir} = i / \max(i)}
-\deqn{ \mathrm{se}  = (i / se) / \sum(i / se)}
+\deqn{\mathrm{mir}_j = \frac{i_j}{\max(i)}}
+\deqn{\mathrm{se}_j = \frac{i_j / \mathrm{SE}_j}{\sum_k (i_k / \mathrm{SE}_k)}}
 }
 \keyword{internal}

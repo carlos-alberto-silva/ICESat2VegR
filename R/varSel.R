@@ -4,26 +4,25 @@
 
 #' @title Internal scaling of Random Forest importance values
 #' @description
-#' Internal helper for scaling permutation-based \pkg{randomForest} importance
-#' values. Supports the "mir" and "se" scaling options.
+#' Internal helper for scaling permutation-based **randomForest** importance
+#' values. Supports the `mir` and `se`` scaling options.
 #'
-#' @param x A \code{\link[randomForest]{randomForest}} object (classification
+#' @param x A [randomForest::randomForest] object (classification
 #'   or regression) with permutation importance computed.
-#' @param scaling Character; type of importance scaling, either \code{"mir"} or
-#'   \code{"se"}.
-#' @param sort Logical; if \code{TRUE}, the output is sorted by importance.
+#' @param scaling Character; type of importance scaling, either `mir` or
+#'   `se`.
+#' @param sort Logical; if `TRUE`, the output is sorted by importance.
 #'
 #' @return
 #' A data.frame with:
-#' \itemize{
-#'   \item \code{parameter} – variable name
-#'   \item \code{importance} – scaled importance value
-#' }
+#'
+#' - `parameter` - variable name
+#' - `importance` - scaled importance value
 #'
 #' @details
 #' The scaled importance measures are calculated as:
-#' \deqn{ \mathrm{mir} = i / \max(i)}
-#' \deqn{ \mathrm{se}  = (i / se) / \sum(i / se)}
+#' \deqn{\mathrm{mir}_j = \frac{i_j}{\max(i)}}
+#' \deqn{\mathrm{se}_j = \frac{i_j / \mathrm{SE}_j}{\sum_k (i_k / \mathrm{SE}_k)}}
 #'
 #' @keywords internal
 .rfImpScale <- function(x,
@@ -96,18 +95,17 @@
 #' @title Internal confusion matrix accuracy
 #' @description
 #' Internal helper to compute overall PCC, producer's accuracy and kappa from
-#' a confusion matrix. Adapted conceptually from \code{rfUtilities::accuracy}.
+#' a confusion matrix. Adapted conceptually from `rfUtilities::accuracy`.
 #'
 #' @param cmat Confusion matrix with rows = reference (true) classes and
 #'   columns = predicted classes.
 #'
 #' @return
 #' A list with:
-#' \itemize{
-#'   \item \code{PCC} – overall percent correctly classified.
-#'   \item \code{kappa} – Cohen's kappa coefficient.
-#'   \item \code{producers.accuracy} – vector of producer's accuracy per class.
-#' }
+#' - `PCC` - overall percent correctly classified.
+#' - `kappa` - Cohen's kappa coefficient.
+#' - `producers.accuracy` - vector of producer's accuracy per class.
+#'
 #'
 #' @keywords internal
 .rfAccuracy <- function(cmat) {
@@ -150,107 +148,108 @@
 #' @title Random Forest Variable Selection (Breiman-only)
 #' @description
 #' Implements the Random Forest model selection approach of Murphy et al. (2010),
-#' using Breiman's original \pkg{randomForest} implementation. This is a simplified
-#' adaptation of \code{rfUtilities::rf.modelSel}, restricted to the Breiman
+#' using Breiman's original **randomForest** implementation. This is a simplified
+#' adaptation of `rfUtilities::rf.modelSel`, restricted to the Breiman
 #' implementation and modified for the ICESat2VegR package.
 #'
 #' It returns the selected variables and importance metrics, but does not fit
 #' a final model.
 #'
 #' @param xdata Matrix or data.frame of predictor variables (columns = predictors).
-#' @param ydata Response vector. For classification, \code{ydata} must be a factor;
+#' @param ydata Response vector. For classification, `ydata` must be a factor;
 #'   otherwise the model is fit in regression mode.
 #' @param imp.scale Character; type of scaling for importance values, either
-#'   \code{"mir"} or \code{"se"}. Default is \code{"mir"}.
+#'   `mir` or `se`. Default is `mir`.
 #' @param r Numeric vector of importance percentiles to test, e.g.,
-#'   \code{c(0.25, 0.50, 0.75)}. These percentiles are used to define thresholds
+#'   `c(0.25, 0.50, 0.75)`. These percentiles are used to define thresholds
 #'   for building nested models during selection.
-#' @param min.imp Optional numeric in \eqn{[0,1]} used as a minimum scaled
+#' @param min.imp Optional numeric in \eqn{[ 0,1 ]} used as a minimum scaled
 #'   importance cutoff (in MIR or SE scale) to filter the final set of variables.
 #'   Variables whose scaled importance is below this threshold are dropped from
-#'   the selected set \code{selvars}. If \code{NULL} (default), no cutoff is
+#'   the selected set `selvars`. If `NULL` (default), no cutoff is
 #'   applied after the Murphy-style model selection.
 #' @param seed Optional integer; sets the random seed in the global R environment.
 #'   This is strongly recommended for reproducibility.
 #' @param parsimony Numeric in (0,1); threshold for selecting among competing
-#'   models. If specified, models whose errors are within \code{parsimony} of
+#'   models. If specified, models whose errors are within `parsimony` of
 #'   the best model (OOB / class error for classification, variance explained /
 #'   MSE for regression) are considered, and the one with the fewest parameters
 #'   is chosen.
 #' @param kappa Logical; use the chance-corrected \eqn{\kappa} statistic as the
 #'   primary optimization criterion for classification instead of percent
 #'   correctly classified (PCC). This corrects PCC for random agreement.
-#' @param ... Additional arguments passed to \code{\link[randomForest]{randomForest}},
-#'   e.g. \code{ntree = 1000}, \code{replace = TRUE}, \code{proximity = TRUE}.
+#' @param ... Additional arguments passed to [randomForest::randomForest()],
+#'   e.g. `ntree = 1000`, `replace = TRUE`, `proximity = TRUE`.
 #'
-#' @return An object of class \code{"varSel"} (a list) with components:
-#' \itemize{
-#'   \item \code{selvars} Character vector of selected variable names (after
-#'     applying \code{min.imp}, if provided).
-#'   \item \code{test} Data.frame of model-selection diagnostics, containing
+#' @return An object of class `varSel` (a list) with components:
+#'   - `selvars` Character vector of selected variable names (after
+#'     applying `min.imp`, if provided).
+#'   - `test` Data.frame of model-selection diagnostics, containing
 #'     error metrics, threshold, number of parameters, and the variables used
 #'     in each candidate model (for inspection only).
-#'   \item \code{importance} Data.frame of scaled importance values for all
-#'     variables in the full model (columns \code{parameter}, \code{importance}).
-#'   \item \code{sel.importance} Data.frame of scaled importance values for the
+#'   - `importance` Data.frame of scaled importance values for all
+#'     variables in the full model (columns `parameter`, `importance`).
+#'   - `sel.importance` Data.frame of scaled importance values for the
 #'     selected variables.
-#'   \item \code{parameters} List of variables used in each candidate model.
-#'   \item \code{scaling} Character; the importance scaling used (\code{"mir"}
-#'     or \code{"se"}).
-#' }
+#'   - `parameters` List of variables used in each candidate model.
+#'   - `scaling` Character; the importance scaling used (`mir`
+#'     or `se`).
+#'
 #'
 #' @details
-#' For classification, ensure that \code{ydata} is a factor; otherwise the model
+#' For classification, ensure that `ydata` is a factor; otherwise the model
 #' is fit in regression mode.
 #'
-#' \strong{Selection strategy:}
+#' **Selection strategy:**
 #'
-#' \itemize{
-#'   \item For classification, candidate models are compared using OOB PCC (or
-#'     \eqn{\kappa}, if \code{kappa = TRUE}) and maximum within-class error,
+#'   - For classification, candidate models are compared using OOB PCC (or
+#'     \eqn{\kappa}, if `kappa = TRUE`) and maximum within-class error,
 #'     with preference for more parsimonious models.
-#'   \item For regression, candidate models are compared using percent variance
+#'   - For regression, candidate models are compared using percent variance
 #'     explained and MSE, with preference for more parsimonious models.
-#'   \item After the best model is chosen, the optional \code{min.imp} cutoff is
+#'   - After the best model is chosen, the optional `min.imp` cutoff is
 #'     applied to the scaled importance (MIR/SE) from the full model to remove
-#'     weak predictors from the final set \code{selvars}.
-#' }
+#'     weak predictors from the final set `selvars`.
 #'
-#' Typical choices for \code{min.imp}:
-#' \itemize{
-#'   \item MIR: \code{min.imp} in \eqn{[0.1, 0.3]} (e.g., keep variables with
+#'
+#' Typical choices for `min.imp`:
+#'   - MIR: `min.imp` in \eqn{[0.1, 0.3]} (e.g., keep variables with
 #'     at least 20\% of the maximum importance).
-#'   \item SE: \code{min.imp} in \eqn{[0.01, 0.05]}, remembering that SE-scaled
+#'   - SE: `min.imp` in \eqn{[0.01, 0.05]}, remembering that SE-scaled
 #'     importance values sum to 1.
-#' }
+#'
 #'
 #' @examples
-#' \donttest{
-#'   require(randomForest)
+#' require(randomForest)
 #'
-#'   data(airquality)
-#'   airquality <- na.omit(airquality)
+#' data(airquality)
+#' airquality <- na.omit(airquality)
 #'
-#'   xdata <- airquality[, 2:6]
-#'   ydata <- airquality[, 1]
-#'
-#'   ## Regression example with MIR scaling and importance cutoff
-#'   vs.regress <- varSel(
-#'     xdata     = xdata,
-#'     ydata     = ydata,
-#'     imp.scale = "mir",
-#'     ntree     = 500,
-#'     min.imp   = 0.2
-#'   )
-#'
-#'   vs.regress$selvars
-#'
-#'   ## Plot all variables, highlighting selected ones
-#'   plot(vs.regress, which = "importance")
+#' xdata <- airquality[, 2:6]
+#' ydata <- airquality[, 1]
+#' ntree <- 500
+#' \dontshow{
+#'   # Lightweight version for R CMD check
+#'   xdata <- airquality[1:50, 2:6]
+#'   ydata <- airquality[1:50, 1]
+#'   ntree <- 50
 #' }
+#' ## Regression example with MIR scaling and importance cutoff
+#' vs.regress <- varSel(
+#'   xdata     = xdata,
+#'   ydata     = ydata,
+#'   imp.scale = "mir",
+#'   ntree     = ntree,
+#'   min.imp   = 0.2
+#' )
+#'
+#' vs.regress$selvars
+#'
+#' ## Plot all variables, highlighting selected ones
+#' plot(vs.regress, which = "importance")
 #'
 #' @seealso
-#' \code{\link[randomForest]{randomForest}} and \code{\link{plot.varSel}}.
+#' [randomForest::randomForest()] and [plot.varSel()].
 #'
 #' @export
 varSel <- function(xdata,
@@ -336,7 +335,7 @@ varSel <- function(xdata,
     imp <- imp[order(imp$importance), ]
     imp$p <- findInterval(imp$importance, r, all.inside = TRUE)
 
-    # Aviso sobre ranges sem variáveis
+    # Warnings about ranges without variables
     miss.idx <- which(
       !sort(unique(findInterval(expected, r, all.inside = TRUE))) %in%
         sort(unique(imp$p))
@@ -355,7 +354,7 @@ varSel <- function(xdata,
       for (i in miss.range) message(i)
     }
 
-    # Modelos sequenciais por limiar de importância
+    # Sequencial models by importance threshold
     for (p in sort(unique(imp$p))) {
       idx.p     <- which(imp$p == p)
       sel.imp.p <- imp[idx.p, , drop = FALSE]
@@ -364,7 +363,7 @@ varSel <- function(xdata,
         sel.vars <- imp$parameter
       }
 
-      # Se não muda o conjunto de parâmetros, pula
+      # Skip if parameters don't change
       if (!any((sel.vars %in% sel.imp.p$parameter) == FALSE)) {
         rng <- range(expected[range.idx %in% p])
         warning(sprintf(
@@ -420,7 +419,7 @@ varSel <- function(xdata,
       }
     }
 
-    # Empilha model.vars em data.frame (para inspeção)
+    # Stacks model.vars and data.frame for inspecting
     n <- max(unlist(lapply(model.vars, length)))
     for (l in seq_along(model.vars)) {
       x <- model.vars[[l]]
@@ -434,7 +433,7 @@ varSel <- function(xdata,
     rownames(errors) <- seq_len(nrow(errors))
     errors <- errors[order(errors$class.error, errors$error, errors$nparameters), ]
 
-    # Limiar de parcimônia
+    # Parsimony threshold
     if (!is.null(parsimony)) {
       if (parsimony < 1e-8 || parsimony > 0.9) {
         stop("'parsimony' must range between 0 and 1.")
@@ -454,17 +453,17 @@ varSel <- function(xdata,
       final.th <- errors$threshold[1]
     }
 
-    # Variáveis do modelo final
+    # Variables in the final model
     sel.row    <- which(errors$threshold == final.th)[1]
     param.cols <- grep("^parameter", names(errors))
     selvec     <- as.character(unlist(errors[sel.row, param.cols]))
     selvec     <- selvec[!is.na(selvec) & selvec != ""]
     selvars    <- unique(selvec)
 
-    # Coloca linha escolhida no topo de 'test'
+    # Put chosen row at the top of 'test'
     errors <- rbind(errors[sel.row, ], errors[-sel.row, ])
 
-    # Importância dos selecionados (antes de min.imp)
+    # Importance before scalling (min.imp)
     sel.importance <- imp[imp$parameter %in% selvars, c("parameter", "importance")]
 
     ## ---------------------------------------------------------------------------
@@ -612,7 +611,7 @@ varSel <- function(xdata,
   }
 
   ## -------------------------------------------------------------------------
-  ##  Aplicar cutoff de importância (min.imp), se fornecido
+  ##  Apply cutoff if specified (min.imp)
   ## -------------------------------------------------------------------------
   if (!is.null(min.imp)) {
     if (!is.numeric(min.imp) || length(min.imp) != 1L ||
@@ -620,7 +619,7 @@ varSel <- function(xdata,
       stop("'min.imp' must be a single numeric between 0 and 1.")
     }
 
-    # usa importância da full model (imp) para filtrar variáveis finais
+    # Use full model importance for filtering final set
     keep <- imp$importance >= min.imp
     strong.vars <- imp$parameter[keep]
 
@@ -651,61 +650,63 @@ varSel <- function(xdata,
 ##  plot.varSel: horizontal barplot with selection highlighting
 ## ============================================================================
 
-#' Plot variable importance for \code{varSel} objects
+#' Plot variable importance for `varSel` objects
 #'
 #' @description
-#' Plot scaled variable importance for a \code{varSel} object using a horizontal
+#' Plot scaled variable importance for a `varSel` object using a horizontal
 #' barplot. Variables are ordered so that the most important metrics appear at
-#' the \strong{top} (largest bars).
+#' the **top** (largest bars).
 #'
-#' When \code{which = "importance"} all variables are shown, and those selected
-#' by \code{\link{varSel}} are highlighted in a different color. An optional
-#' color palette (e.g., \code{viridis::inferno}) can be supplied to color the
+#' When `which = "importance"` all variables are shown, and those selected
+#' by [varSel()] are highlighted in a different color. An optional
+#' color palette (e.g., `viridis::inferno`) can be supplied to color the
 #' bars by importance.
 #'
-#' @param x An object of class \code{"varSel"}.
-#' @param which Character; either \code{"sel.importance"} (default) to plot the
-#'   importance of selected variables only, or \code{"importance"} to plot the
+#' @param x An object of class `varSel`.
+#' @param which Character; either `sel.importance` (default) to plot the
+#'   importance of selected variables only, or `importance` to plot the
 #'   full-model importance (all predictors).
 #' @param main Plot title.
 #' @param xlab Label for the x-axis (importance scale).
 #' @param col.selected Base color for selected variables when no palette is given.
 #' @param col.other Base color for non-selected variables when no palette is given.
 #' @param palette Optional color palette. Can be:
-#'   \itemize{
-#'     \item a function \code{f(n)} returning \code{n} colors
-#'       (e.g., \code{viridis::inferno}),
-#'     \item or a character vector of colors used to build a gradient via
-#'       \code{\link[grDevices]{colorRampPalette}}.
-#'   }
+#'     - a function `f(n)` returning `n` colors
+#'       (e.g., `viridis::inferno`),
+#'     - or a character vector of colors used to build a gradient via
+#'       [grDevices::colorRampPalette].
+#' 
 #'   The palette is applied to all bars and then the color of selected variables
-#'   is overridden by \code{col.selected} when \code{which = "importance"}.
+#'   is overridden by `col.selected` when `which = "importance"`.
 #' @param legend.loc Legend location, e.g. "bottomright"
 #' @param ... Additional graphical arguments passed to
-#'   \code{\link[graphics]{barplot}}.
+#'   [graphics::barplot].
 #'
 #' @examples
-#' \donttest{
-#'   require(randomForest)
+#' require(randomForest)
 #'
-#'   data(airquality)
-#'   airquality <- na.omit(airquality)
+#' data(airquality)
+#' airquality <- na.omit(airquality)
 #'
-#'   xdata <- airquality[, 2:6]
-#'   ydata <- airquality[, 1]
+#' xdata <- airquality[, 2:6]
+#' ydata <- airquality[, 1]
 #'
-#'   vs <- varSel(xdata, ydata, ntree = 200, min.imp = 0.2)
+#' ntree = 200
+#' \dontshow{
+#'  ntree = 10
+#' }
+#' vs <- varSel(xdata, ydata, ntree = ntree, min.imp = 0.2)
 #'
-#'   ## Selected variables only
-#'   plot(vs, which = "sel.importance")
+#' ## Selected variables only
+#' plot(vs, which = "sel.importance")
 #'
-#'   ## All variables, highlighting selected ones, with inferno palette
-#'   if (requireNamespace("viridis", quietly = TRUE)) {
-#'     plot(vs, which = "importance", palette = viridis::inferno)
-#'   }
+#' ## All variables, highlighting selected ones, with inferno palette
+#' if (requireNamespace("viridis", quietly = TRUE)) {
+#'   plot(vs, which = "importance", palette = viridis::inferno)
 #' }
 #'
 #' @method plot varSel
+#' @importFrom grDevices palette
 #' @export
 plot.varSel <- function(x,
                         which        = c("sel.importance", "importance"),
@@ -736,15 +737,15 @@ plot.varSel <- function(x,
     stop("Importance data.frame must contain 'parameter' and 'importance' columns.")
   }
 
-  # Ordenar de forma que a mais importante fique no topo:
-  # para barras horizontais, a barra "mais para o topo" é a última desenhada,
-  # então ordenamos em ordem crescente de importância.
+  # Sort so that the most important appears at the top:
+  # for horizontal bars, the "topmost" bar is the last one drawn,
+  # so we sort in increasing order of importance.
   imp <- imp[order(imp$importance, decreasing = FALSE), ]
   rownames(imp) <- NULL
 
   n <- nrow(imp)
 
-  # Paleta base (se fornecida)
+  # Base palette (if provided)
   if (!is.null(palette)) {
     if (is.function(palette)) {
       cols.base <- palette(n)
@@ -757,31 +758,31 @@ plot.varSel <- function(x,
     cols.base <- rep(col.other, n)
   }
 
-  # Cores finais
+  # Final colors
   cols <- cols.base
 
   if (which == "importance") {
     sel <- x$selvars
     if (!is.null(sel) && length(sel) > 0) {
       is.sel <- imp$parameter %in% sel
-      cols[is.sel] <- col.selected   # destaca selecionadas
+      cols[is.sel] <- col.selected   # highlight selected ones
     }
   } else {
-    # Apenas selecionadas: usa col.selected
+    # Only selected variables: use col.selected
     cols[] <- col.selected
   }
 
-  old.par <- par(no.readonly = TRUE)
-  on.exit(par(old.par))
+  old.par <- graphics::par(no.readonly = TRUE)
+  on.exit(graphics::par(old.par))
 
-  # espaço extra para labels no eixo Y
-  par(mar = c(5, 10, 4, 2))
+  # extra space for labels on the Y axis
+  graphics::par(mar = c(5, 10, 4, 2))
 
   graphics::barplot(
     height    = imp$importance,
     names.arg = imp$parameter,
     horiz     = TRUE,
-    las       = 1,     # labels horizontais no eixo y
+    las       = 1,     # horizontal labels on y-axis
     col       = cols,
     border    = NA,
     main      = main,
@@ -790,7 +791,7 @@ plot.varSel <- function(x,
   )
 
   if (which == "importance") {
-    legend(legend.loc,
+    graphics::legend(legend.loc,
            legend = c("Selected", "Not selected"),
            fill   = c(col.selected, col.other),
            bty    = "n")

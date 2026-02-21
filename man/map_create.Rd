@@ -23,15 +23,15 @@ predictor variables (bands) matching those used to train the model.}
 \item{aoi}{Optional EE geometry. If provided, the output map is clipped to it.}
 
 \item{reducer}{Aggregation method when \code{stack} is an image collection.
-One of: \code{"mosaic"} (default) or \code{"median"}.}
+One of: \code{mosaic} (default) or \code{median}.}
 
 \item{mode}{Controls how the estimator is applied. Currently supported:
 \itemize{
-\item \code{"auto"}       — (default) applies the classifier with
+\item \code{auto}       - (default) applies the classifier with
 \code{img$classify()}.
-\item \code{"classifier"} — explicitly applies \code{img$classify()}.
+\item \code{classifier} - explicitly applies \code{img$classify()}.
 }
-The \code{"regressor"} option is not supported, as the current
+The \code{regressor} option is not supported, as the current
 implementation only builds an Earth Engine classifier.}
 
 \item{to_float}{Logical; if \code{TRUE} (default) converts the output band to
@@ -46,9 +46,7 @@ to a Google Earth Engine (\strong{EE}) image or image collection and returns
 an EE image containing predicted values.
 
 The model is converted to an Earth Engine estimator using
-\code{\link{build_ee_forest}}, which internally serializes the R forest
-through the ICESat2VegR C++ module (\code{icesat2_module}) and constructs an
-EE \code{Classifier} via \code{ee$Classifier$decisionTreeEnsemble()}.
+\verb{\link{build_ee_forest`}, which internally serializes the R forest through the ICESat2VegR C++ module (}icesat2_module\verb{) and constructs an EE }Classifier\code{via}ee$Classifier$decisionTreeEnsemble()`.
 }
 \details{
 This function works for both:
@@ -58,14 +56,13 @@ This function works for both:
 using mosaic or median.
 }
 
-The output band is always named \code{"prediction_layer"}.
+The output band is always named \code{prediction_layer}.
 
 Properties from a zero-pixel placeholder image are copied to preserve band
 metadata.
 }
 \examples{
 \dontrun{
-  library(ICESat2VegR)
   library(randomForest)
 
   # Fit a model in R
@@ -92,7 +89,6 @@ metadata.
 
 }
 \seealso{
-\code{\link{build_ee_forest}}
-\code{randomForest::randomForest}
+\verb{\link{build_ee_forest`} }randomForest::randomForest`
 Earth Engine API reference: \url{https://developers.google.com/earth-engine}
 }

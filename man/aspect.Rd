@@ -10,7 +10,7 @@ aspect(x)
 \item{x}{An \code{ee$Image} representing a DEM from which aspect will be derived.}
 }
 \value{
-An \code{ee$Image} with one band named \code{"aspect"} containing aspect
+An \code{ee$Image} with one band named \code{aspect} containing aspect
 values in degrees clockwise from north.
 }
 \description{
@@ -19,7 +19,7 @@ Computes the terrain \emph{aspect} in degrees for each pixel of an Earth Engine
 
 Aspect describes the downslope direction of the steepest gradient and is
 expressed in degrees clockwise from north. The computation is performed
-using Earth Engine’s built-in \code{ee$Terrain$aspect()} function. As with slope,
+using Earth Engine's built-in \code{ee$Terrain$aspect()} function. As with slope,
 Earth Engine uses the 4-connected neighborhood, so missing values may occur
 near image edges.
 }

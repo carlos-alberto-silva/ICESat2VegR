@@ -16,7 +16,7 @@
 #' @param clip_obj Bounding extent used for clipping. Supported inputs:
 #'   \itemize{
 #'     \item A numeric vector of length 4:
-#'       \code{c(ul_lat, ul_lon, lr_lat, lr_lon)}, following the ICESat-2 CMS
+#'       `c(ul_lat, ul_lon, lr_lat, lr_lon)`, following the ICESat-2 CMS
 #'       bounding-box convention (upper-left latitude/longitude and
 #'       lower-right latitude/longitude).
 #'     \item A [`terra::SpatExtent`] object.
@@ -24,15 +24,15 @@
 #'
 #' @param beam Character vector specifying which ATL03 beams to include.
 #'   Defaults to:
-#'   \code{c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")}.
+#'   `c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")`.
 #'
 #' @param additional_groups Character vector of additional non-beam HDF5 groups
 #'   to copy unchanged into the output file. Defaults to:
-#'   \code{c("orbit_info")}.
+#'   `c("orbit_info")`.
 #'
 #' @return
 #' An S4 object of class [`ICESat2VegR::icesat2.atl03_h5-class`] representing
-#' the clipped ATL03 HDF5 file saved at the \code{output} location.
+#' the clipped ATL03 HDF5 file saved at the `output` location.
 #'
 #' @details
 #' The function performs spatial subsetting at the photon and segment level.
@@ -44,7 +44,7 @@
 #'         photon-level masks using the supplied bounding box.
 #'   \item Applies these masks to all datasets whose dimensions correspond to
 #'         segments or photons.
-#'   \item Recomputes dependent indexing datasets (e.g., \code{ph_index_beg})
+#'   \item Recomputes dependent indexing datasets (e.g., `ph_index_beg`)
 #'         to maintain ATL03 structural integrity.
 #'   \item Writes the clipped data into a new, valid ATL03 HDF5 file.
 #' }

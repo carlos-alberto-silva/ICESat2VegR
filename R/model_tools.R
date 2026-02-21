@@ -15,6 +15,7 @@ build_fc <- function(x, y = NULL) {
 # NOT EXPORTED
 ee_to_dt <- function(sampled) {
   # Get size safely
+  idx <- `system:index` <- NA
   sz <- tryCatch(sampled$size()$getInfo(), error = function(e) 0L)
   if (is.null(sz) || sz == 0L) return(data.table::data.table())
 
@@ -66,21 +67,21 @@ ee_to_dt <- function(sampled) {
 #' Convert an R randomForest model to a Google Earth Engine randomForest classifier
 #'
 #' @description
-#' Given a fitted \code{\link[randomForest]{randomForest}} object, this function
-#' serializes the forest using the internal Rcpp module \code{icesat2_module}
+#' Given a fitted [randomForest::randomForest] object, this function
+#' serializes the forest using the internal Rcpp module `icesat2_module`
 #' and constructs a corresponding Google Earth Engine random forest
-#' \strong{classifier} via
-#' \code{ee$Classifier$decisionTreeEnsemble(rf_strings)}.
+#' **classifier** via
+#' `ee$Classifier$decisionTreeEnsemble(rf_strings)`.
 #'
-#' This implementation always returns an \code{ee$Classifier} and does not use
-#' \code{ee$Regressor}.
+#' This implementation always returns an `ee$Classifier` and does not use
+#' `ee$Regressor`.
 #'
-#' @param rf A fitted \code{\link[randomForest]{randomForest}} model object.
+#' @param rf A fitted [randomForest::randomForest] model object.
 #'
 #' @return
-#' An Earth Engine \code{ee$Classifier} object created with
-#' \code{ee$Classifier$decisionTreeEnsemble()} that can be used with
-#' \code{ee$Image$classify()}.
+#' An Earth Engine `ee$Classifier` object created with
+#' `ee$Classifier$decisionTreeEnsemble()` that can be used with
+#' `ee$Image$classify()`.
 #'
 #' @keywords internal
 build_ee_forest <- function(rf) {
@@ -108,7 +109,7 @@ build_ee_forest <- function(rf) {
       stop(
         "Rcpp module 'icesat2_module' does not expose 'buildForest'.\n",
         "Module summary:\n",
-        paste(capture.output(print(mod)), collapse = "\n")
+        paste(utils::capture.output(print(mod)), collapse = "\n")
       )
     }
   )

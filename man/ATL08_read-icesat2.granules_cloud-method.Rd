@@ -18,4 +18,3 @@ granule at a time is supported.
 This method stops execution when multiple granules are provided,
 because the package currently supports only one granule at a time.
 }
-\keyword{internal}

@@ -13,4 +13,4 @@ GDALDataType
 \description{
 List of datatypes supported by the GDALDataset R6 class
 }
-\keyword{internal}
+\keyword{datasets}

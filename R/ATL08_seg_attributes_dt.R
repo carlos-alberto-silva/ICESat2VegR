@@ -272,6 +272,6 @@ ATL08_seg_attributes_dt <- function(atl08_h5,
 
   close(pb)
 
-  prepend_class(attribute.dt, c("icesat2.atl08_dt","data.table","data.frame"))
+  prepend_class(attribute.dt, "icesat2.atl08_dt")
   return(attribute.dt)
 }

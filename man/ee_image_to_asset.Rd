@@ -23,7 +23,7 @@ ee_image_to_asset(
 
 \item{description}{Task description.}
 
-\item{assetId}{Destination asset ID (e.g., \code{"users/me/my_asset"}).}
+\item{assetId}{Destination asset ID (e.g., \code{users/me/my_asset}).}
 
 \item{overwrite}{Logical; if TRUE, attempt to delete existing \code{assetId} first.}
 }

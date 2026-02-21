@@ -18,4 +18,3 @@ ATL08 data.
 Read the ICESat-2 Land and Vegetation Along-Track Product (ATL08)
 from a single granule accessible in the cloud.
 }
-\keyword{internal}

@@ -2,23 +2,44 @@ Package: ICESat2VegR
 Type: Package
 Title: NASA's Ice, Cloud, and Elevation Satellite (ICESat-2) Data Analysis for Land and Vegetation
            Applications
-Version: 0.0.1
+Version: 0.0.2
 Authors@R: c( person("Carlos Alberto", "Silva", email = "c.silva@ufl.edu", role = c("aut", "cph")),
            person("Caio", "Hamamura", email = "caiohamamura@gmail.com", role = c("aut", "cph", "cre")))
 Description: Set of tools for downloading, reading, visualizing, processing and exporting NASA's
            ICESat-2 ATL03 (Global Geolocated Photon Data) and ATL08 (Land and Vegetation Height)
            products for Land and Vegetation Applications.
-License: GPL (>= 3)
-Imports: curl, data.table, sf, fs, getPass, jsonlite, hdf5r, httr2, magrittr, methods, Rcpp, Rdpack, R6,
-           randomForest, reticulate, terra, xml2
+Depends: R (>= 4.1.0)
+Imports: 
+  curl, 
+  data.table, 
+  sf, 
+  fs, 
+  getPass, 
+  geojsonsf,
+  googledrive,
+  googleCloudStorageR,
+  grDevices,
+  jsonlite, 
+  hdf5r,
+  httr2, 
+  magrittr, 
+  mathjaxr, 
+  methods, 
+  Rcpp, 
+  Rdpack, 
+  R6,
+  randomForest,
+  reticulate,
+  terra,
+  xml2
 Encoding: UTF-8
 URL: https://github.com/carlos-alberto-silva/ICESat2VegR
 BugReports: https://github.com/carlos-alberto-silva/ICESat2VegR/issues
-LazyData: true
 NeedsCompilation: yes
-RoxygenNote: 7.3.3
 Roxygen: list(markdown = TRUE)
-RdMacros: Rdpack
+RoxygenNote: 7.3.3
+RdMacros: Rdpack, mathjaxr
+BuildManual: TRUE
 Suggests: chromote,  devtools,  ggplot2, grid, gridExtra, htmlwidgets, knitr, leaflet, leafsync,
            lidR, lwgeom, mapview,  png, rmarkdown, rstudioapi, signal, stars, testthat (>= 3.0.0),
            webshot, viridis
@@ -100,3 +121,4 @@ Collate:
     'to_vect.R'
     'varSel.R'
     'vect_as_ee.R'
+License: GPL (>= 3)

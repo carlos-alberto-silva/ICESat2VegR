@@ -20,10 +20,10 @@ least two numeric columns for coordinates.}
 \item{path}{Character. Path to the output GeoJSON file.}
 
 \item{xcol, ycol}{Character. Names of the longitude and latitude columns in
-\code{dt}. Defaults are \code{"lon"} and \code{"lat"}.}
+\code{dt}. Defaults are \code{lon} and \code{lat}.}
 
 \item{crs}{Character. Coordinate reference system of the input coordinates.
-Default is \code{"EPSG:4326"} (longitude/latitude in WGS84).}
+Default is \code{EPSG:4326} (longitude/latitude in WGS84).}
 
 \item{overwrite}{Logical. If \code{TRUE} (default), allow overwriting an
 existing file.}

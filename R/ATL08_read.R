@@ -60,7 +60,7 @@ setGeneric("ATL08_read", function(atl08_path) {
 #' close(atl08)
 #'
 #' @import hdf5r
-#' @keywords internal
+#' @export
 setMethod(
   "ATL08_read",
   signature = c("character"),
@@ -95,7 +95,7 @@ setMethod(
 #'   This method always stops with an error indicating that only one
 #'   granule at a time is supported.
 #'
-#' @keywords internal
+#' @export
 setMethod(
   "ATL08_read",
   signature = c("icesat2.granules_cloud"),
@@ -122,7 +122,7 @@ setMethod(
 #'   An S4 object of class [`icesat2.atl08_h5-class`] containing ICESat-2
 #'   ATL08 data.
 #'
-#' @keywords internal
+#' @export
 setMethod(
   "ATL08_read",
   signature = c("icesat2.granule_cloud"),

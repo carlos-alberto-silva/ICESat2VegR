@@ -1,5 +1,5 @@
 #' List of datatypes supported by the GDALDataset R6 class
-#' @keywords internal
+#' @export
 GDALDataType <- list(
   GDT_Byte = 1,
   GDT_UInt16 = 2,
@@ -75,7 +75,7 @@ defaultProjection <- 'GEOGCS["WGS 84",
 #' band[[0, 0]] <- 1:(512 * 512)
 #'
 #' ds$Close()
-#' @keywords internal
+#' @export
 createDataset <- function(
     raster_path,
     nbands,
@@ -110,7 +110,7 @@ createDataset <- function(
 #' Wrapping class for GDALDataset C++ API exporting GetRasterBand, GetRasterXSize, GetRasterYSize
 #' @import methods
 #' @importFrom R6 R6Class
-#' @keywords internal
+#' @export
 GDALDataset <- R6::R6Class("GDALDataset",
   private = list(
     ds = NULL,
@@ -159,7 +159,7 @@ GDALDataset <- R6::R6Class("GDALDataset",
 #' also it releases the lock from the file.
 #'
 #' @method close GDALDataset
-#' @keywords internal
+#' @export
 close.GDALDataset <- function(con, ...) {
   con$Close()
 }
@@ -177,7 +177,7 @@ close.GDALDataset <- function(con, ...) {
 #'
 #' ds <- GDALOpen(ds_path)
 #' ds$Close()
-#' @keywords internal
+#' @export
 GDALOpen <- function(filename, readonly = TRUE) {
   ds <- RGDALOpen(filename, readonly)
   GDALDataset$new(ds)
@@ -189,7 +189,7 @@ GDALOpen <- function(filename, readonly = TRUE) {
 #' @param x GDALDatset. Automatically obtained from GDALDataset[[]] call.
 #' @param slice Integer. The index for the band to access.
 #' @return An object of GDALRasterBand R6 class.
-#' @keywords internal
+#' @export
 "[[.GDALDataset" <- function(x, slice) {
   return(x$GetRasterBand(slice))
 }
@@ -199,7 +199,7 @@ GDALOpen <- function(filename, readonly = TRUE) {
 #' @description
 #' Wrapping class for GDALRasterBand C++ API exporting GetBlockXSize, GetBlockYSize, ReadBlock,
 #' WriteBlock for better IO speed.
-#' @keywords internal
+#' @export
 GDALRasterBand <- R6::R6Class("GDALRasterBand",
   private = list(
     band = NULL,
@@ -340,7 +340,7 @@ GDALRasterBand <- R6::R6Class("GDALRasterBand",
 #' @param value Integer. The value buffer to write
 #'
 #' @return Nothing, this is a setter
-#' @keywords internal
+#' @export
 "[[<-.GDALRasterBand" <- function(x, blockX, blockY, value) {
   x$WriteBlock(blockX, blockY, value)
   return(x)
@@ -354,7 +354,7 @@ GDALRasterBand <- R6::R6Class("GDALRasterBand",
 #' @param blockY Integer. The y index for block to access.
 #'
 #' @return Nothing, this is a setter
-#' @keywords internal
+#' @export
 "[[.GDALRasterBand" <- function(x, blockX, blockY) {
   x$ReadBlock(blockX, blockY)
 }
@@ -417,7 +417,7 @@ GDALRasterBand <- R6::R6Class("GDALRasterBand",
 #'
 #' @import data.table
 #' @importFrom stats as.formula model.frame na.pass
-#' @keywords internal
+#' @export
 formulaCalculate <- function(formula, data, updateBand) {
   first <- data[[1]]
   blocksize1 <- c(first$GetBlockXSize(), first$GetBlockYSize())

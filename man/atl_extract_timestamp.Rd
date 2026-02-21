@@ -12,13 +12,13 @@ extracted from the basename of each path.}
 }
 \value{
 A character vector of the same length as \code{file_path}, where each
-element is either the extracted 14-digit timestamp (\code{"YYYYMMDDHHMMSS"})
+element is either the extracted 14-digit timestamp (\code{YYYYMMDDHHMMSS})
 or, if no match is found, the original string (due to the use of \code{sub()}).
 }
 \description{
 Extracts a 14-digit timestamp (\code{YYYYMMDDHHMMSS}) from an ICESat-2 ATL
 granule filename or path. Many ATL03/ATL08 filenames include a timestamp
-segment such as \code{"ATL03_20200101000000_..."}; this helper retrieves
+segment such as \code{ATL03_20200101000000_...}; this helper retrieves
 that substring.
 }
 \examples{

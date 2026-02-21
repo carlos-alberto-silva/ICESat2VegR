@@ -2,11 +2,11 @@
 % Please edit documentation in R/class.icesat2.h5_local.R
 \name{ICESat2.h5_local}
 \alias{ICESat2.h5_local}
-\title{The class representing the h5 file opened from local files.}
+\title{The class representing the h5 file opened from local files}
 \description{
-The class representing the h5 file opened from local files.
+The class representing the h5 file opened from local files
 
-The class representing the h5 file opened from local files.
+The class representing the h5 file opened from local files
 }
 \details{
 The variants \verb{_cloud} and \verb{_local} allows all the other functions

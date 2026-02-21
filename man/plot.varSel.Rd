@@ -17,10 +17,10 @@
 )
 }
 \arguments{
-\item{x}{An object of class \code{"varSel"}.}
+\item{x}{An object of class \code{varSel}.}
 
-\item{which}{Character; either \code{"sel.importance"} (default) to plot the
-importance of selected variables only, or \code{"importance"} to plot the
+\item{which}{Character; either \code{sel.importance} (default) to plot the
+importance of selected variables only, or \code{importance} to plot the
 full-model importance (all predictors).}
 
 \item{main}{Plot title.}
@@ -32,19 +32,18 @@ full-model importance (all predictors).}
 \item{col.other}{Base color for non-selected variables when no palette is given.}
 
 \item{palette}{Optional color palette. Can be:
-\itemize{
-\item a function \code{f(n)} returning \code{n} colors
+- a function \code{f(n)} returning \code{n} colors
 (e.g., \code{viridis::inferno}),
-\item or a character vector of colors used to build a gradient via
-\code{\link[grDevices]{colorRampPalette}}.
-}
+- or a character vector of colors used to build a gradient via
+\link[grDevices:colorRamp]{grDevices::colorRampPalette}.
+
 The palette is applied to all bars and then the color of selected variables
 is overridden by \code{col.selected} when \code{which = "importance"}.}
 
 \item{legend.loc}{Legend location, e.g. "bottomright"}
 
 \item{...}{Additional graphical arguments passed to
-\code{\link[graphics]{barplot}}.}
+\link[graphics:barplot]{graphics::barplot}.}
 }
 \description{
 Plot scaled variable importance for a \code{varSel} object using a horizontal
@@ -52,29 +51,31 @@ barplot. Variables are ordered so that the most important metrics appear at
 the \strong{top} (largest bars).
 
 When \code{which = "importance"} all variables are shown, and those selected
-by \code{\link{varSel}} are highlighted in a different color. An optional
+by \code{\link[=varSel]{varSel()}} are highlighted in a different color. An optional
 color palette (e.g., \code{viridis::inferno}) can be supplied to color the
 bars by importance.
 }
 \examples{
-\donttest{
-  require(randomForest)
+require(randomForest)
 
-  data(airquality)
-  airquality <- na.omit(airquality)
+data(airquality)
+airquality <- na.omit(airquality)
 
-  xdata <- airquality[, 2:6]
-  ydata <- airquality[, 1]
+xdata <- airquality[, 2:6]
+ydata <- airquality[, 1]
 
-  vs <- varSel(xdata, ydata, ntree = 200, min.imp = 0.2)
+ntree = 200
+\dontshow{
+ ntree = 10
+}
+vs <- varSel(xdata, ydata, ntree = ntree, min.imp = 0.2)
 
-  ## Selected variables only
-  plot(vs, which = "sel.importance")
+## Selected variables only
+plot(vs, which = "sel.importance")
 
-  ## All variables, highlighting selected ones, with inferno palette
-  if (requireNamespace("viridis", quietly = TRUE)) {
-    plot(vs, which = "importance", palette = viridis::inferno)
-  }
+## All variables, highlighting selected ones, with inferno palette
+if (requireNamespace("viridis", quietly = TRUE)) {
+  plot(vs, which = "importance", palette = viridis::inferno)
 }
 
 }

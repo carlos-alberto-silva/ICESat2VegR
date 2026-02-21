@@ -3,7 +3,7 @@ setwd("C:/Users/c.silva/Documents/ICESat2VegR")
 # clean compiled bits in your tree
 devtools::clean_dll()
 
-# regenerate docs/namespace if you’re using roxygen
+# regenerate docs/namespace if you're using roxygen
 Sys.setenv(ROXYGEN_RUN = "true")
 devtools::document()
 devtools::check(vignettes = FALSE)

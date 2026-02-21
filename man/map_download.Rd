@@ -2,7 +2,7 @@
 % Please edit documentation in R/map_tools.R
 \name{map_download}
 \alias{map_download}
-\title{map_download: create task → start → (monitor) → download/return id}
+\title{map_download: create task -> start -> (monitor) -> download/return id}
 \usage{
 map_download(
   ee_image,
@@ -22,7 +22,7 @@ map_download(
 \arguments{
 \item{ee_image}{An \code{ee$Image} to export.}
 
-\item{method}{One of \code{"drive"}, \code{"gcs"}, or \code{"asset"}.}
+\item{method}{One of \code{drive}, \code{gcs}, or \code{asset}.}
 
 \item{region}{EE geometry/feature collection defining the export region.}
 
@@ -47,8 +47,8 @@ map_download(
 CRS, pyramiding policy, \code{maxPixels}, etc.}
 }
 \value{
-For \code{"drive"}/\code{"gcs"}, a local path or a \code{SpatRaster} if \code{terra} is installed.
-For \code{"asset"}, returns \code{invisible(asset_id)}.
+For \code{drive}/\code{gcs}, a local path or a \code{SpatRaster} if \code{terra} is installed.
+For \code{asset}, returns \code{invisible(asset_id)}.
 }
 \description{
 One function to export an EE image to Drive, Cloud Storage, or

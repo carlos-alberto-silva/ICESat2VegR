@@ -7,7 +7,7 @@
 ATL03_h5_clipGeometry(
   atl03,
   output,
-  vect,
+  clip_obj,
   split_by = NULL,
   beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
   additional_groups = c("orbit_info")
@@ -20,14 +20,14 @@ ATL03_h5_clipGeometry(
 \item{output}{Character. Path to the output filename. The final written files
 will append the unique value of \code{split_by} for each clipping geometry,
 for example:
-\code{"output_id1.h5"}, \code{"output_id2.h5"}, etc.}
+\code{output_id1.h5}, \code{output_id2.h5}, etc.}
 
-\item{vect}{A \code{\link[terra:SpatVector-class]{terra::SpatVector}} object containing the geometric clip
+\item{clip_obj}{A \code{\link[terra:SpatVector-class]{terra::SpatVector}} object containing the geometric clip
 boundaries. Each feature (row) in the SpatVector defines an independent
 clipping region.}
 
 \item{split_by}{Character. The SpatVector attribute whose values are used to
-identify and name each clipping geometry. Defaults to \code{"id"}.}
+identify and name each clipping geometry. Defaults to \code{id}.}
 
 \item{beam}{Character vector specifying which ATL03 beams to include. The
 default includes all six beams:
@@ -67,7 +67,7 @@ atl03_h5 <- ATL03_read(atl03_path)
 output <- tempfile(fileext = ".h5")
 
 # Load clipping geometries
-vect_path <- system.file("extdata", "clip_objs.shp",
+vect_path <- system.file("extdata", "clip_geom.shp",
   package = "ICESat2VegR"
 )
 vect <- terra::vect(vect_path)

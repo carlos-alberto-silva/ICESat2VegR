@@ -100,7 +100,7 @@ Generate_EmbeddingAndAncillaryEEstack <- function(                              
   add_lonlat = TRUE                                                                     # Add lon/lat bands
 ) {
   ee <- reticulate::import("ee", delay_load = FALSE)                                    # Import Python Earth Engine
-  ICESat2VegR:::.ee_ping(ee)                                                            # Ping EE session (internal helper)
+  .ee_ping(ee)                                                            # Ping EE session (internal helper)
 
   startYY <- as.integer(startYY); endYY <- as.integer(endYY)                            # Coerce years to integers
   if (!is.finite(startYY) || !is.finite(endYY) || endYY < startYY)                      # Validate year range
@@ -423,7 +423,7 @@ for (k in seq_along(yrs)) {                                                     
   sf_part <- s_vect[s_vect$year == yr, ]                                                   # Subset points for this year
   #plot(sf_part)                                                                            # Optional quick plot for QC
 
-  cat(sprintf("Chunk %d/%d — year=%s — n=%d\n",                                            # Progress message
+  cat(sprintf("Chunk %d/%d - year=%s - n=%d\n",                                            # Progress message
               k, length(yrs), as.character(yr), nrow(sf_part)))
 
   combined <- Generate_EmbeddingAndAncillaryEEstack(boundary, yr, yr)               # Build EE stack for this year
@@ -513,7 +513,7 @@ Generate_EmbeddingAndAncillaryEEstack <- function(                              
   add_lonlat = TRUE                                                                     # Add lon/lat bands
 ) {
   ee <- reticulate::import("ee", delay_load = FALSE)                                    # Import Python Earth Engine
-  ICESat2VegR:::.ee_ping(ee)                                                            # Ping EE session (internal helper)
+  .ee_ping(ee)                                                            # Ping EE session (internal helper)
 
   startYY <- as.integer(startYY); endYY <- as.integer(endYY)                            # Coerce years to integers
   if (!is.finite(startYY) || !is.finite(endYY) || endYY < startYY)                      # Validate year range

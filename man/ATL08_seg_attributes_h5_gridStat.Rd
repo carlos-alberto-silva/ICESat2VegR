@@ -41,7 +41,7 @@ Supported inputs:
 \item \code{sf} / \code{sfc} object.
 }
 When a polygon object is provided (\code{SpatVector}, \code{sf}, \code{sfc}),
-ATL08 segments are clipped using \code{ATL08_seg_attributes_dt_clipBoundary()}.
+ATL08 segments are clipped using \code{ATL08_seg_attributes_dt_clipBox()}.
 Otherwise (numeric bbox or \code{SpatExtent}), clipping is done with
 \code{ATL08_seg_attributes_dt_clipBox()}.}
 
@@ -65,8 +65,7 @@ This function will read multiple ATL08 H5 files and create a stack of raster lay
 This function will create five different aggregate statistics
 (n, mean, variance, min, max).
 One can calculate mean and standard deviation with the following
-formulas according to Terriberry (2007) and
-\insertCite{Joanes1998;textual}{ICESat2VegR}:
+formulas according to Terriberry (2007).
 
 The \code{agg_function} is a formula which return a data.table with the
 aggregate function to perform over the data.
@@ -198,7 +197,5 @@ close(atl08_h5)
 
 }
 \references{
-\insertAllCited{}
-
 Terriberry, Timothy B. (2007), Computing Higher-Order Moments Online, archived from the original on 23 April 2014, retrieved 5 May 2008
 }

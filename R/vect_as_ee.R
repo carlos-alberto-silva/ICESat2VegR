@@ -11,16 +11,16 @@
 #'   [`terra::SpatVector-class`]. For `sfg`/`sfc`, a simple point/line/polygon geometry
 #'   is accepted; for `SpatVector`, it will be converted to `sf`.
 #' @param via Character; one of `c("getInfo","getInfo_to_asset")`.
-#'   * `"getInfo"` returns an in-memory `ee$FeatureCollection` built from the
+#'   * `getInfo` returns an in-memory `ee$FeatureCollection` built from the
 #'   GeoJSON of `x`.
-#'   * `"getInfo_to_asset"` creates an EE export task to save the collection to
+#'   * `getInfo_to_asset` creates an EE export task to save the collection to
 #'   an Earth Engine **Asset** (requires `assetId`).
-#' @param assetId Character; EE asset id (e.g., `"users/you/my_fc"`). **Required**
+#' @param assetId Character; EE asset id (e.g., `users/you/my_fc`). **Required**
 #'   when `via = "getInfo_to_asset"`.
 #' @param overwrite Logical; if `TRUE`, attempt to delete an existing EE asset at
 #'   `assetId` before export.
-#' @param proj Character CRS string (e.g., `"EPSG:4326"`). Input will be
-#'   transformed to this CRS before conversion. Default is `"EPSG:4326"`.
+#' @param proj Character CRS string (e.g., `EPSG:4326`). Input will be
+#'   transformed to this CRS before conversion. Default is `EPSG:4326`.
 #' @param make_valid Logical; if `TRUE`, attempt to repair invalid geometries
 #'   (`sf::st_make_valid()` / `terra::makeValid()`).
 #' @param quiet Logical; if `FALSE`, print progress messages (e.g., task state).

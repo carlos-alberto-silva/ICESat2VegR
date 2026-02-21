@@ -6,7 +6,6 @@
 \description{
 Wrapping class for GDALDataset C++ API exporting GetRasterBand, GetRasterXSize, GetRasterYSize
 }
-\keyword{internal}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{

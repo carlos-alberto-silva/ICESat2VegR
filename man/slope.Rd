@@ -10,15 +10,15 @@ slope(x)
 \item{x}{An \code{ee$Image} representing a DEM from which slope will be derived.}
 }
 \value{
-An \code{ee$Image} with one band named \code{"slope"} containing terrain
+An \code{ee$Image} with one band named \code{slope} containing terrain
 slope values in degrees.
 }
 \description{
-Computes the terrain \emph{slope} in degrees for each pixel of an Earth Engine
+Computes the terrain \strong{slope} in degrees for each pixel of an Earth Engine
 \code{ee$Image} representing a digital elevation model (DEM).
 
 This method is a thin wrapper around \code{ee$Terrain$slope()} and returns the
-same output structure. Slope is computed using Earth Engine’s internal
+same output structure. Slope is computed using Earth Engine's internal
 gradient operator, which relies on the 4-connected neighborhood around each
 pixel. As a result, edge pixels may contain missing values depending on the
 input DEM.

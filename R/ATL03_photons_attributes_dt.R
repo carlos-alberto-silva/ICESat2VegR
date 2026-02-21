@@ -12,7 +12,7 @@
 #'
 #' @return
 #' An S4 object of class [`data.table::data.table`] (with class
-#' `"icesat2.atl03_dt"` prepended) containing photon-level ATL03
+#' `icesat2.atl03_dt` prepended) containing photon-level ATL03
 #' attributes.
 #'
 #' @details
@@ -182,6 +182,6 @@ ATL03_photons_attributes_dt <- function(
 
   close(pb)
 
-  prepend_class(photon_dt, c("icesat2.atl03_dt","data.table","data.frame"))
+  prepend_class(photon_dt, "icesat2.atl03_dt")
   photon_dt
 }

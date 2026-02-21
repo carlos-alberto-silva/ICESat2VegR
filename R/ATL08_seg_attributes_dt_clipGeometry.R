@@ -33,12 +33,15 @@
 #' )
 #'
 #' if (require(terra)) {
-#'   clip_obj <- terra::vect(clip_obj_path)
+#'   polygon <- terra::vect(clip_obj_path)
 #'
 #'   head(atl08_seg_att_dt)
 #'   # Clipping ATL08 Terrain and Canopy Attributes by Geometry
-#'   atl08_seg_att_dt_clip <- ATL08_seg_attributes_dt_clipGeometry(atl08_seg_att_dt,
-#'       clip_obj, split_by = "id")
+#'   atl08_seg_att_dt_clip <- ATL08_seg_attributes_dt_clipGeometry(
+#'    atl08_seg_att_dt,
+#'    polygon,
+#'    split_by = "id"
+#'   )
 #'
 #'   hasLeaflet <- require(leaflet)
 #'
@@ -51,8 +54,8 @@
 #'         color = "red"
 #'       ) %>%
 #'       addScaleBar(options = list(imperial = FALSE)) %>%
-#'       addclip_objs(
-#'         data = clip_obj, weight = 1, col = "white",
+#'       addPolygons(
+#'         data = polygon, weight = 1, col = "white",
 #'         opacity = 1, fillOpacity = 0
 #'       ) %>%
 #'       addProviderTiles(providers$Esri.WorldImagery,
@@ -106,7 +109,7 @@ ATL08_seg_attributes_dt_clipGeometry <- function(atl08_seg_att_dt, clip_obj, spl
       newFile <- atl08_seg_att_dt[pts$nid, ]
     }
 
-    prepend_class(newFile, c("icesat2.atl08_dt","data.table","data.frame"))
+    prepend_class(newFile, "icesat2.atl08_dt")
 
   }
   return(newFile)

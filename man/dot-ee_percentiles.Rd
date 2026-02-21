@@ -20,7 +20,7 @@
 
 \item{aoi}{EE geometry.}
 
-\item{probs}{Numeric percentiles (0–100).}
+\item{probs}{Numeric percentiles (0-100).}
 
 \item{scale}{Optional scale.}
 

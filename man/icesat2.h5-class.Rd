@@ -9,4 +9,3 @@ that can be run on any H5}
 Base class for all ICESat2VegR package's H5 files for generic functions
 that can be run on any H5
 }
-\keyword{internal}

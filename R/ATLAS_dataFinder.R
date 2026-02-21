@@ -54,9 +54,10 @@ PAGE_SIZE <- 2000
 #'
 #' # Extracting the path to ICESat-2 ATLAS data for the specified boundary box coordinates
 #' # for data download
-#' \donttest{
+#'
 #' # Shouldn't be tested because it relies on a web service which might be down
 #'
+#' \dontrun{
 #' ATLAS02b_list <- ATLAS_dataFinder(
 #'   short_name = "ATL08",
 #'   lower_left_lon,

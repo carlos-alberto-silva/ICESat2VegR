@@ -16,7 +16,7 @@
 #' @param clip_obj Bounding extent used for clipping. Supported inputs:
 #'   \itemize{
 #'     \item A numeric vector of length 4:
-#'       \code{c(ul_lat, ul_lon, lr_lat, lr_lon)}, following the ICESat-2 CMS
+#'       `c(ul_lat, ul_lon, lr_lat, lr_lon)`, following the ICESat-2 CMS
 #'       bounding-box convention (upper-left latitude/longitude and
 #'       lower-right latitude/longitude).
 #'     \item A [`terra::SpatExtent`] object.
@@ -24,11 +24,11 @@
 #'
 #' @param beam Character vector specifying which ATL08 beams to include.
 #'   Defaults to:
-#'   \code{c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")}.
+#'   `c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")`.
 #'
 #' @param additional_groups Character vector specifying additional non-beam
 #'   HDF5 groups to copy unchanged into the output file. Defaults to:
-#'   \code{c("orbit_info")}.
+#'   `c("orbit_info")`.
 #'
 #' @return
 #' An S4 object of class [`ICESat2VegR::icesat2.atl08_h5-class`] representing
@@ -91,7 +91,7 @@ ATL08_h5_clipBox <- function(
 #' @param atl08 [`ICESat2VegR::icesat2.atl08_h5-class`] object, obtained through [`ATL08_read()`]
 #' for clipping
 #' @param output character. Path to the output h5 file.
-#' @param vect [`terra::SpatVector-class`] for clipping
+#' @param clip_obj [`terra::SpatVector-class`] for clipping
 #' @param split_by [`character-class`]. The attribute name used for identifying
 #' the different clip_objs. Default is "id"
 #' @param beam [`character-class`]. The vector of beams to include, default
@@ -135,10 +135,10 @@ ATL08_h5_clipBox <- function(
 #' @import hdf5r
 #' @export
 ATL08_h5_clipGeometry <- function(
-    atl08, output, vect, split_by = "id",
+    atl08, output, clip_obj, split_by = "id",
     beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
     additional_groups = c("orbit_info")) {
-  geom <- terra::aggregate(vect)
+  geom <- terra::aggregate(clip_obj)
   ATL08_h5_clip(atl08, output, clip_obj = geom, landSegmentsMask_fn = landsegmentsMask_geom, beam, additional_groups)
 }
 

@@ -14,4 +14,3 @@ the needed structure for computing value for the computing the stats with
 \code{\link[=ATL03_ATL08_compute_seg_attributes_dt_segStat]{ATL03_ATL08_compute_seg_attributes_dt_segStat()}}
 }
 
-\keyword{internal}

@@ -14,19 +14,20 @@
 #' stack includes neighborhood statistics and GLCM texture features.
 #'
 #' @param x Spatial input defining the area of interest. Can be:
-#'   * a character path to a vector file readable by [terra::vect()] (e.g., SHP, GPKG),
-#'   * a [terra::SpatVector],
-#'   * a [terra::SpatRaster] (its extent will be used),
-#'   * an [sf::sf] or [sf::sfc] object,
-#'   * a [terra::SpatExtent] object (e.g., from [terra::ext()]),
-#'   * a numeric vector of length 4 giving an extent as
+#'
+#'   - a character path to a vector file readable by [terra::vect()] (e.g., SHP, GPKG),
+#'   - a [terra::SpatVector],
+#'   - a [terra::SpatRaster] (its extent will be used),
+#'   - an [sf::st_sf] or [sf::st_sfc] object,
+#'   - a [terra::SpatExtent] object (e.g., from [terra::ext()]),
+#'   - a numeric vector of length 4 giving an extent as
 #'     `c(xmin, xmax, ymin, ymax)`.
 #' @param start_date Character. Start date of the temporal filter
-#'   (`"YYYY-MM-DD"`). **Required.**
+#'   (`YYYY-MM-DD`). **Required.**
 #' @param end_date Character. End date of the temporal filter
-#'   (`"YYYY-MM-DD"`). **Required.**
+#'   (`YYYY-MM-DD`). **Required.**
 #' @param cloud_max Numeric. Maximum allowed cloud coverage percentage for HLS
-#'   scenes (used in the `"CLOUD_COVERAGE < cloud_max"` filter). Default is 10.
+#'   scenes (used in the `CLOUD_COVERAGE < cloud_max` filter). Default is 10.
 #' @param buffer_m Numeric. Buffer distance in meters applied to the AOI
 #'   bounding box before filtering and clipping. Default is 30.
 #'
@@ -44,12 +45,11 @@
 #'
 #' @details
 #' This function assumes that:
-#' \itemize{
-#'   \item Earth Engine access is provided via the \pkg{ICESat2VegR} internal
+#' - Earth Engine access is provided via the `ICESat2VegR` internal
 #'     `ee` handle.
-#'   \item Dataset search and catalog ID retrieval are performed by
-#'     [search_datasets()] and [get_catalog_id()] from \pkg{ICESat2VegR}.
-#' }
+#' - Dataset search and catalog ID retrieval are performed by
+#'     [search_datasets()] and [get_catalog_id()] from `ICESat2VegR`.
+#'
 #'
 #' The HLS component follows the original workflow: the collection is filtered
 #' by AOI and date, filtered by cloud coverage, cloud and water masks are
@@ -65,14 +65,14 @@
 #' A DEM is retrieved from the NASA catalog via [search_datasets()] and
 #' [get_catalog_id()], and slope and aspect are derived following the original
 #' code pattern. Neighborhood statistics (mean, min, max, stdDev) are computed
-#' for the HLS and DEM components using a fixed 3×3 kernel, and GLCM texture
+#' for the HLS and DEM components using a fixed 3x3 kernel, and GLCM texture
 #' metrics are computed from scaled HLS reflectance bands.
 #'
-#' 
+#'
 #' @examples
 #' \dontrun{
 #' # ================================================================
-#' # Example 1 — Using the function
+#' # Example 1 - Using the function
 #' # ================================================================
 #' res <- ee_build_hls_s1c_terrain_stack(
 #'   x          = system.file("extdata", "all_boundary.shp", package = "ICESat2VegR"),
@@ -84,7 +84,7 @@
 #'
 #'
 #' # ================================================================
-#' # Example 2 — FULL SCRIPT (no function)
+#' # Example 2 - FULL SCRIPT (no function)
 #' # Users may copy/paste and modify as needed
 #' # ================================================================
 #'
@@ -397,7 +397,7 @@ ee_build_hls_s1c_terrain_stack <- function(
   hls[["cmr"]] <- swir1 / swir2
 
   # -----------------------------
-  # Elevation (DEM) – original pattern
+  # Elevation (DEM) - original pattern
   # -----------------------------
   result     <- search_datasets("nasa", "dem")
   catalog_id <- get_catalog_id(result)
@@ -410,7 +410,7 @@ ee_build_hls_s1c_terrain_stack <- function(
   stackDem <- c(elevation, the_slope, the_aspect)$clip(aoi)
 
   # -----------------------------
-  # Sentinel-1C – original pattern
+  # Sentinel-1C - original pattern
   # -----------------------------
   s1c <- ee$ImageCollection("COPERNICUS/S1_GRD")$
     filterBounds(aoi)$

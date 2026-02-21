@@ -9,29 +9,25 @@
 #' informed and can choose to re-enter credentials or cancel.
 #'
 #' @param url Character vector; URLs to ATL03/ATL08 files
-#'   (e.g., returned by \code{ATLAS_dataFinder()}).
+#'   (e.g., returned by `ATLAS_dataFinder()`).
 #' @param outdir Character; output directory (default: [tempdir()]).
-#' @param overwrite Logical; overwrite existing files? Default \code{FALSE}.
-#' @param buffer_size Integer; chunk size in KB per \code{readBin} call
+#' @param overwrite Logical; overwrite existing files? Default `FALSE`.
+#' @param buffer_size Integer; chunk size in KB per `readBin` call
 #'   (default 512).
 #' @param timeout Numeric; connection timeout (seconds) for establishing
 #'   the connection (default 10).
 #' @param retries Integer; maximum attempts per file (default 3).
 #' @param backoff Numeric; exponential backoff base used as
-#'   \code{sleep = backoff^(attempt - 1)} (default 2).
-#' @param quiet Logical; suppress per-file messages (default \code{FALSE}).
-#' @param use_home_netrc Logical; if \code{TRUE} (default), use a single
-#'   \file{~/.netrc} file in the user's home directory for Earthdata
-#'   credentials so they can be reused across projects. If \code{FALSE},
-#'   a \file{.netrc} file is created in \code{outdir}.
+#'   `sleep = backoff^(attempt - 1)` (default 2).
+#' @param quiet Logical; suppress per-file messages (default `FALSE`).
 #'
-#' @return (invisibly) a \code{data.frame} with columns:
+#' @return (invisibly) a `data.frame` with columns:
 #'   \itemize{
-#'     \item \code{file}: file name
-#'     \item \code{dest}: full destination path
-#'     \item \code{status}: one of \code{"ok"}, \code{"failed"}, \code{"skipped"}
-#'     \item \code{attempts}: number of attempts used
-#'     \item \code{error}: error message (if any)
+#'     \item `file`: file name
+#'     \item `dest`: full destination path
+#'     \item `status`: one of `ok`, `failed`, `skipped`
+#'     \item `attempts`: number of attempts used
+#'     \item `error`: error message (if any)
 #'   }
 #'
 #' @references
@@ -47,8 +43,7 @@
 #' status <- ATLAS_dataDownload(urls,
 #'                              outdir        = "data",
 #'                              retries       = 5,
-#'                              backoff       = 2,
-#'                              use_home_netrc = TRUE)
+#'                              backoff       = 2)
 #' subset(status, status == "failed")
 #' }
 #'
@@ -61,8 +56,7 @@ ATLAS_dataDownload <- function(url,
                                timeout       = 10,
                                retries       = 3,
                                backoff       = 2,
-                               quiet         = FALSE,
-                               use_home_netrc = TRUE) {
+                               quiet         = FALSE) {
   
   # -------- argument checks --------
   if (is.null(outdir)) outdir <- tempdir()
@@ -80,14 +74,12 @@ ATLAS_dataDownload <- function(url,
     stop("`backoff` must be a positive number")
   if (!is.logical(quiet) || length(quiet) != 1L)
     stop("`quiet` must be TRUE/FALSE")
-  if (!is.logical(use_home_netrc) || length(use_home_netrc) != 1L)
-    stop("`use_home_netrc` must be TRUE/FALSE")
   
   buffer_size <- as.integer(buffer_size)
   retries     <- as.integer(retries)
   
   # Ensure we have a usable .netrc (or interactively create one if needed)
-  netrc <- getNetRC(outdir, use_home_netrc = use_home_netrc)
+  netrc <- earthdata_login(outdir)
   
   files   <- as.character(url)
   n_files <- length(files)
@@ -183,7 +175,7 @@ ATLAS_dataDownload <- function(url,
         error    = last_err %||% NA_character_,
         stringsAsFactors = FALSE
       )
-      message("⚠ Failed: ", basename(u), if (!is.null(last_err)) paste0(" | ", last_err))
+      message("Failed: ", basename(u), if (!is.null(last_err)) paste0(" | ", last_err))
     }
   }
   
@@ -231,9 +223,13 @@ ATLAS_dataDownload <- function(url,
     paste0("  login ", usr),
     paste0("  password ", pwd)
   )
-  
+
   dir.create(dirname(netrc_path), recursive = TRUE, showWarnings = FALSE)
   writeLines(lines, netrc_path)
+
+  # Save NETRC path to .env for python reticulate usage
+  os <- reticulate::import("os")
+  os$environ$NETRC <- netrc_path
   
   suppressWarnings(try(Sys.chmod(netrc_path, mode = "600"), silent = TRUE))
   
@@ -442,17 +438,51 @@ icesat2DownloadFile <- function(url, outdir, overwrite, buffer_size, netrc, time
   }
 }
 
-#' Get or create a .netrc file for Earthdata
+#' Get or Create a `.netrc` File for NASA Earthdata Login
 #'
-#' @keywords internal
-getNetRC <- function(dl_dir, use_home_netrc = TRUE) {
-  
-  if (use_home_netrc) {
-    home_dir <- normalizePath("~", mustWork = TRUE)
-    netrc    <- file.path(home_dir, ".netrc")
-  } else {
-    netrc    <- file.path(dl_dir, ".netrc")
-  }
+#' Creates (if necessary) and configures a `.netrc` file containing
+#' credentials for **NASA Earthdata Login** (<urs.earthdata.nasa.gov>).
+#' This file is required for authenticated downloads from Earthdata
+#' services (e.g., via `earthaccess`, `curl`, `wget`, or other clients).
+#'
+#' The function will:
+#'
+#' - Use an existing `.netrc` file if valid credentials are already present
+#' - Otherwise prompt the user securely for credentials
+#' - Or read credentials from environment variables:
+#'   - `EARTHDATA_USERNAME`
+#'   - `EARTHDATA_PASSWORD`
+#' - Set the `NETRC` environment variable for the active Python session
+#'
+#' Credentials are written in standard `.netrc` format:
+#'
+#' ```text
+#' machine urs.earthdata.nasa.gov
+#'   login <username>
+#'   password <password>
+#' ```
+#'
+#' @param output_dir Character. Directory where the `.netrc` file should be
+#'   created.
+#'
+#' @return Character string. The normalized path to the `.netrc` file
+#'   being used.
+#'
+#' @details
+#' If credentials are not found in environment variables and the
+#' package **getPass** is available, the user is prompted securely.
+#' Otherwise, an error is thrown.
+#'
+#' The function also updates the `NETRC` environment variable inside
+#' the active Python session via **reticulate**, ensuring compatibility
+#' with Python libraries such as `earthaccess`.
+#'
+#' @seealso
+#' \href{https://urs.earthdata.nasa.gov}{NASA Earthdata Login}
+#'
+#' @export
+earthdata_login <- function(output_dir = "~") {
+  netrc    <- normalizePath(file.path(output_dir, ".netrc"))
   
   if (!file.exists(netrc) ||
       all(!grepl("urs.earthdata.nasa.gov", readLines(netrc), fixed = TRUE))) {
@@ -460,22 +490,22 @@ getNetRC <- function(dl_dir, use_home_netrc = TRUE) {
     netrc_conn <- file(netrc)
     on.exit(close(netrc_conn), add = TRUE)
     
-    user <- Sys.getenv("NASA_USER")
+    user <- Sys.getenv("EARTHDATA_USERNAME")
     if (user == "") {
       if (!requireNamespace("getPass", quietly = TRUE)) {
-        stop("Please install 'getPass' or set NASA_USER/NASA_PASSWORD env vars.")
+        stop("Please install 'getPass' or set EARTHDATA_USERNAME/EARTHDATA_PASSWORD env vars.")
       }
       user <- getPass::getPass(
         "Enter NASA Earthdata Login Username \n (or create an account at urs.earthdata.nasa.gov):"
       )
     }
     
-    password <- Sys.getenv("NASA_PASSWORD")
+    password <- Sys.getenv("EARTHDATA_PASSWORD")
     if (password == "") {
       if (!requireNamespace("getPass", quietly = TRUE)) {
-        stop("Please install 'getPass' or set NASA_USER/NASA_PASSWORD env vars.")
+        stop("Please install 'getPass' or set EARTHDATA_USERNAME/EARTHDATA_PASSWORD env vars.")
       }
-      password <- getPass::getPass("Enter NASA Earthdata Login Password:")
+      password <- getPass::getPass("Enter NASA EarthData Login Password:")
     }
     
     writeLines(c(
@@ -487,5 +517,7 @@ getNetRC <- function(dl_dir, use_home_netrc = TRUE) {
     message("A .netrc file with your Earthdata Login credentials was stored at: ", netrc)
   }
   
+  os <- reticulate::import("os")
+  os$environ$update(NETRC = netrc)
   netrc
 }

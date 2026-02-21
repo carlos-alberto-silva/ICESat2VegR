@@ -73,8 +73,8 @@ randomForestRegression <- function(
 #'
 #' @param test A named list configuring evaluation:
 #'   \itemize{
-#'     \item `method` (character): one of `"none"`, `"loocv"`, `"k-fold"` (also accepts `"kfold"`/`"k fold"`),
-#'           `"split"`, or `"bootstrap"`.
+#'     \item `method` (character): one of `none`, `loocv`, `k-fold` (also accepts `kfold`/`k fold`),
+#'           `split`, or `bootstrap`.
 #'     \item `k` (integer, default `5`): number of folds for K-fold CV.
 #'     \item `folds` (list or `NULL`): custom index list of test-fold indices.
 #'           If supplied, overrides `k`.
@@ -91,7 +91,7 @@ randomForestRegression <- function(
 #'   subset for each fit:
 #'   \itemize{
 #'     \item `enable` (logical, default `FALSE`): turn tuning on/off.
-#'     \item `search` (character, default `"grid"`): `"grid"` or `"random"`.
+#'     \item `search` (character, default `grid`): `grid` or `random`.
 #'     \item `grid` (data.frame or `NULL`): explicit grid with columns
 #'           `mtry`, `ntree`, `nodesize`, `sampsize`. If `NULL`, a sensible
 #'           default grid is generated from `p = ncol(x)`.
@@ -115,7 +115,7 @@ randomForestRegression <- function(
 #'
 #' @return A list with:
 #' \describe{
-#'   \item{method}{`"rf"`}
+#'   \item{method}{`rf`}
 #'   \item{rf_args}{Final RF arguments used for the full-data fit (after tuning).}
 #'   \item{tune_table}{(data.frame or `NULL`) tuning results sorted by OOB MSE.}
 #'   \item{test}{Echo of `test` configuration (with resolved values).}
@@ -136,7 +136,7 @@ randomForestRegression <- function(
 #' helper is lightweight and has no external dependencies.
 #'
 #' @examples
-#' set.seed(1)
+#' set.seed(42)
 #' n <- 200
 #' x <- data.frame(NDVI = runif(n, 0.2, 0.9),
 #'                 EVI  = runif(n, 0.1, 0.8),
@@ -149,22 +149,34 @@ randomForestRegression <- function(
 #' fit_none$stats_train
 #'
 #' # LOOCV
+#' \dontshow{
+#'   # Make it smaller for CRAN checks
+#'   x <- x[1:20, ]
+#'   y <- y[1:20]
+#' }
 #' fit_loocv <- fit_model(x, y, test = list(method = "loocv"))
 #' fit_loocv$stats_test
 #'
 #' # 5-fold CV
-#' fit_k-fold <- fit_model(x, y, test = list(method = "k-fold", k = 5, seed = 42))
-#' fit_k-fold$stats_test
+#' fit_k_fold <- fit_model(x, y, test = list(method = "k-fold", k = 5, seed = 42))
+#' fit_k_fold$stats_test
 #'
 #' # Train/Test split
 #' fit_split <- fit_model(x, y, test = list(method = "split", test_size = 0.25, seed = 42))
 #' fit_split$stats_test
 #'
 #' # Bootstrap (with tuning and .632 correction)
+#' ntree <- 400
+#' iterations <- 300
+#' \dontshow{
+#'   # Smaller tree and iterations for checks
+#'   ntree <- 50
+#'   iterations <- 10
+#' }
 #' fit_boot <- fit_model(
 #'   x, y,
-#'   rf_args = list(ntree = 400),
-#'   test    = list(method = "bootstrap", iterations = 300, correction = TRUE),
+#'   rf_args = list(ntree = ntree),
+#'   test    = list(method = "bootstrap", iterations = iterations, correction = TRUE),
 #'   tune    = list(enable = TRUE, search = "random", n_random = 12)
 #' )
 #'

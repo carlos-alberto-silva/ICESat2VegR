@@ -33,7 +33,7 @@
 
 \item{fill_color}{Fill color.}
 
-\item{fill_opacity}{Fill opacity (0–1).}
+\item{fill_opacity}{Fill opacity (0-1).}
 
 \item{color_field}{Optional column used to color features by category.}
 

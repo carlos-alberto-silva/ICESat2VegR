@@ -6,7 +6,7 @@
 #'
 #' @description
 #' Clips ATL08 terrain and canopy segment attributes within a given bounding
-#' extent, defined by a single \code{clip_obj} argument. The clipping extent can
+#' extent, defined by a single `clip_obj` argument. The clipping extent can
 #' be provided as:
 #'
 #' \itemize{
@@ -14,15 +14,15 @@
 #'   \item (ii) a spatial extent object.
 #' }
 #'
-#' @param atl08_seg_att_dt An \code{icesat2.atl08_dt} object (output of
+#' @param atl08_seg_att_dt An `icesat2.atl08_dt` object (output of
 #'   [ICESat2VegR::ATL08_seg_attributes_dt()] function).
 #'
 #' @param clip_obj Bounding extent used to perform the clipping. Supported
 #'   inputs:
 #'   \itemize{
-#'     \item Numeric vector of length 4: \code{c(xmin, ymin, xmax, ymax)} in
+#'     \item Numeric vector of length 4: `c(xmin, ymin, xmax, ymax)` in
 #'           decimal degrees.
-#'     \item \code{SpatExtent} (package **terra**): the extent is used directly.
+#'     \item `SpatExtent` (package **terra**): the extent is used directly.
 #'   }
 #'
 #' @return
@@ -31,7 +31,7 @@
 #' containing the clipped ATL08 terrain and canopy attributes.
 #'
 #' @details
-#' When \code{clip_obj} is a \code{SpatExtent}, the package \pkg{terra} must be
+#' When `clip_obj` is a `SpatExtent`, the package \pkg{terra} must be
 #' installed. If not found, the function stops with an informative message.
 #'
 #' @examples
@@ -130,7 +130,7 @@ ATL08_seg_attributes_dt_clipBox <- function(atl08_seg_att_dt,
   newFile <- atl08_seg_att_dt[mask, ]
 
   # Preserve class
-  prepend_class(newFile, c("icesat2.atl08_dt","data.table","data.frame"))
+  prepend_class(newFile, "icesat2.atl08_dt")
   class(newFile)
 
   return(newFile)

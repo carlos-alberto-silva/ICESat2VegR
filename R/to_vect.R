@@ -47,7 +47,7 @@ if (!methods::isClass("data.table")) {
   methods::setOldClass(c("data.table", "data.frame"))
 }
 
-# ---- internal helper ----
+# ---- internal helper ---- 
 .generic_to_vect <- function(x, lon, lat, crs = "EPSG:4326") {
   if (!requireNamespace("terra", quietly = TRUE)) {
     stop("Package 'terra' is required but not installed.")
@@ -114,7 +114,7 @@ if (!methods::isClass("data.table")) {
 
   stop(
     "Could not infer coordinate columns. Provide `lon=` and `lat=`.\n",
-    "Available columns include: ", paste(head(nms, 30), collapse = ", "),
+    "Available columns include: ", paste(utils::head(nms, 30), collapse = ", "),
     if (length(nms) > 30) " ..."
   )
 }
@@ -147,7 +147,8 @@ setMethod(
 
 # ---- ICESat-2 class methods ----
 
-#' @keywords internal
+#' @rdname to_vect
+#' @export
 setMethod(
   "to_vect",
   "icesat2.atl03_seg_dt",
@@ -156,7 +157,8 @@ setMethod(
   }
 )
 
-#' @keywords internal
+#' @rdname to_vect
+#' @export
 setMethod(
   "to_vect",
   "icesat2.atl08_dt",
@@ -165,7 +167,8 @@ setMethod(
   }
 )
 
-#' @keywords internal
+#' @rdname to_vect
+#' @export
 setMethod(
   "to_vect",
   "icesat2.atl03atl08_dt",
@@ -174,7 +177,8 @@ setMethod(
   }
 )
 
-#' @keywords internal
+#' @rdname to_vect
+#' @export
 setMethod(
   "to_vect",
   "icesat2.atl03_dt",
@@ -183,7 +187,8 @@ setMethod(
   }
 )
 
-#' @keywords internal
+#' @rdname to_vect
+#' @export
 setMethod(
   "to_vect",
   "icesat2.atl03_atl08_seg_dt",
@@ -201,7 +206,8 @@ setMethod(
 #' @param ... Ignored.
 #'
 #' @return A `terra::SpatVector`
-#' @keywords internal
+#' @rdname to_vect
+#' @export
 setMethod(
   "to_vect",
   "sf",

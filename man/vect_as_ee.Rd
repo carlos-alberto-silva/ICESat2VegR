@@ -24,20 +24,20 @@ is accepted; for \code{SpatVector}, it will be converted to \code{sf}.}
 
 \item{via}{Character; one of \code{c("getInfo","getInfo_to_asset")}.
 \itemize{
-\item \code{"getInfo"} returns an in-memory \code{ee$FeatureCollection} built from the
+\item \code{getInfo} returns an in-memory \code{ee$FeatureCollection} built from the
 GeoJSON of \code{x}.
-\item \code{"getInfo_to_asset"} creates an EE export task to save the collection to
+\item \code{getInfo_to_asset} creates an EE export task to save the collection to
 an Earth Engine \strong{Asset} (requires \code{assetId}).
 }}
 
-\item{assetId}{Character; EE asset id (e.g., \code{"users/you/my_fc"}). \strong{Required}
+\item{assetId}{Character; EE asset id (e.g., \code{users/you/my_fc}). \strong{Required}
 when \code{via = "getInfo_to_asset"}.}
 
 \item{overwrite}{Logical; if \code{TRUE}, attempt to delete an existing EE asset at
 \code{assetId} before export.}
 
-\item{proj}{Character CRS string (e.g., \code{"EPSG:4326"}). Input will be
-transformed to this CRS before conversion. Default is \code{"EPSG:4326"}.}
+\item{proj}{Character CRS string (e.g., \code{EPSG:4326}). Input will be
+transformed to this CRS before conversion. Default is \code{EPSG:4326}.}
 
 \item{make_valid}{Logical; if \code{TRUE}, attempt to repair invalid geometries
 (\code{sf::st_make_valid()} / \code{terra::makeValid()}).}

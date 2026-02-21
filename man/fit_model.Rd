@@ -34,8 +34,8 @@ current training size and rounded. If \code{NULL}, the package default is used.
 
 \item{test}{A named list configuring evaluation:
 \itemize{
-\item \code{method} (character): one of \code{"none"}, \code{"loocv"}, \code{"k-fold"} (also accepts \code{"kfold"}/\code{"k fold"}),
-\code{"split"}, or \code{"bootstrap"}.
+\item \code{method} (character): one of \code{none}, \code{loocv}, \code{k-fold} (also accepts \code{kfold}/\verb{k fold}),
+\code{split}, or \code{bootstrap}.
 \item \code{k} (integer, default \code{5}): number of folds for K-fold CV.
 \item \code{folds} (list or \code{NULL}): custom index list of test-fold indices.
 If supplied, overrides \code{k}.
@@ -52,7 +52,7 @@ split, random tuning).
 subset for each fit:
 \itemize{
 \item \code{enable} (logical, default \code{FALSE}): turn tuning on/off.
-\item \code{search} (character, default \code{"grid"}): \code{"grid"} or \code{"random"}.
+\item \code{search} (character, default \code{grid}): \code{grid} or \code{random}.
 \item \code{grid} (data.frame or \code{NULL}): explicit grid with columns
 \code{mtry}, \code{ntree}, \code{nodesize}, \code{sampsize}. If \code{NULL}, a sensible
 default grid is generated from \code{p = ncol(x)}.
@@ -71,7 +71,7 @@ This can be large, especially for \code{bootstrap} with many iterations.}
 \value{
 A list with:
 \describe{
-\item{method}{\code{"rf"}}
+\item{method}{\code{rf}}
 \item{rf_args}{Final RF arguments used for the full-data fit (after tuning).}
 \item{tune_table}{(data.frame or \code{NULL}) tuning results sorted by OOB MSE.}
 \item{test}{Echo of \code{test} configuration (with resolved values).}
@@ -117,7 +117,7 @@ helper is lightweight and has no external dependencies.
 }
 
 \examples{
-set.seed(1)
+set.seed(42)
 n <- 200
 x <- data.frame(NDVI = runif(n, 0.2, 0.9),
                 EVI  = runif(n, 0.1, 0.8),
@@ -130,22 +130,34 @@ fit_none <- fit_model(x, y, rf_args = list(ntree = 400, mtry = 2))
 fit_none$stats_train
 
 # LOOCV
+\dontshow{
+  # Make it smaller for CRAN checks
+  x <- x[1:20, ]
+  y <- y[1:20]
+}
 fit_loocv <- fit_model(x, y, test = list(method = "loocv"))
 fit_loocv$stats_test
 
 # 5-fold CV
-fit_k-fold <- fit_model(x, y, test = list(method = "k-fold", k = 5, seed = 42))
-fit_k-fold$stats_test
+fit_k_fold <- fit_model(x, y, test = list(method = "k-fold", k = 5, seed = 42))
+fit_k_fold$stats_test
 
 # Train/Test split
 fit_split <- fit_model(x, y, test = list(method = "split", test_size = 0.25, seed = 42))
 fit_split$stats_test
 
 # Bootstrap (with tuning and .632 correction)
+ntree <- 400
+iterations <- 300
+\dontshow{
+  # Smaller tree and iterations for checks
+  ntree <- 50
+  iterations <- 10
+}
 fit_boot <- fit_model(
   x, y,
-  rf_args = list(ntree = 400),
-  test    = list(method = "bootstrap", iterations = 300, correction = TRUE),
+  rf_args = list(ntree = ntree),
+  test    = list(method = "bootstrap", iterations = iterations, correction = TRUE),
   tune    = list(enable = TRUE, search = "random", n_random = 12)
 )
 

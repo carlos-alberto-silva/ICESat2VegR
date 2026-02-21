@@ -2,30 +2,30 @@
 #'
 #' @description
 #' Clips ATL03 photon attributes within a given bounding extent, defined by a
-#' single \code{clip_obj} argument. The clipping extent can be provided as:
+#' single `clip_obj` argument. The clipping extent can be provided as:
 #'
 #' \itemize{
 #'   \item (i) a numeric bounding box, or
 #'   \item (ii) a spatial extent object.
 #' }
 #'
-#' @param atl03_photons_dt An \code{icesat2.atl03_dt} object (output of
+#' @param atl03_photons_dt An `icesat2.atl03_dt` object (output of
 #'   [ATL03_photons_attributes_dt()]).
 #'
 #' @param clip_obj Bounding extent used to perform the clipping. Supported
 #'   inputs:
 #'   \itemize{
-#'     \item Numeric vector of length 4: \code{c(xmin, ymin, xmax, ymax)} in
+#'     \item Numeric vector of length 4: `c(xmin, ymin, xmax, ymax)` in
 #'           decimal degrees.
-#'     \item \code{SpatExtent} (package **terra**): the extent is used directly.
+#'     \item `SpatExtent` (package **terra**): the extent is used directly.
 #'   }
 #'
 #' @return
-#' Returns a subset of the original \code{icesat2.atl03_dt} object containing
+#' Returns a subset of the original `icesat2.atl03_dt` object containing
 #' only photons within the bounding box.
 #'
 #' @details
-#' When \code{clip_obj} is a \code{SpatExtent}, the package \pkg{terra} must be
+#' When `clip_obj` is a `SpatExtent`, the package \pkg{terra} must be
 #' installed. If not found, the function stops with an informative message.
 #'
 #' @seealso

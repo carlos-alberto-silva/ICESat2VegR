@@ -3,7 +3,8 @@
 #' @param map A `leaflet::leaflet` widget.
 #' @param img An Earth Engine image (reticulate `python.builtin.object` with `$visualize`, `$select`).
 #' @param bands Character or numeric vector (length 1 or 3). If `NULL`, uses all bands from the image.
-#' @param min_value, max_value Numeric visualization range. Aliases: `min`, `max`.
+#' @param min_value Numeric. Minimum visualization range.
+#' @param max_value  Numeric. Maximum visualization range.
 #' @param palette Character vector of colors for single-band rendering.
 #' @param group Optional overlay group name.
 #' @param aoi Optional EE geometry to clip before rendering.

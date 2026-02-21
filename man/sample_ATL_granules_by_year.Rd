@@ -43,8 +43,8 @@ model fitting, or cross-validation.
 The year is extracted using the following heuristics:
 
 \enumerate{
-\item A path component of the form \code{/YYYY/} (e.g., \code{".../2020/..."}).
-\item A filename pattern of the form \code{"ATL0[38]_YYYYMMDD..."}.
+\item A path component of the form \verb{/YYYY/} (e.g., \code{.../2020/...}).
+\item A filename pattern of the form \verb{ATL0[38]_YYYYMMDD...}.
 }
 
 URLs for which no year can be detected are dropped with a warning.
@@ -57,7 +57,7 @@ URLs for which no year can be detected are dropped with a warning.
     "https://example.org/ATL03_20210101000000_003.h5"
   )
 
-  sample_df <- ee_sample_atl_granules_by_year(urls, n_per_year = 1, seed = 123)
+  sample_df <- ee_sample_atl_granules_by_year(urls, n_per_year = 1, seed = 42)
   sample_df
 }
 

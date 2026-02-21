@@ -39,14 +39,14 @@ ATL03.seg.map[["yaw"]]                    <- "geolocation/yaw"
 #' ATL03 geolocation segment metadata
 #'
 #' @description
-#' Extract geolocation segment–level metadata from ICESat-2 ATL03 data.
-#' Each row in the output corresponds to a single **20 m geolocation segment**
+#' Extract geolocation segment-level metadata from ICESat-2 ATL03 data.
+#' Each row in the output corresponds to a single **20m geolocation segment**
 #' along track, not to individual photons.
 #'
-#' In addition to variables from the ATL03 \code{geolocation} group, this
+#' In addition to variables from the ATL03 `geolocation` group, this
 #' function derives a segment-level reference photon height (`h_ph`) using
 #' the reference photon index and the photon-height array in the
-#' \code{heights} group.
+#' `heights` group.
 #'
 #' @param atl03_h5
 #'   An ICESat-2 ATL03 object (output of [ATL03_read()]),
@@ -54,8 +54,8 @@ ATL03.seg.map[["yaw"]]                    <- "geolocation/yaw"
 #'   [`ICESat2VegR::icesat2.atl03_h5`].
 #' @param beam
 #'   Character vector indicating beams to process
-#'   (e.g. `"gt1l"`, `"gt1r"`, `"gt2l"`, `"gt2r"`, `"gt3l"`, `"gt3r"`).
-#'   Only beams present in \code{atl03_h5$beams} are used.
+#'   (e.g. `gt1l`, `gt1r`, `gt2l`, `gt2r`, `gt3l`, `gt3r`).
+#'   Only beams present in `atl03_h5$beams` are used.
 #' @param attributes
 #'   Character vector naming the segment-level variables to extract.
 #'   By default, a broad set of geolocation and quality variables is used,
@@ -63,19 +63,19 @@ ATL03.seg.map[["yaw"]]                    <- "geolocation/yaw"
 #'
 #' @return
 #' A [`data.table::data.table`] with one row per ATL03 geolocation segment,
-#' with class `"icesat2.atl03_seg_dt"` prepended. Columns include:
+#' with class `icesat2.atl03_seg_dt` prepended. Columns include:
 #'
 #' \itemize{
-#'   \item \code{beam} – beam ID (e.g., `"gt2l"`).
-#'   \item \code{strong_beam} – logical flag indicating whether the beam is
+#'   \item `beam` - beam ID (e.g., `gt2l`).
+#'   \item `strong_beam` - logical flag indicating whether the beam is
 #'         classified as strong for the orbit.
 #'   \item selected geolocation fields (see below).
-#'   \item a derived \code{h_ph} column: height of the reference photon
+#'   \item a derived `h_ph` column: height of the reference photon
 #'         for each segment (one value per segment).
 #' }
 #'
 #' @details
-#' The following variables may be requested via \code{attributes}:
+#' The following variables may be requested via `attributes``:
 #'
 #' - `h_ph`: Height of the **reference photon** above the WGS84 ellipsoid
 #'   for each geolocation segment. This is derived from
@@ -85,7 +85,7 @@ ATL03.seg.map[["yaw"]]                    <- "geolocation/yaw"
 #' - `bounce_time_offset`: Difference between the transmit time and the
 #'   ground-bounce time of the reference photon.
 #' - `delta_time`: Transmit time of the reference photon, measured in
-#'   seconds from \code{atlas_sdp_gps_epoch}.
+#'   seconds from `atlas_sdp_gps_epoch``.
 #' - `full_sat_fract`: Fraction of pulses within the segment that are
 #'   fully saturated.
 #' - `near_sat_fract`: Fraction of pulses within the segment that are
@@ -98,7 +98,7 @@ ATL03.seg.map[["yaw"]]                    <- "geolocation/yaw"
 #'   correction.
 #' - `ph_index_beg`: 1-based index of the first photon in this segment
 #'   within the photon-rate data.
-#' - `pitch`: Spacecraft pitch (degrees), 3–2–1 Euler sequence.
+#' - `pitch`: Spacecraft pitch (degrees), 3-2-1 Euler sequence.
 #' - `podppd_flag`: Composite flag describing the quality of input
 #'   geolocation products for the segment.
 #' - `range_bias_corr`: Estimated range bias from geolocation analysis.
@@ -110,7 +110,7 @@ ATL03.seg.map[["yaw"]]                    <- "geolocation/yaw"
 #'   photon set for a segment.
 #' - `reference_photon_lat`: Latitude of the reference photon.
 #' - `reference_photon_lon`: Longitude of the reference photon.
-#' - `roll`: Spacecraft roll (degrees), 3–2–1 Euler sequence.
+#' - `roll`: Spacecraft roll (degrees), 3-2-1 Euler sequence.
 #' - `segment_dist_x`: Along-track distance from the equator crossing to
 #'   the start of the 20 m geolocation segment.
 #' - `segment_id`: 7-digit along-track geolocation segment identifier.
@@ -140,7 +140,7 @@ ATL03.seg.map[["yaw"]]                    <- "geolocation/yaw"
 #'   crossing times measured by the Start Pulse Detector.
 #' - `tx_pulse_width_upper`: Average distance between upper threshold
 #'   crossing times measured by the Start Pulse Detector.
-#' - `yaw`: Spacecraft yaw (degrees), 3–2–1 Euler sequence.
+#' - `yaw`: Spacecraft yaw (degrees), 3-2-1 Euler sequence.
 #'
 #' @seealso
 #' \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
@@ -280,7 +280,7 @@ ATL03_seg_metadata_dt <- function(
   seg.dt[["strong_beam"]] <- seg.dt$beam %in% atl03_h5$strong_beams
   seg.dt <- stats::na.omit(seg.dt)
 
-  prepend_class(seg.dt, c("icesat2.atl03_seg_dt","data.table","data.frame"))
+  prepend_class(seg.dt, "icesat2.atl03_seg_dt")
 
   close(pb)
   seg.dt

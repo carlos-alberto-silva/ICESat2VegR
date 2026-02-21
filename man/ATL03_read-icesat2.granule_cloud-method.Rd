@@ -16,4 +16,3 @@ An S4 object of class \code{\link{icesat2.atl03_h5}} containing ICESat-2 ATL03 d
 \description{
 Method for reading ICESat-2 ATL03 data from a cloud-based granule.
 }
-\keyword{internal}

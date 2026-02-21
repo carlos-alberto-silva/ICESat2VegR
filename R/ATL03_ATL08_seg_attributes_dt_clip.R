@@ -41,23 +41,23 @@
 #' @param clip_obj Bounding extent used for clipping. Supported inputs:
 #'   \itemize{
 #'     \item A numeric vector of length 4:
-#'           \code{c(xmin, ymin, xmax, ymax)} in decimal degrees.
+#'           `c(xmin, ymin, xmax, ymax)` in decimal degrees.
 #'     \item A [`terra::SpatExtent`] object.
 #'   }
 #'
 #' @return
-#' An object of the same class as \code{atl03_atl08_dt}, containing only
+#' An object of the same class as `atl03_atl08_dt`, containing only
 #' segments whose coordinates fall inside the bounding extent.
 #'
 #' @details
 #' The function:
 #' \enumerate{
 #'   \item Validates that the input has `longitude` and `latitude` columns.
-#'   \item Converts \code{clip_obj} to numeric bounds \code{xmin}, \code{ymin},
-#'         \code{xmax}, \code{ymax}.
+#'   \item Converts `clip_obj` to numeric bounds `xmin`, `ymin`,
+#'         `xmax`, `ymax`.
 #'   \item Drops rows with missing coordinates.
-#'   \item Returns a subset of \code{atl03_atl08_dt} where
-#'         \code{longitude} and \code{latitude} fall inside the bounding box.
+#'   \item Returns a subset of `atl03_atl08_dt` where
+#'         `longitude` and `latitude` fall inside the bounding box.
 #' }
 #'
 #' @export

@@ -7,7 +7,7 @@
 build_ee_forest(rf)
 }
 \arguments{
-\item{rf}{A fitted \code{\link[randomForest]{randomForest}} model object.}
+\item{rf}{A fitted \link[randomForest:randomForest]{randomForest::randomForest} model object.}
 }
 \value{
 An Earth Engine \code{ee$Classifier} object created with
@@ -15,7 +15,7 @@ An Earth Engine \code{ee$Classifier} object created with
 \code{ee$Image$classify()}.
 }
 \description{
-Given a fitted \code{\link[randomForest]{randomForest}} object, this function
+Given a fitted \link[randomForest:randomForest]{randomForest::randomForest} object, this function
 serializes the forest using the internal Rcpp module \code{icesat2_module}
 and constructs a corresponding Google Earth Engine random forest
 \strong{classifier} via

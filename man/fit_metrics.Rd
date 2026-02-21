@@ -32,7 +32,7 @@ A data.frame with rows for \code{rmse}, \code{rmseR} (\%), \code{mae}, \code{mae
 }
 \description{
 Computes RMSE (absolute and relative), MAE (absolute and relative),
-bias (absolute and relative), Pearson correlation (r), and adjusted R² from a
+bias (absolute and relative), Pearson correlation (r), and adjusted \eqn{R^2} from a
 linear fit between predicted and observed values. Optionally draws a 1:1 plot
 with the regression line.
 }

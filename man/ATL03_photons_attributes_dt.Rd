@@ -18,7 +18,7 @@ an S4 object of class \code{\link{icesat2.atl03_h5}}.}
 }
 \value{
 An S4 object of class \code{\link[data.table:data.table]{data.table::data.table}} (with class
-\code{"icesat2.atl03_dt"} prepended) containing photon-level ATL03
+\code{icesat2.atl03_dt} prepended) containing photon-level ATL03
 attributes.
 }
 \description{

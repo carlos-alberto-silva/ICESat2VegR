@@ -3,7 +3,7 @@
 \name{ATL03_ATL08_photons_seg_dt_fitground}
 \alias{ATL03_ATL08_photons_seg_dt_fitground}
 \title{Fit and estimate ground elevation for photons or arbitrary distances
-from the track beginning.}
+from the track beginning}
 \usage{
 ATL03_ATL08_photons_seg_dt_fitground(
   atl03_atl08_seg_dt,

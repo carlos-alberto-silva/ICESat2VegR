@@ -30,4 +30,3 @@ atl08 <- ATL08_read(atl08_path = atl08_path)
 close(atl08)
 
 }
-\keyword{internal}

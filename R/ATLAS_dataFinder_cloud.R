@@ -50,6 +50,7 @@ PAGE_SIZE <- 2000
 # #' daterange <- c("2019-07-01", "2020-05-22")
 # #'
 # #' # Extracting the path to ICESat-2 ATLAS data for the specified boundary box coordinates
+# #' \dontrun{
 # #' ATLAS02b_list <- ATLAS_dataFinder(
 # #'   short_name = "ATL08",
 # #'   upper_right_lat,
@@ -60,6 +61,7 @@ PAGE_SIZE <- 2000
 # #'   daterange = daterange,
 # #'   cloud_computing = TRUE
 # #' )
+#' 
 # #' }
 # #' @import jsonlite curl magrittr reticulate
 #' @include earthaccess.R
@@ -68,7 +70,7 @@ ATLAS_dataFinder_cloud <- function(short_name,
                                  lower_left_lat,
                                  upper_right_lon,
                                  upper_right_lat,
-                                 version = "006",
+                                 version = "007",
                                  daterange = NULL,
                                  persist = TRUE) {
   if (!reticulate::py_module_available("earthaccess")) {

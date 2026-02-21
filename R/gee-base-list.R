@@ -63,9 +63,9 @@
 #'     \item A parsed GeoJSON list with a non-`NULL` `type` element.
 #'   }
 #' @param xcol Character. Name of the longitude column when `geom` is a
-#'   `data.frame`. Default is `"lon"`.
+#'   `data.frame`. Default is `lon`.
 #' @param ycol Character. Name of the latitude column when `geom` is a
-#'   `data.frame`. Default is `"lat"`.
+#'   `data.frame`. Default is `lat`.
 #' @param crs Coordinate reference system of the input geometry when `geom`
 #'   is an `sf`/`sfc` object or a `data.frame`. Can be any `sf`-compatible
 #'   CRS specification (default is EPSG 4326).
@@ -129,7 +129,7 @@
 
   # Already a Python EE object?
   if (inherits(geom, "python.builtin.object")) {
-    # Normalize Feature/FeatureCollection → Geometry if needed
+    # Normalize Feature/FeatureCollection -> Geometry if needed
     try({
       cls <- geom$`__class__`$`__name__`
       if (grepl("FeatureCollection|Feature", cls, ignore.case = TRUE)) {

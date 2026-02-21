@@ -7,8 +7,8 @@
 ext_to_ee(x)
 }
 \arguments{
-\item{x}{A spatial object of class \code{terra::ext}, \code{terra::SpatVector}, or
-\code{terra::SpatRaster}. Its extent is extracted and converted into an
+\item{x}{A spatial object of class \link[terra:ext]{terra::ext}, \link[terra:SpatVector-class]{terra::SpatVector}, or
+\link[terra:SpatRaster-class]{terra::SpatRaster}. Its extent is extracted and converted into an
 Earth Engine bounding box.}
 }
 \value{
@@ -16,7 +16,7 @@ A Python object representing \code{ee$Geometry$Rectangle}, suitable for use
 with Earth Engine Python API functions accessed via \code{reticulate}.
 }
 \description{
-Converts a \code{terra::ext}, \code{terra::SpatVector}, or \code{terra::SpatRaster}
+Converts a \link[terra:ext]{terra::ext}, \link[terra:SpatVector-class]{terra::SpatVector}, or \link[terra:SpatRaster-class]{terra::SpatRaster}
 into a Google Earth Engine geometry of type \code{ee$Geometry$Rectangle}.
 The resulting rectangle is always expressed in geographic coordinates
 (EPSG:4326), regardless of the input object's projection.

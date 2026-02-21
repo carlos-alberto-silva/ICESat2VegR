@@ -23,10 +23,10 @@ a bounding box as \code{c(xmin, ymin, xmax, ymax)}).
 }}
 
 \item{xcol}{Character. Name of the longitude column when \code{geom} is a
-\code{data.frame}. Default is \code{"lon"}.}
+\code{data.frame}. Default is \code{lon}.}
 
 \item{ycol}{Character. Name of the latitude column when \code{geom} is a
-\code{data.frame}. Default is \code{"lat"}.}
+\code{data.frame}. Default is \code{lat}.}
 
 \item{crs}{Coordinate reference system of the input geometry when \code{geom}
 is an \code{sf}/\code{sfc} object or a \code{data.frame}. Can be any \code{sf}-compatible

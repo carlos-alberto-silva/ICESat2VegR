@@ -12,8 +12,7 @@ ATLAS_dataDownload(
   timeout = 10,
   retries = 3,
   backoff = 2,
-  quiet = FALSE,
-  use_home_netrc = TRUE
+  quiet = FALSE
 )
 }
 \arguments{
@@ -36,18 +35,13 @@ the connection (default 10).}
 \code{sleep = backoff^(attempt - 1)} (default 2).}
 
 \item{quiet}{Logical; suppress per-file messages (default \code{FALSE}).}
-
-\item{use_home_netrc}{Logical; if \code{TRUE} (default), use a single
-\file{~/.netrc} file in the user's home directory for Earthdata
-credentials so they can be reused across projects. If \code{FALSE},
-a \file{.netrc} file is created in \code{outdir}.}
 }
 \value{
 (invisibly) a \code{data.frame} with columns:
 \itemize{
 \item \code{file}: file name
 \item \code{dest}: full destination path
-\item \code{status}: one of \code{"ok"}, \code{"failed"}, \code{"skipped"}
+\item \code{status}: one of \code{ok}, \code{failed}, \code{skipped}
 \item \code{attempts}: number of attempts used
 \item \code{error}: error message (if any)
 }
@@ -69,8 +63,7 @@ urls <- c(
 status <- ATLAS_dataDownload(urls,
                              outdir        = "data",
                              retries       = 5,
-                             backoff       = 2,
-                             use_home_netrc = TRUE)
+                             backoff       = 2)
 subset(status, status == "failed")
 }
 

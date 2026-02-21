@@ -16,12 +16,11 @@ ee_build_AlphaEarth_embedding_terrain_stack(
 }
 \arguments{
 \item{geom}{AOI geometry. Can be:
-\itemize{
-\item an \pkg{sf} object (\code{sf} or \code{sfc}),
-\item a \code{terra::SpatVector},
-\item or an Earth Engine geometry (Python object) already in geographic
+- an \code{sf} object (\strong{sf} or \strong{sfc}),
+- a \link[terra:SpatVector-class]{terra::SpatVector} object,
+- or an Earth Engine geometry (Python object) already in geographic
 coordinates.
-}
+
 The geometry is internally converted to an Earth Engine geometry via an
 internal helper.}
 
@@ -39,23 +38,22 @@ and aspect are multiplied by 10 to preserve conventions used elsewhere in
 the package and avoid small floating-point values.}
 
 \item{add_lonlat}{Logical. If \code{TRUE} (default), add longitude and
-latitude bands named \code{"lon"} and \code{"lat"} derived from
+latitude bands named \code{lon} and \code{lat} derived from
 \code{ee$Image$pixelLonLat()}.}
 }
 \value{
 A Python \code{ee$Image} object that contains:
 \itemize{
 \item The median annual embedding bands.
-\item \code{"elevation"}, \code{"slope"}, and \code{"aspect"} bands.
-\item Optional \code{"lon"} and \code{"lat"} bands.
+\item \code{elevation}, \code{slope}, and \code{aspect} bands.
+\item Optional \code{lon} and \code{lat} bands.
 }
 }
 \description{
 Creates a Google Earth Engine image stack that combines:
-
 \itemize{
 \item Annual satellite embeddings from
-\code{"GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL"} (AlphaEarth).
+\code{GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL} (AlphaEarth).
 \item Terrain derivatives (elevation, slope, aspect) from USGS 3DEP or
 NASADEM as fallbacks.
 \item Optional longitude/latitude bands from \code{ee$Image$pixelLonLat()}.
@@ -63,19 +61,18 @@ NASADEM as fallbacks.
 
 The embedding collection is filtered to the specified year range and AOI,
 reduced using a pixel-wise median, and clipped to the AOI. Terrain data are
-reprojected to a target scale (default \code{30} m).
+reprojected to a target scale (default \code{30}m).
 }
 \details{
 The terrain source is chosen in the following order:
-
 \enumerate{
-\item USGS 3DEP 1 m (\code{"USGS/3DEP/1m"}), if available for the AOI.
-\item USGS 3DEP 10 m (\code{"USGS/3DEP/10m"}).
-\item NASADEM (\code{"NASA/NASADEM_HGT/001"}) as a global fallback.
+\item USGS 3DEP 1 m (\verb{USGS/3DEP/1m}), if available for the AOI.
+\item USGS 3DEP 10 m (\verb{USGS/3DEP/10m}).
+\item NASADEM (\code{NASA/NASADEM_HGT/001}) as a global fallback.
 }
 
 All terrain layers are clipped to the AOI and reprojected to
-\code{"EPSG:4326"} with the requested \code{terrain_scale}.
+\code{EPSG:4326} with the requested \code{terrain_scale}.
 }
 \examples{
 \dontrun{
@@ -104,9 +101,9 @@ All terrain layers are clipped to the AOI and reprojected to
 
   library(reticulate)
   ee <- import("ee")
-  ICESat2VegR:::.ee_ping(ee)
+  ee_ping(ee)
 
-  # AOI geometry (sf → EE geometry)
+  # AOI geometry (sf -> EE geometry)
   library(sf)
   aoi <- st_as_sfc(
     st_bbox(c(

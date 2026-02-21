@@ -13,9 +13,9 @@ columns = predicted classes.}
 \value{
 A list with:
 \itemize{
-\item \code{PCC} – overall percent correctly classified.
-\item \code{kappa} – Cohen's kappa coefficient.
-\item \code{producers.accuracy} – vector of producer's accuracy per class.
+\item \code{PCC} - overall percent correctly classified.
+\item \code{kappa} - Cohen's kappa coefficient.
+\item \code{producers.accuracy} - vector of producer's accuracy per class.
 }
 }
 \description{

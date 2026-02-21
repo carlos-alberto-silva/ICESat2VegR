@@ -363,18 +363,18 @@ glcmTexture <- function(x, size = 1, kernel = NULL, average = TRUE) {
 #' Compute terrain slope (degrees) from a DEM image
 #'
 #' @description
-#' Computes the terrain *slope* in degrees for each pixel of an Earth Engine
+#' Computes the terrain **slope** in degrees for each pixel of an Earth Engine
 #' `ee$Image` representing a digital elevation model (DEM).
 #'
 #' This method is a thin wrapper around `ee$Terrain$slope()` and returns the
-#' same output structure. Slope is computed using Earth Engine’s internal
+#' same output structure. Slope is computed using Earth Engine's internal
 #' gradient operator, which relies on the 4-connected neighborhood around each
 #' pixel. As a result, edge pixels may contain missing values depending on the
 #' input DEM.
 #'
 #' @param x An `ee$Image` representing a DEM from which slope will be derived.
 #'
-#' @return An `ee$Image` with one band named `"slope"` containing terrain
+#' @return An `ee$Image` with one band named `slope` containing terrain
 #'   slope values in degrees.
 #'
 #' @examples
@@ -389,7 +389,7 @@ slope <- function(x) {
   UseMethod("slope")
 }
 
-#' @keywords internal
+#' @export
 "slope.ee.image.Image" <- function(x) {
   invisible(ee$Terrain$slope(x))
 }
@@ -403,13 +403,13 @@ slope <- function(x) {
 #'
 #' Aspect describes the downslope direction of the steepest gradient and is
 #' expressed in degrees clockwise from north. The computation is performed
-#' using Earth Engine’s built-in `ee$Terrain$aspect()` function. As with slope,
+#' using Earth Engine's built-in `ee$Terrain$aspect()` function. As with slope,
 #' Earth Engine uses the 4-connected neighborhood, so missing values may occur
 #' near image edges.
 #'
 #' @param x An `ee$Image` representing a DEM from which aspect will be derived.
 #'
-#' @return An `ee$Image` with one band named `"aspect"` containing aspect
+#' @return An `ee$Image` with one band named `aspect` containing aspect
 #'   values in degrees clockwise from north.
 #'
 #' @examples
@@ -424,7 +424,7 @@ aspect <- function(x) {
   UseMethod("aspect")
 }
 
-#' @keywords internal
+#' @export
 "aspect.ee.image.Image" <- function(x) {
   invisible(ee$Terrain$aspect(x))
 }

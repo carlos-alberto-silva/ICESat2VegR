@@ -21,7 +21,7 @@ environment variable \code{EE_PROJECT}. It:
 }
 \details{
 \itemize{
-\item Accepts accidental \code{"projects/<id>"} strings and strips the prefix.
+\item Accepts accidental \verb{projects/<id>} strings and strips the prefix.
 \item Allows numeric project numbers as valid.
 \item Rejects IDs with underscores (suggesting replacement with hyphens).
 \item Enforces basic format rules for project IDs.

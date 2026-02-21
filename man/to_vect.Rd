@@ -2,42 +2,74 @@
 % Please edit documentation in R/to_vect.R
 \name{to_vect}
 \alias{to_vect}
-\title{Generic function to convert ICESat-2 classes and sf to \code{\link[terra:SpatVector-class]{terra::SpatVector}}}
+\alias{to_vect,data.frame-method}
+\alias{to_vect,data.table-method}
+\alias{to_vect,icesat2.atl03_seg_dt-method}
+\alias{to_vect,icesat2.atl08_dt-method}
+\alias{to_vect,icesat2.atl03atl08_dt-method}
+\alias{to_vect,icesat2.atl03_dt-method}
+\alias{to_vect,icesat2.atl03_atl08_seg_dt-method}
+\alias{to_vect,sf-method}
+\title{Convert ICESat-2 classes, data.frame/data.table, and sf to terra::SpatVector}
 \usage{
 to_vect(x, ...)
+
+\S4method{to_vect}{data.frame}(x, lon = NULL, lat = NULL, crs = "EPSG:4326", ...)
+
+\S4method{to_vect}{data.table}(x, lon = NULL, lat = NULL, crs = "EPSG:4326", ...)
+
+\S4method{to_vect}{icesat2.atl03_seg_dt}(x, ...)
+
+\S4method{to_vect}{icesat2.atl08_dt}(x, ...)
+
+\S4method{to_vect}{icesat2.atl03atl08_dt}(x, ...)
+
+\S4method{to_vect}{icesat2.atl03_dt}(x, ...)
+
+\S4method{to_vect}{icesat2.atl03_atl08_seg_dt}(x, ...)
+
+\S4method{to_vect}{sf}(x, target_crs = NULL, ...)
 }
 \arguments{
-\item{x}{The ICESat-2 or sf object to convert to \code{\link[terra:SpatVector-class]{terra::SpatVector}}}
+\item{x}{An \code{sf} object (POINT geometry recommended).}
 
-\item{...}{other potential parameters needed.}
+\item{...}{Ignored.}
+
+\item{lon, lat}{For \code{data.frame}/\code{data.table}, the column names to use as coordinates.}
+
+\item{crs}{CRS string for the resulting SpatVector. Default is "EPSG:4326".}
+
+\item{target_crs}{Optional CRS string (e.g., "EPSG:4326") to reproject the output.}
 }
 \value{
-The ICESat-2 or sf object as the appropriate \code{\link[terra:SpatVector-class]{terra::SpatVector}}
+A \code{\link[terra:SpatVector-class]{terra::SpatVector}} object.
+
+A \code{terra::SpatVector}
 }
 \description{
-Generic function to convert ICESat-2 classes and sf to \code{\link[terra:SpatVector-class]{terra::SpatVector}}
+Generic function to convert ICESat-2 objects, plain tables (data.frame / data.table),
+and \code{sf} objects to a \code{\link[terra:SpatVector-class]{terra::SpatVector}}.
+}
+\details{
+For plain tables, you can either:
+\enumerate{
+\item Provide \verb{lon=} and \verb{lat=} column names, or
+\item Rely on defaults (\code{longitude} / \code{latitude}), or
+\item Use common ICESat-2 column names (\code{lon_ph}/\code{lat_ph}, \code{reference_photon_lon}/\code{reference_photon_lat}).
+}
 }
 \examples{
-# Get path to ATL03 h5 file
-atl03_path <- system.file("extdata",
-  "atl03_clip.h5",
-  package = "ICESat2VegR"
-)
-# Reading ATL03 data (h5 file)
+# ICESat2VegR examples (package objects keep their classes):
+atl03_path <- system.file("extdata", "atl03_clip.h5", package = "ICESat2VegR")
 atl03_h5 <- ATL03_read(atl03_path = atl03_path)
-# Extracting ATL03 segment attributes
 atl03_segment_dt <- ATL03_seg_metadata_dt(atl03_h5 = atl03_h5)
-
-# Extract vector
 atl03_segment_vect <- to_vect(atl03_segment_dt)
-
-# Terra plot
 terra::plot(atl03_segment_vect, col = atl03_segment_vect$segment_ph_cnt)
-
-# Export as temp gpkg
-temp_vect <- tempfile(fileext = ".gpkg")
-terra::writeVector(atl03_segment_vect, temp_vect)
-
-head(atl03_segment_dt)
 close(atl03_h5)
+
+# Plain data.frame / data.table usage:
+# df <- data.frame(longitude = c(-84, -84.1), latitude = c(29.6, 29.7), z = 1:2)
+# v  <- to_vect(df)
+# v2 <- to_vect(df, lon = "longitude", lat = "latitude", crs = "EPSG:4326")
+
 }

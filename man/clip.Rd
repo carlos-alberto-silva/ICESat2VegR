@@ -2,12 +2,21 @@
 % Please edit documentation in R/clip.R
 \name{clip}
 \alias{clip}
-\title{Clip ICESat-2 data (h5, attributes, or ATL03–ATL08 join) by box or geometry}
+\title{Clip ICESat-2 data (h5, attributes, or ATL03-ATL08 join) by box or geometry}
 \usage{
 clip(x, clip_obj, ...)
 }
 \arguments{
-\item{x}{ICESat-2 object (ATL03/ATL08 h5, attributes, or joined table)}
+\item{x}{ICESat-2 object (ATL03/ATL08 h5, attributes, or joined table)
+Can be either:
+\itemize{
+\item \code{\linkS4class{icesat2.atl03_h5}}
+\item \code{\linkS4class{icesat2.atl03_dt}}
+\item \code{\linkS4class{icesat2.atl03_seg_dt}}
+\item \code{\linkS4class{icesat2.atl08_h5}}
+\item \code{\linkS4class{icesat2.atl08_dt}}
+\item \code{\linkS4class{icesat2.atl03atl08_dt}}
+}}
 
 \item{clip_obj}{Clipping object. Supported for box-based clipping:
 \itemize{
@@ -18,9 +27,29 @@ clip(x, clip_obj, ...)
 For geometry-based clipping:
 \itemize{
 \item \code{sf}, \code{sfc}, \code{terra::SpatVector}, etc.
+\item Will also accept additional argument \code{split_by}:
+\itemize{
+\item \code{split_by} Character. The SpatVector attribute
+whose values are used to identify and name each clipping
+geometry. Defaults to \code{id}.
+}
 }
 
 To clip by a spatial object's extent, extract its bbox first.}
+
+\item{...}{Additional arguments passed to \verb{_clipBox()} or \verb{_clipGeometry()}.
+
+For hdf5 based clip, the additional arguments are:
+\itemize{
+\item \code{output} Character. Path to the output HDF5 file that will store the
+clipped ATL03 dataset.
+\item \code{beam} Character vector specifying which ATL03 beams to include.
+Defaults to:
+\code{c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")}.
+\item \code{additional_groups} Character vector of additional non-beam HDF5 groups
+to copy unchanged into the output file. Defaults to:
+\code{c("orbit_info")}.
+}}
 }
 \description{
 Unified clipping interface for ICESat-2 ATL03/ATL08 data. The generic

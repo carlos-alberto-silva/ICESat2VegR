@@ -24,7 +24,7 @@ i.e. an S4 object of class
 \code{\link{icesat2.atl03_h5}}.}
 
 \item{beam}{Character vector indicating beams to process
-(e.g. \code{"gt1l"}, \code{"gt1r"}, \code{"gt2l"}, \code{"gt2r"}, \code{"gt3l"}, \code{"gt3r"}).
+(e.g. \code{gt1l}, \code{gt1r}, \code{gt2l}, \code{gt2r}, \code{gt3l}, \code{gt3r}).
 Only beams present in \code{atl03_h5$beams} are used.}
 
 \item{attributes}{Character vector naming the segment-level variables to extract.
@@ -33,11 +33,11 @@ including a derived reference-photon height (\code{h_ph}).}
 }
 \value{
 A \code{\link[data.table:data.table]{data.table::data.table}} with one row per ATL03 geolocation segment,
-with class \code{"icesat2.atl03_seg_dt"} prepended. Columns include:
+with class \code{icesat2.atl03_seg_dt} prepended. Columns include:
 
 \itemize{
-\item \code{beam} – beam ID (e.g., \code{"gt2l"}).
-\item \code{strong_beam} – logical flag indicating whether the beam is
+\item \code{beam} - beam ID (e.g., \code{gt2l}).
+\item \code{strong_beam} - logical flag indicating whether the beam is
 classified as strong for the orbit.
 \item selected geolocation fields (see below).
 \item a derived \code{h_ph} column: height of the reference photon
@@ -45,8 +45,8 @@ for each segment (one value per segment).
 }
 }
 \description{
-Extract geolocation segment–level metadata from ICESat-2 ATL03 data.
-Each row in the output corresponds to a single \strong{20 m geolocation segment}
+Extract geolocation segment-level metadata from ICESat-2 ATL03 data.
+Each row in the output corresponds to a single \strong{20m geolocation segment}
 along track, not to individual photons.
 
 In addition to variables from the ATL03 \code{geolocation} group, this
@@ -55,7 +55,7 @@ the reference photon index and the photon-height array in the
 \code{heights} group.
 }
 \details{
-The following variables may be requested via \code{attributes}:
+The following variables may be requested via `attributes``:
 \itemize{
 \item \code{h_ph}: Height of the \strong{reference photon} above the WGS84 ellipsoid
 for each geolocation segment. This is derived from
@@ -65,7 +65,7 @@ and \code{heights/h_ph}.
 \item \code{bounce_time_offset}: Difference between the transmit time and the
 ground-bounce time of the reference photon.
 \item \code{delta_time}: Transmit time of the reference photon, measured in
-seconds from \code{atlas_sdp_gps_epoch}.
+seconds from `atlas_sdp_gps_epoch``.
 \item \code{full_sat_fract}: Fraction of pulses within the segment that are
 fully saturated.
 \item \code{near_sat_fract}: Fraction of pulses within the segment that are
@@ -78,7 +78,7 @@ unit height change.
 correction.
 \item \code{ph_index_beg}: 1-based index of the first photon in this segment
 within the photon-rate data.
-\item \code{pitch}: Spacecraft pitch (degrees), 3–2–1 Euler sequence.
+\item \code{pitch}: Spacecraft pitch (degrees), 3-2-1 Euler sequence.
 \item \code{podppd_flag}: Composite flag describing the quality of input
 geolocation products for the segment.
 \item \code{range_bias_corr}: Estimated range bias from geolocation analysis.
@@ -90,7 +90,7 @@ reference photon in the local ENU frame.
 photon set for a segment.
 \item \code{reference_photon_lat}: Latitude of the reference photon.
 \item \code{reference_photon_lon}: Longitude of the reference photon.
-\item \code{roll}: Spacecraft roll (degrees), 3–2–1 Euler sequence.
+\item \code{roll}: Spacecraft roll (degrees), 3-2-1 Euler sequence.
 \item \code{segment_dist_x}: Along-track distance from the equator crossing to
 the start of the 20 m geolocation segment.
 \item \code{segment_id}: 7-digit along-track geolocation segment identifier.
@@ -120,7 +120,7 @@ upper threshold crossing times, estimating transmit pulse skew.
 crossing times measured by the Start Pulse Detector.
 \item \code{tx_pulse_width_upper}: Average distance between upper threshold
 crossing times measured by the Start Pulse Detector.
-\item \code{yaw}: Spacecraft yaw (degrees), 3–2–1 Euler sequence.
+\item \code{yaw}: Spacecraft yaw (degrees), 3-2-1 Euler sequence.
 }
 }
 \examples{

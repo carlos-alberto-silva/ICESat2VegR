@@ -1,4 +1,4 @@
-#' The class representing the h5 file opened from local files.
+#' The class representing the h5 file opened from local files
 #'
 #' @details
 #' The variants `_cloud` and `_local` allows all the other functions

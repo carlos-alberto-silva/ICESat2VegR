@@ -21,6 +21,7 @@
 An object of class \code{icesat2.granule_cloud}.
 }
 \description{
-This method subsets the \code{granules} slot of an \code{icesat2.granules_cloud} object.
+This method subsets the \code{granules} slot of an
+\code{icesat2.granules_cloud} object.
 }
 \keyword{internal}

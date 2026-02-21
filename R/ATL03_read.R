@@ -45,12 +45,12 @@ setGeneric("ATL03_read", function(atl03_path) {
 #' @return
 #'   An S4 object of class [`icesat2.atl03_h5`] containing ICESat-2 ATL03 data.
 #'
-#' @keywords internal
 #' @include zzz.R
 #' @include class.icesat2.R
+#' @export
 setMethod(
   "ATL03_read",
-  signature = c("ANY"),
+  signature = c("character"),
   function(atl03_path) {
     if (!file.exists(atl03_path) || tools::file_ext(atl03_path) != "h5") {
       stop("atl03_path must be a valid path to an .h5 file")
@@ -75,7 +75,7 @@ setMethod(
 #' @return
 #'   An S4 object of class [`icesat2.atl03_h5`] containing ICESat-2 ATL03 data.
 #'
-#' @keywords internal
+#' @export
 setMethod(
   "ATL03_read",
   signature = c("icesat2.granule_cloud"),

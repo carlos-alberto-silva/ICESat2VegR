@@ -1,7 +1,7 @@
 #' The pointer to the `earthaccess` python reticulate module
 #'
 #' @useDynLib ICESat2VegR
-#' @import Rcpp Rdpack
+#' @import Rcpp Rdpack mathjaxr
 #' @importFrom Rdpack reprompt
 #' @keywords internal
 earthaccess <- NULL
@@ -15,12 +15,7 @@ ee <- NULL
 # Private h5py module
 h5py <- NULL
 
-# Private package environment
-pkg_env <- environment()
-
-# We no longer keep a long-lived Rcpp Module external pointer here.
-# The icesat2_module is loaded on .onLoad() and accessed via Rcpp::Module()
-# when needed (see .get_pkg_module()).
+# Private pkg_module
 pkg_module <- NULL
 
 # Private cache for the Earth Engine search
@@ -28,6 +23,18 @@ ee_cache <- new.env(parent = emptyenv())
 ee_cache$search <- NULL
 
 .onLoad <- function(libname, pkgname) {
+  try(
+    suppressWarnings(
+      suppressMessages(
+        reticulate::py_require(c(
+          "earthaccess",
+          "earthengine-api",
+          "h5py"
+        ))
+      )
+    ),
+    silent = TRUE
+  )
 
   # Python modules ..
   if (reticulate::py_module_available("earthaccess")) {
@@ -46,13 +53,8 @@ ee_cache$search <- NULL
   # GDAL module load
   loadGdal(pkgname)
 
-  # -------------------------------------------------------------------
-  #  Load the ICESat2 C++ module (NO PACKAGE argument here)
-  # -------------------------------------------------------------------
-  Rcpp::loadModule("icesat2_module", TRUE, TRUE)
-
-  # We do NOT assign pkg_module here because that pointer becomes stale
-  # after devtools::load_all() reloads the DLL.
+  # Rcpp module load
+  pkg_module <<- Rcpp::Module("icesat2_module")
 }
 
 
@@ -108,3 +110,4 @@ loadGdal <- function(pkg_name) {
     )
   )
 }
+

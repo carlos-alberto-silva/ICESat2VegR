@@ -3,7 +3,7 @@
 # ============================================================
 
 # ---------- tiny utilities ----------
-#' Ensure a required namespace is available
+##' Ensure a required namespace is available
 #' @param pkg Package name (character).
 #' @keywords internal
 .must_have <- function(pkg) {
@@ -11,15 +11,14 @@
     stop("Package '", pkg, "' is required.")
 }
 
-#' Null-coalescing operator
-#' @param a,b Values where `a` is returned unless it is NULL, otherwise `b`.
-#' @keywords internal
+# Null-coalescing operator
+# @param a value that is returned unless it is NULL
+# @param b fallback value when `a` is NULL.
 `%||%` <- function(a, b) if (!is.null(a)) a else b
 
-#' Random identifier
-#' @param prefix Character prefix for the id.
-#' @return Character scalar.
-#' @keywords internal
+## Random identifier
+# @param prefix Character prefix for the id.
+# @return Character scalar.
 .rand_id <- function(prefix = "id") paste0(prefix, "_", paste(sample(c(letters, LETTERS, 0:9), 8, TRUE), collapse = ""))
 
 # ============================================================
@@ -29,7 +28,7 @@
 #' Convert a terra extent or spatial object to an Earth Engine Rectangle
 #'
 #' @description
-#' Converts a `terra::ext`, `terra::SpatVector`, or `terra::SpatRaster`
+#' Converts a [terra::ext], [terra::SpatVector], or [terra::SpatRaster]
 #' into a Google Earth Engine geometry of type `ee$Geometry$Rectangle`.
 #' The resulting rectangle is always expressed in geographic coordinates
 #' (EPSG:4326), regardless of the input object's projection.
@@ -37,8 +36,8 @@
 #' This function is mainly used internally to standardize spatial inputs
 #' before Earth Engine requests (e.g., filtering, clipping, or exporting data).
 #'
-#' @param x A spatial object of class `terra::ext`, `terra::SpatVector`, or
-#'   `terra::SpatRaster`. Its extent is extracted and converted into an
+#' @param x A spatial object of class [terra::ext], [terra::SpatVector], or
+#'   [terra::SpatRaster]. Its extent is extracted and converted into an
 #'   Earth Engine bounding box.
 #'
 #' @return
@@ -94,37 +93,37 @@ fit_map_to_aoi <- function(m, aoi) {
 }
 
 # ============================================================
-# Model → EE prediction image ("prediction_layer")
+# Model -> EE prediction image ("prediction_layer")
 # ============================================================
 
 #' Create a Prediction Map in Google Earth Engine Using a Fitted Random Forest Model
 #'
 #' @description
-#' Applies a fitted Random Forest model (from R's \code{randomForest} package)
+#' Applies a fitted Random Forest model (from R's `randomForest` package)
 #' to a Google Earth Engine (\strong{EE}) image or image collection and returns
 #' an EE image containing predicted values.
 #'
 #' The model is converted to an Earth Engine estimator using
-#' \code{\link{build_ee_forest}}, which internally serializes the R forest
-#' through the ICESat2VegR C++ module (\code{icesat2_module}) and constructs an
-#' EE \code{Classifier} via \code{ee$Classifier$decisionTreeEnsemble()}.
+#' `\link{build_ee_forest`}, which internally serializes the R forest
+#' through the ICESat2VegR C++ module (`icesat2_module`) and constructs an
+#' EE `Classifier` via `ee$Classifier$decisionTreeEnsemble()`.
 #'
-#' @param model A fitted \code{randomForest::randomForest} model, or a wrapper
-#'   object containing an element named \code{model}.
-#' @param stack An \code{ee$Image} or \code{ee$ImageCollection} providing the
+#' @param model A fitted `randomForest::randomForest` model, or a wrapper
+#'   object containing an element named `model`.
+#' @param stack An `ee$Image` or `ee$ImageCollection` providing the
 #'   predictor variables (bands) matching those used to train the model.
 #' @param aoi Optional EE geometry. If provided, the output map is clipped to it.
-#' @param reducer Aggregation method when \code{stack} is an image collection.
-#'   One of: \code{"mosaic"} (default) or \code{"median"}.
+#' @param reducer Aggregation method when `stack` is an image collection.
+#'   One of: `mosaic` (default) or `median`.
 #' @param mode Controls how the estimator is applied. Currently supported:
 #'   \itemize{
-#'     \item \code{"auto"}       — (default) applies the classifier with
-#'       \code{img$classify()}.
-#'     \item \code{"classifier"} — explicitly applies \code{img$classify()}.
+#'     \item `auto`       - (default) applies the classifier with
+#'       `img$classify()`.
+#'     \item `classifier` - explicitly applies `img$classify()`.
 #'   }
-#'   The \code{"regressor"} option is not supported, as the current
+#'   The `regressor` option is not supported, as the current
 #'   implementation only builds an Earth Engine classifier.
-#' @param to_float Logical; if \code{TRUE} (default) converts the output band to
+#' @param to_float Logical; if `TRUE` (default) converts the output band to
 #'   32-bit float.
 #'
 #' @details
@@ -135,16 +134,15 @@ fit_map_to_aoi <- function(m, aoi) {
 #'     using mosaic or median.
 #' }
 #'
-#' The output band is always named \code{"prediction_layer"}.
+#' The output band is always named `prediction_layer`.
 #'
 #' Properties from a zero-pixel placeholder image are copied to preserve band
 #' metadata.
 #'
-#' @return An Earth Engine \code{ee$Image} containing model predictions.
+#' @return An Earth Engine `ee$Image` containing model predictions.
 #'
 #' @examples
 #' \dontrun{
-#'   library(ICESat2VegR)
 #'   library(randomForest)
 #'
 #'   # Fit a model in R
@@ -170,8 +168,8 @@ fit_map_to_aoi <- function(m, aoi) {
 #' }
 #'
 #' @seealso
-#'   \code{\link{build_ee_forest}}
-#'   \code{randomForest::randomForest}
+#'   `\link{build_ee_forest`}
+#'   `randomForest::randomForest`
 #'   Earth Engine API reference: <https://developers.google.com/earth-engine>
 #'
 #' @export
@@ -269,7 +267,7 @@ map_create <- function(model,
 #' @param img ee Image.
 #' @param band Band name.
 #' @param aoi EE geometry.
-#' @param probs Numeric percentiles (0–100).
+#' @param probs Numeric percentiles (0-100).
 #' @param scale Optional scale.
 #' @param maxPixels Max pixels for reduceRegion.
 #' @return Numeric vector of percentiles.
@@ -374,7 +372,7 @@ map_create <- function(model,
 #' @param border_weight Border width (pixels).
 #' @param fill Logical; fill polygons/markers.
 #' @param fill_color Fill color.
-#' @param fill_opacity Fill opacity (0–1).
+#' @param fill_opacity Fill opacity (0-1).
 #' @param color_field Optional column used to color features by category.
 #' @param palette Optional palette for categories; defaults to `rainbow(n)`.
 #' @param legend_title Optional legend title.
@@ -495,7 +493,7 @@ map_create <- function(model,
 #'   legend=list(title=NULL, position=\"bottomright\", opacity=1, auto=NULL, probs=c(2,98), scale=NULL))`.
 #'   For vectors: `list(type="vector", vect, group=NULL, border_color, border_weight,
 #'   fill, fill_color, fill_opacity, color_field, palette, legend_title)`.
-#' @param base_tiles One of `"OSM"`, `"Carto.Light"`, `"Carto.Dark"`.
+#' @param base_tiles One of `OSM`, `Carto.Light`, `Carto.Dark`.
 #' @param add_layers_control Logical; add layers control panel.
 #' @param add_opacity_controls Logical; add per-group opacity sliders.
 #' @param fit_to Optional EE Rectangle to fit the initial view.
@@ -696,7 +694,7 @@ ee_image_to_gcs <- function(image,
 #' @description Thin wrapper over `ee$batch$Export$image$toAsset()`. Optionally
 #' deletes an existing asset when `overwrite=TRUE` (requires appropriate perms).
 #'
-#' @param assetId Destination asset ID (e.g., `"users/me/my_asset"`).
+#' @param assetId Destination asset ID (e.g., `users/me/my_asset`).
 #' @param overwrite Logical; if TRUE, attempt to delete existing `assetId` first.
 #' @inheritParams ee_image_to_drive
 #'
@@ -760,11 +758,11 @@ ee_task_start_safe <- function(task) {
   st <- .ee_status_to_list(task)
   state <- .lst_get(st, "state", NA_character_)
   if (!is.na(state) && state %in% c("READY","RUNNING","COMPLETED")) {
-    message("▶ Task already ", state, ": ", .lst_get(st, "description", "<no description>"))
+    message("Task already ", state, ": ", .lst_get(st, "description", "<no description>"))
     return(invisible(task))
   }
   task$start()
-  message("▶ Task started: ", .lst_get(st, "description", ""))
+  message("Task started: ", .lst_get(st, "description", ""))
   invisible(task)
 }
 
@@ -884,7 +882,7 @@ ee_drive_fetch_completed <- function(task,
       }
     }, silent = TRUE)
     if (!inherits(found, "try-error") && nrow(found) > 0) break
-    if (verbose) message("… waiting for Drive to index files with prefix: ",
+    if (verbose) message("... waiting for Drive to index files with prefix: ",
                          file_name_prefix,
                          if (!is.null(folder_id)) paste0(" in folder [", folder_id, "]") else " in My Drive")
     if (difftime(Sys.time(), started, units = "secs") > max_wait_secs)
@@ -894,7 +892,7 @@ ee_drive_fetch_completed <- function(task,
 
   ord <- .gd_order_by_time(found)
   found <- found[ord, , drop = FALSE]
-  if (verbose) message("⬇️  Downloading: ", found$name[1], " → ", dsn)
+  if (verbose) message("  Downloading: ", found$name[1], " -> ", dsn)
   googledrive::drive_download(found[1, ], path = dsn, overwrite = overwrite)
   if (requireNamespace("terra", quietly = TRUE)) terra::rast(dsn) else dsn
 }
@@ -959,16 +957,19 @@ ee_gcs_fetch_completed <- function(task,
   repeat {
     lst <- try(googleCloudStorageR::gcs_list_objects(bucket = bucket, prefix = file_name_prefix), silent = TRUE)
     if (!inherits(lst, "try-error") && !is.null(lst) && nrow(lst) > 0) break
-    if (verbose) message("… waiting for GCS to list objects with prefix: ", file_name_prefix, " in bucket ", bucket)
+    if (verbose) message("... waiting for GCS to list objects with prefix: ", file_name_prefix, " in bucket ", bucket)
     if (difftime(Sys.time(), started, units = "secs") > max_wait_secs)
       stop("Timed out waiting for GCS to list the exported file(s).")
     Sys.sleep(as.integer(poll_secs))
   }
 
-  cand <- subset(lst, grepl("\\.tif(f)?$", name, ignore.case = TRUE))
+  if (!"name" %in% names(lst))
+  stop("Column 'name' not found in GCS listing.")
+
+  cand <- lst[grepl("\\.tif(f)?$", lst$name, ignore.case = TRUE), , drop = FALSE]
   if (!nrow(cand)) cand <- lst
   cand <- cand[order(cand$size, decreasing = TRUE), , drop = FALSE]
-  if (verbose) message("⬇️  Downloading: gs://", bucket, "/", cand$name[1], " → ", dsn)
+  if (verbose) message("Downloading: gs://", bucket, "/", cand$name[1], " -> ", dsn)
   googleCloudStorageR::gcs_get_object(object_name = cand$name[1], bucket = bucket, saveToDisk = dsn, overwrite = overwrite)
   if (requireNamespace("terra", quietly = TRUE)) terra::rast(dsn) else dsn
 }
@@ -987,7 +988,7 @@ ee_gcs_to_local <- function(task, dsn, file_name_prefix, bucket = NULL,
 # Unified wrapper: map_download()
 # ============================================================
 
-#' map_download: create task → start → (monitor) → download/return id
+#' map_download: create task -> start -> (monitor) -> download/return id
 #'
 #' @description One function to export an EE image to Drive, Cloud Storage, or
 #' Asset; optionally monitor the task; and, for Drive/GCS, download the result
@@ -995,7 +996,7 @@ ee_gcs_to_local <- function(task, dsn, file_name_prefix, bucket = NULL,
 #' Drive/GCS, or the `asset_id` (invisible) for Asset exports.
 #'
 #' @param ee_image An `ee$Image` to export.
-#' @param method One of `"drive"`, `"gcs"`, or `"asset"`.
+#' @param method One of `drive`, `gcs`, or `asset`.
 #' @param region EE geometry/feature collection defining the export region.
 #' @param scale Numeric pixel size in meters.
 #' @param file_name_prefix Export file prefix (used to search/download).
@@ -1009,8 +1010,8 @@ ee_gcs_to_local <- function(task, dsn, file_name_prefix, bucket = NULL,
 #' (`ee_image_to_drive()`, `ee_image_to_gcs()`, or `ee_image_to_asset()`), e.g.,
 #' CRS, pyramiding policy, `maxPixels`, etc.
 #'
-#' @return For `"drive"`/`"gcs"`, a local path or a `SpatRaster` if `terra` is installed.
-#' For `"asset"`, returns `invisible(asset_id)`.
+#' @return For `drive`/`gcs`, a local path or a `SpatRaster` if `terra` is installed.
+#' For `asset`, returns `invisible(asset_id)`.
 #' @export
 #' @examples
 #' \dontrun{
@@ -1038,7 +1039,7 @@ map_download <- function(ee_image,
   if (missing(file_name_prefix) || !nzchar(file_name_prefix)) stop("`file_name_prefix` is required.")
   if (method %in% c("drive","gcs") && (is.null(dsn) || !nzchar(dsn))) stop("For Drive/GCS, provide `dsn`.")
   if (region != NULL) {
-    if(inherits(aoi_ee, "ee.featurecollection.FeatureCollection")) {
+    if(inherits(region, "ee.featurecollection.FeatureCollection")) {
       region <- region$geometry()$dissolve()
     }
   }
@@ -1071,7 +1072,7 @@ map_download <- function(ee_image,
   }
 }
 
-  
+
 # =============================================================================
 # Sample ATL granule URLs by year
 # =============================================================================
@@ -1085,7 +1086,7 @@ map_download <- function(ee_image,
 #' \itemize{
 #'   \item Attempts to parse the acquisition year from each URL/path.
 #'   \item Groups granules by year.
-#'   \item Samples up to \code{n_per_year} unique URLs per year.
+#'   \item Samples up to `n_per_year` unique URLs per year.
 #' }
 #'
 #' This is useful for creating manageable subsets of ATL granules for testing,
@@ -1095,17 +1096,17 @@ map_download <- function(ee_image,
 #'   or file paths. If a matrix or data frame is provided, the first column is
 #'   used.
 #' @param n_per_year Integer. Maximum number of URLs to sample per year
-#'   (default \code{5}).
-#' @param seed Optional integer seed passed to \code{set.seed()} to make the
-#'   sampling reproducible. If \code{NULL} (default), the random state is
+#'   (default `5`).
+#' @param seed Optional integer seed passed to `set.seed()` to make the
+#'   sampling reproducible. If `NULL` (default), the random state is
 #'   left unchanged.
 #'
 #' @details
 #' The year is extracted using the following heuristics:
 #'
 #' \enumerate{
-#'   \item A path component of the form \code{/YYYY/} (e.g., \code{".../2020/..."}).
-#'   \item A filename pattern of the form \code{"ATL0[38]_YYYYMMDD..."}.
+#'   \item A path component of the form `/YYYY/` (e.g., `.../2020/...`).
+#'   \item A filename pattern of the form `ATL0[38]_YYYYMMDD...`.
 #' }
 #'
 #' URLs for which no year can be detected are dropped with a warning.
@@ -1113,10 +1114,10 @@ map_download <- function(ee_image,
 #' @return
 #' A data frame with columns:
 #' \itemize{
-#'   \item \code{year}: integer acquisition year.
-#'   \item \code{url}: the sampled URL or file path.
+#'   \item `year`: integer acquisition year.
+#'   \item `url`: the sampled URL or file path.
 #' }
-#' Rows are ordered by \code{year} and then \code{url}.
+#' Rows are ordered by `year` and then `url`.
 #'
 #' @examples
 #' \dontrun{
@@ -1126,7 +1127,7 @@ map_download <- function(ee_image,
 #'     "https://example.org/ATL03_20210101000000_003.h5"
 #'   )
 #'
-#'   sample_df <- ee_sample_atl_granules_by_year(urls, n_per_year = 1, seed = 123)
+#'   sample_df <- ee_sample_atl_granules_by_year(urls, n_per_year = 1, seed = 42)
 #'   sample_df
 #' }
 #'
@@ -1212,20 +1213,20 @@ sample_ATL_granules_by_year <- function(
 #' Converts a data frame or similar tabular object with longitude/latitude
 #' columns into a point layer and writes it to disk as a GeoJSON file.
 #' The function first attempts to use \pkg{terra} via
-#' \code{ICESat2VegR::to_vect()}, and falls back to \pkg{sf} if available.
+#' `ICESat2VegR::to_vect()`, and falls back to \pkg{sf} if available.
 #'
-#' @param dt A data frame, \code{data.table}, or similar object containing at
+#' @param dt A data frame, `data.table`, or similar object containing at
 #'   least two numeric columns for coordinates.
 #' @param path Character. Path to the output GeoJSON file.
 #' @param xcol,ycol Character. Names of the longitude and latitude columns in
-#'   \code{dt}. Defaults are \code{"lon"} and \code{"lat"}.
+#'   `dt`. Defaults are `lon` and `lat`.
 #' @param crs Character. Coordinate reference system of the input coordinates.
-#'   Default is \code{"EPSG:4326"} (longitude/latitude in WGS84).
-#' @param overwrite Logical. If \code{TRUE} (default), allow overwriting an
+#'   Default is `EPSG:4326` (longitude/latitude in WGS84).
+#' @param overwrite Logical. If `TRUE` (default), allow overwriting an
 #'   existing file.
 #'
 #' @return
-#' Invisibly returns \code{TRUE} on success. An error is thrown if both the
+#' Invisibly returns `TRUE` on success. An error is thrown if both the
 #' \pkg{terra}-based and \pkg{sf}-based write attempts fail.
 #'
 #' @examples
@@ -1279,18 +1280,18 @@ write_geojson <- function(
 #' Extract the ICESat-2 timestamp from an ATL filename
 #'
 #' @description
-#' Extracts a 14-digit timestamp (\code{YYYYMMDDHHMMSS}) from an ICESat-2 ATL
+#' Extracts a 14-digit timestamp (`YYYYMMDDHHMMSS`) from an ICESat-2 ATL
 #' granule filename or path. Many ATL03/ATL08 filenames include a timestamp
-#' segment such as \code{"ATL03_20200101000000_..."}; this helper retrieves
+#' segment such as `ATL03_20200101000000_...`; this helper retrieves
 #' that substring.
 #'
 #' @param file_path Character vector of file paths or URLs. The timestamp is
 #'   extracted from the basename of each path.
 #'
 #' @return
-#' A character vector of the same length as \code{file_path}, where each
-#' element is either the extracted 14-digit timestamp (\code{"YYYYMMDDHHMMSS"})
-#' or, if no match is found, the original string (due to the use of \code{sub()}).
+#' A character vector of the same length as `file_path`, where each
+#' element is either the extracted 14-digit timestamp (`YYYYMMDDHHMMSS`)
+#' or, if no match is found, the original string (due to the use of `sub()`).
 #'
 #' @examples
 #' \dontrun{

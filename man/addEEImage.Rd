@@ -23,7 +23,9 @@ addEEImage(
 
 \item{bands}{Character or numeric vector (length 1 or 3). If \code{NULL}, uses all bands from the image.}
 
-\item{min_value, }{max_value Numeric visualization range. Aliases: \code{min}, \code{max}.}
+\item{min_value}{Numeric. Minimum visualization range.}
+
+\item{max_value}{Numeric. Maximum visualization range.}
 
 \item{palette}{Character vector of colors for single-band rendering.}
 

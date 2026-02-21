@@ -18,20 +18,20 @@ ee_build_hls_s1c_terrain_stack(
 \item a character path to a vector file readable by \code{\link[terra:vect]{terra::vect()}} (e.g., SHP, GPKG),
 \item a \link[terra:SpatVector-class]{terra::SpatVector},
 \item a \link[terra:SpatRaster-class]{terra::SpatRaster} (its extent will be used),
-\item an \link[sf:sf]{sf::sf} or \link[sf:sfc]{sf::sfc} object,
+\item an \link[sf:sf]{sf::st_sf} or \link[sf:sfc]{sf::st_sfc} object,
 \item a \link[terra:SpatExtent-class]{terra::SpatExtent} object (e.g., from \code{\link[terra:ext]{terra::ext()}}),
 \item a numeric vector of length 4 giving an extent as
 \code{c(xmin, xmax, ymin, ymax)}.
 }}
 
 \item{start_date}{Character. Start date of the temporal filter
-(\code{"YYYY-MM-DD"}). \strong{Required.}}
+(\code{YYYY-MM-DD}). \strong{Required.}}
 
 \item{end_date}{Character. End date of the temporal filter
-(\code{"YYYY-MM-DD"}). \strong{Required.}}
+(\code{YYYY-MM-DD}). \strong{Required.}}
 
 \item{cloud_max}{Numeric. Maximum allowed cloud coverage percentage for HLS
-scenes (used in the \code{"CLOUD_COVERAGE < cloud_max"} filter). Default is 10.}
+scenes (used in the \code{CLOUD_COVERAGE < cloud_max} filter). Default is 10.}
 
 \item{buffer_m}{Numeric. Buffer distance in meters applied to the AOI
 bounding box before filtering and clipping. Default is 30.}
@@ -64,10 +64,10 @@ stack includes neighborhood statistics and GLCM texture features.
 \details{
 This function assumes that:
 \itemize{
-\item Earth Engine access is provided via the \pkg{ICESat2VegR} internal
+\item Earth Engine access is provided via the \code{ICESat2VegR} internal
 \code{ee} handle.
 \item Dataset search and catalog ID retrieval are performed by
-\code{\link[=search_datasets]{search_datasets()}} and \code{\link[=get_catalog_id]{get_catalog_id()}} from \pkg{ICESat2VegR}.
+\code{\link[=search_datasets]{search_datasets()}} and \code{\link[=get_catalog_id]{get_catalog_id()}} from \code{ICESat2VegR}.
 }
 
 The HLS component follows the original workflow: the collection is filtered
@@ -84,13 +84,13 @@ co-polarization indices are derived.
 A DEM is retrieved from the NASA catalog via \code{\link[=search_datasets]{search_datasets()}} and
 \code{\link[=get_catalog_id]{get_catalog_id()}}, and slope and aspect are derived following the original
 code pattern. Neighborhood statistics (mean, min, max, stdDev) are computed
-for the HLS and DEM components using a fixed 3×3 kernel, and GLCM texture
+for the HLS and DEM components using a fixed 3x3 kernel, and GLCM texture
 metrics are computed from scaled HLS reflectance bands.
 }
 \examples{
 \dontrun{
 # ================================================================
-# Example 1 — Using the function
+# Example 1 - Using the function
 # ================================================================
 res <- ee_build_hls_s1c_terrain_stack(
   x          = system.file("extdata", "all_boundary.shp", package = "ICESat2VegR"),
@@ -102,7 +102,7 @@ full_stack <- res$stack
 
 
 # ================================================================
-# Example 2 — FULL SCRIPT (no function)
+# Example 2 - FULL SCRIPT (no function)
 # Users may copy/paste and modify as needed
 # ================================================================
 

@@ -33,6 +33,7 @@ atl03_seg_dt <- ATL03_seg_metadata_dt(atl03_h5)
 
 linear_model <- stats::lm(h_ph ~ segment_ph_cnt, data = atl03_seg_dt)
 output_h5 <- tempfile(fileext = ".h5")
+
 predicted_h5 <- predict_h5(linear_model, atl03_seg_dt, output_h5)
 
 # List datasets
@@ -44,4 +45,3 @@ head(predicted_h5[["prediction"]][])
 # Close the file
 close(predicted_h5)
 }
-\keyword{internal}

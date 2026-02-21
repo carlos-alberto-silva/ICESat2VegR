@@ -5,23 +5,27 @@
 #' for finding points that are within a specified range.
 #'
 #' @seealso
-#' Mount, D. M.; Arya, S. ANN: A Library for Approximate Nearest Neighbor Searching,
-#' available in <https://www.cs.umd.edu/~mount/ANN/>
+#' Mount, D. M.; Arya, S. ANN: A Library for Approximate Nearest Neighbor
+#' Searching, available in <https://www.cs.umd.edu/~mount/ANN/>
 #'
-#' @keywords internal
+#' @export
 ANNIndex <- R6::R6Class("ANNIndex",
   public = list(
     #' @field tree The C++ pointer for the built tree
     tree = NULL,
+    #' ANNIndex constructor
+    #'
     #' @description
     #' Creates a new instance of the [`ANNIndex`] class.
     #'
     #' @param x NumericVector of x/longitude
     #' @param y NumericVector of y/latitude
-    #' @param radius the minimum radius between the points
+    #'
     initialize = function(x, y) {
       self$tree <- pkg_module$ANNIndex$new(x, y)
     },
+    #' searchFixedRadius method
+    #'
     #' @description
     #' Given a x, y point get the indexes that are within
     #' a specified radius.

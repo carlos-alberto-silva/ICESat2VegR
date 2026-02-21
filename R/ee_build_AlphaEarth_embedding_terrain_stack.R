@@ -8,59 +8,52 @@
 #' @description
 #' Creates a Google Earth Engine image stack that combines:
 #'
-#' \itemize{
-#'   \item Annual satellite embeddings from
-#'         \code{"GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL"} (AlphaEarth).
-#'   \item Terrain derivatives (elevation, slope, aspect) from USGS 3DEP or
+#'   - Annual satellite embeddings from
+#'         `GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL` (AlphaEarth).
+#'   - Terrain derivatives (elevation, slope, aspect) from USGS 3DEP or
 #'         NASADEM as fallbacks.
-#'   \item Optional longitude/latitude bands from \code{ee$Image$pixelLonLat()}.
-#' }
+#'   - Optional longitude/latitude bands from `ee$Image$pixelLonLat()`.
 #'
 #' The embedding collection is filtered to the specified year range and AOI,
 #' reduced using a pixel-wise median, and clipped to the AOI. Terrain data are
-#' reprojected to a target scale (default \code{30} m).
+#' reprojected to a target scale (default `30`m).
 #'
 #' @param geom AOI geometry. Can be:
-#'   \itemize{
-#'     \item an \pkg{sf} object (\code{sf} or \code{sfc}),
-#'     \item a \code{terra::SpatVector},
-#'     \item or an Earth Engine geometry (Python object) already in geographic
+#'     - an `sf` object (**sf** or **sfc**),
+#'     - a [terra::SpatVector][terra::SpatVector-class] object,
+#'     - or an Earth Engine geometry (Python object) already in geographic
 #'           coordinates.
-#'   }
+#'
 #'   The geometry is internally converted to an Earth Engine geometry via an
 #'   internal helper.
 #' @param start_year,end_year Integer (or coercible to integer). Inclusive year
 #'   range used to filter the AlphaEarth annual embedding collection.
-#' @param mask_outside Logical. If \code{TRUE} (default), pixels outside the
-#'   AOI are masked out using a binary mask image clipped to \code{geom}.
+#' @param mask_outside Logical. If `TRUE` (default), pixels outside the
+#'   AOI are masked out using a binary mask image clipped to `geom`.
 #' @param terrain_scale Numeric. Target scale (in meters) used to reproject
-#'   the terrain data (default \code{30}).
-#' @param multiply_slope_aspect_by10 Logical. If \code{TRUE} (default), slope
+#'   the terrain data (default `30`).
+#' @param multiply_slope_aspect_by10 Logical. If `TRUE` (default), slope
 #'   and aspect are multiplied by 10 to preserve conventions used elsewhere in
 #'   the package and avoid small floating-point values.
-#' @param add_lonlat Logical. If \code{TRUE} (default), add longitude and
-#'   latitude bands named \code{"lon"} and \code{"lat"} derived from
-#'   \code{ee$Image$pixelLonLat()}.
+#' @param add_lonlat Logical. If `TRUE` (default), add longitude and
+#'   latitude bands named `lon` and `lat` derived from
+#'   `ee$Image$pixelLonLat()`.
 #'
 #' @details
 #' The terrain source is chosen in the following order:
 #'
-#' \enumerate{
-#'   \item USGS 3DEP 1 m (\code{"USGS/3DEP/1m"}), if available for the AOI.
-#'   \item USGS 3DEP 10 m (\code{"USGS/3DEP/10m"}).
-#'   \item NASADEM (\code{"NASA/NASADEM_HGT/001"}) as a global fallback.
-#' }
+#'   1. USGS 3DEP 1 m (`USGS/3DEP/1m`), if available for the AOI.
+#'   1. USGS 3DEP 10 m (`USGS/3DEP/10m`).
+#'   1. NASADEM (`NASA/NASADEM_HGT/001`) as a global fallback.
 #'
 #' All terrain layers are clipped to the AOI and reprojected to
-#' \code{"EPSG:4326"} with the requested \code{terrain_scale}.
+#' `EPSG:4326` with the requested `terrain_scale`.
 #'
 #' @return
-#' A Python \code{ee$Image} object that contains:
-#' \itemize{
-#'   \item The median annual embedding bands.
-#'   \item \code{"elevation"}, \code{"slope"}, and \code{"aspect"} bands.
-#'   \item Optional \code{"lon"} and \code{"lat"} bands.
-#' }
+#' A Python `ee$Image` object that contains:
+#'  - The median annual embedding bands.
+#'  - `elevation`, `slope`, and `aspect` bands.
+#'  - Optional `lon` and `lat` bands.
 #'
 #' @examples
 #' \dontrun{
@@ -89,9 +82,9 @@
 #'
 #'   library(reticulate)
 #'   ee <- import("ee")
-#'   ICESat2VegR:::.ee_ping(ee)
+#'   ee_ping(ee)
 #'
-#'   # AOI geometry (sf → EE geometry)
+#'   # AOI geometry (sf -> EE geometry)
 #'   library(sf)
 #'   aoi <- st_as_sfc(
 #'     st_bbox(c(
@@ -180,7 +173,7 @@ ee_build_AlphaEarth_embedding_terrain_stack <- function(
     add_lonlat                = TRUE
 ) {
   ee <- reticulate::import("ee", delay_load = FALSE)         # Import Earth Engine
-  ICESat2VegR:::.ee_ping(ee)                                 # Ping EE session (internal helper)
+  .ee_ping(ee)                                 # Ping EE session (internal helper)
 
   start_year <- as.integer(start_year)
   end_year   <- as.integer(end_year)
@@ -190,7 +183,7 @@ ee_build_AlphaEarth_embedding_terrain_stack <- function(
   }
 
   # Convert R geometry to EE geometry (internal helper handles sf/terra/EE)
-  ee_geom <- ICESat2VegR:::.as_ee_geom(geom)
+  ee_geom <- .as_ee_geom(geom)
 
   # AlphaEarth annual embeddings (GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL)
   emb_ic <- ee$ImageCollection("GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL")$

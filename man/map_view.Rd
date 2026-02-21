@@ -16,7 +16,7 @@ map_view(
 \item{layers}{A list of layer specs. For rasters: \verb{list(type="ee_image", x, bands, aoi=NULL, group=NULL, min_value=0, max_value=1, palette=NULL, is_class=FALSE, scale_to_int=TRUE, int_factor=1000L, tile=FALSE, nx=NULL, ny=NULL, legend=list(title=NULL, position=\\"bottomright\\", opacity=1, auto=NULL, probs=c(2,98), scale=NULL))}.
 For vectors: \code{list(type="vector", vect, group=NULL, border_color, border_weight, fill, fill_color, fill_opacity, color_field, palette, legend_title)}.}
 
-\item{base_tiles}{One of \code{"OSM"}, \code{"Carto.Light"}, \code{"Carto.Dark"}.}
+\item{base_tiles}{One of \code{OSM}, \code{Carto.Light}, \code{Carto.Dark}.}
 
 \item{add_layers_control}{Logical; add layers control panel.}
 

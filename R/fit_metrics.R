@@ -1,7 +1,7 @@
 #' Model fit metrics
 #'
 #' @description Computes RMSE (absolute and relative), MAE (absolute and relative),
-#' bias (absolute and relative), Pearson correlation (r), and adjusted R² from a
+#' bias (absolute and relative), Pearson correlation (r), and adjusted \eqn{R^2} from a
 #' linear fit between predicted and observed values. Optionally draws a 1:1 plot
 #' with the regression line.
 #'
@@ -79,7 +79,7 @@ fit_metrics <- function(observed, predicted,
       sprintf("MAE  = %.4f%%",   out$value[out$stat=="maeR"]),
       sprintf("Bias = %.4f %s", out$value[out$stat=="bias"],  unit),
       sprintf("Bias = %.4f%%",   out$value[out$stat=="biasR"]),
-      sprintf("adj.R² = %.4f",   out$value[out$stat=="adj_r2"])
+      sprintf("adj.R2 = %.4f",   out$value[out$stat=="adj_r2"])
     )
     graphics::legend(legend, lab, bty = "n")
   }

@@ -23,13 +23,13 @@ varSel(
 otherwise the model is fit in regression mode.}
 
 \item{imp.scale}{Character; type of scaling for importance values, either
-\code{"mir"} or \code{"se"}. Default is \code{"mir"}.}
+\code{mir} or \code{se}. Default is \code{mir}.}
 
 \item{r}{Numeric vector of importance percentiles to test, e.g.,
 \code{c(0.25, 0.50, 0.75)}. These percentiles are used to define thresholds
 for building nested models during selection.}
 
-\item{min.imp}{Optional numeric in \eqn{[0,1]} used as a minimum scaled
+\item{min.imp}{Optional numeric in \eqn{[ 0,1 ]} used as a minimum scaled
 importance cutoff (in MIR or SE scale) to filter the final set of variables.
 Variables whose scaled importance is below this threshold are dropped from
 the selected set \code{selvars}. If \code{NULL} (default), no cutoff is
@@ -48,11 +48,11 @@ is chosen.}
 primary optimization criterion for classification instead of percent
 correctly classified (PCC). This corrects PCC for random agreement.}
 
-\item{...}{Additional arguments passed to \code{\link[randomForest]{randomForest}},
+\item{...}{Additional arguments passed to \code{\link[randomForest:randomForest]{randomForest::randomForest()}},
 e.g. \code{ntree = 1000}, \code{replace = TRUE}, \code{proximity = TRUE}.}
 }
 \value{
-An object of class \code{"varSel"} (a list) with components:
+An object of class \code{varSel} (a list) with components:
 \itemize{
 \item \code{selvars} Character vector of selected variable names (after
 applying \code{min.imp}, if provided).
@@ -64,13 +64,13 @@ variables in the full model (columns \code{parameter}, \code{importance}).
 \item \code{sel.importance} Data.frame of scaled importance values for the
 selected variables.
 \item \code{parameters} List of variables used in each candidate model.
-\item \code{scaling} Character; the importance scaling used (\code{"mir"}
-or \code{"se"}).
+\item \code{scaling} Character; the importance scaling used (\code{mir}
+or \code{se}).
 }
 }
 \description{
 Implements the Random Forest model selection approach of Murphy et al. (2010),
-using Breiman's original \pkg{randomForest} implementation. This is a simplified
+using Breiman's original \strong{randomForest} implementation. This is a simplified
 adaptation of \code{rfUtilities::rf.modelSel}, restricted to the Breiman
 implementation and modified for the ICESat2VegR package.
 
@@ -82,7 +82,6 @@ For classification, ensure that \code{ydata} is a factor; otherwise the model
 is fit in regression mode.
 
 \strong{Selection strategy:}
-
 \itemize{
 \item For classification, candidate models are compared using OOB PCC (or
 \eqn{\kappa}, if \code{kappa = TRUE}) and maximum within-class error,
@@ -103,31 +102,35 @@ importance values sum to 1.
 }
 }
 \examples{
-\donttest{
-  require(randomForest)
+require(randomForest)
 
-  data(airquality)
-  airquality <- na.omit(airquality)
+data(airquality)
+airquality <- na.omit(airquality)
 
-  xdata <- airquality[, 2:6]
-  ydata <- airquality[, 1]
-
-  ## Regression example with MIR scaling and importance cutoff
-  vs.regress <- varSel(
-    xdata     = xdata,
-    ydata     = ydata,
-    imp.scale = "mir",
-    ntree     = 500,
-    min.imp   = 0.2
-  )
-
-  vs.regress$selvars
-
-  ## Plot all variables, highlighting selected ones
-  plot(vs.regress, which = "importance")
+xdata <- airquality[, 2:6]
+ydata <- airquality[, 1]
+ntree <- 500
+\dontshow{
+  # Lightweight version for R CMD check
+  xdata <- airquality[1:50, 2:6]
+  ydata <- airquality[1:50, 1]
+  ntree <- 50
 }
+## Regression example with MIR scaling and importance cutoff
+vs.regress <- varSel(
+  xdata     = xdata,
+  ydata     = ydata,
+  imp.scale = "mir",
+  ntree     = ntree,
+  min.imp   = 0.2
+)
+
+vs.regress$selvars
+
+## Plot all variables, highlighting selected ones
+plot(vs.regress, which = "importance")
 
 }
 \seealso{
-\code{\link[randomForest]{randomForest}} and \code{\link{plot.varSel}}.
+\code{\link[randomForest:randomForest]{randomForest::randomForest()}} and \code{\link[=plot.varSel]{plot.varSel()}}.
 }

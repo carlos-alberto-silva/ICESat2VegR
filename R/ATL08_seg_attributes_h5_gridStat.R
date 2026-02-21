@@ -71,15 +71,15 @@ default_agg_join <- function(x1, x2) {
 #' @param clip_obj Bounding extent or spatial object used to define the clipping area.
 #'   Supported inputs:
 #'   \itemize{
-#'     \item Numeric vector of length 4: \code{c(xmin, ymin, xmax, ymax)} in decimal degrees.
-#'     \item \code{terra::SpatExtent}.
-#'     \item \code{terra::SpatVector} (polygon/multipolygon).
-#'     \item \code{sf} / \code{sfc} object.
+#'     \item Numeric vector of length 4: `c(xmin, ymin, xmax, ymax)` in decimal degrees.
+#'     \item `terra::SpatExtent`.
+#'     \item `terra::SpatVector` (polygon/multipolygon).
+#'     \item `sf` / `sfc` object.
 #'   }
-#'   When a polygon object is provided (\code{SpatVector}, \code{sf}, \code{sfc}),
-#'   ATL08 segments are clipped using \code{ATL08_seg_attributes_dt_clipBoundary()}.
-#'   Otherwise (numeric bbox or \code{SpatExtent}), clipping is done with
-#'   \code{ATL08_seg_attributes_dt_clipBox()}.
+#'   When a polygon object is provided (`SpatVector`, `sf`, `sfc`),
+#'   ATL08 segments are clipped using `ATL08_seg_attributes_dt_clipBox()`.
+#'   Otherwise (numeric bbox or `SpatExtent`), clipping is done with
+#'   `ATL08_seg_attributes_dt_clipBox()`.
 #' @param res NumericVector. Resolution lon lat for the output raster in coordinates decimal degrees
 #' @param creation_options CharacterVector. The GDAL creation options for the tif file. Default c("COMPRESS=PACKBITS", "BIGTIFF=IF_SAFER", "TILED=YES", "BLOCKXSIZE=512", "BLOCKYSIZE=512") will create BIGTIFF if needed, with DEFLATE compression and tiled by 512x512 pixels.
 #' @param agg_function Formula function-like. An aggregate function which should return a data.table with the aggregate statistics
@@ -90,8 +90,7 @@ default_agg_join <- function(x1, x2) {
 #' This function will create five different aggregate statistics
 #' (n, mean, variance, min, max).
 #' One can calculate mean and standard deviation with the following
-#' formulas according to Terriberry (2007) and
-#' \insertCite{Joanes1998;textual}{ICESat2VegR}:
+#' formulas according to Terriberry (2007).
 #'
 #' The `agg_function` is a formula which return a data.table with the
 #' aggregate function to perform over the data.
@@ -149,15 +148,12 @@ default_agg_join <- function(x1, x2) {
 #' ```
 #'
 #' @references
-#' \insertAllCited{}
-#'
 #' Terriberry, Timothy B. (2007), Computing Higher-Order Moments Online, archived from the original on 23 April 2014, retrieved 5 May 2008
 #'
 #' @return Nothing. It outputs multiple raster tif files to the out_root specified path.
 #'
 #' @examples
 #' \dontrun{
-#' library(ICESat2VegR)
 #' library(data.table)
 #'
 #' # Specifying the path to ATL08 file
@@ -436,9 +432,9 @@ ATL08_seg_attributes_h5_gridStat <- function(
 
       # --- unified clipping: bbox/extent vs polygon boundary ---
       if (clip_mode == "boundary") {
-        vals <- ATL08_seg_attributes_dt_clipBoundary(
+        vals <- ATL08_seg_attributes_dt_clipBox(
           atl08_seg_att_dt = vals,
-          boundary         = boundary_obj
+          clip_obj         = boundary_obj
         )
       } else {
         vals <- ATL08_seg_attributes_dt_clipBox(

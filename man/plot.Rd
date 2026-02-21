@@ -2,11 +2,14 @@
 % Please edit documentation in R/class.icesat2.R
 \name{plot,icesat2.atl03atl08_dt,missing-method}
 \alias{plot,icesat2.atl03atl08_dt,missing-method}
+\alias{plot,icesat2.atl03atl08_dt,character-method}
 \alias{plot,icesat2.atl08_dt,character-method}
 \alias{plot,icesat2.atl03_dt,character-method}
 \title{Plot photons from ATL03 and ATL08 joined products}
 \usage{
 \S4method{plot}{icesat2.atl03atl08_dt,missing}(x, y, ...)
+
+\S4method{plot}{icesat2.atl03atl08_dt,character}(x, y, beam = "gt1l", col = "gray", xlim = NULL, ylim = NULL, ...)
 
 \S4method{plot}{icesat2.atl08_dt,character}(x, y, beam = "gt1l", col = "gray", xlim = NULL, ylim = NULL, ...)
 
@@ -19,7 +22,8 @@
 
 \item{...}{will be passed to the main plot}
 
-\item{beam}{Character vector indicating only one beam to process ("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r").
+\item{beam}{Character vector indicating only one beam to process
+("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r").
 Default is "gt1r"}
 
 \item{col}{Color for plotting the photons. Default is "gray"}
@@ -27,13 +31,10 @@ Default is "gt1r"}
 \item{xlim}{The x limits to use for the plot}
 
 \item{ylim}{the y limits to use for the plot}
-
-\item{legend}{the position of the legend. 'bottomleft', 'bottomright', 'topleft', 'topright' or FALSE to omit}
-
-\item{colors}{A vector containing colors for plotting noise, terrain, vegetation and top canopy photons
-(e.g. c("gray", "#bd8421", "forestgreen", "green")}
 }
 \value{
+No return value
+
 No return value
 
 No return value
@@ -42,6 +43,8 @@ No return value
 }
 \description{
 This function plots ATL03 and ATL08 joined data along track
+
+This function plots ATL08 attributes along track
 
 This function plots ATL08 attributes along track
 
@@ -71,12 +74,43 @@ atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
 
 plot(
   atl03_atl08_dt,
+  pch = 16, cex = 0.5,
+  beam = "gt1r",
+  colors = c("gray", "#bd8421", "forestgreen", "green")
+)
+
+close(atl03_h5)
+close(atl08_h5)
+# Specifying the path to ATL03 file
+atl03_path <- system.file("extdata",
+  "atl03_clip.h5",
+  package = "ICESat2VegR"
+)
+
+# Specifying the path to ATL08 file
+atl08_path <- system.file("extdata",
+  "atl08_clip.h5",
+  package = "ICESat2VegR"
+)
+
+# Reading ATL03 data (h5 file)
+atl03_h5 <- ATL03_read(atl03_path = atl03_path)
+
+# Reading ATL08 data (h5 file)
+atl08_h5 <- ATL08_read(atl08_path = atl08_path)
+
+# Extracting ATL03 and ATL08 photons and heights
+atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
+
+plot(
+  atl03_atl08_dt,
   colors = c("gray", "#bd8421", "forestgreen", "green"),
   pch = 16, cex = 0.5
 )
 
 close(atl03_h5)
 close(atl08_h5)
+# Specifying the path to ATL08 file
 atl08_path <- system.file("extdata",
   "atl08_clip.h5",
   package = "ICESat2VegR"
@@ -108,7 +142,12 @@ atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 # Extracting atl03 and atl03 photons and heights
 atl03_photons_dt <- ATL03_seg_metadata_dt(
   atl03_h5 = atl03_h5,
-  attributes = c("reference_photon_lon", "reference_photon_lat", "segment_dist_x", "h_ph")
+  attributes = c(
+    "reference_photon_lon",
+    "reference_photon_lat",
+    "segment_dist_x",
+    "h_ph"
+  )
 )
 
 plot(
@@ -121,4 +160,3 @@ plot(
 
 close(atl03_h5)
 }
-\keyword{internal}

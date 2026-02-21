@@ -2,7 +2,7 @@
 #'
 #' @description
 #' Clips joined ATL03 and ATL08 photon attributes within a given bounding
-#' extent, defined by a single \code{clip_obj} argument. The clipping extent can
+#' extent, defined by a single `clip_obj` argument. The clipping extent can
 #' be provided as:
 #'
 #' \itemize{
@@ -18,9 +18,9 @@
 #' @param clip_obj Bounding extent used to perform the clipping. Supported
 #'   inputs:
 #'   \itemize{
-#'     \item Numeric vector of length 4: \code{c(xmin, ymin, xmax, ymax)} in
+#'     \item Numeric vector of length 4: `c(xmin, ymin, xmax, ymax)` in
 #'           decimal degrees.
-#'     \item \code{SpatExtent} (package **terra**): the extent is used directly.
+#'     \item `SpatExtent` (package **terra**): the extent is used directly.
 #'   }
 #'
 #' @return
@@ -32,7 +32,7 @@
 #' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
 #'
 #' @details
-#' When \code{clip_obj} is a \code{SpatExtent}, the package \pkg{terra} must be
+#' When `clip_obj` is a `SpatExtent`, the package \pkg{terra} must be
 #' installed. If not found, the function stops with an informative message.
 #'
 #' @examples

@@ -15,7 +15,7 @@ sample <- function(x, ..., method) {
   UseMethod("sample")
 }
 
-#' @keywords internal
+#' @export
 sample.default <- function(x, ...) base::sample(x, ...)
 
 # #' Sampling function which accepts a method for sampling
@@ -33,7 +33,7 @@ sample.default <- function(x, ...) base::sample(x, ...)
 # #' [`randomSampling()`], [`spacedSampling()`], [`gridSampling()`],
 # #' [`stratifiedSampling()`], [`geomSampling()`], [`rasterSampling()`]
 # #'
-#' @keywords internal
+#' @export
 `sample.icesat2.atl08_dt` <- function(x, ..., method) {
   do.call(method$fn, c(list(x), method$params))
 }
@@ -53,13 +53,13 @@ sample.default <- function(x, ...) base::sample(x, ...)
 # #' [`randomSampling()`], [`spacedSampling()`], [`gridSampling()`],
 # #' [`stratifiedSampling()`], [`geomSampling()`], [`rasterSampling()`]
 # #'
-#' @keywords internal
+#' @export
 `sample.icesat2.atl03_seg_dt` <- function(x, ..., method) {
   method <- list(...)[["method"]]
   do.call(method$fn, c(list(x), method$params))
 }
 
-#' @keywords internal
+#' @export
 `sample.icesat2.atl03_atl08_seg_dt` <- function(x, ..., method) {
   do.call(method$fn, c(list(x), method$params))
 }

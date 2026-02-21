@@ -3,7 +3,7 @@
 \name{ATL03_ATL08_photons_dt_height_normalize}
 \alias{ATL03_ATL08_photons_dt_height_normalize}
 \title{Fit and estimate ground elevation for photons or arbitrary distances
-from the track beginning.}
+from the track beginning}
 \usage{
 ATL03_ATL08_photons_dt_height_normalize(
   atl03_atl08_seg_dt,
