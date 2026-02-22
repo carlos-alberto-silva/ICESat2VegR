@@ -6,6 +6,7 @@
 ^readme$
 ^figure$
 ^README.Rmd$
+^README.html$
 .*\.ipynb_checkpoints$
 ^.lintr$
 ^src/COPYRIGHT$

@@ -1,5 +1,5 @@
 
-![](https://github.com/carlos-alberto-silva/ICESat2VegR/blob/master/readme/cover.png)<br/>
+![](https://github.com/carlos-alberto-silva/ICESat2VegR/blob/master/readme/cover.png?raw=true)<br/>
 [![ICESat2VegR status
 badge](https://carlos-alberto-silva.r-universe.dev/badges/ICESat2VegR)](https://carlos-alberto-silva.r-universe.dev/ICESat2VegR)
 [![R-hub](https://github.com/carlos-alberto-silva/ICESat2VegR/actions/workflows/rhub.yaml/badge.svg)](https://github.com/carlos-alberto-silva/ICESat2VegR/actions/workflows/rhub.yaml)
@@ -13,8 +13,10 @@ Vegetation Applications.**
 
 Authors: Carlos Alberto Silva and Caio Hamamura
 
-The ICESat2VegR package provides functions for downloading, reading, visualizing, processing, and exporting NASA’s ICESat-2 ATL03 (Global Geolocated Photon Data) and 
-ATL08 (Land and Vegetation Height) products for land and vegetation applications in the R environment.
+The ICESat2VegR package provides functions for downloading, reading,
+visualizing, processing, and exporting NASA’s ICESat-2 ATL03 (Global
+Geolocated Photon Data) and ATL08 (Land and Vegetation Height) products
+for land and vegetation applications in the R environment.
 
 # Getting started
 
@@ -57,6 +59,33 @@ cat("Loading libraries... done.\n")                                             
 
 ```
 
+    ## 
+    ## ##----------------------------------------------------------------##
+    ## ##  ICESat2VegR package, version 0.0.2.00003, Released 2024-03-06 UTC    #
+    ## ##----------------------------------------------------------------##
+    ## 
+    ## This package is developed by Carlos A. Silva (c.silva@ufl.edu) and 
+    ## Caio Hamamura (caiohamamura@gmail.com) from the Forest Biometrics 
+    ## Remote Sensing and AI Lab (SilvaLab) at the University of Florida. 
+    ## ICESat2VegR is based upon work supported by NASA's Ice, Cloud, and 
+    ## Land Elevation Satellite (ICESat2), Carbon Monitoring System (CMS), 
+    ## and Commercial Smallsat Data Scientific Analysis (CSDSA) under 
+    ## grants No. 80NSSC23K0941, 80NSSC23K1257, and 80NSSC24K0055. 
+    ## 
+    ## Have a fantastic day filled with positivity and productivity! :) 
+    ## ##----------------------------------------------------------------##
+
+    ## 
+    ## Attaching package: 'ICESat2VegR'
+
+    ## The following object is masked from 'package:graphics':
+    ## 
+    ##     clip
+
+    ## The following object is masked from 'package:base':
+    ## 
+    ##     sample
+
 ## Configuring the package
 
 This package uses three Python packages through `reticulate`:
@@ -66,91 +95,91 @@ This package uses three Python packages through `reticulate`:
 2.  [h5py](https://github.com/h5py/h5py): for reading hdf5 content from
     the cloud
 3.  [earthengine-api](https://github.com/google/earthengine-api):
-    integration with Google Earth Engine for sampling, extracting raster data, and upscaling models.
+    integration with Google Earth Engine for sampling, extracting raster
+    data, and upscaling models.
 
-To configure the package, use:
+The configuration should be automatically handled by
+`reticulate::py_require`, so you should not need to do anything further
+for configuring the `python` environment.
+
+### EarthData NASA’s authentication
+
+There are two major options for authenticate ahead.
+
+1.  Set the environmental variables `EARTHDATA_USERNAME` and
+    `EARTHDATA_PASSWORD` at system level before opening R:
+2.  Use the `earthdata_login(output_dir = '~')` which will ask for
+    username and password and save them to `.netrc` as plain text.
+
+### EarthEngine authentication
+
+To use Earth Engine, you may also need to configure a project the Earth
+Engine API. Please, refer to
+<https://developers.google.com/earth-engine/guides/access#create-a-project>
+for more details.
+
+After setting the project up, just use the `project-name`
 
 ``` r
-ICESat2VegR_configure()
+ee_initialize('project-name')
 ```
-
-This will install Miniconda if it is not already available, along with the necessary Python packages.
-
-``` r
-Verify configuration status
-
-# Helper safely() runs an expression and returns a default value if an error occurs
-safely <- function(expr, default = NA) tryCatch(expr, error = function(e) default)
-
-# Check if 'reticulate' is installed
-have_reticulate <- requireNamespace("reticulate", quietly = TRUE)
-
-# Attempt to discover which Python executable is being used
-py_path <- if (have_reticulate) safely(reticulate::py_discover_config()$python, NA) else NA
-
-# Verify if Python is properly initialized and available
-py_ready <- have_reticulate && !inherits(try(reticulate::py_config(), silent = TRUE), "try-error")
-
-# Build a list summarizing the environment and module status
-status <- list(
-  ICESat2VegR_loaded = "package:ICESat2VegR" %in% search(),  # Is package loaded in current session?
-  python_used        = py_path,                              # Path to active Python binary
-  h5py               = if (py_ready) reticulate::py_module_available("h5py")        else FALSE,
-  earthaccess        = if (py_ready) reticulate::py_module_available("earthaccess") else FALSE,
-  ee                 = if (py_ready) reticulate::py_module_available("ee")          else FALSE
-)
-
-# Print the collected environment information to the console
-print(status)
-```
-
-
-### Notes
-
-- Some Python packages may not be compatible with the installed Python version. 
-  The configuration function will attempt to update Python automatically if needed.
-
-- The configuration function may warn you about the need to restart R after installing some packages. 
-  Please restart R if advised.
 
 ## Introduction
 
-There are two different ways of working with ICESat-2 data: locally or using cloud computing. 
-Most users should work locally unless they are operating within an AWS cloud-computing environment in the us-west-2 region.
+There are two different ways of working with ICESat-2 data: locally or
+using cloud computing. Most users should work locally unless they are
+operating within an AWS cloud-computing environment in the us-west-2
+region.
 
 ## Opening the example dataset
 
-As we will be working with multiple HDF5 granules, we will use `lapply()` for reading and extracting information from the granules.
-If you are working with a single granule, you can follow the simpler instructions provided in the function documentation examples without using `lapply()`.
+As we will be working with multiple HDF5 granules, we will use
+`lapply()` for reading and extracting information from the granules. If
+you are working with a single granule, you can follow the simpler
+instructions provided in the function documentation examples without
+using `lapply()`.
 
 ``` r
-# Load the ICESat2VegR package
-library(ICESat2VegR)
-
 # Set output directory
 outdir <- tempdir()
+dir.create(outdir, showWarnings = FALSE)
 
 # Download example dataset
 url <- "https://github.com/carlos-alberto-silva/ICESat2VegR/releases/download/example_datasets/Study_Site.zip"
 zip_file <- file.path(outdir, "Study_Site.zip")
-download.file(url, zip_file, mode = "wb")
+if (!file.exists(zip_file)) {
+  download.file(url, zip_file, mode = "wb")
+}
 
 # Unzip the example dataset
-unzip(zip_file, exdir = outdir)
+if (!file.exists(file.path(outdir, "ATL03_20190413122158_02330302_006_02_clip.h5"))) {
+  unzip(zip_file, exdir = outdir)
+}
 ```
+
+``` r
+list.files(outdir)
+```
+
+    ## [1] "ATL03_20190413122158_02330302_007_01_clip.h5"
+    ## [2] "ATL03_20190502233026_05300306_007_01_clip.h5"
+    ## [3] "ATL08_20190413122158_02330302_007_01_clip.h5"
+    ## [4] "ATL08_20190502233026_05300306_007_01_clip.h5"
+    ## [5] "example_aoi.gpkg"                            
+    ## [6] "Study_Site.zip"
 
 ## Search parameters
 
 ``` r
 # Specifying bounding box coordinates
-lower_left_lon <- -96.0
-lower_left_lat <- 40.0
-upper_right_lon <- -100
-upper_right_lat <- 42.0
+lower_left_lon <- -83.26
+lower_left_lat <- 31.95
+upper_right_lon <- -83.11
+upper_right_lat <- 32.46
 
 
 # Specifying the date range
-daterange <- c("2021-10-02", "2021-10-03")
+daterange <- c("2019-04-12", "2019-05-03")
 ```
 
 ## Working locally
@@ -164,22 +193,18 @@ atl03_granules_local <- ATLAS_dataFinder(
   lower_left_lat,
   upper_right_lon,
   upper_right_lat,
-  version = "006",
+  version = "007",
   daterange = daterange,
-  persist = TRUE,
+  persist = FALSE,
   cloud_computing = FALSE
 )
 
 head(atl03_granules_local)
 ```
 
-    ##      C2596864127-NSIDC_CPRD                                                                                                                      
-    ## [1,] "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/ATLAS/ATL03/006/2021/10/02/ATL03_20211002001658_01461302_006_01.h5"
-    ## [2,] "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/ATLAS/ATL03/006/2021/10/02/ATL03_20211002004127_01461306_006_01.h5"
-    ## [3,] "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/ATLAS/ATL03/006/2021/10/02/ATL03_20211002015115_01471302_006_01.h5"
-    ## [4,] "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/ATLAS/ATL03/006/2021/10/02/ATL03_20211002021545_01471306_006_01.h5"
-    ## [5,] "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/ATLAS/ATL03/006/2021/10/02/ATL03_20211002032533_01481302_006_01.h5"
-    ## [6,] "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/ATLAS/ATL03/006/2021/10/02/ATL03_20211002035002_01481306_006_01.h5"
+    ##      C3326974349-NSIDC_CPRD                                                                                                                      
+    ## [1,] "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/ATLAS/ATL03/007/2019/04/13/ATL03_20190413122158_02330302_007_01.h5"
+    ## [2,] "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/ATLAS/ATL03/007/2019/05/02/ATL03_20190502233026_05300306_007_01.h5"
 
 ``` r
 atl08_granules_local <- ATLAS_dataFinder(
@@ -188,7 +213,7 @@ atl08_granules_local <- ATLAS_dataFinder(
   lower_left_lat,
   upper_right_lon,
   upper_right_lat,
-  version = "006",
+  version = "007",
   daterange = daterange,
   persist = TRUE,
   cloud_computing = FALSE
@@ -197,30 +222,31 @@ atl08_granules_local <- ATLAS_dataFinder(
 head(atl08_granules_local)
 ```
 
-    ##      C2613553260-NSIDC_CPRD                                                                                                                     
-    ## [1,] "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/ATLAS/ATL08/006/2021/10/02/ATL08_20211002004127_01461306_006_01.h5"
-    ## [2,] "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/ATLAS/ATL08/006/2021/10/02/ATL08_20211002032533_01481302_006_01.h5"
-    ## [3,] "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/ATLAS/ATL08/006/2021/10/02/ATL08_20211002045950_01491302_006_01.h5"
-    ## [4,] "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/ATLAS/ATL08/006/2021/10/02/ATL08_20211002052420_01491306_006_01.h5"
-    ## [5,] "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/ATLAS/ATL08/006/2021/10/02/ATL08_20211002063408_01501302_006_01.h5"
-    ## [6,] "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/ATLAS/ATL08/006/2021/10/02/ATL08_20211002065837_01501306_006_01.h5"
+    ##      C3565574177-NSIDC_CPRD                                                                                                                      
+    ## [1,] "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/ATLAS/ATL08/007/2019/04/13/ATL08_20190413122158_02330302_007_01.h5"
+    ## [2,] "https://data.nsidc.earthdatacloud.nasa.gov/nsidc-cumulus-prod-protected/ATLAS/ATL08/007/2019/05/02/ATL08_20190502233026_05300306_007_01.h5"
 
 Now we download the granules:
 
 ``` r
-# Download all granules
-ATLAS_dataDownload(atl03_granules_local[1:3], outdir)
-ATLAS_dataDownload(atl08_granules_local[c(2,4,5)],  outdir)
+# Download granules
+ATLAS_dataDownload(atl03_granules_local, outdir)
+ATLAS_dataDownload(atl08_granules_local, outdir)
 ```
 
-And then we can open and work with them
+And then we can open and work with them.
+
+### Opening multiple files with `lapply`
+
+The functions developed in the package are designed to work with a
+single file. However, by using `lapply`, we can work with lists of files
+as if we were using a `for` loop.
 
 ``` r
 ## ATL03
 # Read the granules
 atl03_files <- list.files(outdir, "ATL03.*h5", full.names = TRUE)
 atl03_h5 <- lapply(atl03_files, ATL03_read)
-
 
 ## ATL08
 # Read the granules
@@ -235,7 +261,73 @@ atl08_h5[[1]]$ls()
     ## [4] "gt2r"               "gt3r"               "orbit_info"        
     ## [7] "quality_assessment"
 
+### NOTE: for those not familiar with `lapply`
+
+You can read this as if we were looping over the listed files. For
+example:
+
+``` r
+atl03_files <- list.files(outdir, "ATL03.*h5", full.names = TRUE)
+```
+
+This will look for all files matching the [regular
+expression](https://en.wikipedia.org/wiki/Regular_expression) pattern
+`ATL03.*h5`. That is, it searches for files that contain `"ATL03"`
+followed by any character (`.`) repeated zero or more times (`*`), and
+ending with `"h5"`.
+
+Setting `full.names = TRUE` returns the full path of the matching files.
+
+The result is a `list` of files matching `ATL03<anything>.h5`, which we
+store in the `atl03_files` variable. Then we can use:
+
+``` r
+atl03_h5 <- lapply(atl03_files, ATL03_read)
+```
+
+This applies `ATL03_read` to each file and returns another list, where
+each element corresponds to one ATL03 H5 file opened by the package. The
+result is stored in the `atl03_h5` variable.
+
+We can use the same `lapply` pattern to apply any function to the opened
+ATL03 H5 files, such as `close`, which releases the H5 file handle:
+
+``` r
+lapply(atl03_h5, close)
+```
+
+This is essentially equivalent to using a `for` loop, which some may
+already be familiar with. We could write the previous steps as:
+
+``` r
+for (ii in atl03_files) {
+  atl03_h5 <- ATL03_read(ii)
+  close(atl03_h5)
+}
+```
+
+One limitation of a `for` loop is that it runs as a single block, which
+can make interactive debugging less convenient. Any change or correction
+must be made inside the loop definition. For this reason, many
+developers use workarounds to debug `for` loops line by line by manually
+setting the loop index (`ii`, in this case).
+
+Using `lapply` can be more convenient for interactive programming
+because you apply a single function over the elements and immediately
+obtain a results. After execution, you can directly examine the returned
+object to verify that everything worked as expected.
+
+One important consideration is that `lapply` stores all results in
+memory. In contrast, a `for` loop can release resources at each
+iteration (for example, by explicitly calling `close()`), which may be
+preferable when working with large files or limited memory.
+
 ## Working in the cloud
+
+In cloud computing you don’t need to download the data, instead you can
+read the data and start working with it, but it is only worth it and
+fast if you use an Amazon computing instance in `us-west2`. If you are
+physically close to that region and have a fast link it may be usable.
 
 ``` r
 atl03_granules_cloud <- ATLAS_dataFinder(
@@ -244,15 +336,12 @@ atl03_granules_cloud <- ATLAS_dataFinder(
   lower_left_lat,
   upper_right_lon,
   upper_right_lat,
-  version = "006",
+  version = "007",
   daterange = daterange,
   persist = TRUE,
   cloud_computing = TRUE
 )
 ```
-
-In cloud computing you don’t need to download data, instead you can read
-the data and start working with it.
 
 ``` r
 # Read the granule (the ATL03_read can only read one granule per read)
@@ -263,33 +352,90 @@ atl03_h5_cloud$beams
 ```
 
 ``` r
-## gt1l gt1r gt2l gt2r gt3l gt3r
-```
-
-``` r
 close(atl03_h5_cloud)
 ```
 
 # Extracting ATL03 photons attributes
 
 ``` r
-atl03_photons_dt <- lapply(atl03_h5,ATL03_photons_attributes_dt)
+atl03_photons_dt <- lapply(atl03_h5, ATL03_photons_attributes_dt)
+
+lapply(atl03_photons_dt, head)
+```
+
+    ## [[1]]
+    ##      beam strong_beam    lon_ph   lat_ph      h_ph quality_ph solar_elevation
+    ##    <char>      <lgcl>     <num>    <num>     <num>      <int>           <num>
+    ## 1:   gt1r        TRUE -83.17002 31.94998  38.03688          0        15.39839
+    ## 2:   gt1r        TRUE -83.17002 31.94999 146.15678          0        15.39839
+    ## 3:   gt1r        TRUE -83.17003 31.94999  38.04658          0        15.39839
+    ## 4:   gt1r        TRUE -83.17003 31.94999 -47.99396          0        15.39839
+    ## 5:   gt1r        TRUE -83.17003 31.95000  37.96548          0        15.39839
+    ## 6:   gt1r        TRUE -83.17003 31.95000 -24.20197          0        15.39839
+    ##    dist_ph_along
+    ##            <num>
+    ## 1:     0.3343540
+    ## 2:     0.3916505
+    ## 3:     1.0463774
+    ## 4:     1.0012530
+    ## 5:     1.7584014
+    ## 6:     1.7257795
+    ## 
+    ## [[2]]
+    ##      beam strong_beam    lon_ph   lat_ph       h_ph quality_ph solar_elevation
+    ##    <char>      <lgcl>     <num>    <num>      <num>      <int>           <num>
+    ## 1:   gt1r        TRUE -83.12031 32.46008  76.431541          0        6.729242
+    ## 2:   gt1r        TRUE -83.12030 32.46008  52.782761          0        6.729242
+    ## 3:   gt1r        TRUE -83.12031 32.46007 118.247375          0        6.729242
+    ## 4:   gt1r        TRUE -83.12031 32.46006 128.394547          0        6.729242
+    ## 5:   gt1r        TRUE -83.12030 32.46006  -1.551045          0        6.729242
+    ## 6:   gt1r        TRUE -83.12031 32.46003  52.877926          0        6.729242
+    ##    dist_ph_along
+    ##            <num>
+    ## 1:     0.5924338
+    ## 2:     0.5793406
+    ## 3:     1.3288867
+    ## 4:     2.0480995
+    ## 5:     1.9771030
+    ## 6:     5.5748668
+
+``` r
+atl03_photons_dt[[1]][beam == "gt1r" & dist_ph_along < 10000,
+  plot(dist_ph_along, h_ph, xlab="dist_ph_along", ylab="Elevation (m)", pch=16, cex=0.2)
+]
+```
+
+![](readme/plot_atl03_photons_subset-1.png)<!-- -->
+
+    ## NULL
+
+Join all the data tables by using the `rbindlist2` helper function from
+this package. Don’t use `data.table::rbindlist`, because then the
+original `class` will be lost and you won’t be able to run any other
+function from this package over the result.
+
+``` r
 atl03_photons_dt <- rbindlist2(atl03_photons_dt)
 
 head(atl03_photons_dt)
-``` 
-| beam | strong_beam |    lon_ph |   lat_ph |    h_ph | quality_ph | solar_elevation | dist_ph_along | nid |
-|:-----|:------------|----------:|---------:|--------:|------------:|----------------:|---------------:|----:|
-| gt1r | TRUE        | -106.5700 | 41.53862 | 2586.681 |           0 |        33.53411 |       57.03034 |   1 |
-| gt1r | TRUE        | -106.5700 | 41.53862 | 2590.325 |           0 |        33.53411 |       57.04520 |   2 |
-| gt1r | TRUE        | -106.5700 | 41.53862 | 2569.251 |           0 |        33.53411 |       56.96353 |   3 |
-| gt1r | TRUE        | -106.5700 | 41.53862 | 2547.401 |           0 |        33.53411 |       56.88038 |   4 |
-| gt1r | TRUE        | -106.5700 | 41.53862 | 2548.977 |           0 |        33.53411 |       56.88631 |   5 |
-| gt1r | TRUE        | -106.5699 | 41.53862 | 2476.900 |           0 |        33.53411 |       56.61007 |   6 |
+```
 
-``` r
-plot(atl03_photons_dt$dist_ph_along,atl03_photons_dt$h_ph, xlab="dist_ph_along", ylab="Elevation (m)", pch=16, cex=0.2)
-``` 
+    ##      beam strong_beam    lon_ph   lat_ph      h_ph quality_ph solar_elevation
+    ##    <char>      <lgcl>     <num>    <num>     <num>      <int>           <num>
+    ## 1:   gt1r        TRUE -83.17002 31.94998  38.03688          0        15.39839
+    ## 2:   gt1r        TRUE -83.17002 31.94999 146.15678          0        15.39839
+    ## 3:   gt1r        TRUE -83.17003 31.94999  38.04658          0        15.39839
+    ## 4:   gt1r        TRUE -83.17003 31.94999 -47.99396          0        15.39839
+    ## 5:   gt1r        TRUE -83.17003 31.95000  37.96548          0        15.39839
+    ## 6:   gt1r        TRUE -83.17003 31.95000 -24.20197          0        15.39839
+    ##    dist_ph_along
+    ##            <num>
+    ## 1:     0.3343540
+    ## 2:     0.3916505
+    ## 3:     1.0463774
+    ## 4:     1.0012530
+    ## 5:     1.7584014
+    ## 6:     1.7257795
 
 # Segment-Level Extraction of ATL03 Metadata and ATL08 Attributes
 
@@ -308,14 +454,22 @@ atl03_seg_dt <- atl03_seg_dt[h_ph < 20000]
 head(atl03_seg_dt)
 ```
 
-| delta_time | solar_elevation |      pitch |     h_ph | ref_elev | reference_photon_lon | reference_photon_lat | beam | strong_beam |
-|-----------:|----------------:|-----------:|---------:|---------:|---------------------:|---------------------:|:-----|:------------|
-|   40393396 |        15.39806 | -0.1688279 | 253.2678 | 1.564179 |            -83.17184 |             31.96591 | gt1r | TRUE        |
-|   40393396 |        15.39806 | -0.1688280 | 268.9599 | 1.564179 |            -83.17186 |             31.96609 | gt1r | TRUE        |
-|   40393396 |        15.39806 | -0.1688281 | 355.6263 | 1.564179 |            -83.17188 |             31.96627 | gt1r | TRUE        |
-|   40393396 |        15.39806 | -0.1688282 | 276.9350 | 1.564180 |            -83.17190 |             31.96645 | gt1r | TRUE        |
-|   40393396 |        15.39805 | -0.1688282 | 359.7021 | 1.564180 |            -83.17192 |             31.96663 | gt1r | TRUE        |
-|   40393396 |        15.39805 | -0.1688283 | 292.5831 | 1.564180 |            -83.17194 |             31.96681 | gt1r | TRUE        |
+    ##    delta_time solar_elevation      pitch      h_ph ref_elev
+    ##         <num>           <num>      <num>     <num>    <num>
+    ## 1:   40393396        15.39839 -0.1688505  38.32878 1.564183
+    ## 2:   40393396        15.39838 -0.1688505  70.68814 1.564183
+    ## 3:   40393396        15.39839 -0.1688506 191.52499 1.564183
+    ## 4:   40393396        15.39839 -0.1688507 320.18427 1.564183
+    ## 5:   40393396        15.39839 -0.1688508 322.01422 1.564183
+    ## 6:   40393396        15.39838 -0.1688509 296.07132 1.564183
+    ##    reference_photon_lon reference_photon_lat   beam strong_beam
+    ##                   <num>                <num> <char>      <lgcl>
+    ## 1:            -83.17003             31.95007   gt1r        TRUE
+    ## 2:            -83.17006             31.95025   gt1r        TRUE
+    ## 3:            -83.17007             31.95043   gt1r        TRUE
+    ## 4:            -83.17008             31.95061   gt1r        TRUE
+    ## 5:            -83.17010             31.95079   gt1r        TRUE
+    ## 6:            -83.17012             31.95098   gt1r        TRUE
 
 ``` r
 # ATL08 seg attributes
@@ -335,14 +489,22 @@ atl08_seg_dt <- atl08_seg_dt[h_canopy < 100 & h_te_mean < 20000]
 head(atl08_seg_dt)
 ```
 
-| latitude | longitude | beam | strong_beam |  h_canopy | h_te_mean | terrain_slope | canopy_openness | night_flag |
-|---------:|----------:|:-----|:------------|----------:|----------:|--------------:|----------------:|-----------:|
-| 32.04510 | -83.18090 | gt1r | TRUE        | 13.640770 |  47.51598 |     0.0830011 |        3.445780 |          0 |
-| 32.04690 | -83.18111 | gt1r | TRUE        | 11.407394 |  44.67390 |    -0.0053365 |        2.606891 |          0 |
-| 32.09549 | -83.18666 | gt1r | TRUE        | 10.392395 |  65.23853 |     0.0053522 |        2.132361 |          0 |
-| 32.09639 | -83.18677 | gt1r | TRUE        | 10.364945 |  65.63503 |     0.0097772 |        3.251597 |          0 |
-| 32.10629 | -83.18790 | gt1r | TRUE        | 14.952076 |  58.39679 |     0.0042360 |        4.113675 |          0 |
-| 32.10719 | -83.18800 | gt1r | TRUE        |  9.288475 |  59.01027 |     0.0017870 |        3.213291 |          0 |
+    ##    latitude longitude   beam strong_beam h_canopy h_te_mean terrain_slope
+    ##       <num>     <num> <char>      <lgcl>    <num>     <num>         <num>
+    ## 1: 32.04510 -83.18089   gt1r        TRUE 18.06909  47.24137  0.0675557479
+    ## 2: 32.04600 -83.18099   gt1r        TRUE 14.93932  49.29641 -0.0150071429
+    ## 3: 32.09549 -83.18665   gt1r        TRUE 13.59224  65.26366  0.0016390451
+    ## 4: 32.09819 -83.18695   gt1r        TRUE 13.29834  61.19172 -0.0504091382
+    ## 5: 32.10629 -83.18788   gt1r        TRUE 15.04982  58.41184  0.0003124845
+    ## 6: 32.10719 -83.18798   gt1r        TRUE 13.25954  59.00683  0.0018522192
+    ##    canopy_openness night_flag
+    ##              <num>      <int>
+    ## 1:        5.553810          0
+    ## 2:        3.702256          0
+    ## 3:        4.157953          0
+    ## 4:        4.351950          0
+    ## 5:        5.014529          0
+    ## 6:        3.668618          0
 
 ### Plot histograms:
 
@@ -354,18 +516,7 @@ hist(atl03_seg_dt$h_ph, col = "#bd8421", xlab = "Elevation (m)", main = "ATL03 h
 hist(atl08_seg_dt$h_canopy, col = "green", xlab = "Height (m)", main = "ATL08 h_canopy")
 ```
 
-<div align="center">
-
-<div class="figure" style="text-align: center">
-
-<img src="readme/segments_histogram-1.png" alt="Histograms for ATL03 elevation and ATL08 h_canopy"  />
-<p class="caption">
-Histograms for ATL03 elevation and ATL08 h_canopy
-</p>
-
-</div>
-
-</div>
+![](readme/plot_segment_histograms-1.png)<!-- -->
 
 ## Export to vector
 
@@ -376,7 +527,7 @@ library(terra)
 
 blueYellowRed <- function(n) grDevices::hcl.colors(n, "RdYlBu")
 
-set.seed(123)
+set.seed(42)
 mask <- base::sample(seq_len(nrow(atl03_seg_dt)), 50)
 atl03_seg_vect <- to_vect(atl03_seg_dt)
 
@@ -458,7 +609,6 @@ mapview::mapView(
 
 </div>
 
-
 Multiple attributes:
 
 ``` r
@@ -499,61 +649,134 @@ leafsync::sync(m1, m2, m3, m4)
 <div align="center" style="width:100%;">
 
 <figure>
+
 <img src="readme/output_multi.png" alt="multi" />
-<figcaption aria-hidden="true">multi</figcaption>
+<figcaption aria-hidden="true">
+
+multi
+</figcaption>
+
 </figure>
 
 </div>
 
 # Clipping ATL03 and ATL08 data
 
-Now we will use the clipping functions. There are two ways of clipping data in ICESat2VegR:
+Now we will use the clipping functions. There are two ways of clipping
+data in ICESat2VegR:
 
-1.Clipping raw HDF5 data from ATL03 and ATL08 files
-2.Clipping extracted attributes produced by the extraction functions, such as:
+1.Clipping raw HDF5 data from ATL03 and ATL08 files 2.Clipping extracted
+attributes produced by the extraction functions, such as:
 
-`ATL03_seg_metadata_dt`
-`ATL03_photon_attributes_dt`
-`ATL08_seg_attributes_dt`
-`ATL03_ATL08_photons_attributes_dt_join`
+`ATL03_seg_metadata_dt` `ATL03_photon_attributes_dt`
+`ATL08_seg_attributes_dt` `ATL03_ATL08_photons_attributes_dt_join`
 
-The second method is preferred because it is faster and more efficient. It does not require re-reading the HDF5 file and clips only the extracted attributes, whereas the raw HDF5 structure contains many additional variables that may not be needed.
-There are multiple clipping variants that operate either on a bounding box or a geometry, using the suffixes _clipBox or _clipGeometry:
+The second method is preferred because it is faster and more efficient.
+It does not require re-reading the HDF5 file and clips only the
+extracted attributes, whereas the raw HDF5 structure contains many
+additional variables that may not be needed. There are multiple clipping
+variants that operate either on a bounding box or a geometry, using the
+suffixes \_clipBox or \_clipGeometry:
 
-1.`ATL03_h5_clipBox`
-2.`ATL03_h5_clipGeometry`
-3.`ATL03_seg_metadata_dt_clipBox`
-4.`ATL03_seg_metadata_dt_clipGeometry`
+1.`ATL03_h5_clipBox` 2.`ATL03_h5_clipGeometry`
+3.`ATL03_seg_metadata_dt_clipBox` 4.`ATL03_seg_metadata_dt_clipGeometry`
 5.`ATL03_photon_attributes_dt_clipBox`
-6.`ATL03_photon_attributes_dt_clipGeometry`
-7.`ATL08_h5_clipBox`
-8.`ATL08_h5_clipGeometry`
-9.`ATL08_seg_attributes_dt_clipBox`
+6.`ATL03_photon_attributes_dt_clipGeometry` 7.`ATL08_h5_clipBox`
+8.`ATL08_h5_clipGeometry` 9.`ATL08_seg_attributes_dt_clipBox`
 10.`ATL08_seg_attributes_dt_clipGeometry`
 11.`ATL03_ATL08_photons_attributes_dt_join_clipBox`
 12.`ATL03_ATL08_photons_attributes_dt_join_clipGeometry`
-
 
 In the following two sections there are two small examples on how to
 clip the raw HDF5 and the extracted attributes.
 
 ## Clipping raw hdf5 data from ATL08
 
+Clipping by bounding box
+
 ``` r
 # Define bbox
-clip_region <- terra::ext(-83.2, -83.14, 32.12, 32.18)
-aoi <- file.path(outdir, "example_aoi.gpkg")
-aoi_vect <- terra::vect(aoi)
+clip_region <- terra::ext(-83.2, -83.14, 32.12, 32.22)
 
 # Define hdf5 output file
 output <- tempfile(pattern = "alt08_h5_clip_", fileext = ".h5")
 
 # Clip the data for only the first ATL08 file
 atl08_clipped <- ATL08_h5_clipBox(atl08_h5[[1]], output, clip_obj = clip_region)
+```
 
-##atl08_clippeds <- ATL08_h5_clipGeometry(atl08_h5[[2]], output, clip_obj = aoi_vect, split_by="id")
+    ## Clipping gt1r (1/3)
 
-atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5[[1]], attributes = c("h_canopy"))
+    ##   |                                                                              |                                                                      |   0%  |                                                                              |                                                                      |   1%  |                                                                              |=                                                                     |   1%  |                                                                              |=                                                                     |   2%  |                                                                              |==                                                                    |   2%  |                                                                              |==                                                                    |   3%  |                                                                              |==                                                                    |   4%  |                                                                              |===                                                                   |   4%  |                                                                              |===                                                                   |   5%  |                                                                              |====                                                                  |   5%  |                                                                              |====                                                                  |   6%  |                                                                              |=====                                                                 |   6%  |                                                                              |=====                                                                 |   7%  |                                                                              |=====                                                                 |   8%  |                                                                              |======                                                                |   8%  |                                                                              |======                                                                |   9%  |                                                                              |=======                                                               |   9%  |                                                                              |=======                                                               |  10%  |                                                                              |=======                                                               |  11%  |                                                                              |========                                                              |  11%  |                                                                              |========                                                              |  12%  |                                                                              |=========                                                             |  12%  |                                                                              |==========                                                            |  15%  |                                                                              |============                                                          |  18%  |                                                                              |=============                                                         |  18%  |                                                                              |=============                                                         |  19%  |                                                                              |==============                                                        |  20%  |                                                                              |===============                                                       |  21%  |                                                                              |===============                                                       |  22%  |                                                                              |================                                                      |  23%  |                                                                              |=========================                                             |  36%  |                                                                              |==================================                                    |  48%  |                                                                              |===========================================                           |  61%  |                                                                              |====================================================                  |  74%  |                                                                              |=============================================================         |  87%
+
+    ## Clipping gt2r (2/3)
+
+    ##   |                                                                              |                                                                      |   0%  |                                                                              |                                                                      |   1%  |                                                                              |=                                                                     |   1%  |                                                                              |=                                                                     |   2%  |                                                                              |==                                                                    |   2%  |                                                                              |==                                                                    |   3%  |                                                                              |==                                                                    |   4%  |                                                                              |===                                                                   |   4%  |                                                                              |===                                                                   |   5%  |                                                                              |====                                                                  |   6%  |                                                                              |=====                                                                 |   7%  |                                                                              |=====                                                                 |   8%  |                                                                              |======                                                                |   8%  |                                                                              |======                                                                |   9%  |                                                                              |=================                                                     |  24%  |                                                                              |===========================                                           |  39%  |                                                                              |======================================                                |  54%  |                                                                              |=================================================                     |  70%  |                                                                              |===========================================================           |  85%  |                                                                              |======================================================================| 100%
+
+    ## Clipping gt3r (3/3)
+
+``` r
+atl08_clipped_dt <- ATL08_seg_attributes_dt(atl08_clipped)
+head(atl08_clipped_dt)
+```
+
+    ##    latitude longitude   beam strong_beam delta_time     h_canopy
+    ##       <num>     <num> <char>      <lgcl>      <num>        <num>
+    ## 1: 32.17567 -83.19581   gt1r        TRUE   40393399 3.402823e+38
+    ## 2: 32.17612 -83.19586   gt1r        TRUE   40393399 3.402823e+38
+    ## 3: 32.18242 -83.19659   gt1r        TRUE   40393399 2.207875e+01
+    ## 4: 32.18422 -83.19679   gt1r        TRUE   40393399 1.615540e+01
+    ## 5: 32.18782 -83.19720   gt1r        TRUE   40393399 3.402823e+38
+    ## 6: 32.18872 -83.19730   gt1r        TRUE   40393399 1.481612e+01
+    ##    canopy_openness h_te_mean terrain_slope
+    ##              <num>     <num>         <num>
+    ## 1:    3.402823e+38  63.57058  -0.002567929
+    ## 2:    3.402823e+38  63.50964  -0.002690209
+    ## 3:    6.063295e+00  62.32897  -0.012233611
+    ## 4:    4.388643e+00  62.66194   0.003692981
+    ## 5:    3.402823e+38  64.54927   0.006792120
+    ## 6:    4.716712e+00  64.62030   0.001217656
+
+Clip using a vector file and split by polygon `id`
+
+``` r
+aoi <- file.path(outdir, "example_aoi.gpkg")
+aoi_vect <- terra::vect(aoi)
+
+# Clip by multiple polygons id
+output2 <- tempfile(pattern = "alt08_h5_clip_", fileext = ".h5")
+atl08_clippeds <- ATL08_h5_clipGeometry(atl08_clipped, output2, clip_obj = aoi_vect, split_by="id")
+```
+
+    ## Clipping gt1r (1/3)
+
+    ##   |                                                                              |                                                                      |   0%  |                                                                              |                                                                      |   1%  |                                                                              |=                                                                     |   1%  |                                                                              |=                                                                     |   2%  |                                                                              |==                                                                    |   2%  |                                                                              |==                                                                    |   3%  |                                                                              |===                                                                   |   4%  |                                                                              |===                                                                   |   5%  |                                                                              |====                                                                  |   5%  |                                                                              |====                                                                  |   6%  |                                                                              |=====                                                                 |   7%  |                                                                              |=====                                                                 |   8%  |                                                                              |======                                                                |   8%  |                                                                              |======                                                                |   9%  |                                                                              |=======                                                               |   9%  |                                                                              |=======                                                               |  10%  |                                                                              |=======                                                               |  11%  |                                                                              |========                                                              |  11%  |                                                                              |========                                                              |  12%  |                                                                              |=========                                                             |  12%  |                                                                              |=========                                                             |  13%  |                                                                              |=========                                                             |  14%  |                                                                              |============                                                          |  16%  |                                                                              |==============                                                        |  19%  |                                                                              |==============                                                        |  20%  |                                                                              |===============                                                       |  21%  |                                                                              |===============                                                       |  22%  |                                                                              |================                                                      |  23%  |                                                                              |================                                                      |  24%  |                                                                              |=================                                                     |  24%  |                                                                              |==================                                                    |  25%  |                                                                              |==========================                                            |  38%  |                                                                              |===================================                                   |  50%  |                                                                              |============================================                          |  63%  |                                                                              |=====================================================                 |  75%  |                                                                              |=============================================================         |  88%  |                                                                              |======================================================================| 100%
+
+    ## Clipping gt2r (2/3)
+
+    ## Clipping gt3r (3/3)
+
+``` r
+atl08_clippeds_dt <- ATL08_seg_attributes_dt(atl08_clippeds)
+head(atl08_clippeds_dt)
+```
+
+    ##    latitude longitude   beam strong_beam delta_time h_canopy canopy_openness
+    ##       <num>     <num> <char>      <lgcl>      <num>    <num>           <num>
+    ## 1: 32.19682 -83.19823   gt1r        TRUE   40393399 17.39570        4.406432
+    ## 2: 32.20312 -83.19894   gt1r        TRUE   40393400 29.05611        8.091634
+    ## 3: 32.21050 -83.19979   gt1r        TRUE   40393400 14.30249        5.297164
+    ## 4: 32.21122 -83.19987   gt1r        TRUE   40393400 13.18165        3.906349
+    ## 5: 32.21212 -83.19997   gt1r        TRUE   40393400 13.12003        4.477173
+    ##    h_te_mean terrain_slope
+    ##        <num>         <num>
+    ## 1:  72.31939  0.0043449728
+    ## 2:  74.52260  0.0007572233
+    ## 3:  76.16827 -0.0006720039
+    ## 4:  76.35638  0.0209999718
+    ## 5:  78.45802  0.0179703049
+
+``` r
 atl08_seg_dt_clip <- ATL08_seg_attributes_dt(atl08_clipped, attributes = c("h_canopy"))
 
 # Display location of clipped data
@@ -574,36 +797,30 @@ map1 <- mapview::mapview(
   legend = FALSE
 )
 
-map1
-
-dplyr_available <- require("dplyr")
-if (!dplyr_available) stop("dplyr not found!")
 
 # Final map
-final_map <- map1@map %>%
-  leaflet::addCircleMarkers(data = atl08_seg_vect, radius = 2) %>%
+final_map <- map1@map |>
+  leaflet::addCircleMarkers(data = atl08_seg_vect, radius = 2) |>
   leaflet::addPolygons(
     data = bbox, fillOpacity = 0, weight = 3, color = "white",
     opacity = 1, dashArray = "5, 1, 0"
-  ) %>%
+  ) |>
   leaflet::addLegend(
     position = "topright",
     colors = c("blue", "yellow", "white"),
     labels = c("atl08_segment", "atl08_segment_clipped", "bbox"),
     opacity = 1
-  ) %>%
+  ) |>
   leaflet::setView(centroid[, "x"][[1]], centroid[, "y"][[1]], zoom = 13)
 
 final_map
 ```
-  
+
 <div align="center">
 
 <img src="readme/atl08_clip_bbox.png" width=500 />
 
 </div>
-
-## Clipping extracted attributes from ATL08 segments data
 
 ``` r
 aoi <- file.path(outdir, "example_aoi.gpkg")
@@ -638,48 +855,98 @@ map1 <- mapview::mapview(
 )
 
 # Final map
-final_map <- map1@map %>%
-  leaflet::addCircleMarkers(data = atl08_seg_vect, color = "blue", radius = 2) %>%
+final_map <- map1@map |>
+  leaflet::addCircleMarkers(data = atl08_seg_vect, color = "blue", radius = 2) |>
   leaflet::addPolygons(
     data = aoi_vect, fillOpacity = 0, weight = 3, color = colors,
     opacity = 1, dashArray = "5, 1, 0"
-  ) %>%
+  ) |>
   leaflet::addLegend(
     position = "topright",
     colors = c("blue", "yellow", colors),
     labels = c("atl08_segment", "atl08_segment_clipped", "aoi_1", "aoi_2"),
     opacity = 1
-  ) %>%
+  ) |>
   leaflet::setView(centroid[, "x"][[1]], centroid[, "y"][[1]], zoom = 13)
   
 final_map
 ```
 
+<div align="center">
+
+<img src="readme/clip_atl08_attributes_geometry.png" width=500 />
+
+</div>
+
+### Extract Reference Ground Tracks
+
+``` r
+# As lines
+rgt_line_vect <- rgt_extract(atl03_h5[[2]])
+rgt_polygon_vect <- rgt_extract(atl03_h5[[2]], line = FALSE)
+
+atl08_seg_vect$formatted_h <- atl08_seg_vect$h_canopy
+atl08_seg_vect$formatted_h[atl08_seg_vect$formatted_h > 500] <- NaN
+atl08_seg_vect$formatted_h <- sprintf("Height: %.2f", atl08_seg_vect$formatted_h)
+
+map1 <- mapview::mapview(
+  atl08_seg_vect,
+  zcol = "formatted_h",
+  color='#f0f',
+  map.types = c("Esri.WorldImagery"),
+  cex = 2,
+  legend = FALSE
+)@map |> 
+    leaflet::addPolylines(data = rgt_line_vect, color='#ff0', opacity=1) |>
+    leaflet::addPolygons(data = rgt_polygon_vect, fill=NA, color='#0f0', opacity=1) |>
+    leaflet::addLegend(
+    position = "topright",
+    colors = c("#f0f", "#ff0", "#0f0"),
+    labels = c("ATL08 Segments", "RGT Line", "RGT Polygon"),
+    opacity = 1
+  )
+
+map1
+```
+
+<div align="center">
+
+<img src="readme/extract_rgt.png" width=500 />
+
+</div>
+
 Using the Generic clip() Function
 
-Instead of manually choosing from the many _clipBox or _clipGeometry functions, ICESat2VegR provides a unified clipping interface using the generic clip() function. The generic automatically:
-detects the class of the input object (x),
-determines whether the clipping object is a bounding box or a geometry,
-dispatches to the appropriate helper function internally.
+Instead of manually choosing from the many \_clipBox or \_clipGeometry
+functions, ICESat2VegR provides a unified clipping interface using the
+generic clip() function. The generic automatically: detects the class of
+the input object (x), determines whether the clipping object is a
+bounding box or a geometry, dispatches to the appropriate helper
+function internally.
 
 This allows simpler and cleaner code:
 
-```r
+``` r
 clipped <- clip(data_object, clip_obj = aoi)
 ```
-which internally routes the request to the correct clipping function — for example, ATL08_seg_attributes_dt_clipGeometry() or ATL03_h5_clipBox(), depending on the objects supplied.
 
+which internally routes the request to the correct clipping function -
+for example, ATL08_seg_attributes_dt_clipGeometry() or
+ATL03_h5_clipBox(), depending on the objects supplied.
 
 The clip() function automatically:
 
-detects the class of the ICESat-2 object (x),
-determines whether the clipping object is a bounding box or a geometry,
-and dispatches to the appropriate specialized clipping helper.
+detects the class of the ICESat-2 object (x), determines whether the
+clipping object is a bounding box or a geometry, and dispatches to the
+appropriate specialized clipping helper.
 
-This makes your workflow much simpler and more consistent, especially when switching between ATL03/ATL08 HDF5 objects and extracted attribute tables.
+This makes your workflow much simpler and more consistent, especially
+when switching between ATL03/ATL08 HDF5 objects and extracted attribute
+tables.
 
 Example 1: Using clip() on Extracted ATL08 Segment Attributes
-```r
+
+``` r
 # Extract ATL08 segment attributes
 atl08_seg <- ATL08_seg_attributes_dt(atl08_h5[[1]], attributes = "h_canopy")
 
@@ -694,9 +961,9 @@ atl08_seg_clip <- clip(atl08_seg, clip_obj = aoi_vect)
 atl08_seg_clip_vect <- to_vect(atl08_seg_clip)
 ```
 
-
 Example 2: Using clip() on Raw ATL03 HDF5 Data
-```r
+
+``` r
 # ATL03 HDF5 object
 atl03 <- ATL03_read(atl03_files[[1]])
 
@@ -707,18 +974,17 @@ bbox <- ext(c(-83.2, -83.14, 32.12, 32.18))
 atl03_clipped <- clip(atl03, output, clip_obj = bbox)
 ```
 
+Comparison: Generic `clip()` vs. Direct Helper Functions
 
-Comparison: Generic `clip()` vs. Direct Helper Functions
+| Task | Generic `clip()` | Specific Helper Function |
+|----|----|----|
+| Clip ATL03 HDF5 by bounding box | `clip(atl03, bbox)` | `ATL03_h5_clipBox(atl03, bbox)` |
+| Clip ATL03 HDF5 by geometry | `clip(atl03, geom)` | `ATL03_h5_clipGeometry(atl03, geom)` |
+| Clip ATL03 extracted attributes | `clip(atl03_dt, geom)` | `ATL03_photon_attributes_dt_clipGeometry(atl03_dt, geom)` |
+| Clip ATL08 extracted attributes | `clip(atl08_dt, geom)` | `ATL08_seg_attributes_dt_clipGeometry(atl08_dt, geom)` |
+| Clip ATL03-ATL08 joined attributes | `clip(join_obj, geom)` | `ATL03_ATL08_photons_attributes_dt_join_clipGeometry(join_obj, geom)` |
 
-| Task                                      | Generic `clip()`              | Specific Helper Function                                                   |
-|-------------------------------------------|-------------------------------|-----------------------------------------------------------------------------|
-| Clip ATL03 HDF5 by bounding box           | `clip(atl03, bbox)`          | `ATL03_h5_clipBox(atl03, bbox)`                                            |
-| Clip ATL03 HDF5 by geometry               | `clip(atl03, geom)`          | `ATL03_h5_clipGeometry(atl03, geom)`                                       |
-| Clip ATL03 extracted attributes           | `clip(atl03_dt, geom)`       | `ATL03_photon_attributes_dt_clipGeometry(atl03_dt, geom)`                  |
-| Clip ATL08 extracted attributes           | `clip(atl08_dt, geom)`       | `ATL08_seg_attributes_dt_clipGeometry(atl08_dt, geom)`                     |
-| Clip ATL03–ATL08 joined attributes        | `clip(join_obj, geom)`       | `ATL03_ATL08_photons_attributes_dt_join_clipGeometry(join_obj, geom)`      |
-
----
+------------------------------------------------------------------------
 
 Why Use `clip()`?
 
@@ -726,14 +992,7 @@ Why Use `clip()`?
 - Ensures consistent behavior across ATL03, ATL08, and joined datasets  
 - Reduces code duplication and improves maintainability  
 - Automatically selects the correct clipping method based on inputs  
-- Produces cleaner and more readable workflows  
-
-
-<div align="center">
-
-<img src="readme/atl08_clip_geom.png" width=500 />
-
-</div>
+- Produces cleaner and more readable workflows
 
 # Joining ATL03 and ATL08 data
 
@@ -760,18 +1019,34 @@ atl03_atl08_dt <- rbindlist2(atl03_atl08_dts)
 head(atl03_atl08_dt)
 ```
 
-<div align="center" style="overflow-x: scroll;">
+    ##    ph_segment_id    lon_ph   lat_ph     h_ph quality_ph solar_elevation
+    ##            <int>     <num>    <num>    <num>      <int>           <num>
+    ## 1:        177739 -83.18084 32.04466 44.98895          0        15.39645
+    ## 2:        177739 -83.18084 32.04466 45.22551          0        15.39645
+    ## 3:        177739 -83.18084 32.04467 44.80286          0        15.39645
+    ## 4:        177739 -83.18084 32.04469 60.23991          0        15.39645
+    ## 5:        177739 -83.18084 32.04470 43.26285          0        15.39645
+    ## 6:        177739 -83.18084 32.04470 45.90213          0        15.39645
+    ##    dist_ph_along dist_ph_across night_flag classed_pc_indx classed_pc_flag
+    ##            <num>          <num>      <int>           <int>           <int>
+    ## 1:      10547.38       3168.391          0               1               1
+    ## 2:      10547.38       3168.390          0               2               1
+    ## 3:      10548.80       3168.396          0               5               1
+    ## 4:      10551.64       3168.300          0               7               3
+    ## 5:      10552.34       3168.414          0              10               0
+    ## 6:      10552.34       3168.396          0              11               2
+    ##           ph_h d_flag delta_time orbit_number   beam strong_beam
+    ##          <num>  <int>      <num>        <int> <char>      <lgcl>
+    ## 1:  0.08856583      1   40393397         3208   gt1r        TRUE
+    ## 2:  0.30957031      1   40393397         3208   gt1r        TRUE
+    ## 3: -0.13203049      1   40393397         3208   gt1r        TRUE
+    ## 4: 15.28244400      1   40393397         3208   gt1r        TRUE
+    ## 5: -1.72061157      1   40393397         3208   gt1r        TRUE
+    ## 6:  0.88927841      1   40393397         3208   gt1r        TRUE
 
-| ph_segment_id |    lon_ph |   lat_ph |     h_ph | quality_ph | solar_elevation | dist_ph_along | dist_ph_across | night_flag | classed_pc_indx | classed_pc_flag |       ph_h | d_flag | delta_time | orbit_number | beam | strong_beam |
-|--------------:|----------:|---------:|---------:|-----------:|----------------:|--------------:|---------------:|-----------:|----------------:|----------------:|-----------:|-------:|-----------:|-------------:|:-----|:------------|
-|        177488 | -83.17570 | 31.99959 | 44.61499 |          0 |        15.39738 |      3762.072 |       3169.208 |          0 |              44 |               2 |  4.3425255 |      1 |   40393396 |         3208 | gt1r | TRUE        |
-|        177488 | -83.17570 | 31.99959 | 48.81370 |          0 |        15.39738 |      3762.074 |       3169.180 |          0 |              45 |               3 |  8.6167412 |      1 |   40393396 |         3208 | gt1r | TRUE        |
-|        177488 | -83.17571 | 31.99962 | 43.38353 |          0 |        15.39738 |      3765.626 |       3169.205 |          0 |              49 |               2 |  3.2494583 |      1 |   40393396 |         3208 | gt1r | TRUE        |
-|        177488 | -83.17571 | 31.99964 | 48.24021 |          0 |        15.39738 |      3767.768 |       3169.175 |          0 |              56 |               3 |  8.1592712 |      1 |   40393396 |         3208 | gt1r | TRUE        |
-|        177488 | -83.17571 | 31.99964 | 56.24585 |          0 |        15.39738 |      3767.773 |       3169.122 |          0 |              57 |               3 | 16.2089348 |      1 |   40393396 |         3208 | gt1r | TRUE        |
-|        177488 | -83.17571 | 31.99965 | 40.30040 |          0 |        15.39738 |      3769.191 |       3169.229 |          0 |              62 |               1 |  0.2985229 |      1 |   40393396 |         3208 | gt1r | TRUE        |
-
-</div>
+``` r
+rm(atl03_file, atl08_file)
+```
 
 ## Plotting the result:
 
@@ -784,9 +1059,9 @@ plot(
   atl03_atl08_dt[orbit_number == 3208],
   y = "h_ph",
   colors = c("gray", "#bd8421", "forestgreen", "green"),
-  xlim = c(25500, 28500),
+  xlim = c(32250, 35000),
   beam = "gt2r",
-  cex = 0.5,
+  cex = 0.7,
   pch = 16
 )
 
@@ -796,30 +1071,21 @@ plot(
   atl03_atl08_dt[orbit_number == 3208],
   y = "ph_h",
   colors = c("gray", "#bd8421", "forestgreen", "green"),
-  xlim = c(25500, 28500),
+  xlim = c(32250, 35000),
   beam = "gt2r",
-  cex = 0.5,
+  cex = 0.7,
   pch = 16,
-  legend = FALSE
+  legend = NA
 )
+```
 
+![](readme/plot_joined_profiles-1.png)<!-- -->
+
+``` r
 par(
   oldpar
 )
 ```
-
-<div align="center">
-
-<div class="figure" style="text-align: center">
-
-<img src="readme/classified_photons-1.png" alt="Classified ATL03 photons using ATL08 labels"  />
-<p class="caption">
-Classified ATL03 photons using ATL08 labels
-</p>
-
-</div>
-
-</div>
 
 ## Calculating raster statistics
 
@@ -841,19 +1107,7 @@ plot(h_canopy,
 )
 ```
 
-<div align="center">
-
-<div class="figure" style="text-align: center">
-
-<img src="readme/rasterized_atl03_atl08-1.png" alt="Rasterized ATL03_ATL08 data for canopy height (h_canopy) and number of photons (n)"  />
-<p class="caption">
-Rasterized ATL03_ATL08 data for canopy height (h_canopy) and number of
-photons (n)
-</p>
-
-</div>
-
-</div>
+![](readme/raster_stats_joined-1.png)<!-- -->
 
 # Calculating ATL08 metrics for different size segments other than 100m and 20m
 
@@ -885,6 +1139,31 @@ atl03_atl08_dt <- rbindlist2(atl03_atl08_dts)
 head(atl03_atl08_dt)
 
 ```
+
+    ##    ph_segment_id    lon_ph   lat_ph     h_ph quality_ph solar_elevation
+    ##            <int>     <num>    <num>    <num>      <int>           <num>
+    ## 1:        177739 -83.18084 32.04466 44.98895          0        15.39645
+    ## 2:        177739 -83.18084 32.04466 45.22551          0        15.39645
+    ## 3:        177739 -83.18084 32.04467 44.80286          0        15.39645
+    ## 4:        177739 -83.18084 32.04469 60.23991          0        15.39645
+    ## 5:        177739 -83.18084 32.04470 43.26285          0        15.39645
+    ## 6:        177739 -83.18084 32.04470 45.90213          0        15.39645
+    ##    dist_ph_along dist_ph_across night_flag classed_pc_indx classed_pc_flag
+    ##            <num>          <num>      <int>           <int>           <int>
+    ## 1:      10547.38       3168.391          0               1               1
+    ## 2:      10547.38       3168.390          0               2               1
+    ## 3:      10548.80       3168.396          0               5               1
+    ## 4:      10551.64       3168.300          0               7               3
+    ## 5:      10552.34       3168.414          0              10               0
+    ## 6:      10552.34       3168.396          0              11               2
+    ##           ph_h d_flag delta_time orbit_number   beam strong_beam
+    ##          <num>  <int>      <num>        <int> <char>      <lgcl>
+    ## 1:  0.08856583      1   40393397         3208   gt1r        TRUE
+    ## 2:  0.30957031      1   40393397         3208   gt1r        TRUE
+    ## 3: -0.13203049      1   40393397         3208   gt1r        TRUE
+    ## 4: 15.28244400      1   40393397         3208   gt1r        TRUE
+    ## 5: -1.72061157      1   40393397         3208   gt1r        TRUE
+    ## 6:  0.88927841      1   40393397         3208   gt1r        TRUE
 
 ## Create Segments IDs
 
@@ -919,22 +1198,22 @@ atl03_atl08_seg_dt <- ATL03_ATL08_compute_seg_attributes_dt_segStat(
 head(atl03_atl08_seg_dt)
 ```
 
-<div align="center" style="overflow-x: scroll;">
-
-| segment_id | beam | longitude | latitude | h_canopy_ge0 | h_canopy_gt0 | n_ground | n_mid_canopy | n_top_canopy | n_canopy_total |
-|-----------:|:-----|----------:|---------:|-------------:|-------------:|---------:|-------------:|-------------:|---------------:|
-|        126 | gt1r | -83.17571 | 31.99965 |    15.611358 |    15.611358 |        1 |            7 |            3 |             10 |
-|        127 | gt1r | -83.17574 | 31.99986 |    18.311493 |    18.311493 |        1 |           12 |            1 |             13 |
-|        128 | gt1r | -83.17577 | 32.00011 |    12.236551 |    12.236551 |        1 |            8 |            0 |              8 |
-|        293 | gt1r | -83.18086 | 32.04469 |     3.518969 |     3.518969 |        0 |            1 |            5 |              6 |
-|        294 | gt1r | -83.18087 | 32.04482 |     5.167805 |     5.167805 |        7 |            4 |            2 |              6 |
-|        295 | gt1r | -83.18091 | 32.04511 |    12.113018 |    12.258518 |       12 |           10 |            0 |             10 |
-
-</div>
-
-## Convert to SpatVector
-
-Now, we convert the data.table to a SpatVector object.
+    ##    segment_id   beam longitude latitude h_canopy_ge0 h_canopy_gt0 n_ground
+    ##         <num> <char>     <num>    <num>        <num>        <num>    <int>
+    ## 1:        352   gt1r -83.15898 32.18583    12.660056     13.37525       16
+    ## 2:        353   gt1r -83.15603 32.20504    12.875919     14.43139       22
+    ## 3:        354   gt1r -83.15498 32.21198    14.276274     15.15154       32
+    ## 4:        355   gt1r -83.15474 32.21373    15.390977     16.18120       31
+    ## 5:        356   gt1r -83.15430 32.21670     1.571659      1.73600       22
+    ## 6:        357   gt1r -83.15261 32.22775    14.282761     14.45159       25
+    ##    n_mid_canopy n_top_canopy n_canopy_total
+    ##           <int>        <int>          <int>
+    ## 1:            6            1              7
+    ## 2:            5            1              6
+    ## 3:            7            1              8
+    ## 4:           17            2             19
+    ## 5:           16            0             16
+    ## 6:           10            1             11
 
 ``` r
 atl03_atl08_vect <- to_vect(atl03_atl08_seg_dt[h_canopy_gt0 <= 31])
@@ -955,10 +1234,10 @@ map_output <- mapview::mapview(
   layer.name = "h_canopy",
   map.types = c("Esri.WorldImagery"),
   cex = 4
-)@map %>%
+)@map |>
   setView(lng = centroid$x, lat = centroid$y, zoom = 13)
-## 
-## map_output
+ 
+map_output
 ```
 
 <div align="center">
@@ -981,7 +1260,13 @@ data.
 ``` r
 # For the sake of the example, we will train and test the model with the same data
 library(randomForest)
+```
 
+    ## randomForest 4.7-1.2
+
+    ## Type rfNews() to see new features/changes/bug fixes.
+
+``` r
 h_canopy <- c(
   13.9, 3.1, 2.2, 4.6, 21.6,
   7.2, 5, 7.7, 0.8, 9.7,
@@ -996,7 +1281,7 @@ agbd <- c(
   55.9, 181.8, 139.9, 120.1, 162.8
 )
 
-set.seed(172783946)
+set.seed(42)
 model <- randomForest::randomForest(data.frame(h_canopy = h_canopy), agbd)
 ```
 
@@ -1041,10 +1326,10 @@ res_map <- mapview::mapview(
   layer.name = "AGBD mean",
   col.regions = forest_height_palette,
   na.alpha = 0.1,
-  map = leaflet::leaflet() %>% leaflet::addProviderTiles("Esri.WorldImagery")
+  map = leaflet::leaflet() |> leaflet::addProviderTiles("Esri.WorldImagery")
 )
 
-#res_map
+res_map@map
 ```
 
 <div align="center">
@@ -1063,7 +1348,7 @@ the Harmonized Landsat Sentinel-2 dataset (hls).
 ## Initialize Google Earth Engine API
 
 ``` r
-ee_initialize()
+ee_initialize("project-name")
 ```
 
 
@@ -1080,14 +1365,14 @@ atl08_seg_dt <- atl08_seg_dt[h_canopy < 100]
 head(atl08_seg_dt)
 ```
 
-| latitude | longitude | beam | strong_beam |  h_canopy |
-|---------:|----------:|:-----|:------------|----------:|
-| 32.35687 | -83.13213 | gt1r | TRUE        |  3.375763 |
-| 32.34967 | -83.13296 | gt1r | TRUE        |  3.256882 |
-| 32.34877 | -83.13306 | gt1r | TRUE        |  4.273857 |
-| 32.34787 | -83.13316 | gt1r | TRUE        |  2.742630 |
-| 32.34427 | -83.13358 | gt1r | TRUE        |  6.318420 |
-| 32.34337 | -83.13367 | gt1r | TRUE        | 16.272888 |
+    ##    latitude longitude   beam strong_beam h_canopy
+    ##       <num>     <num> <char>      <lgcl>    <num>
+    ## 1: 32.04510 -83.18089   gt1r        TRUE 18.06909
+    ## 2: 32.04600 -83.18099   gt1r        TRUE 14.93932
+    ## 3: 32.09549 -83.18665   gt1r        TRUE 13.59224
+    ## 4: 32.09819 -83.18695   gt1r        TRUE 13.29834
+    ## 5: 32.10539 -83.18777   gt1r        TRUE 20.00338
+    ## 6: 32.10629 -83.18788   gt1r        TRUE 15.04982
 
 ### Visualizing the ‘h_canopy’ for the ATL08 dataset.
 
@@ -1098,19 +1383,11 @@ library(leaflet)
 atl08_seg_vect <- to_vect(atl08_seg_dt)
 centroid <- geom(centroids(vect(ext(atl08_seg_vect))))
 
-map <- terra::plet(atl08_seg_vect, "h_canopy", col = grDevices::hcl.colors(9, "RdYlGn"), tiles = c("Esri.WorldImagery")) %>%
+map <- terra::plet(atl08_seg_vect, "h_canopy", col = grDevices::hcl.colors(9, "RdYlGn"), tiles = c("Esri.WorldImagery")) |>
   setView(lng = centroid[, "x"][[1]], lat = centroid[, "y"][[1]], zoom = 12)
 
-# map
+map
 ```
-
-<div align="center" style="display:flex;justify-content:center">
-
-<img src="readme/atl08_seg_vect_gee_modelling.png" width=500 />
-
-</div>
-
-### Querying the GEEs datasets for Harmonized Landsat Sentinel-2
 
 ``` r
 hls_search <- search_datasets("Harmonized", "Landsat")
@@ -1120,15 +1397,24 @@ hls_search
     ##                      id
     ##                  <char>
     ## 1: NASA_HLS_HLSL30_v002
+    ## 2: NASA_HLS_HLSS30_v002
     ##                                                                                                    title
     ##                                                                                                   <char>
     ## 1: HLSL30: HLS-2 Landsat Operational Land Imager Surface Reflectance and TOA Brightness Daily Global 30m
-    ##                                                                                                                                                                                                                                                                                                                          description
-    ##                                                                                                                                                                                                                                                                                                                               <char>
-    ## 1: The Harmonized Landsat Sentinel-2 (HLS) project provides consistent surface reflectance (SR) and top of atmosphere (TOA) brightness data from a virtual constellation of satellite sensors. The Operational Land Imager (OLI) is housed aboard the joint NASA/USGS Landsat 8 and Landsat 9 satellites, while the Multi-Spectral …
+    ## 2:                 HLSS30: HLS Sentinel-2 Multi-spectral Instrument Surface Reflectance Daily Global 30m
+    ##                                                                                                                                                                                                                                                                                                                                                   description
+    ##                                                                                                                                                                                                                                                                                                                                                        <char>
+    ## 1:                          The Harmonized Landsat Sentinel-2 (HLS) project provides consistent surface reflectance (SR) and top of atmosphere (TOA) brightness data from a virtual constellation of satellite sensors. The Operational Land Imager (OLI) is housed aboard the joint NASA/USGS Landsat 8 and Landsat 9 satellites, while the Multi-Spectral …
+    ## 2: The Harmonized Landsat Sentinel-2 (HLS) project provides consistent surface reflectance data from the Operational Land Imager (OLI) aboard the joint NASA/USGS Landsat 8 satellite and the Multi-Spectral Instrument (MSI) aboard Europe's Copernicus Sentinel-2A satellites. The combined measurement enables global observations of the land every 2-3 …
+
+<div align="center" style="display:flex;justify-content:center">
+
+<img src="readme/atl08_seg_vect_gee_modelling.png" width=500 />
+
+</div>
 
 ``` r
-hls_id <- get_catalog_id(hls_search$id)
+hls_id <- get_catalog_id(hls_search[1]$id)
 hls_id
 ```
 
@@ -1146,7 +1432,39 @@ names(hls_collection)
 
 ### Define area of interest (aoi) clip boundaries and time and cloud mask for filtering.
 
+For filtering we have the Fmask quality flags from HLS User Guide:
+<https://lpdaac.usgs.gov/documents/1698/HLS_User_Guide_V2.pdf>
+
+| Bit number | Mask name                | Bit value | Mask description    |
+|------------|--------------------------|-----------|---------------------|
+| 7–6        | Aerosol level            | 11        | High aerosol        |
+| 7–6        | Aerosol level            | 10        | Moderate aerosol    |
+| 7–6        | Aerosol level            | 01        | Low aerosol         |
+| 7–6        | Aerosol level            | 00        | Climatology aerosol |
+| 5          | Water                    | 1         | Yes                 |
+| 5          | Water                    | 0         | No                  |
+| 4          | Snow/ice                 | 1         | Yes                 |
+| 4          | Snow/ice                 | 0         | No                  |
+| 3          | Cloud shadow             | 1         | Yes                 |
+| 3          | Cloud shadow             | 0         | No                  |
+| 2          | Adjacent to cloud/shadow | 1         | Yes                 |
+| 2          | Adjacent to cloud/shadow | 0         | No                  |
+| 1          | Cloud                    | 1         | Yes                 |
+| 1          | Cloud                    | 0         | No                  |
+| 0          | Cirrus                   | NA        | Reserved (not used) |
+
+So to remove all cloud related quality we flip 1st to 3rd bits, like
+this:
+
 ``` r
+bitMask <- bitwShiftL(1, 1) + bitwShiftL(1, 2) + bitwShiftL(1, 3)
+bitMask
+```
+
+    ## [1] 14
+
+``` r
+atl08_seg_vect <- to_vect(atl08_seg_dt)
 bbox <- terra::ext(atl08_seg_vect)
 
 aoi <- ee$Geometry$BBox(
@@ -1159,7 +1477,7 @@ aoi <- ee$Geometry$BBox(
 hls <- hls_collection$
   filterDate("2019-04-01", "2019-05-31")$
   filterBounds(aoi)$
-  map(function(x) x$updateMask(!(x[["Fmask"]] & 14)))$
+  map(function(x) x$updateMask(!(x[["Fmask"]] & bitMask)))$
   median()
 
 
@@ -1211,14 +1529,19 @@ map <- leaflet::leaflet() |>
     options = layersControlOptions(collapsed = FALSE)
   )
 
-# map
+map
 ```
 
 <div align="center" style="display:flex;justify-content:center">
 
 <figure>
+
 <img src="readme/unmasked_masked.png" alt="multi" />
-<figcaption aria-hidden="true">multi</figcaption>
+<figcaption aria-hidden="true">
+
+multi
+</figcaption>
+
 </figure>
 
 </div>
@@ -1228,19 +1551,31 @@ map <- leaflet::leaflet() |>
 For each segment extract the hls data:
 
 ``` r
-extracted_dt <- seg_gee_ancillary_dt_extract(hls, atl08_seg_vect)
+extracted_dt <- seg_ancillary_extract(hls, atl08_seg_vect)
+```
 
+    ## Processing 1-521 of 521
+
+``` r
 head(extracted_dt)
 ```
 
-| idx | beam |  h_canopy | strong_beam |    red |  green |   blue |    nir |  swir1 |  swir2 |       evi |
-|----:|:-----|----------:|:------------|-------:|-------:|-------:|-------:|-------:|-------:|----------:|
-|   1 | gt1r |  3.375763 | TRUE        | 0.0652 | 0.0675 | 0.0390 | 0.3125 | 0.2251 | 0.1265 | 0.4381023 |
-|   2 | gt1r |  3.256882 | TRUE        | 0.1435 | 0.1206 | 0.0768 | 0.2780 | 0.3518 | 0.3000 | 0.2151312 |
-|   3 | gt1r |  4.273857 | TRUE        | 0.1973 | 0.1675 | 0.1060 | 0.3066 | 0.4445 | 0.3807 | 0.1611714 |
-|   4 | gt1r |  2.742630 | TRUE        | 0.0667 | 0.0723 | 0.0337 | 0.2721 | 0.2431 | 0.1444 | 0.3617344 |
-|   5 | gt1r |  6.318420 | TRUE        | 0.0489 | 0.0488 | 0.0263 | 0.2571 | 0.1929 | 0.0994 | 0.3846296 |
-|   6 | gt1r | 16.272888 | TRUE        | 0.0719 | 0.0624 | 0.0323 | 0.2634 | 0.2349 | 0.1326 | 0.3295928 |
+    ##      beam   blue       evi   green h_canopy     nir     red strong_beam   swir1
+    ##    <char>  <num>     <num>   <num>    <num>   <num>   <num>      <lgcl>   <num>
+    ## 1:   gt1r 0.0613 0.3208625 0.08440 18.06909 0.26820 0.09290        TRUE 0.36780
+    ## 2:   gt1r 0.0588 0.3798547 0.07990 14.93932 0.28860 0.08360        TRUE 0.33700
+    ## 3:   gt1r 0.0922 0.1717835 0.14520 13.59224 0.29535 0.17975        TRUE 0.40075
+    ## 4:   gt1r 0.0373 0.4616911 0.07355 13.29834 0.33340 0.06585        TRUE 0.25715
+    ## 5:   gt1r 0.0141 0.6106195 0.04140 20.00338 0.35980 0.02170        TRUE 0.13390
+    ## 6:   gt1r 0.0163 0.5395670 0.04730 15.04982 0.32060 0.02700        TRUE 0.14380
+    ##      swir2
+    ##      <num>
+    ## 1: 0.22780
+    ## 2: 0.20360
+    ## 3: 0.31370
+    ## 4: 0.13385
+    ## 5: 0.04950
+    ## 6: 0.06150
 
 
 
@@ -1537,7 +1872,7 @@ na_mask <- y < 100
 x <- x[na_mask]
 y <- y[na_mask]
 
-set.seed(1)
+set.seed(42)
 
 rf_fit <- fit_model(x, y, rf_args = list(ntree = 400, mtry = 2))
 rf_fit$stats_train
@@ -1552,8 +1887,8 @@ print(rf_model)
     ##                      Number of trees: 300
     ## No. of variables tried at each split: 1
     ## 
-    ##           Mean of squared residuals: 48.81011
-    ##                     % Var explained: 16.5
+    ##           Mean of squared residuals: 35.53908
+    ##                     % Var explained: 10.04
 
 ``` r
 library(randomForest)
@@ -1562,18 +1897,7 @@ rf_importance <- importance(rf_model)
 barplot(rf_importance[, "IncNodePurity"], main = "Variable importance (Increase Node Purity)")
 ```
 
-<div align="center">
-
-<div class="figure" style="text-align: center">
-
-<img src="readme/rf_variable_importance-1.png" alt="Random forests variable importance (increase node impurity)." width="500" />
-<p class="caption">
-Random forests variable importance (increase node impurity).
-</p>
-
-</div>
-
-</div>
+![](readme/plot_rf_variable_importance-1.png)<!-- -->
 
 ## Apply the model to Google Earth Engine WorldImagery
 
@@ -1683,21 +2007,32 @@ terra::plot(out)
 
 ## Close the files
 
-Do not forget to close the files to properly release them.
+Do not forget to close the files to properly release them, or you can
+just remove them from environment and `gc()`.
 
 ``` r
 lapply(atl03_h5, close)
+```
 
+    ## [[1]]
+    ## NULL
+    ## 
+    ## [[2]]
+    ## NULL
+
+``` r
 ## Non lapply single file
 # close(atl03_h5)
 ```
 
 ``` r
-lapply(atl08_h5, close)
-
-## Non lapply single file
-# close(atl08_h5)
+rm(atl08_h5)
+gc()
 ```
+
+    ##            used  (Mb) gc trigger  (Mb) max used  (Mb)
+    ## Ncells  3573357 190.9    5713692 305.2  5713692 305.2
+    ## Vcells 14046787 107.2   23019233 175.7 22572880 172.3
 
 # Acknowledgements
 
