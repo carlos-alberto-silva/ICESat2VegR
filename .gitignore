@@ -15,3 +15,6 @@ config.status
 autom4te.cache
 inst/proj
 docs
+
+# MyST build outputs
+_build

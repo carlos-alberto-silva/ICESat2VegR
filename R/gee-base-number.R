@@ -98,22 +98,26 @@ ee_number <- function(x) {
   }
 }
 
-# Calculates the angle formed by the 2D vector x, y.
-#
-# @param x The number to calculate the `atan2` on.
-#
-# @return The resulting ee.Number with the results from `atan2`.
-#
+#' Calculates the angle formed by the 2D vector \[x, y\]
+#'
+#' @param x An `ee$Number`
+#' @param e2 An `ee$Number`
+#'
+#' @return An `ee$Number` representing the angle in radians
+#'
+#' @seealso <https://developers.google.com/earth-engine/apidocs/ee-number-atan2>
+#'
 #' @export
-`atan2.ee.ee_number.Number` <- function(x) {
+`atan2.ee.ee_number.Number` <- function(x, e2) {
   if (!is.null(ee)) {
     if (inherits(x, "numeric")) {
       x <- ee$Number(x)
     }
 
-    x$atan2()
+    x$atan2(e2)
   }
 }
+
 #' @export
 `floor.ee.ee_number.Number` <- function(x) {
   if (!is.null(ee)) {
