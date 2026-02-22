@@ -2,7 +2,7 @@ Package: ICESat2VegR
 Type: Package
 Title: NASA's Ice, Cloud, and Elevation Satellite (ICESat-2) Data Analysis for Land and Vegetation
            Applications
-Version: 0.0.3
+Version: 0.0.4
 Authors@R: c( person("Carlos Alberto", "Silva", email = "c.silva@ufl.edu", role = c("aut", "cph")),
            person("Caio", "Hamamura", email = "caiohamamura@gmail.com", role = c("aut", "cph", "cre")))
 Description: Set of tools for downloading, reading, visualizing, processing and exporting NASA's
@@ -44,6 +44,9 @@ Suggests: chromote,  devtools,  ggplot2, grid, gridExtra, htmlwidgets, knitr, le
            lidR, lwgeom, mapview,  png, rmarkdown, rstudioapi, signal, stars, testthat (>= 3.0.0),
            webshot, viridis
 LinkingTo: Rcpp
+SystemRequirements: 
+  - GDAL (>= 3.0.0)
+  - PROJ (>= 6.0.0)
 Collate: 
     'ANNIndex.R'
     'lazy_applier.R'
