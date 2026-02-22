@@ -24,12 +24,37 @@ install.packages("ICESat2VegR", , repos = c("https://caiohamamura.r-universe.dev
 
 # The CRAN version
 install.packages("ICESat2VegR")
+
+# Required additional libraries
+need_pkgs <- c(                                                                       # Packages required by the workflow
+  "reticulate",   # Python <-> R interface
+  "leaflet",      # interactive maps
+  "sf",           # spatial vectors
+  "terra",        # rasters & vectors
+  "data.table",   # fast tables
+  "dplyr"         # tidy helpers
+)
+missing <- need_pkgs[!need_pkgs %in% rownames(installed.packages())]                 # Identify missing packages
+if (length(missing)) {                                                                # If any are missing
+  message("Installing missing R packages: ", paste(missing, collapse = ", "))         # Inform the user
+  install.packages(missing, repos = repos, dependencies = TRUE)                       # Install from repos with dependencies
+}
 ```
 
 ## Load the package
 
 ``` r
-library(ICESat2VegR)
+suppressPackageStartupMessages({                                                       # Suppress startup messages for clean logs
+  library(ICESat2VegR)                                                                 # ICESat-2 vegetation tools
+  library(reticulate)                                                                  # Interface to Python
+  library(leaflet)                                                                     # Interactive maps
+  library(sf)                                                                          # Simple Features for vector data
+  library(terra)                                                                       # Raster + vector geospatial ops
+  library(data.table)                                                                  # Fast data tables
+  library(dplyr)                                                                       # Tidy verbs
+})
+cat("Loading libraries... done.\n")                                                    # Confirm loading
+
 ```
 
 ## Configuring the package
@@ -50,6 +75,35 @@ ICESat2VegR_configure()
 ```
 
 This will install Miniconda if it is not already available, along with the necessary Python packages.
+
+``` r
+Verify configuration status
+
+# Helper safely() runs an expression and returns a default value if an error occurs
+safely <- function(expr, default = NA) tryCatch(expr, error = function(e) default)
+
+# Check if 'reticulate' is installed
+have_reticulate <- requireNamespace("reticulate", quietly = TRUE)
+
+# Attempt to discover which Python executable is being used
+py_path <- if (have_reticulate) safely(reticulate::py_discover_config()$python, NA) else NA
+
+# Verify if Python is properly initialized and available
+py_ready <- have_reticulate && !inherits(try(reticulate::py_config(), silent = TRUE), "try-error")
+
+# Build a list summarizing the environment and module status
+status <- list(
+  ICESat2VegR_loaded = "package:ICESat2VegR" %in% search(),  # Is package loaded in current session?
+  python_used        = py_path,                              # Path to active Python binary
+  h5py               = if (py_ready) reticulate::py_module_available("h5py")        else FALSE,
+  earthaccess        = if (py_ready) reticulate::py_module_available("earthaccess") else FALSE,
+  ee                 = if (py_ready) reticulate::py_module_available("ee")          else FALSE
+)
+
+# Print the collected environment information to the console
+print(status)
+```
+
 
 ### Notes
 
@@ -74,8 +128,7 @@ If you are working with a single granule, you can follow the simpler instruction
 library(ICESat2VegR)
 
 # Set output directory
-#  outdir <- tempdir()
-  outdir<-"C:\\Users\\c.silva\\Documents\\test_ICESat2"
+outdir <- tempdir()
 
 # Download example dataset
 url <- "https://github.com/carlos-alberto-silva/ICESat2VegR/releases/download/example_datasets/Study_Site.zip"
@@ -271,7 +324,10 @@ atl08_seg_att_ls <- lapply(
   ATL08_seg_attributes_dt,
   attributes = c("h_canopy", "h_te_mean", "terrain_slope", "canopy_openness", "night_flag")
 )
+
+
 atl08_seg_dt <- rbindlist2(atl08_seg_att_ls)
+
 
 # Consider only segment with h_canopy < 100 and terrain height < 20000
 atl08_seg_dt <- atl08_seg_dt[h_canopy < 100 & h_te_mean < 20000]
@@ -495,7 +551,7 @@ output <- tempfile(pattern = "alt08_h5_clip_", fileext = ".h5")
 # Clip the data for only the first ATL08 file
 atl08_clipped <- ATL08_h5_clipBox(atl08_h5[[1]], output, clip_obj = clip_region)
 
-atl08_clippeds <- ATL08_h5_clipGeometry(kk, output, clip_obj = aoi_vect, split_by="id")
+##atl08_clippeds <- ATL08_h5_clipGeometry(atl08_h5[[2]], output, clip_obj = aoi_vect, split_by="id")
 
 atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5[[1]], attributes = c("h_canopy"))
 atl08_seg_dt_clip <- ATL08_seg_attributes_dt(atl08_clipped, attributes = c("h_canopy"))
@@ -642,13 +698,13 @@ atl08_seg_clip_vect <- to_vect(atl08_seg_clip)
 Example 2: Using clip() on Raw ATL03 HDF5 Data
 ```r
 # ATL03 HDF5 object
-atl03 <- ATL03_read(atl03_path)
+atl03 <- ATL03_read(atl03_files[[1]])
 
 # Define bounding box
-bbox <- c(-83.2, -83.14, 32.12, 32.18)
+bbox <- ext(c(-83.2, -83.14, 32.12, 32.18))
 
 # Clip using generic clip()
-atl03_clipped <- clip(atl03, clip_obj = bbox)
+atl03_clipped <- clip(atl03, output, clip_obj = bbox)
 ```
 
 
@@ -684,20 +740,20 @@ Why Use `clip()`?
 ## Extract attributes
 
 ``` r
+
 # Herein as we are working with list of h5 files we will need
 # to loop over each file and extract the attributes and then
 # concatenate them with rbindlist2
-atl03_atl08_dts <- list()
 
-for (ii in seq_along(atl03_h5)) {
-  atl03_file <- atl03_h5[[ii]]
-  atl08_file <- atl08_h5[[ii]]
-
-  atl03_atl08_dts[[ii]] <- ATL03_ATL08_photons_attributes_dt_join(
-    atl03_file,
-    atl08_file
-  )
-}
+atl03_atl08_dts <- lapply(
+  seq_along(atl03_h5),
+  function(ii) {
+    ATL03_ATL08_photons_attributes_dt_join(
+      atl03_h5[[ii]],
+      atl08_h5[[ii]]
+    )
+  }
+)
 
 atl03_atl08_dt <- rbindlist2(atl03_atl08_dts)
 
@@ -812,21 +868,22 @@ This function is used to compute segment IDs for ICESat-2 `ATL03` and
 # Herein as we are working with list of h5 files we will need
 # to loop over each file and extract the attributes and then
 # concatenate them with rbindlist2
-atl03_atl08_dts <- list()
 
-for (ii in seq_along(atl03_h5)) {
-  atl03_file <- atl03_h5[[ii]]
-  atl08_file <- atl08_h5[[ii]]
+stopifnot(length(atl03_h5) == length(atl08_h5))
 
-  atl03_atl08_dts[[ii]] <- ATL03_ATL08_photons_attributes_dt_join(
-    atl03_file,
-    atl08_file
-  )
-}
+atl03_atl08_dts <- lapply(
+  seq_along(atl03_h5),
+  function(ii) {
+    ATL03_ATL08_photons_attributes_dt_join(
+      atl03_h5[[ii]],
+      atl08_h5[[ii]]
+    )
+  }
+)
 
 atl03_atl08_dt <- rbindlist2(atl03_atl08_dts)
-
 head(atl03_atl08_dt)
+
 ```
 
 ## Create Segments IDs
@@ -1009,7 +1066,8 @@ the Harmonized Landsat Sentinel-2 dataset (hls).
 ee_initialize()
 ```
 
-## Extract ATL08 segment attributes h_canopy attribute
+
+## Extract ATL08 segment-level h_canopy attribute
 
 ``` r
 atl08_seg_dt <- lapply(atl08_h5, ATL08_seg_attributes_dt, attribute = "h_canopy")
@@ -1184,6 +1242,288 @@ head(extracted_dt)
 |   5 | gt1r |  6.318420 | TRUE        | 0.0489 | 0.0488 | 0.0263 | 0.2571 | 0.1929 | 0.0994 | 0.3846296 |
 |   6 | gt1r | 16.272888 | TRUE        | 0.0719 | 0.0624 | 0.0323 | 0.2634 | 0.2349 | 0.1326 | 0.3295928 |
 
+
+
+## Stack Alpha Earth embedding and terrain ancillary layers
+
+library(sf)
+
+``` r
+# --------------------------------------------------------------------------
+# Example 1 - Using the ee_build_AlphaEarth_embedding_terrain_stack function
+# --------------------------------------------------------------------------
+
+# Simple AOI polygon (WGS84)
+aoi <- st_as_sfc(st_bbox(c(
+  xmin = -82.4, xmax = -82.2,
+  ymin =  29.6, ymax =  29.8
+), crs = 4326))
+
+img <- ee_build_AlphaEarth_embedding_terrain_stack(
+  geom       = aoi,
+  start_year = 2018,
+  end_year   = 2020
+)
+
+
+# -------------------------------------------------------------
+# Example 2 - Full standalone script
+# -------------------------------------------------------------
+
+library(reticulate)
+ee <- import("ee")
+ICESat2VegR:::.ee_ping(ee)
+
+# AOI geometry (sf → EE geometry)
+library(sf)
+aoi <- st_as_sfc(
+  st_bbox(c(
+    xmin = -82.4,
+    xmax = -82.2,
+    ymin = 29.6,
+    ymax = 29.8
+  ), crs = 4326)
+)
+
+ee_geom <- ICESat2VegR:::.as_ee_geom(aoi)
+
+# -------------------------------------------------------------
+# AlphaEarth annual embedding
+# -------------------------------------------------------------
+start_year <- 2018
+end_year   <- 2020
+
+emb_ic <- ee$ImageCollection("GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL")$
+  filterDate(
+    sprintf("%04d-01-01", start_year),
+    sprintf("%04d-12-31", end_year)
+  )$
+  filterBounds(ee_geom)
+
+embedding <- emb_ic$median()$clip(ee_geom)
+
+
+# -------------------------------------------------------------
+# Terrain DEM via ICESat2VegR dataset search (NASA DEM)
+# -------------------------------------------------------------
+dem_search   <- search_datasets("nasa", "dem")
+dem_id       <- get_catalog_id(dem_search)
+elevation    <- ee$Image(dem_id)$clip(ee_geom)
+
+# Compute slope and aspect using package helpers
+terrain_scale <- 30
+
+# Reproject elevation to target scale (if desired)
+elev_proj <- elevation$reproject("EPSG:4326", scale = terrain_scale)
+
+slp <- slope(elev_proj)    # returns ee.Image with band "slope"
+asp <- aspect(elev_proj)   # returns ee.Image with band "aspect"
+
+# Optional scaling by 10
+slp <- slp$multiply(10)
+asp <- asp$multiply(10)
+
+slp <- slp$clip(ee_geom)
+asp <- asp$clip(ee_geom)
+
+
+# -------------------------------------------------------------
+# Lon/lat bands
+# -------------------------------------------------------------
+lonlat <- ee$Image$pixelLonLat()$clip(ee_geom)
+lon    <- lonlat$select("longitude")$rename("lon")
+lat    <- lonlat$select("latitude")$rename("lat")
+
+
+# -------------------------------------------------------------
+# Final stack: embeddings + terrain + lon/lat
+# -------------------------------------------------------------
+stack <- embedding$
+  addBands(elevation$rename("elevation"))$
+  addBands(slp)$
+  addBands(asp)$
+  addBands(lon)$
+  addBands(lat)
+
+# Optional mask outside AOI
+mask  <- ee$Image$constant(1)$clip(ee_geom)
+stack <- stack$updateMask(mask)
+
+print(stack)
+ 
+```
+
+## Build HLS, Sentinel-1C and terrain ancillary stack in Earth Engine
+```r
+ # ================================================================
+ # Example 1 — ee_build_hls_s1c_terrain_stack
+ # ================================================================
+ res <- ee_build_hls_s1c_terrain_stack(
+   x          = system.file("extdata", "all_boundary.shp", package = "ICESat2VegR"),
+   start_date = "2019-04-01",
+   end_date   = "2019-05-31"
+ )
+
+ full_stack <- res$stack
+
+
+ # ================================================================
+ # Example 2 — Standalone functions
+ # Users may copy/paste and modify as needed
+ # ================================================================
+
+ library(ICESat2VegR)
+ library(terra)
+
+ # AOI
+ geom <- terra::vect(system.file("extdata", "all_boundary.shp", package="ICESat2VegR"))
+ bbox <- terra::ext(geom)
+
+ aoi <- ee$Geometry$BBox(
+   west  = bbox$xmin,
+   south = bbox$ymin,
+   east  = bbox$xmax,
+   north = bbox$ymax
+ )$buffer(30)
+
+ # ---------------------------------------------------------------
+ # HLS
+ # ---------------------------------------------------------------
+ search <- search_datasets("hls")
+ id     <- get_catalog_id(search)
+
+ cloudMask <- 2^1 + 2^2 + 2^3
+
+ hlsMask <- function(image) image$updateMask(!(image[["Fmask"]] & cloudMask))
+ waterMask <- function(image) image$updateMask(image[["B5"]] >= 0.2)
+
+ hls <- ee$ImageCollection(id)$
+   filterBounds(aoi)$
+   filterDate("2019-04-01", "2019-05-31")$
+   filter("CLOUD_COVERAGE < 10")$
+   map(hlsMask)$
+   map(waterMask)$
+   median()$
+   clip(aoi)
+
+ hls <- hls[["B2","B3","B4","B5","B6","B7"]]
+ names(hls) <- c("blue","green","red","nir","swir1","swir2")
+
+ # Vegetation indices
+ nir     <- hls[["nir"]]
+ red     <- hls[["red"]]
+ blue    <- hls[["blue"]]
+ green   <- hls[["green"]]
+ swir1   <- hls[["swir1"]]
+ swir2   <- hls[["swir2"]]
+ nir_red <- nir - red
+
+ hls[["ndvi"]] <- (nir - red) / (nir + red)
+
+ sigma <- 1
+ knr <- exp((nir_red)^2 / (2*sigma^2))
+ hls[["kndvi"]] <- (1 - knr) / (1 + knr)
+
+ hls[["evi"]]  <- 2.5 * nir_red / (nir + 6*red - 7.5*blue + 1)
+ hls[["savi"]] <- 1.5 * nir_red / (nir + red + 0.5)
+
+ p1 <- 2*nir + 1
+ hls[["msavi"]] <- p1 - sqrt(p1^2 - 8*nir_red)/2
+
+ # Spectral unmixing
+ soil  <- c(0.14, 0.16, 0.22, 0.39, 0.45, 0.27)
+ veg   <- c(0.086,0.062,0.043,0.247,0.109,0.039)
+ water <- c(0.07,0.039,0.023,0.031,0.011,0.007)
+
+ img <- hls[[c("blue","green","red","nir","swir1","swir2")]]
+ unmixing <- img$unmix(list(soil,veg,water))
+ names(unmixing) <- c("f_soil","f_veg","f_water")
+
+ hls <- c(hls, unmixing)
+
+ # More indices
+ hls[["sri"]]  <- nir / red
+ hls[["ndwi"]] <- (green - nir)/(green + nir)
+ hls[["gci"]]  <- nir/green - 1
+ hls[["wdrvi"]] <- ((0.1*nir) - red)/((0.1*nir) + red)
+ hls[["gvmi"]]  <- ((nir+0.1)-(swir1+0.02))/((nir+0.1)+(swir1+0.02))
+ hls[["cvi"]]   <- nir * (red/(green^2))
+ hls[["cmr"]]   <- swir1/swir2
+
+
+ # ---------------------------------------------------------------
+ # DEM (NASA)
+ # ---------------------------------------------------------------
+ dem_search <- search_datasets("nasa","dem")
+ dem_id     <- get_catalog_id(dem_search)
+
+ elevation <- ee$Image(dem_id)
+ the_slope  <- as.integer(slope(as.integer(elevation)) * 1000)
+ the_aspect <- aspect(elevation)
+
+ stackDem <- c(elevation, the_slope, the_aspect)$clip(aoi)
+
+
+ # ---------------------------------------------------------------
+ # Sentinel-1C
+ # ---------------------------------------------------------------
+ s1c <- ee$ImageCollection("COPERNICUS/S1_GRD")$
+   filterBounds(aoi)$
+   filterDate("2019-04-01","2019-05-31")$
+   filter(ee$Filter$listContains("transmitterReceiverPolarisation","VV"))$
+   filter(ee$Filter$listContains("transmitterReceiverPolarisation","VH"))$
+   filter(ee$Filter$eq("instrumentMode","IW"))
+
+ s1c <- s1c$sort("system:time_start", FALSE)
+ s1c <- s1c$reduce(ee$Reducer$firstNonNull())
+ s1c <- s1c[["VV_first","VH_first"]]
+ names(s1c) <- c("vv","vh")
+
+ s1c <- as.integer(s1c * 100)
+ vv <- s1c[["vv"]]
+ vh <- s1c[["vh"]]
+
+ s1c[["rvi"]]   <- as.integer(sqrt(vv/(vv+vh)) * (vv/vh) * 10000)
+ s1c[["copol"]] <- as.integer((vv/vh) * 10000)
+ s1c[["copol2"]] <- as.integer(((vv - vh)/(vv + vh)) * 10000)
+ s1c[["copol3"]] <- as.integer((vh/vv) * 10000)
+
+
+ # ---------------------------------------------------------------
+ # Final stack + neighborhood + texture
+ # ---------------------------------------------------------------
+ fullStack <- c(hls, s1c, stackDem)
+
+ kernel <- ee$Kernel$fixed(
+   3, 3,
+   list(c(1,1,1), c(1,1,1), c(1,1,1)),
+   3, 3, FALSE
+ )
+
+ for (nm in c("mean","min","max","stdDev")) {
+   reducer <- ee$Reducer[[nm]]()
+
+   fullStack <- c(
+     fullStack,
+     hls$reduceNeighborhood(reducer, kernel),
+     stackDem$reduceNeighborhood(reducer, kernel)
+   )
+ }
+
+ img_tex <- as.integer(
+   (hls[[c("blue","green","red","nir","swir1","swir2")]]) * 1e4
+ )
+
+ tex <- img_tex$glcmTexture(size=3)
+
+ fullStack <- c(fullStack, tex)
+
+ # fullStack is the ancillary layers image
+ fullStack
+ }
+```
+
+
 ## Fit the randomForest model
 
 ``` r
@@ -1199,7 +1539,9 @@ y <- y[na_mask]
 
 set.seed(1)
 
-rf_model <- randomForest::randomForest(x, y, ntree = 300, mtry = 1)
+rf_fit <- fit_model(x, y, rf_args = list(ntree = 400, mtry = 2))
+rf_fit$stats_train
+rf_model<-rf_fit$full_fit
 print(rf_model)
 ```
 
@@ -1236,54 +1578,101 @@ Random forests variable importance (increase node impurity).
 ## Apply the model to Google Earth Engine WorldImagery
 
 ``` r
-gee_model <- build_ee_forest(rf_model)
-result <- hls$classify(gee_model)
-min_hcanopy <- min(atl08_seg_dt$h_canopy)
-max_hcanopy <- 20
-atl08_seg_vect$h_canopy <- round(atl08_seg_vect$h_canopy, 3) # Round off to 3 decimal places
 
-map <- terra::plet(
-  atl08_seg_vect,
-  "h_canopy",
-  palette_colors,
-  tiles = ""
+pred_2018 <- map_create(                                                      # Predict with trained model on EE stack
+  model   = rf_model,
+  stack   = hls,
+  aoi     = aoi_ee,
+  reducer = "mosaic",
+  mode    = "auto",
+  to_float = TRUE
 )
 
-modelled_map <- terra::plet(
-  atl08_seg_vect,
-  "h_canopy",
-  palette_colors,
-  tiles = ""
-) |>
-  addEEImage(
-    hls,
-    bands = c("red", "green", "blue"),
-    group = "hls",
-    min = min_hcanopy,
-    max = 0.6
-  ) |>
-  addEEImage(
-    result,
-    bands = "classification",
-    group = "classification",
-    min = min_hcanopy,
-    max = max_hcanopy,
+
+pal_fun2 <- leaflet::colorNumeric(c("#00441B","#1B7837","#A6DBA0","#E7E1EF","#762A83"),    # Alternative 5-color palette
+                                  domain = c(min_hcanopy, max_hcanopy))
+
+centroid <- mean(terra::ext(-83.2, -83.18, 32.12, 32.16))                                  # Quick centroid for initial map view
+
+modelled_map <- leaflet::leaflet() |>                                                       # Start a leaflet map
+  ICESat2VegR::addEEImage(                                                                  # Add EE tile from prediction
+    pred_2018,
+    bands   = "prediction_layer",
+    group   = "map",
+    min     = min_hcanopy,
+    max     = max_hcanopy,
     palette = forest_height_palette
   ) |>
-  leaflet::addLegend(
-    pal = colorNumeric(forest_height_palette, seq(min_hcanopy, max_hcanopy)),
-    values = seq(min_hcanopy, max_hcanopy, length = 3),
-    opacity = 1,
-    title = "h_canopy",
-    position = "bottomleft",
+  leaflet::addLegend(                                                                       # Add legend
+    pal      = pal_fun,
+    values   = c(min_hcanopy, max_hcanopy),
+    opacity  = 1,
+    title    = "h_canopy",
+    position = "bottomleft"
   ) |>
-  setView(lng = centroid[1], lat = centroid[2], zoom = 12) |>
-  addLayersControl(
-    overlayGroups = c("classification"),
-    options = layersControlOptions(collapsed = FALSE)
+  leaflet::setView(lng = centroid[1], lat = centroid[2], zoom = 12) |>                      # Center map
+  leaflet::addLayersControl(                                                                # Add layer control
+    overlayGroups = c("map"),
+    options = leaflet::layersControlOptions(collapsed = FALSE)
   )
 
-modelled_map
+modelled_map                                                                                # Render the map
+
+out_tif <- ICESat2VegR::map_download(                                                       # Export predicted raster to Drive and local temp path
+  ee_image = pred_2018, method = "drive",
+  region = aoi_ee, scale = 10,
+  file_name_prefix = "prediction_2018",
+  dsn = file.path(tempdir(),"prediction_2018.tif"),
+  drive_folder = "EE_Exports", monitor = TRUE
+)
+terra::plot(out_tif)                                                                         # Plot local copy (if returned)
+
+modelled_map2 <- leaflet() |>
+  ICESat2VegR::addEEImage(                                                                   # Add the EE prediction
+    pred_2018,
+    bands   = "prediction_layer",
+    group   = "map",
+    min     = min_hcanopy,
+    max     = max_hcanopy,
+    palette = colorRampPalette(
+      c("#00441B","#1B7837","#A6DBA0","#E7E1EF","#762A83")
+    )(128)
+  ) |>
+  leaflet::addLegend(                                                                        # Add legend
+    pal      = pal_fun2,
+    values   = c(min_hcanopy, max_hcanopy),
+    opacity  = 1,
+    title    = "h_canopy",
+    position = "bottomleft"
+  ) |>
+  leaflet::setView(lng = centroid[1], lat = centroid[2], zoom = 12) |>                       # Center map
+  leaflet::addLayersControl(                                                                 # Layers control
+    overlayGroups = c("map"),
+    options = leaflet::layersControlOptions(collapsed = FALSE)
+  )
+
+modelled_map2                                                                                # Render the composite map
+
+
+m <- map_view(list(
+  list(type="ee_image", x=pred_2018, bands="prediction_layer", aoi=aoi_ee,
+       palette   = colorRampPalette(
+         c("#00441B","#1B7837","#A6DBA0","#E7E1EF","#762A83")
+       )(128),
+       group="Height (m)", min_value=0, max_value=20,
+       legend=list(title="Height (m)", auto="quantile")),
+  list(type="vector", vect=boundary, group="Site Boundary", color_field="site")
+))
+m
+
+# # Download (Drive)
+out <- map_download(ee_image = pred_2018, method = "drive",
+                    region = aoi_ee, scale = 10,
+                    file_name_prefix = "prediction_2018",
+                    dsn = file.path(tempdir(),"prediction_2018.tif"),
+                    drive_folder = "EE_Exports", monitor = TRUE)
+terra::plot(out)
+
 ```
 
 <div align="center" style="display:flex;justify-content:center">
