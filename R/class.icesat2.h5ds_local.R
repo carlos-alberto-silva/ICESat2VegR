@@ -23,6 +23,12 @@ ICESat2.h5ds_local <- R6::R6Class("ICESat2.h5ds_local", list(
     self$ds <- ds
     self$dims <- self$ds$dims
     self$chunk_dims <- self$ds$chunk_dims
+    
+    reg.finalizer(self, function(e) {
+      if (!is.null(e$ds)) {
+        try(e$ds$close(), silent = TRUE)
+      }
+    }, onexit = TRUE)
   },
 
   #' @description Get the type of data for this dataset

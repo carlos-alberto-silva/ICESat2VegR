@@ -55,6 +55,11 @@ ICESat2.h5_local <- R6::R6Class("ICESat2.h5_local", list(
       self$h5 <- h5
     }
     prepend_class(self, "icesat2.h5")
+    reg.finalizer(self, function(e) {
+      if (!is.null(e$h5)) {
+        try(e$h5$close_all(), silent = TRUE)
+      }
+    }, onexit = TRUE)
   },
   #' @description Lists the groups and datasets that are within current group
   #'
