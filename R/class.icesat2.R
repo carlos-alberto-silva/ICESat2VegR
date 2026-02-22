@@ -226,7 +226,7 @@ setMethod("close", signature = c("icesat2.h5"), h5closeall)
 #' @export
 setMethod(
   f = "plot",
-  signature("icesat2.atl03atl08_dt", "missing"),
+   signature("icesat2.atl03atl08_dt", "missing"),
   definition = function(x, ...) {
     plot(x, y = "ph_h", ...)
   }
@@ -234,43 +234,52 @@ setMethod(
 
 #' @import grDevices
 #' @keywords internal
-plot_icesat2 <- function(x, y, beam, col, xlim, ylim, ...) {
+plot_icesat2 <- function(x, y, beam, col, xlim = NULL, ylim = NULL, colors=c("gray", "#bd8421", "forestgreen", "green"), legend = "topleft",  ...) {
+  .SD <- data.table::.SD
+  if (is.null(beam)) {
+    the_beam <- unique(x$beam)[1]
+  } else {
+    the_beam <- beam
+  }
+  xdt <- x[beam %in% the_beam, .SD, .SDcols = c("dist_ph_along", y, "classed_pc_flag")][]
+
+  mask <- rep(TRUE, nrow(xdt))
+  if (!is.null(xlim)) {
+    mask <- mask & xdt$dist_ph_along >= xlim[1] & xdt$dist_ph_along <= xlim[2]
+  }
+  if (!is.null(ylim)) {
+    mask <- mask & xdt[, 2] >= ylim[1] & xdt[, 2] <= ylim[2]
+  }
+    
+  mask[!stats::complete.cases(mask)] <- FALSE
+  mask <- (seq_along(xdt$dist_ph_along))[mask]
+  dt_masked <- xdt[mask]
+
   if (is.null(xlim)) {
-    xlim <- range(x$delta_time)
+    xlim <- range(dt_masked$dist_ph_along)    
   }
   if (is.null(ylim)) {
-    ylim <- range(x[[y]])
+    ylim <- range(dt_masked[[y]])
   }
 
-  mask <- x$delta_time >= xlim[1] &
-    x$delta_time <= xlim[2] &
-    x[[y]] >= ylim[1] &
-    x[[y]] <= ylim[2]
-
-  mask[!stats::complete.cases(mask)] <- FALSE
-  mask <- (seq_along(x$delta_time))[mask]
-  newFile <- x[mask, ]
-
-  if ("classed_pc_flag" %in% colnames(x)) {
-    col <- newFile$classed_pc_flag
-  }
-
-  args <- list(...)
-  old_palette <- grDevices::palette()
+  old_palette = grDevices::palette()
   on.exit(grDevices::palette(old_palette))
-
-  colors <- c("gray", "#bd8421", "forestgreen", "green")
-  if ("colors" %in% names(args)) {
-    colors <- args$colors
-  }
-  palette(colors)
+  grDevices::palette(colors)
 
   suppressWarnings({
     plot(
-      x = newFile$delta_time,
-      y = newFile[[y]],
-      col = col, xlim = xlim, ylim = ylim, xlab = "Delta time", ylab = y,
+      x = dt_masked$dist_ph_along,
+      y = dt_masked[, get(y)],
+      col = dt_masked$classed_pc_flag + 1, xlab = "Distance along-track (m)", ylab = paste(y, " (m)"),
       ...
+    )
+    graphics::legend(legend,
+      legend = c(
+        "ATL03 unclassified",
+        "ATL03 Terrain",
+        "ATL03 Vegetation",
+        "ATL03 Top canopy"
+      ), pch = 16, col = colors, bty = "n"
     )
   })
 }
