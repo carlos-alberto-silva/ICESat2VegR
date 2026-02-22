@@ -600,7 +600,7 @@ map_view <- function(layers,
 #'   skipEmptyTiles,fileFormat,formatOptions Passed to EE export.
 #'
 #' @return An unstarted EE `Task` (Python object).
-#' @export
+#' @keywords internal
 ee_image_to_drive <- function(image,
                               description = "myExportImageTask",
                               folder = "EE_Exports",
@@ -648,7 +648,7 @@ ee_image_to_drive <- function(image,
 #' @param bucket Cloud Storage bucket name (required).
 #'
 #' @return An unstarted EE `Task` (Python object).
-#' @export
+#' @keywords internal
 ee_image_to_gcs <- function(image,
                             description = "myExportImageTask",
                             bucket = NULL,
@@ -699,7 +699,7 @@ ee_image_to_gcs <- function(image,
 #' @inheritParams ee_image_to_drive
 #'
 #' @return An unstarted EE `Task` (Python object).
-#' @export
+#' @keywords internal
 ee_image_to_asset <- function(image,
                               description = "myExportImageTask",
                               assetId = NULL,
@@ -766,17 +766,17 @@ ee_task_start_safe <- function(task) {
   invisible(task)
 }
 
-# Lightweight task monitor (poll-only)
-#
-# @description Polls the task state at fixed intervals until the task leaves
-# `READY`/`RUNNING`, or until `max_attempts` is reached.
-#
-# @param task EE `Task` to monitor.
-# @param task_time Seconds between polls.
-# @param quiet Logical; if `FALSE`, prints state.
-# @param max_attempts Maximum number of polls (use `Inf` to wait indefinitely).
-#
-# @return The final task status as a list.
+#' Lightweight task monitor (poll-only)
+#'
+#' @description Polls the task state at fixed intervals until the task leaves
+#' `READY`/`RUNNING`, or until `max_attempts` is reached.
+#'
+#' @param task EE `Task` to monitor.
+#' @param task_time Seconds between polls.
+#' @param quiet Logical; if `FALSE`, prints state.
+#' @param max_attempts Maximum number of polls (use `Inf` to wait indefinitely).
+#'
+#' @return The final task status as a list.
 #' @keywords internal
 ee_monitoring <- function(task, task_time = 5, quiet = FALSE, max_attempts = Inf) {
   if (missing(task)) stop("Provide a task (ee$batch$Task).")
@@ -827,21 +827,21 @@ ee_check_task_status <- function(task, quiet = TRUE) {
   if (all(is.na(times_num))) order(drib$name) else order(times_num, decreasing = TRUE, na.last = TRUE)
 }
 
-# Find, wait, and download the most recent Drive file with a given prefix
-#
-# @description After a Drive export task is `COMPLETED`, this utility queries
-# Google Drive for files whose names contain `file_name_prefix`, waits until
-# results are indexed, and downloads the most recent match to `dsn`.
-#
-# @param task EE `Task` (should be in `COMPLETED` state).
-# @param dsn Destination path on disk (GeoTIFF recommended).
-# @param file_name_prefix The export prefix used in the task.
-# @param overwrite Overwrite existing file at `dsn`.
-# @param poll_drive_secs Seconds between Drive searches.
-# @param max_wait_secs Maximum seconds to wait before giving up.
-# @param verbose Logical; print progress messages.
-#
-# @return If `terra` is available, a `SpatRaster`; otherwise the `dsn` path.
+#' Find, wait, and download the most recent Drive file with a given prefix
+#'
+#' @description After a Drive export task is `COMPLETED`, this utility queries
+#' Google Drive for files whose names contain `file_name_prefix`, waits until
+#' results are indexed, and downloads the most recent match to `dsn`.
+#'
+#' @param task EE `Task` (should be in `COMPLETED` state).
+#' @param dsn Destination path on disk (GeoTIFF recommended).
+#' @param file_name_prefix The export prefix used in the task.
+#' @param overwrite Overwrite existing file at `dsn`.
+#' @param poll_drive_secs Seconds between Drive searches.
+#' @param max_wait_secs Maximum seconds to wait before giving up.
+#' @param verbose Logical; print progress messages.
+#'
+#' @return If `terra` is available, a `SpatRaster`; otherwise the `dsn` path.
 #' @keywords internal
 ee_drive_fetch_completed <- function(task,
                                      dsn,

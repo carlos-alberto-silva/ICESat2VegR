@@ -9,7 +9,7 @@ earthaccess <- NULL
 #' The pointer to the `earth-engine-api` python reticulate module
 #'
 #' @seealso https://developers.google.com/earth-engine/apidocs
-#' @keywords internal
+#' @export
 ee <- NULL
 
 # Private h5py module

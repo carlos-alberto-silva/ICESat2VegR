@@ -14,6 +14,21 @@ ee_drive_to_local(
   verbose = TRUE
 )
 }
+\arguments{
+\item{task}{EE \code{Task} (should be in \code{COMPLETED} state).}
+
+\item{dsn}{Destination path on disk (GeoTIFF recommended).}
+
+\item{file_name_prefix}{The export prefix used in the task.}
+
+\item{overwrite}{Overwrite existing file at \code{dsn}.}
+
+\item{poll_drive_secs}{Seconds between Drive searches.}
+
+\item{max_wait_secs}{Maximum seconds to wait before giving up.}
+
+\item{verbose}{Logical; print progress messages.}
+}
 \value{
 See \code{ee_drive_fetch_completed()}.
 }
