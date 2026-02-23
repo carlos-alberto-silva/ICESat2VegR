@@ -42,9 +42,6 @@ ee_cache$search <- NULL
   }
   if (reticulate::py_module_available("ee")) {
     ee <<- reticulate::import("ee", convert = TRUE)
-    tryCatch(ee$Initialize(), error = function(e) {
-      tryCatch(ee$Authenticate(), error = function(e) {})
-    })
   }
   if (reticulate::py_module_available("h5py")) {
     h5py <<- reticulate::import("h5py", convert = TRUE)
