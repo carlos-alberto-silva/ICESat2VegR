@@ -7,20 +7,34 @@ def_co <- c(
 )
 
 finalizer_default <- list(
-  sd = ~ifelse(n > 1, suppressWarnings(sqrt(variance / (n - 1))), NA)
+  sd = ~ ifelse(n > 1, sqrt(variance / (n - 1)), NA)
   # skew = ~ sqrt((n * (n - 1))) * ((sqrt(n) * M3) / (variance^1.5)) / (n - 2),
   # kur = ~ ((n - 1) / ((n - 2) * (n - 3))) * ((n + 1) * ((n * M4) / (variance^2) - 3.0) + 6)
 )
 
 agg_function_default <- function(x) {
+  x <- x[!is.na(x)]
+  n <- length(x)
+
+  if (n == 0) {
+    return(list(
+      n = 0,
+      mean = NA_real_,
+      variance = NA_real_,
+      min = NA_real_,
+      max = NA_real_
+    ))
+  }
+
+  m <- mean(x)
+  ss <- sum((x - m)^2)
+
   list(
-    n = length(x),
-    mean = mean(x, na.rm = TRUE),
-    variance = var(x) * (length(x) - 1),
-    # M3 = e1071::moment(x, order = 3, center = TRUE, na.rm = TRUE) * length(x),
-    # M4 = e1071::moment(x, order = 4, center = TRUE, na.rm = TRUE) * length(x),
-    min = min(x, na.rm = TRUE),
-    max = max(x, na.rm = TRUE)
+    n = n,
+    mean = m,
+    variance = ss, # <-- store SUM OF SQUARES, not var()
+    min = min(x),
+    max = max(x)
   )
 }
 
@@ -179,11 +193,12 @@ index_to_xy <- function(index, ysize) {
 #'
 #' @export
 setGeneric("rasterize_h5", function(
-    h5_input,
-    output,
-    bbox,
-    res,
-    ...) {
+  h5_input,
+  output,
+  bbox,
+  res,
+  ...
+) {
   standardGeneric("rasterize_h5")
 })
 
@@ -240,7 +255,9 @@ setMethod("rasterize_h5",
       chunk_range <- seq(from = chunk, length.out = chunk_lenght)
 
       x <- as.integer(floor((h5_input[["longitude"]][chunk_range] - bbox$xmin) / res[1]) + 1)
-      y <- ysize + as.integer(ceiling((h5_input[["latitude"]][chunk_range] - bbox$ymin) / res[2]))
+      y <- as.integer(
+        floor((bbox$ymax - h5_input[["latitude"]][chunk_range]) / abs(res[2]))
+      ) + 1
 
       index <- xy_to_index(x, y, ysize)
       values <- h5_input[["prediction"]][chunk_range]
