@@ -246,20 +246,23 @@ plot_icesat2 <- function(x, y, beam, col, xlim = NULL, ylim = NULL, colors=c("gr
   mask <- rep(TRUE, nrow(xdt))
   if (!is.null(xlim)) {
     mask <- mask & xdt$dist_ph_along >= xlim[1] & xdt$dist_ph_along <= xlim[2]
-  } else {
-    xlim <- range(dt_masked$dist_ph_along)    
   }
   if (!is.null(ylim)) {
     mask <- mask & xdt[, 2] >= ylim[1] & xdt[, 2] <= ylim[2]
-  } else {
-    ylim <- range(dt_masked[[y]])
   }
-    
+
   mask[!stats::complete.cases(mask)] <- FALSE
   mask <- (seq_along(xdt$dist_ph_along))[mask]
   dt_masked <- xdt[mask]
 
-  
+  if (is.null(xlim)) {
+    xlim <- range(dt_masked$dist_ph_along)
+  }
+  if (is.null(ylim)) {
+    ylim <- range(dt_masked[[y]])
+  }
+
+
   old_palette = grDevices::palette()
   on.exit(grDevices::palette(old_palette))
   grDevices::palette(colors)
@@ -268,8 +271,8 @@ plot_icesat2 <- function(x, y, beam, col, xlim = NULL, ylim = NULL, colors=c("gr
     plot(
       x = dt_masked$dist_ph_along,
       y = dt_masked[, get(y)],
-      col = dt_masked$classed_pc_flag + 1, 
-      xlab = "Distance along-track (m)", 
+      col = dt_masked$classed_pc_flag + 1,
+      xlab = "Distance along-track (m)",
       ylab = paste(y, "(m)"),
       xlim = xlim,
       ylim = ylim,
