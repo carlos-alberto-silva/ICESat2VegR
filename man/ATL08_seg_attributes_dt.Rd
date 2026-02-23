@@ -28,52 +28,99 @@ containing the ATL08-derived terrain and canopy attributes by segments.
 This function extracts terrain and canopy attributes by segments from ICESat-2 ATL08 data
 }
 \details{
-ATL08 canopy attributes:
+\subsection{Segment-level attributes}{
 \itemize{
-\item \emph{"h_canopy"}
-\item \emph{"canopy_rh_conf"}
-\item \emph{"h_median_canopy_abs"}
-\item \emph{"h_min_canopy"}
-\item \emph{"h_mean_canopy_abs"}
-\item \emph{"h_median_canopy"}
-\item \emph{"h_canopy_abs"}
-\item \emph{"toc_roughness"}
-\item \emph{"h_min_canopy_abs"}
-\item \emph{"h_dif_canopy"}
-\item \emph{"h_canopy_quad"}
-\item \emph{"h_canopy_20m"}
-\item \emph{"n_ca_photons"}
-\item \emph{"photon_rate_can"}
-\item \emph{"centroid_height"}
-\item \emph{"canopy_h_metrics_abs"}
-\item \emph{"h_mean_canopy"}
-\item \emph{"subset_can_flag"}
-\item \emph{"canopy_h_metrics"}
-\item \emph{"n_toc_photons"}
-\item \emph{"h_max_canopy_abs"}
-\item \emph{"h_canopy_uncertainty"}
-\item \emph{"canopy_openness"}
-\item \emph{"h_max_canopy"}
-\item \emph{"segment_cover"}
+\item \code{segment_id_beg}
+\item \code{segment_id_end}
+\item \code{delta_time}
+\item \code{delta_time_beg}
+\item \code{delta_time_end}
+\item \code{latitude_20m}
+\item \code{longitude_20m}
+\item \code{rgt}
+\item \code{n_seg_ph}
+\item \code{ph_ndx_beg}
+\item \code{segment_landcover}
+\item \code{segment_snowcover}
+\item \code{segment_watermask}
+\item \code{surf_type}
+\item \code{urban_flag}
+\item \code{night_flag}
+\item \code{cloud_flag_atm}
+\item \code{cloud_fold_flag}
+\item \code{brightness_flag}
+\item \code{layer_flag}
+\item \code{msw_flag}
+\item \code{psf_flag}
+\item \code{sat_flag}
+\item \code{asr}
+\item \code{atlas_pa}
+\item \code{beam_azimuth}
+\item \code{beam_coelev}
+\item \code{solar_azimuth}
+\item \code{solar_elevation}
+\item \code{snr}
+\item \code{dem_flag}
+\item \code{dem_removal_flag}
+\item \code{dem_h}
+\item \code{h_dif_ref}
+\item \code{last_seg_extend}
+\item \code{sigma_h}
+\item \code{sigma_along}
+\item \code{sigma_across}
+\item \code{sigma_topo}
+\item \code{sigma_atlas_land}
+}
 }
 
-ATL08 terrain attributes:
+\subsection{ATL08 Canopy attributes}{
 \itemize{
-\item \emph{"h_te_best_fit"}
-\item \emph{"h_te_best_fit_20m"}
-\item \emph{"h_te_interp"}
-\item \emph{"h_te_max"}
-\item \emph{"h_te_mean"}
-\item \emph{"h_te_median"}
-\item \emph{"h_te_mode"}
-\item \emph{"h_te_rh25"}
-\item \emph{"h_te_skew"}
-\item \emph{"h_te_std"}
-\item \emph{"h_te_uncertainty"}
-\item \emph{"n_te_photons"}
-\item \emph{"photon_rate_te"}
-\item \emph{"subset_te_flag"}
-\item \emph{"terrain_slope"}
+\item \code{h_canopy}
+\item \code{canopy_rh_conf}
+\item \code{h_median_canopy_abs}
+\item \code{h_min_canopy}
+\item \code{h_mean_canopy_abs}
+\item \code{h_median_canopy}
+\item \code{h_canopy_abs}
+\item \code{toc_roughness}
+\item \code{h_min_canopy_abs}
+\item \code{h_dif_canopy}
+\item \code{h_canopy_quad}
+\item \code{h_canopy_20m}
+\item \code{n_ca_photons}
+\item \code{photon_rate_can}
+\item \code{centroid_height}
+\item \code{canopy_h_metrics_abs}
+\item \code{h_mean_canopy}
+\item \code{subset_can_flag}
+\item \code{canopy_h_metrics}
+\item \code{n_toc_photons}
+\item \code{h_max_canopy_abs}
+\item \code{h_canopy_uncertainty}
+\item \code{canopy_openness}
+\item \code{h_max_canopy}
+\item \code{segment_cover}
+}
+}
+
+\subsection{ATL08 Terrain attributes}{
+\itemize{
+\item \code{h_te_best_fit}
+\item \code{h_te_best_fit_20m}
+\item \code{h_te_interp}
+\item \code{h_te_max}
+\item \code{h_te_mean}
+\item \code{h_te_median}
+\item \code{h_te_mode}
+\item \code{h_te_rh25}
+\item \code{h_te_skew}
+\item \code{h_te_std}
+\item \code{h_te_uncertainty}
+\item \code{n_te_photons}
+\item \code{photon_rate_te}
+\item \code{subset_te_flag}
+\item \code{terrain_slope}
+}
 }
 }
 \examples{

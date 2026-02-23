@@ -100,53 +100,98 @@ ATL08.var.map[["night_flag"]] <- "/land_segments/night_flag"
 #' @return Returns an S4 object of class [`ICESat2VegR::icesat2.atl08_dt-class`]
 #' containing the ATL08-derived terrain and canopy attributes by segments.
 #'
-#' @details ATL08 canopy attributes:
-#' \itemize{
-#' \item \emph{"h_canopy"}
-#' \item \emph{"canopy_rh_conf"}
-#' \item \emph{"h_median_canopy_abs"}
-#' \item \emph{"h_min_canopy"}
-#' \item \emph{"h_mean_canopy_abs"}
-#' \item \emph{"h_median_canopy"}
-#' \item \emph{"h_canopy_abs"}
-#' \item \emph{"toc_roughness"}
-#' \item \emph{"h_min_canopy_abs"}
-#' \item \emph{"h_dif_canopy"}
-#' \item \emph{"h_canopy_quad"}
-#' \item \emph{"h_canopy_20m"}
-#' \item \emph{"n_ca_photons"}
-#' \item \emph{"photon_rate_can"}
-#' \item \emph{"centroid_height"}
-#' \item \emph{"canopy_h_metrics_abs"}
-#' \item \emph{"h_mean_canopy"}
-#' \item \emph{"subset_can_flag"}
-#' \item \emph{"canopy_h_metrics"}
-#' \item \emph{"n_toc_photons"}
-#' \item \emph{"h_max_canopy_abs"}
-#' \item \emph{"h_canopy_uncertainty"}
-#' \item \emph{"canopy_openness"}
-#' \item \emph{"h_max_canopy"}
-#' \item \emph{"segment_cover"}
-#' }
+#' @details 
+#' 
+#' ## Segment-level attributes
 #'
-#' ATL08 terrain attributes:
-#' \itemize{
-#' \item \emph{"h_te_best_fit"}
-#' \item \emph{"h_te_best_fit_20m"}
-#' \item \emph{"h_te_interp"}
-#' \item \emph{"h_te_max"}
-#' \item \emph{"h_te_mean"}
-#' \item \emph{"h_te_median"}
-#' \item \emph{"h_te_mode"}
-#' \item \emph{"h_te_rh25"}
-#' \item \emph{"h_te_skew"}
-#' \item \emph{"h_te_std"}
-#' \item \emph{"h_te_uncertainty"}
-#' \item \emph{"n_te_photons"}
-#' \item \emph{"photon_rate_te"}
-#' \item \emph{"subset_te_flag"}
-#' \item \emph{"terrain_slope"}
-#' }
+#' - `segment_id_beg`
+#' - `segment_id_end`
+#' - `delta_time`
+#' - `delta_time_beg`
+#' - `delta_time_end`
+#' - `latitude_20m`
+#' - `longitude_20m`
+#' - `rgt`
+#' - `n_seg_ph`
+#' - `ph_ndx_beg`
+#' - `segment_landcover`
+#' - `segment_snowcover`
+#' - `segment_watermask`
+#' - `surf_type`
+#' - `urban_flag`
+#' - `night_flag`
+#' - `cloud_flag_atm`
+#' - `cloud_fold_flag`
+#' - `brightness_flag`
+#' - `layer_flag`
+#' - `msw_flag`
+#' - `psf_flag`
+#' - `sat_flag`
+#' - `asr`
+#' - `atlas_pa`
+#' - `beam_azimuth`
+#' - `beam_coelev`
+#' - `solar_azimuth`
+#' - `solar_elevation`
+#' - `snr`
+#' - `dem_flag`
+#' - `dem_removal_flag`
+#' - `dem_h`
+#' - `h_dif_ref`
+#' - `last_seg_extend`
+#' - `sigma_h`
+#' - `sigma_along`
+#' - `sigma_across`
+#' - `sigma_topo`
+#' - `sigma_atlas_land`
+#'
+#'
+#' ## ATL08 Canopy attributes
+#'
+#' - `h_canopy`
+#' - `canopy_rh_conf`
+#' - `h_median_canopy_abs`
+#' - `h_min_canopy`
+#' - `h_mean_canopy_abs`
+#' - `h_median_canopy`
+#' - `h_canopy_abs`
+#' - `toc_roughness`
+#' - `h_min_canopy_abs`
+#' - `h_dif_canopy`
+#' - `h_canopy_quad`
+#' - `h_canopy_20m`
+#' - `n_ca_photons`
+#' - `photon_rate_can`
+#' - `centroid_height`
+#' - `canopy_h_metrics_abs`
+#' - `h_mean_canopy`
+#' - `subset_can_flag`
+#' - `canopy_h_metrics`
+#' - `n_toc_photons`
+#' - `h_max_canopy_abs`
+#' - `h_canopy_uncertainty`
+#' - `canopy_openness`
+#' - `h_max_canopy`
+#' - `segment_cover`
+#'
+#'
+#' ## ATL08 Terrain attributes
+#'
+#' - `h_te_best_fit`
+#' - `h_te_best_fit_20m`
+#' - `h_te_interp`
+#' - `h_te_max`
+#' - `h_te_mean`
+#' - `h_te_median`
+#' - `h_te_mode`
+#' - `h_te_rh25`
+#' - `h_te_skew`
+#' - `h_te_std`
+#' - `h_te_uncertainty`
+#' - `n_te_photons`
+#' - `photon_rate_te`
+#' - `subset_te_flag`
+#' - `terrain_slope`
 #'
 #' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
 #'
