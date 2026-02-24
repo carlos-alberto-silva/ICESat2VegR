@@ -215,6 +215,7 @@ setMethod("close", signature = c("icesat2.h5"), h5closeall)
 #'
 #' plot(
 #'   atl03_atl08_dt,
+#'   "ph_h",
 #'   pch = 16, cex = 0.5,
 #'   beam = "gt1r",
 #'   colors = c("gray", "#bd8421", "forestgreen", "green")
@@ -226,7 +227,7 @@ setMethod("close", signature = c("icesat2.h5"), h5closeall)
 #' @export
 setMethod(
   f = "plot",
-   signature("icesat2.atl03atl08_dt", "missing"),
+  signature("icesat2.atl03atl08_dt", "missing"),
   definition = function(x, ...) {
     plot(x, y = "ph_h", ...)
   }
@@ -234,7 +235,7 @@ setMethod(
 
 #' @import grDevices
 #' @keywords internal
-plot_icesat2 <- function(x, y, beam, col, xlim = NULL, ylim = NULL, colors=c("gray", "#bd8421", "forestgreen", "green"), legend = "topleft",  ...) {
+plot_atl03_atl08_join_dt <- function(x, y, beam, col, xlim = NULL, ylim = NULL, colors = c("gray", "#bd8421", "forestgreen", "green"), legend = "topleft", ...) {
   .SD <- data.table::.SD
   if (is.null(beam)) {
     the_beam <- unique(x$beam)[1]
@@ -263,7 +264,7 @@ plot_icesat2 <- function(x, y, beam, col, xlim = NULL, ylim = NULL, colors=c("gr
   }
 
 
-  old_palette = grDevices::palette()
+  old_palette <- grDevices::palette()
   on.exit(grDevices::palette(old_palette))
   grDevices::palette(colors)
 
@@ -334,6 +335,7 @@ plot_icesat2 <- function(x, y, beam, col, xlim = NULL, ylim = NULL, colors=c("gr
 #'
 #' plot(
 #'   atl03_atl08_dt,
+#'   "h_ph",
 #'   colors = c("gray", "#bd8421", "forestgreen", "green"),
 #'   pch = 16, cex = 0.5
 #' )
@@ -345,17 +347,15 @@ plot_icesat2 <- function(x, y, beam, col, xlim = NULL, ylim = NULL, colors=c("gr
 setMethod(
   "plot",
   signature("icesat2.atl03atl08_dt", "character"),
-  function(x, y, beam = "gt1l",
-           col = "gray",
-           xlim = NULL,
-           ylim = NULL, ...) {
+  function(x, y, beam = NULL,
+           col = c("gray", "#bd8421", "forestgreen", "green"), ...) {
     if (!is(x, "icesat2.atl03atl08_dt")) {
       print(
         "Invalid input file.
 It should be an object of class 'icesat2.atl03atl08_dt'"
       )
     } else {
-      plot_icesat2(x, y, beam, col, xlim, ylim, ...)
+      plot_atl03_atl08_join_dt(x, y, beam, col, ...)
     }
   }
 )
@@ -407,8 +407,8 @@ It should be an object of class 'icesat2.atl03atl08_dt'"
 setMethod(
   "plot",
   signature("icesat2.atl08_dt", "character"),
-  function(x, y, beam = "gt1l",
-           col = "gray",
+  function(x, y, beam = NULL,
+           col = c("gray", "#bd8421", "forestgreen", "green"),
            xlim = NULL,
            ylim = NULL, ...) {
     if (!is(x, "icesat2.atl08_dt")) {
@@ -416,7 +416,7 @@ setMethod(
         "Invalid input file. It should be an object of class 'icesat2.atl08_dt'"
       )
     } else {
-      plot_icesat2(x, y, beam, col, xlim, ylim, ...)
+      plot_atl03_atl08_join_dt(x, y, beam, col, xlim, ylim, ...)
     }
   }
 )
