@@ -62,6 +62,8 @@ for each geolocation segment. This is derived from
 \code{geolocation/ph_index_beg}, \code{geolocation/reference_photon_index},
 and \code{heights/h_ph}.
 \item \code{altitude_sc}: Height of the spacecraft above the WGS84 ellipsoid.
+\item \code{beta_angle}: Acute angle between Sun vector and orbit
+plane
 \item \code{bounce_time_offset}: Difference between the transmit time and the
 ground-bounce time of the reference photon.
 \item \code{delta_time}: Transmit time of the reference photon, measured in
@@ -120,6 +122,12 @@ upper threshold crossing times, estimating transmit pulse skew.
 crossing times measured by the Start Pulse Detector.
 \item \code{tx_pulse_width_upper}: Average distance between upper threshold
 crossing times measured by the Start Pulse Detector.
+\item \code{velocity_sc}: Spacecraft velocity components (east
+component, north component, up component)
+an observer on the ground would measure.
+While values are common to all beams, this
+parameter is naturally produced as part of
+geolocation.
 \item \code{yaw}: Spacecraft yaw (degrees), 3-2-1 Euler sequence.
 }
 }

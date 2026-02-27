@@ -1,6 +1,7 @@
 # Map of ATL03 geolocation (segment-level) variables
 ATL03.seg.map <- list()
 ATL03.seg.map[["altitude_sc"]]            <- "geolocation/altitude_sc"
+ATL03.seg.map[["beta_angle"]]             <- "geolocation/beta_angle"
 ATL03.seg.map[["bounce_time_offset"]]     <- "geolocation/bounce_time_offset"
 ATL03.seg.map[["delta_time"]]             <- "geolocation/delta_time"
 ATL03.seg.map[["full_sat_fract"]]         <- "geolocation/full_sat_fract"
@@ -34,6 +35,7 @@ ATL03.seg.map[["tx_pulse_energy"]]        <- "geolocation/tx_pulse_energy"
 ATL03.seg.map[["tx_pulse_skew_est"]]      <- "geolocation/tx_pulse_skew_est"
 ATL03.seg.map[["tx_pulse_width_lower"]]   <- "geolocation/tx_pulse_width_lower"
 ATL03.seg.map[["tx_pulse_width_upper"]]   <- "geolocation/tx_pulse_width_upper"
+ATL03.seg.map[["velocity_sc"]]            <- "geolocation/velocity_sc"
 ATL03.seg.map[["yaw"]]                    <- "geolocation/yaw"
 
 #' ATL03 geolocation segment metadata
@@ -82,6 +84,8 @@ ATL03.seg.map[["yaw"]]                    <- "geolocation/yaw"
 #'   `geolocation/ph_index_beg`, `geolocation/reference_photon_index`,
 #'   and `heights/h_ph`.
 #' - `altitude_sc`: Height of the spacecraft above the WGS84 ellipsoid.
+#' - `beta_angle`: Acute angle between Sun vector and orbit
+#'    plane
 #' - `bounce_time_offset`: Difference between the transmit time and the
 #'   ground-bounce time of the reference photon.
 #' - `delta_time`: Transmit time of the reference photon, measured in
@@ -140,6 +144,12 @@ ATL03.seg.map[["yaw"]]                    <- "geolocation/yaw"
 #'   crossing times measured by the Start Pulse Detector.
 #' - `tx_pulse_width_upper`: Average distance between upper threshold
 #'   crossing times measured by the Start Pulse Detector.
+#' - `velocity_sc`: Spacecraft velocity components (east
+#'   component, north component, up component)
+#'   an observer on the ground would measure.
+#'   While values are common to all beams, this
+#'   parameter is naturally produced as part of
+#'   geolocation.
 #' - `yaw`: Spacecraft yaw (degrees), 3-2-1 Euler sequence.
 #'
 #' @seealso
