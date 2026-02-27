@@ -603,7 +603,6 @@ setMethod(
 #'  \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
 #'
 #' @examples
-#' \dontrun{
 #' atl03_path <- system.file("extdata", "atl03_clip.h5",
 #'   package = "ICESat2VegR"
 #' )
@@ -627,7 +626,6 @@ setMethod(
 #' # )
 #'
 #' close(atl03_h5)
-#' }
 #'
 #' @import hdf5r stats
 #' @export
@@ -674,7 +672,6 @@ setMethod(
 #'  \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
 #'
 #' @examples
-#' \dontrun{
 #' atl03_path <- system.file("extdata", "atl03_clip.h5",
 #'   package = "ICESat2VegR"
 #' )
@@ -698,7 +695,6 @@ setMethod(
 #' # )
 #'
 #' close(atl03_h5)
-#' }
 #'
 #' @import hdf5r stats
 #' @export
@@ -806,7 +802,6 @@ setMethod(
 #' installed. If not found, the function stops with an informative message.
 #'
 #' @examples
-#' \dontrun{
 #' # Specifying the path to the ATL08 file
 #' atl08_path <- system.file("extdata",
 #'   "atl08_clip.h5",
@@ -836,7 +831,6 @@ setMethod(
 #' # )
 #'
 #' close(atl08_h5)
-#' }
 #'
 #' @import hdf5r stats
 #' @export
@@ -1012,7 +1006,6 @@ setMethod(
 #' installed. If not found, the function stops with an informative message.
 #'
 #' @examples
-#' \dontrun{
 #' # Specifying the path to ATL03 and ATL08 files
 #' atl03_path <- system.file("extdata", "atl03_clip.h5",
 #'   package = "ICESat2VegR"
@@ -1049,7 +1042,6 @@ setMethod(
 #'
 #' close(atl03_h5)
 #' close(atl08_h5)
-#' }
 #'
 #' @import hdf5r stats
 #' @export
@@ -1104,7 +1096,6 @@ setMethod(
 #' installed. If not found, the function stops with an informative message.
 #'
 #' @examples
-#' \dontrun{
 #' # Specifying the path to ATL03 and ATL08 files
 #' atl03_path <- system.file("extdata", "atl03_clip.h5",
 #'   package = "ICESat2VegR"
@@ -1141,7 +1132,6 @@ setMethod(
 #'
 #' close(atl03_h5)
 #' close(atl08_h5)
-#' }
 #'
 #' @import hdf5r stats
 #' @export

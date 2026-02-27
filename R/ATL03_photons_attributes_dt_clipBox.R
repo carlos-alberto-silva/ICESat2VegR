@@ -32,7 +32,6 @@
 #'  \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
 #'
 #' @examples
-#' \dontrun{
 #' atl03_path <- system.file("extdata", "atl03_clip.h5",
 #'                           package = "ICESat2VegR")
 #'
@@ -55,7 +54,6 @@
 #' # )
 #'
 #' close(atl03_h5)
-#' }
 #'
 #' @import hdf5r stats
 #' @export

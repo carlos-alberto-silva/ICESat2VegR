@@ -40,7 +40,6 @@ When \code{clip_obj} is a \code{SpatExtent}, the package \pkg{terra} must be
 installed. If not found, the function stops with an informative message.
 }
 \examples{
-\dontrun{
 # Specifying the path to the ATL08 file
 atl08_path <- system.file("extdata",
   "atl08_clip.h5",
@@ -70,6 +69,5 @@ atl08_seg_att_dt_clip <- ATL08_seg_attributes_dt_clipBox(
 # )
 
 close(atl08_h5)
-}
 
 }

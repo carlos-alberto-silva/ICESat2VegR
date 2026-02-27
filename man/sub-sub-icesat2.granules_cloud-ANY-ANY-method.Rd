@@ -24,7 +24,29 @@ slot of an \code{icesat2.granules_cloud} object.
 }
 \examples{
 \dontrun{
-granule <- new("icesat2.granules_cloud")
-extracted_granule <- granule[[1]]
+lower_left_lon <- -83.26
+lower_left_lat <- 31.95
+upper_right_lon <- -83.11
+upper_right_lat <- 32.46
+
+daterange <- c("2019-04-12", "2019-05-03")
+
+ATL08_granules_cloud <- ATLAS_dataFinder(
+  short_name = "ATL08",
+  lower_left_lon,
+  lower_left_lat,
+  upper_right_lon,
+  upper_right_lat,
+  version = "007",
+  daterange = daterange,
+  persist = TRUE,
+  cloud_computing = TRUE
+)
+
+ATL08_h5_cloud <- ATL08_read(ATL08_granules_cloud[1])
+
+ATL08_h5_cloud[['gt1l']]
+close(ATL08_h5_cloud)
 }
+
 }

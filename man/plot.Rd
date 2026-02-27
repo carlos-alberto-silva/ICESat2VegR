@@ -3,8 +3,7 @@
 \name{plot,icesat2.atl03atl08_dt,missing-method}
 \alias{plot,icesat2.atl03atl08_dt,missing-method}
 \alias{plot,icesat2.atl03atl08_dt,character-method}
-\alias{plot,icesat2.atl08_dt,character-method}
-\alias{plot,icesat2.atl03_dt,character-method}
+\alias{plot,icesat2.atl03_seg_dt,missing-method}
 \title{Plot photons from ATL03 and ATL08 joined products}
 \usage{
 \S4method{plot}{icesat2.atl03atl08_dt,missing}(x, y, ...)
@@ -17,17 +16,7 @@
   ...
 )
 
-\S4method{plot}{icesat2.atl08_dt,character}(
-  x,
-  y,
-  beam = NULL,
-  col = c("gray", "#bd8421", "forestgreen", "green"),
-  xlim = NULL,
-  ylim = NULL,
-  ...
-)
-
-\S4method{plot}{icesat2.atl03_dt,character}(x, y, col = "gray", ...)
+\S4method{plot}{icesat2.atl03_seg_dt,missing}(x, col = "gray", ...)
 }
 \arguments{
 \item{x}{An object of class \code{\linkS4class{icesat2.atl03_dt}}}
@@ -41,14 +30,8 @@
 Default is "gt1r"}
 
 \item{col}{Color for plotting the photons. Default is "gray"}
-
-\item{xlim}{The x limits to use for the plot}
-
-\item{ylim}{the y limits to use for the plot}
 }
 \value{
-No return value
-
 No return value
 
 No return value
@@ -57,8 +40,6 @@ No return value
 }
 \description{
 This function plots ATL03 and ATL08 joined data along track
-
-This function plots ATL08 attributes along track
 
 This function plots ATL08 attributes along track
 
@@ -126,25 +107,6 @@ plot(
 
 close(atl03_h5)
 close(atl08_h5)
-# Specifying the path to ATL08 file
-atl08_path <- system.file("extdata",
-  "atl08_clip.h5",
-  package = "ICESat2VegR"
-)
-
-# Reading ATL08 data (h5 file)
-atl08_h5 <- ATL08_read(atl08_path = atl08_path)
-
-# Extracting ATL08 attributes
-atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5 = atl08_h5)
-
-plot(
-  atl08_seg_dt,
-  beam = "gt1r",
-  col = "gray"
-)
-
-close(atl08_h5)
 # Specifying the path to ATL03 file
 atl03_path <- system.file("extdata",
   "atl03_clip.h5",
@@ -167,7 +129,6 @@ atl03_photons_dt <- ATL03_seg_metadata_dt(
 
 plot(
   atl03_photons_dt,
-  "h_ph",
   col = "gray",
   pch = 16,
   cex = 0.5

@@ -120,7 +120,6 @@ values. It is defined as:
 }\if{html}{\out{</div>}}
 }
 \examples{
-\dontrun{
 library(data.table)
 
 # Specifying the path to ATL08 file
@@ -192,7 +191,6 @@ outdir <- tempdir()
 gc()
 file.remove(list.files(outdir, "*.tif"))
 close(atl08_h5)
-}
 
 }
 \references{

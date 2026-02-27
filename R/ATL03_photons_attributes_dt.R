@@ -106,7 +106,7 @@ ATL03_photons_attributes_dt <- function(
   beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
   attributes = c(
     "quality_ph",
-    "dist_ph_along",
+    "dist_ph_along"
   )
 ) {
   # ----------------------

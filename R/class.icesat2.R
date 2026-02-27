@@ -55,9 +55,31 @@ setMethod(
 #'
 #' @examples
 #' \dontrun{
-#' granule <- new("icesat2.granules_cloud")
-#' extracted_granule <- granule[[1]]
+#' lower_left_lon <- -83.26
+#' lower_left_lat <- 31.95
+#' upper_right_lon <- -83.11
+#' upper_right_lat <- 32.46
+#'
+#' daterange <- c("2019-04-12", "2019-05-03")
+#'
+#' ATL08_granules_cloud <- ATLAS_dataFinder(
+#'   short_name = "ATL08",
+#'   lower_left_lon,
+#'   lower_left_lat,
+#'   upper_right_lon,
+#'   upper_right_lat,
+#'   version = "007",
+#'   daterange = daterange,
+#'   persist = TRUE,
+#'   cloud_computing = TRUE
+#' )
+#'
+#' ATL08_h5_cloud <- ATL08_read(ATL08_granules_cloud[1])
+#'
+#' ATL08_h5_cloud[['gt1l']]
+#' close(ATL08_h5_cloud)
 #' }
+#'
 #' @export
 setMethod(
   "[[",
@@ -299,10 +321,10 @@ plot_atl03_atl08_join_dt <- function(x, y, beam, col, xlim = NULL, ylim = NULL, 
 #' @param beam Character vector indicating only one beam to process
 #' ("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r").
 #' Default is "gt1r"
-#' @param xlim The x limits to use for the plot
-#' @param ylim the y limits to use for the plot
 #' @param ... will be passed to the main plot, such as:
 #'
+#'  - `xlim`: The x limits to use for the plot
+#'  - `ylim`: the y limits to use for the plot
 #'  - `colors`: A vector containing colors for plotting noise, terrain,
 #' vegetation and top canopy photons (e.g. c("gray", "#bd8421",
 #' "forestgreen", "green")
@@ -360,65 +382,6 @@ It should be an object of class 'icesat2.atl03atl08_dt'"
   }
 )
 
-#' Plot ATL08 attributes
-#'
-#' @description This function plots ATL08 attributes along track
-#'
-#' @param x An object of class [`ICESat2VegR::icesat2.atl08_dt-class`]
-#' @param y The attribute name for y axis
-#' @param beam Character vector indicating only one beam to process
-#' ("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r").
-#' Default is "gt1r"
-#' @param xlim The x limits to use for the plot
-#' @param ylim the y limits to use for the plot
-#' @param ... will be passed to the main plot, such as:
-#'
-#'  - `colors`: A vector containing colors for plotting noise, terrain,
-#' vegetation and top canopy photons (e.g. c("gray", "#bd8421",
-#' "forestgreen", "green")
-#'  - `legend`: the position of the legend. 'bottomleft', 'bottomright',
-#' 'topleft', 'topright' or FALSE to omit
-#'
-#' @return No return value
-#'
-#' @examples
-#' # Specifying the path to ATL08 file
-#' atl08_path <- system.file("extdata",
-#'   "atl08_clip.h5",
-#'   package = "ICESat2VegR"
-#' )
-#'
-#' # Reading ATL08 data (h5 file)
-#' atl08_h5 <- ATL08_read(atl08_path = atl08_path)
-#'
-#' # Extracting ATL08 attributes
-#' atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5 = atl08_h5)
-#'
-#' plot(
-#'   atl08_seg_dt,
-#'   beam = "gt1r",
-#'   col = "gray"
-#' )
-#'
-#' close(atl08_h5)
-#' @rdname plot
-#' @export
-setMethod(
-  "plot",
-  signature("icesat2.atl08_dt", "character"),
-  function(x, y, beam = NULL,
-           col = c("gray", "#bd8421", "forestgreen", "green"),
-           xlim = NULL,
-           ylim = NULL, ...) {
-    if (!is(x, "icesat2.atl08_dt")) {
-      print(
-        "Invalid input file. It should be an object of class 'icesat2.atl08_dt'"
-      )
-    } else {
-      plot_atl03_atl08_join_dt(x, y, beam, col, xlim, ylim, ...)
-    }
-  }
-)
 
 
 #' Plot ATL03 photons
@@ -457,7 +420,6 @@ setMethod(
 #'
 #' plot(
 #'   atl03_photons_dt,
-#'   "h_ph",
 #'   col = "gray",
 #'   pch = 16,
 #'   cex = 0.5
@@ -468,8 +430,8 @@ setMethod(
 #' @rdname plot
 setMethod(
   f = "plot",
-  signature("icesat2.atl03_dt", y = "character"),
-  definition = function(x, y, col = "gray", ...) {
+  signature("icesat2.atl03_seg_dt", y = "missing"),
+  definition = function(x, col = "gray", ...) {
     beam <- NA
 
     x <- x[x$beam == beam, ]
@@ -481,13 +443,6 @@ setMethod(
         xlab = "Distance along-track (m)",
         ylab = "Elevation (m)",
         ...
-      )
-      graphics::legend(
-        "topleft",
-        legend = c("Noise", "Terrain", "Vegetation", "Top canopy"),
-        pch = 16,
-        col = col,
-        bty = "n"
       )
     })
   }

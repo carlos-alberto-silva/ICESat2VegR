@@ -7,7 +7,7 @@
 ATL03_photons_attributes_dt(
   atl03_h5,
   beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
-  attributes = c("quality_ph", "dist_ph_along", )
+  attributes = c("quality_ph", "dist_ph_along")
 )
 }
 \arguments{
