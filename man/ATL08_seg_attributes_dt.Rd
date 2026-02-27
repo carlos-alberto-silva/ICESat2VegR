@@ -46,8 +46,11 @@ This function extracts terrain and canopy attributes by segments from ICESat-2 A
 \item \code{surf_type}
 \item \code{urban_flag}
 \item \code{night_flag}
+\item \code{permafrost_alt}
+\item \code{permafrost_prob}
 \item \code{cloud_flag_atm}
 \item \code{cloud_fold_flag}
+\item \code{column_od_asr}
 \item \code{brightness_flag}
 \item \code{layer_flag}
 \item \code{msw_flag}
@@ -75,6 +78,10 @@ This function extracts terrain and canopy attributes by segments from ICESat-2 A
 
 \subsection{ATL08 Canopy attributes}{
 \itemize{
+\item \code{can_noise}
+\item \code{can_quality_score}
+\item \code{canopy_h_metrics_abs}
+\item \code{canopy_openness}
 \item \code{h_canopy}
 \item \code{canopy_rh_conf}
 \item \code{h_median_canopy_abs}
@@ -89,6 +96,7 @@ This function extracts terrain and canopy attributes by segments from ICESat-2 A
 \item \code{h_canopy_20m}
 \item \code{n_ca_photons}
 \item \code{photon_rate_can}
+\item `photon_rate_can_nr``
 \item \code{centroid_height}
 \item \code{canopy_h_metrics_abs}
 \item \code{h_mean_canopy}
@@ -120,6 +128,7 @@ This function extracts terrain and canopy attributes by segments from ICESat-2 A
 \item \code{photon_rate_te}
 \item \code{subset_te_flag}
 \item \code{terrain_slope}
+\item \code{te_quality}
 }
 }
 }
@@ -140,5 +149,5 @@ head(atl08_seg_att_dt)
 close(atl08_h5)
 }
 \seealso{
-\url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
+\url{https://nsidc.org/sites/default/files/documents/technical-reference/icesat2_atl08_atbd_v007.pdf}
 }
