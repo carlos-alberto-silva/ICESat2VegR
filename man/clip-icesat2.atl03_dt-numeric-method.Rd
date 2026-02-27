@@ -40,7 +40,8 @@ installed. If not found, the function stops with an informative message.
 \examples{
 \dontrun{
 atl03_path <- system.file("extdata", "atl03_clip.h5",
-                          package = "ICESat2VegR")
+  package = "ICESat2VegR"
+)
 
 atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 atl03_photons_dt <- ATL03_photons_attributes_dt(atl03_h5 = atl03_h5)

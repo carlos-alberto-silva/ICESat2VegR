@@ -55,4 +55,34 @@ to copy unchanged into the output file. Defaults to:
 Unified clipping interface for ICESat-2 ATL03/ATL08 data. The generic
 \code{clip()} dispatches on the class of \code{x} and internally calls appropriate
 \verb{_clipBox()} or \verb{_clipGeometry()} helpers.
+
+Depending on the product you are working with you can access its specific
+clipping methods:
+\subsection{ATL03_h5:}{
+\itemize{
+\item \code{\link[=ATL03_h5_clipBox]{ATL03_h5_clipBox()}}
+\item \code{\link[=ATL03_h5_clipGeometry]{ATL03_h5_clipGeometry()}}
+}
+}
+
+\subsection{ATL08_h5:}{
+\itemize{
+\item \code{\link[=ATL08_h5_clipBox]{ATL08_h5_clipBox()}}
+\item \code{\link[=ATL08_h5_clipGeometry]{ATL08_h5_clipGeometry()}}
+}
+}
+
+\subsection{ATL08_seg_attributes_dt:}{
+\itemize{
+\item \code{\link[=ATL08_seg_attributes_dt_clipBox]{ATL08_seg_attributes_dt_clipBox()}}
+\item \code{\link[=ATL08_seg_attributes_dt_clipGeometry]{ATL08_seg_attributes_dt_clipGeometry()}}
+}
+}
+
+\subsection{ATL03_ATL08_photons_attributes_dt_join:}{
+\itemize{
+\item \code{\link[=ATL03_ATL08_photons_attributes_dt_clipBox]{ATL03_ATL08_photons_attributes_dt_clipBox()}}
+\item \code{\link[=ATL03_ATL08_photons_attributes_dt_clipGeometry]{ATL03_ATL08_photons_attributes_dt_clipGeometry()}}
+}
+}
 }

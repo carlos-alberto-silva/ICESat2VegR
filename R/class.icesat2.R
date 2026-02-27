@@ -396,7 +396,6 @@ It should be an object of class 'icesat2.atl03atl08_dt'"
 #'
 #' plot(
 #'   atl08_seg_dt,
-#'   "h_canopy",
 #'   beam = "gt1r",
 #'   col = "gray"
 #' )

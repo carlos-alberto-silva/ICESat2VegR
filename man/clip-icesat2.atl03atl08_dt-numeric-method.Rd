@@ -45,10 +45,12 @@ installed. If not found, the function stops with an informative message.
 \dontrun{
 # Specifying the path to ATL03 and ATL08 files
 atl03_path <- system.file("extdata", "atl03_clip.h5",
-                          package = "ICESat2VegR")
+  package = "ICESat2VegR"
+)
 
 atl08_path <- system.file("extdata", "atl08_clip.h5",
-                          package = "ICESat2VegR")
+  package = "ICESat2VegR"
+)
 
 # Reading ATL03 and ATL08 data (h5 files)
 atl03_h5 <- ATL03_read(atl03_path = atl03_path)

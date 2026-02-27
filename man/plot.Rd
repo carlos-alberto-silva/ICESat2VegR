@@ -9,9 +9,23 @@
 \usage{
 \S4method{plot}{icesat2.atl03atl08_dt,missing}(x, y, ...)
 
-\S4method{plot}{icesat2.atl03atl08_dt,character}(x, y, beam = "gt1l", col = "gray", xlim = NULL, ylim = NULL, ...)
+\S4method{plot}{icesat2.atl03atl08_dt,character}(
+  x,
+  y,
+  beam = NULL,
+  col = c("gray", "#bd8421", "forestgreen", "green"),
+  ...
+)
 
-\S4method{plot}{icesat2.atl08_dt,character}(x, y, beam = "gt1l", col = "gray", xlim = NULL, ylim = NULL, ...)
+\S4method{plot}{icesat2.atl08_dt,character}(
+  x,
+  y,
+  beam = NULL,
+  col = c("gray", "#bd8421", "forestgreen", "green"),
+  xlim = NULL,
+  ylim = NULL,
+  ...
+)
 
 \S4method{plot}{icesat2.atl03_dt,character}(x, y, col = "gray", ...)
 }
@@ -74,6 +88,7 @@ atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
 
 plot(
   atl03_atl08_dt,
+  "ph_h",
   pch = 16, cex = 0.5,
   beam = "gt1r",
   colors = c("gray", "#bd8421", "forestgreen", "green")
@@ -104,6 +119,7 @@ atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
 
 plot(
   atl03_atl08_dt,
+  "h_ph",
   colors = c("gray", "#bd8421", "forestgreen", "green"),
   pch = 16, cex = 0.5
 )
@@ -124,7 +140,6 @@ atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5 = atl08_h5)
 
 plot(
   atl08_seg_dt,
-  "h_canopy",
   beam = "gt1r",
   col = "gray"
 )

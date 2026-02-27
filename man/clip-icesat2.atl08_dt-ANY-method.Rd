@@ -49,7 +49,9 @@ if (require(terra)) {
   head(atl08_seg_att_dt)
   # Clipping ATL08 Terrain and Canopy Attributes by Geometry
   atl08_seg_att_dt_clip <- ATL08_seg_attributes_dt_clipGeometry(atl08_seg_att_dt,
-      polygon, split_by = "id")
+    polygon,
+    split_by = "id"
+  )
 
   hasLeaflet <- require(leaflet)
 

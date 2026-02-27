@@ -8,6 +8,21 @@
 #' `clip()` dispatches on the class of `x` and internally calls appropriate
 #' `_clipBox()` or `_clipGeometry()` helpers.
 #'
+#' Depending on the product you are working with you can access its specific
+#' clipping methods:
+#'  ### ATL03_h5:
+#'  - [ATL03_h5_clipBox()]
+#'  - [ATL03_h5_clipGeometry()]
+#' ### ATL08_h5:
+#' - [ATL08_h5_clipBox()]
+#' - [ATL08_h5_clipGeometry()]
+#' ### ATL08_seg_attributes_dt:
+#' - [ATL08_seg_attributes_dt_clipBox()]
+#' - [ATL08_seg_attributes_dt_clipGeometry()]
+#' ### ATL03_ATL08_photons_attributes_dt_join:
+#' - [ATL03_ATL08_photons_attributes_dt_clipBox()]
+#' - [ATL03_ATL08_photons_attributes_dt_clipGeometry()]
+#'
 #' @param x ICESat-2 object (ATL03/ATL08 h5, attributes, or joined table)
 #' Can be either:
 #'
@@ -42,7 +57,7 @@
 #'   - `additional_groups` Character vector of additional non-beam HDF5 groups
 #'   to copy unchanged into the output file. Defaults to:
 #'   `c("orbit_info")`.
-#' 
+#'
 #' @export
 setGeneric(
   "clip",
@@ -73,9 +88,9 @@ setGeneric(
 #'       lower-right latitude/longitude).
 #'     \item A [`terra::SpatExtent`] object.
 #'   }
-#' 
+#'
 #' @param ... Additional arguments:
-#' 
+#'
 #'   - `output` Character. Path to the output HDF5 file that will store the
 #'   clipped ATL03 dataset.
 #'   - `beam` Character vector specifying which ATL03 beams to include.
@@ -169,7 +184,7 @@ setMethod(
 #'   }
 #'
 #' @param ... Additional arguments:
-#' 
+#'
 #'   - `output` Character. Path to the output HDF5 file that will store the
 #'   clipped ATL03 dataset.
 #'   - `beam` Character vector specifying which ATL03 beams to include.
@@ -261,7 +276,7 @@ setMethod(
 #' @param clip_obj A [`terra::SpatVector`] object containing the geometric clip
 #'   boundaries. Each feature (row) in the SpatVector defines an independent
 #'   clipping region.
-#' 
+#'
 #' @param ... Additional arguments:
 #'
 #'   - `output` Character. Path to the output filename. The final written files
@@ -344,7 +359,7 @@ setMethod(
 #'     \item A [`terra::SpatExtent`] object.
 #'   }
 #'
-#' @param ... Additional arguments: 
+#' @param ... Additional arguments:
 #'
 #'   - `output` Character path specifying where the clipped HDF5 file should be
 #'   written.
@@ -590,7 +605,8 @@ setMethod(
 #' @examples
 #' \dontrun{
 #' atl03_path <- system.file("extdata", "atl03_clip.h5",
-#'                           package = "ICESat2VegR")
+#'   package = "ICESat2VegR"
+#' )
 #'
 #' atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 #' atl03_photons_dt <- ATL03_photons_attributes_dt(atl03_h5 = atl03_h5)
@@ -660,7 +676,8 @@ setMethod(
 #' @examples
 #' \dontrun{
 #' atl03_path <- system.file("extdata", "atl03_clip.h5",
-#'                           package = "ICESat2VegR")
+#'   package = "ICESat2VegR"
+#' )
 #'
 #' atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 #' atl03_photons_dt <- ATL03_photons_attributes_dt(atl03_h5 = atl03_h5)
@@ -887,7 +904,7 @@ setMethod(
 #' @param clip_obj clip_obj. An object of class [`terra::SpatVector`],
 #' which can be loaded as an ESRI shapefile using [terra::vect] function in the
 #' \emph{sf} package.
-#' @param ... The `split_by` parameter can be specified to clip_obj id. 
+#' @param ... The `split_by` parameter can be specified to clip_obj id.
 #' If defined, ATL08 data will be clipped by each clip_obj using
 #' the clip_obj id from table of attribute defined by the user
 #'
@@ -918,7 +935,9 @@ setMethod(
 #'   head(atl08_seg_att_dt)
 #'   # Clipping ATL08 Terrain and Canopy Attributes by Geometry
 #'   atl08_seg_att_dt_clip <- ATL08_seg_attributes_dt_clipGeometry(atl08_seg_att_dt,
-#'       polygon, split_by = "id")
+#'     polygon,
+#'     split_by = "id"
+#'   )
 #'
 #'   hasLeaflet <- require(leaflet)
 #'
@@ -996,10 +1015,12 @@ setMethod(
 #' \dontrun{
 #' # Specifying the path to ATL03 and ATL08 files
 #' atl03_path <- system.file("extdata", "atl03_clip.h5",
-#'                           package = "ICESat2VegR")
+#'   package = "ICESat2VegR"
+#' )
 #'
 #' atl08_path <- system.file("extdata", "atl08_clip.h5",
-#'                           package = "ICESat2VegR")
+#'   package = "ICESat2VegR"
+#' )
 #'
 #' # Reading ATL03 and ATL08 data (h5 files)
 #' atl03_h5 <- ATL03_read(atl03_path = atl03_path)
@@ -1086,10 +1107,12 @@ setMethod(
 #' \dontrun{
 #' # Specifying the path to ATL03 and ATL08 files
 #' atl03_path <- system.file("extdata", "atl03_clip.h5",
-#'                           package = "ICESat2VegR")
+#'   package = "ICESat2VegR"
+#' )
 #'
 #' atl08_path <- system.file("extdata", "atl08_clip.h5",
-#'                           package = "ICESat2VegR")
+#'   package = "ICESat2VegR"
+#' )
 #'
 #' # Reading ATL03 and ATL08 data (h5 files)
 #' atl03_h5 <- ATL03_read(atl03_path = atl03_path)
