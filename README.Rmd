@@ -23,13 +23,16 @@ ATL08 (Land and Vegetation Height) products for land and vegetation applications
 
 # Getting started
 
-```{r setup, include=FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   fig.path = "readme/"
 )
+
+ICESat2VegR::ee_initialize('ee-caiohamamura')
+outdir <- normalizePath("~/ic2_workshop_data/")
 ```
 
-```{r install_package, eval=FALSE}
+```{r install_package, eval = FALSE}
 # The r-universe version (recommended for the latest version)
 install.packages("ICESat2VegR", , repos = c("https://caiohamamura.r-universe.dev", "https://cloud.r-project.org"))
 
@@ -75,11 +78,7 @@ for more details.
 
 After setting the project up, just use the `project-name`
 
-```{r ee_initialize_hidden, include=FALSE}
-ee_initialize('ee-caiohamamura')
-```
-
-```{r ee_initialize_example, eval=FALSE}
+```{r ee_initialize_example, eval = FALSE}
 ee_initialize('project-name')
 ```
 
@@ -93,11 +92,7 @@ Most users should work locally unless they are operating within an AWS cloud-com
 As we will be working with multiple HDF5 granules, we will use `lapply()` for reading and extracting information from the granules.
 If you are working with a single granule, you can follow the simpler instructions provided in the function documentation examples without using `lapply()`.
 
-```{r setup_outdir_hidden, include=FALSE}
-outdir <- normalizePath("~/test_ICESat2/")
-```
-
-```{r download_example_dataset, eval=FALSE}
+```{r download_example_dataset, eval = FALSE}
 # Set output directory
 outdir <- tempdir()
 dir.create(outdir, showWarnings = FALSE)
@@ -170,7 +165,7 @@ head(atl08_granules_local)
 ```
 Now we download the granules:
 
-```{r download_granules, eval=FALSE}
+```{r download_granules, eval = FALSE}
 # Download granules
 ATLAS_dataDownload(atl03_granules_local, outdir)
 ATLAS_dataDownload(atl08_granules_local, outdir)
@@ -265,9 +260,9 @@ the data and start working with it, but it is only worth it and fast if you use
 an Amazon computing instance in `us-west2`. If you are physically close to that
 region and have a fast link it may be usable.
 
-```{r find_atl03_granules_cloud, eval=FALSE}
+```{r find_atl03_granules_cloud}
 atl03_granules_cloud <- ATLAS_dataFinder(
-  short_name = "ATL03",
+  short_name = "ATL08",
   lower_left_lon,
   lower_left_lat,
   upper_right_lon,
@@ -279,7 +274,7 @@ atl03_granules_cloud <- ATLAS_dataFinder(
 )
 ```
 
-```{r read_atl03_cloud, eval=FALSE}
+```{r read_atl03_cloud}
 # Read the granule (the ATL03_read can only read one granule per read)
 atl03_h5_cloud <- ATL03_read(atl03_granules_cloud[1])
 
@@ -287,7 +282,7 @@ atl03_h5_cloud <- ATL03_read(atl03_granules_cloud[1])
 atl03_h5_cloud$beams
 ```
 
-```{r close_atl03_cloud, eval=FALSE}
+```{r close_atl03_cloud}
 close(atl03_h5_cloud)
 ```
 
@@ -364,7 +359,7 @@ hist(atl08_seg_dt$h_canopy, col = "green", xlab = "Height (m)", main = "ATL08 h_
 
 The function `to_vect()` will return a `terra::vect` object.
 
-```{r export_atl03_to_vector, eval=FALSE}
+```{r export_atl03_to_vector, eval=TRUE}
 library(terra)
 
 blueYellowRed <- function(n) grDevices::hcl.colors(n, "RdYlBu")
@@ -374,7 +369,7 @@ mask <- base::sample(seq_len(nrow(atl03_seg_dt)), 50)
 atl03_seg_vect <- to_vect(atl03_seg_dt)
 
 # Plot with mapview
-mapview::mapview(
+res_map <- mapview::mapview(
   atl03_seg_vect[mask],
   zcol = "h_ph",
   layer.name = "h_ph",
@@ -382,15 +377,12 @@ mapview::mapview(
   col.regions = blueYellowRed,
   map.types = c("Esri.WorldImagery")
 )
+
+res_map@map
 ```
 
-<div align="center">
 
-<img src="readme/atl03_seg_vect.png" width=500 />
-
-</div>
-
-```{r export_atl08_to_vector, eval = FALSE}
+```{r export_atl08_to_vector}
 # Extract vector from atl08_seg_dt
 class(atl08_seg_dt)
 atl08_seg_vect <- to_vect(atl08_seg_dt)
@@ -413,19 +405,13 @@ map_vect <- mapview::mapView(
   map.types = c("Esri.WorldImagery")
 )
 
-map_vect
+map_vect@map
 ```
-
-<div align="center">
-
-<img src="readme/atl08_seg_vect.png" width=500 />
-
-</div>
 
 Save vector as geopackage file. The formats supported are as from GDAL
 terra package.
 
-```{r write_vectors_to_disk, eval=FALSE}
+```{r write_vectors_to_disk, eval = FALSE}
 terra::writeVector(atl03_seg_vect, file.path(outdir, "atl03_seg.gpkg"))
 terra::writeVector(atl08_seg_vect, file.path(outdir, "atl08_seg.gpkg"))
 ```
@@ -434,26 +420,23 @@ terra::writeVector(atl08_seg_vect, file.path(outdir, "atl08_seg.gpkg"))
 
 Single max_h_canopy:
 
-```{r raster_max_h_canopy, eval = FALSE}
+```{r raster_max_h_canopy}
 redYellowGreen <- function(n) grDevices::hcl.colors(n, "RdYlGn")
 max_h_canopy <- ATL08_seg_attributes_dt_gridStat(atl08_seg_dt, func = max(h_canopy), res = 0.01)
 
-mapview::mapView(
+raster_max_h_canopy <- mapview::mapView(
   max_h_canopy,
   map = map_vect,
   col.regions = redYellowGreen
 )
+
+raster_max_h_canopy@map
 ```
 
-<div align="center">
-
-<img src="readme/atl08_max_h_canopy.png" width=500 />
-
-</div>
 
 Multiple attributes:
 
-```{r raster_multiple_attributes, eval = FALSE}
+```{r raster_multiple_attributes}
 multiple_attributes <- ATL08_seg_attributes_dt_gridStat(atl08_seg_dt, func = list(
   max_h_canopy = max(h_canopy),
   min_h_canopy = min(h_canopy),
@@ -484,18 +467,18 @@ m1 <- mapview::mapView(multiple_attributes[[1]], layer.name = "Max h_canopy", ma
 m2 <- mapview::mapView(multiple_attributes[[2]], layer.name = "Min h_canopy", map = map_vect, col.regions = redYellowGreen)
 m3 <- mapview::mapView(multiple_attributes[[3]], layer.name = "Mean canopy openness", map = map_vect_openness, col.regions = redYellowGreen)
 m4 <- mapview::mapView(multiple_attributes[[4]], layer.name = "Mean h_te_mean", col.regions = blueYellowRed, map = map_vect_terrain)
-
+```
+```{r, eval = FALSE}
 leafsync::sync(m1, m2, m3, m4)
 ```
 
-<div align="center" style="width:100%;">
-
-<figure>
-<img src="readme/output_multi.png" alt="multi" />
-<figcaption aria-hidden="true">multi</figcaption>
-</figure>
-
-</div>
+```{r maps-2x2, fig.show='hold', out.width='49%', echo = FALSE}
+mapview::mapshot2(m1@map, file="readme/m1.png", vheight=540, vwidth = 540)
+mapview::mapshot2(m2@map, file="readme/m2.png", vheight=540, vwidth = 540)
+mapview::mapshot2(m3@map, file="readme/m3.png", vheight=540, vwidth = 540)
+mapview::mapshot2(m4@map, file="readme/m4.png", vheight=540, vwidth = 540)
+knitr::include_graphics(c("readme/m1.png","readme/m2.png","readme/m3.png","readme/m4.png"))
+```
 
 # Clipping ATL03 and ATL08 data
 
@@ -504,10 +487,10 @@ Now we will use the clipping functions. There are two ways of clipping data in I
 1.Clipping raw HDF5 data from ATL03 and ATL08 files
 2.Clipping extracted attributes produced by the extraction functions, such as:
 
-`ATL03_seg_metadata_dt`
-`ATL03_photon_attributes_dt`
-`ATL08_seg_attributes_dt`
-`ATL03_ATL08_photons_attributes_dt_join`
+- `ATL03_seg_metadata_dt`
+- `ATL03_photon_attributes_dt`
+- `ATL08_seg_attributes_dt`
+- `ATL03_ATL08_photons_attributes_dt_join`
 
 The second method is preferred because it is faster and more efficient. It does not require re-reading the HDF5 file and clips only the extracted attributes, whereas the raw HDF5 structure contains many additional variables that may not be needed.
 There are multiple clipping variants that operate either on a bounding box or a geometry, using the suffixes _clipBox or _clipGeometry:
@@ -561,9 +544,9 @@ atl08_clippeds_dt <- ATL08_seg_attributes_dt(atl08_clippeds)
 head(atl08_clippeds_dt)
 ```
 
+Visualize clipped bounding box
 
-
-```{r visualize_clipped_bbox, eval = FALSE}
+```{r visualize_clipped_bbox}
 atl08_seg_dt_clip <- ATL08_seg_attributes_dt(atl08_clipped, attributes = c("h_canopy"))
 
 # Display location of clipped data
@@ -603,13 +586,9 @@ final_map <- map1@map |>
 final_map
 ```
 
-<div align="center">
+Now visualize clip by polygon `id`
 
-<img src="readme/atl08_clip_bbox.png" width=500 />
-
-</div>
-
-```{r clip_atl08_attributes_geometry, eval = FALSE}
+```{r clip_atl08_attributes_geometry}
 aoi <- file.path(outdir, "example_aoi.gpkg")
 aoi_vect <- terra::vect(aoi)
 
@@ -659,16 +638,10 @@ final_map <- map1@map |>
 final_map
 ```
 
-<div align="center">
-
-<img src="readme/clip_atl08_attributes_geometry.png" width=500 />
-
-</div>
-
 
 ### Extract Reference Ground Tracks
 
-```{r extract_rgt, eval = FALSE}
+```{r extract_rgt}
 # As lines
 rgt_line_vect <- rgt_extract(atl03_h5[[2]])
 rgt_polygon_vect <- rgt_extract(atl03_h5[[2]], line = FALSE)
@@ -695,14 +668,8 @@ map1 <- mapview::mapview(
   )
 
 map1
-
 ```
 
-<div align="center">
-
-<img src="readme/extract_rgt.png" width=500 />
-
-</div>
 
 Using the Generic clip() Function
 
@@ -931,7 +898,7 @@ atl03_atl08_vect <- to_vect(atl03_atl08_seg_dt[h_canopy_gt0 <= 31])
 
 Finally, we visualize the SpatVector interactively using mapview.
 
-```{r visualize_custom_segments, eval = FALSE}
+```{r visualize_custom_segments}
 centroid <- atl03_atl08_dt[, .(x = mean(lon_ph), y = mean(lat_ph))]
 
 map_output <- mapview::mapview(
@@ -948,11 +915,6 @@ map_output <- mapview::mapview(
 map_output
 ```
 
-<div align="center">
-
-<img src="readme/atl03_atl08_vect.png" width=500 />
-
-</div>
 
 # Predicting and rasterizing ATL08 h_canopy data using machine learning models
 
@@ -1006,7 +968,7 @@ for (atl08_h5_item in atl08_h5) {
 
 ## Rasterizing the predicted data
 
-```{r rasterize_predicted_h5, eval = FALSE}
+```{r rasterize_predicted_h5}
 output_raster <- tempfile(fileext = ".tif")
 x <- predicted_h5[["longitude"]][]
 y <- predicted_h5[["latitude"]][]
@@ -1034,12 +996,6 @@ res_map <- mapview::mapview(
 res_map@map
 ```
 
-<div align="center">
-
-<img src="readme/agbd_model_mean.png" width=500 />
-
-</div>
-
 # Upscalling ATL08 h_canopy data using Harmonized Landsat-Sentinel-2 (HLS) data
 
 ## Introduction
@@ -1049,7 +1005,7 @@ the Harmonized Landsat Sentinel-2 dataset (hls).
 
 ## Initialize Google Earth Engine API
 
-```{r ee_initialize_project, eval=FALSE}
+```{r ee_initialize_project, eval = FALSE}
 ee_initialize("project-name")
 ```
 
@@ -1068,7 +1024,7 @@ head(atl08_seg_dt)
 
 ### Visualizing the ‘h_canopy' for the ATL08 dataset.
 
-```{r visualize_atl08_upscaling_input, eval = FALSE}
+```{r visualize_atl08_upscaling_input}
 library(terra)
 library(leaflet)
 
@@ -1082,16 +1038,9 @@ map
 ```
 
 ```{r search_hls_catalog}
-hls_search <- search_datasets("Harmonized", "Landsat")
+hls_search <- search_datasets("Harmonized", "Landsat", "TOA")
 hls_search
 ```
-
-<div align="center" style="display:flex;justify-content:center">
-
-<img src="readme/atl08_seg_vect_gee_modelling.png" width=500 />
-
-</div>
-
 
 ```{r get_hls_catalog_id}
 hls_id <- get_catalog_id(hls_search[1]$id)
@@ -1184,7 +1133,7 @@ print(hls)
 
 ## Visualize the resulting image
 
-```{r visualize_hls_rgb, eval = FALSE}
+```{r visualize_hls_rgb}
 library(leaflet)
 
 forest_height_palette <- c("#ffffff", "#99cc99", "#006600", "#004d00")
@@ -1203,14 +1152,11 @@ map <- leaflet::leaflet() |>
 map
 ```
 
-<div align="center" style="display:flex;justify-content:center">
+#### Masked
 
-<figure>
-<img src="readme/unmasked_masked.png" alt="multi" />
-<figcaption aria-hidden="true">multi</figcaption>
-</figure>
-
-</div>
+```{r visualize_hls_masked, echo = FALSE}
+map |> leaflet::hideGroup("unmasked") |> leaflet::showGroup("masked")
+```
 
 ## Extracting GEE data for segments
 
@@ -1308,6 +1254,7 @@ modelled_map
 <img src="readme/upscalled_gee_map.png" width=500 />
 
 </div>
+
 
 ## Close the files
 
