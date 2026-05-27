@@ -583,6 +583,13 @@ head(atl03_atl08_dt)
 ## Plotting the result:
 
 ``` r
+rng <- range(atl03_atl08_dt[orbit_number == 3208 & beam == "gt2r"]$dist_ph_along)
+rng
+
+# Then pick a window in the middle of that range for a nice zoom
+mid <- mean(rng)
+xlim_new <- c(mid - 1500, mid + 1500)
+
 oldpar <- par(no.readonly = TRUE)
 par(oma = c(0, 0, 0, 0))
 par(mar = c(2, 3, 1, 1))
@@ -591,28 +598,24 @@ plot(
   atl03_atl08_dt[orbit_number == 3208],
   y = "h_ph",
   colors = c("gray", "#bd8421", "forestgreen", "green"),
-  xlim = c(25500, 28500),
+  xlim = xlim_new,
   beam = "gt2r",
   cex = 0.5,
   pch = 16
 )
-
 par(mar = c(3, 3, 1, 1))
-
 plot(
   atl03_atl08_dt[orbit_number == 3208],
   y = "ph_h",
   colors = c("gray", "#bd8421", "forestgreen", "green"),
-  xlim = c(25500, 28500),
+  xlim = xlim_new,
   beam = "gt2r",
   cex = 0.5,
   pch = 16,
   legend = FALSE
 )
+par(oldpar)
 
-par(
-  oldpar
-)
 ```
 
 <div align="center">
@@ -869,7 +872,9 @@ the Harmonized Landsat Sentinel-2 dataset (hls).
 ## Initialize Google Earth Engine API
 
 ``` r
-ee_initialize()
+# Replace "your-ee-project" with your own Google Earth Engine project ID
+Sys.setenv(EE_PROJECT = "your-ee-project")
+ICESat2VegR::ee_initialize()
 ```
 
 ## Extract ATL08 segment attributes h_canopy attribute
