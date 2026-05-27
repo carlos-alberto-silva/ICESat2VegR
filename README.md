@@ -119,7 +119,7 @@ atl03_granules_local <- ATLAS_dataFinder(
   lower_left_lat,
   upper_right_lon,
   upper_right_lat,
-  version = "006",
+  version = "007",
   daterange = daterange,
   persist = TRUE,
   cloud_computing = FALSE
@@ -174,7 +174,7 @@ atl03_granules_cloud <- ATLAS_dataFinder(
   lower_left_lat,
   upper_right_lon,
   upper_right_lat,
-  version = "006",
+  version = "007",
   daterange = daterange,
   persist = TRUE,
   cloud_computing = TRUE
