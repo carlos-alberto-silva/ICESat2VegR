@@ -1217,20 +1217,38 @@ A Random Forest model is trained on sampled segments and applied wall-to-wall ac
 ## Install and load required packages
 
 ``` r
-devtools::load_all("D:/2026/ICESat2VegR_fork")  # or: install.packages("ICESat2VegR")
+# The r-universe version (recommended for the latest version)
+install.packages("ICESat2VegR", , repos = c("https://caiohamamura.r-universe.dev", "https://cloud.r-project.org"))
 
-need_pkgs <- c(
-  "ICESat2VegR", "reticulate", "leaflet", "sf", "terra",
-  "data.table", "dplyr", "rgee", "randomForest", "ggplot2", "caret", "openxlsx"
+# The CRAN version
+install.packages("ICESat2VegR")
+
+# Required additional libraries
+need_pkgs <- c(                                                                       # Packages required by the workflow
+  "reticulate",   # Python <-> R interface
+  "leaflet",      # interactive maps
+  "sf",           # spatial vectors
+  "terra",        # rasters & vectors
+  "data.table",   # fast tables
+  "dplyr"         # tidy helpers
 )
-missing <- need_pkgs[!need_pkgs %in% rownames(installed.packages())]
-if (length(missing)) install.packages(missing, dependencies = TRUE)
+missing <- need_pkgs[!need_pkgs %in% rownames(installed.packages())]                 # Identify missing packages
+if (length(missing)) {                                                                # If any are missing
+  message("Installing missing R packages: ", paste(missing, collapse = ", "))         # Inform the user
+  install.packages(missing, repos = repos, dependencies = TRUE)                       # Install from repos with dependencies
+}
 
-suppressPackageStartupMessages({
-  library(ICESat2VegR); library(reticulate); library(leaflet)
-  library(sf); library(terra); library(data.table); library(dplyr)
-  library(rgee); library(randomForest); library(ggplot2); library(caret); library(openxlsx)
+suppressPackageStartupMessages({                                                       # Suppress startup messages for clean logs
+  library(ICESat2VegR)                                                                 # ICESat-2 vegetation tools
+  library(reticulate)                                                                  # Interface to Python
+  library(leaflet)                                                                     # Interactive maps
+  library(sf)                                                                          # Simple Features for vector data
+  library(terra)                                                                       # Raster + vector geospatial ops
+  library(data.table)                                                                  # Fast data tables
+  library(dplyr)                                                                       # Tidy verbs
 })
+cat("Loading libraries... done.\n")                                                    # Confirm loading
+
 ```
 
 ## Read AOI and define date range
@@ -1328,7 +1346,14 @@ st_write(stats20_clip_sf,
          delete_dsn = TRUE, quiet = TRUE)
 ```
 
-## Initialize Google Earth Engine and build AOI geometry
+## Package configuration
+This package uses three Python packages through reticulate:
+
+earthaccess: allows reading directly from the cloud
+h5py: for reading HDF5 content from the cloud
+earthengine-api: integration with Google Earth Engine for sampling, extracting raster data, and upscaling models
+
+For full configuration and initialization steps, please read the Package Configuration README.
 
 ``` r
 Sys.setenv(EE_PROJECT = "your-ee-project")
