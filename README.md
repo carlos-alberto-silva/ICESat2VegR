@@ -1185,7 +1185,7 @@ lapply(atl08_h5, close)
 ## Introduction
 
 In this workflow we model the `rh98` canopy height metric from ICESat-2 ATL03/ATL08 using
-**AlphaEarth spectral embeddings** (64 bands: A00–A63) combined with terrain predictors
+**AlphaEarth embeddings** (64 bands: A00–A63) combined with terrain predictors
 (elevation, slope, aspect, lon, lat) retrieved through Google Earth Engine.
 A Random Forest model is trained on sampled segments and applied wall-to-wall across the AOI.
 
