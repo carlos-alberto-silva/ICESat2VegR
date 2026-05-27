@@ -1205,12 +1205,12 @@ outputs.**
 
 
 
-# Upscaling ATL08 RH98 Canopy Height Using AlphaEarth Embeddings + Terrain Features
+# Upscaling ICESat-2-Derived Canopy Height Using AlphaEarth Embeddings and Ancillary Features
 
 ## Introduction
 
 In this workflow we model the `rh98` canopy height metric from ICESat-2 ATL03/ATL08 using
-**AlphaEarth spectral embeddings** (64 bands: A00–A63) combined with terrain predictors
+**AlphaEarth spectral embeddings** (64 bands: A00–A63) combined with terrain and geographic predictors
 (elevation, slope, aspect, lon, lat) retrieved through Google Earth Engine.
 A Random Forest model is trained on sampled segments and applied wall-to-wall across the AOI.
 
@@ -1415,7 +1415,7 @@ leaflet::leaflet() |>
 
 <div align="center">
 
-<img src="man/figures/image_embedding.png" width="500" />
+<img src="man/figures/image_embedding.jpeg" width="500" />
 
 </div>
 
@@ -1527,7 +1527,7 @@ leaflet::leaflet() |>
 
 <div align="center">
 
-<img src="man/figures/image_ch_map.png" width="500" />
+<img src="man/figures/image_ch_map.jpeg" width="500" />
 
 </div>
 
