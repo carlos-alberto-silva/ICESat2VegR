@@ -141,6 +141,7 @@ Now we download the granules:
 ``` r
 # Download all granules
 ATLAS_dataDownload(atl03_granules_local, outdir)
+ATLAS_dataDownload(atl08_granules_local, outdir)
 ```
 
 And then we can open and work with them
