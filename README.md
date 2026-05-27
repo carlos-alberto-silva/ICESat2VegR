@@ -1390,7 +1390,7 @@ leaflet::leaflet() |>
 
 <div align="center">
 
-<img src="man/figures/rgb_embedding_map.png" width="500" />
+<img src="man/figures/image_embedding.png" width="500" />
 
 </div>
 
@@ -1411,12 +1411,6 @@ print(best_metrics)
 
     ##  [1] "A07"  "A22"  "A24"  "A40"  "A56"  "A62"  "A36"  "A34"  "A38"
     ## [10] "elevation" "A23" "A20"  "A18"  "A02"  "A57"  "A13"  "A21"  "A30"
-
-<div align="center">
-
-<img src="man/figures/rfe_variable_importance.png" width="500" />
-
-</div>
 
 ## Train/test split and fit Random Forest model
 
@@ -1508,7 +1502,7 @@ leaflet::leaflet() |>
 
 <div align="center">
 
-<img src="man/figures/canopy_height_map.png" width="500" />
+<img src="man/figures/image_ch_map.png" width="500" />
 
 </div>
 
