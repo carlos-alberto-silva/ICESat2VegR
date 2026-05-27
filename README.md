@@ -1205,7 +1205,7 @@ outputs.**
 
 
 
-# Upscaling ATL08 RH98 Canopy Height Using AlphaEarth Embeddings + Terrain Features
+# Upscaling ICESat-2 Canopy Height Using AlphaEarth Embeddings and Ancillary Features
 
 ## Introduction
 
