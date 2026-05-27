@@ -1,0 +1,17 @@
+PKG_CPPFLAGS = @CPPFLAGS@
+PKG_LIBS = @GDAL_LIBS@ @PROJ_LIBS@
+
+# Copy PROJ data directory to inst/proj
+PROJ_DATADIR = @PROJ_DATADIR@
+
+all: ../inst/proj
+
+../inst/proj:
+	if [ -n "$(PROJ_DATADIR)" ]; then \
+		mkdir -p ../inst/proj;\
+		cp -R "$(PROJ_DATADIR)" ../inst/;\
+	else \
+		echo "PROJ_DATADIR is empty. Skipping file copy.";\
+	fi;
+
+.PHONY: all
