@@ -1178,34 +1178,9 @@ lapply(atl08_h5, close)
 # close(atl08_h5)
 ```
 
-# Acknowledgements
-
-We gratefully acknowledge funding from NASA’s ICESat-2 (ICESat-2, grant
-22-ICESat2_22-0006), Carbon Monitoring System (CMS, grant 22-CMS22-0015)
-and Commercial Smallsat Data Scientific Analysis(CSDSA, grant
-22-CSDSA22_2-0080).
-
-# Reporting Issues
-
-Please report any issue regarding the ICESat2VegR package to Dr. Silva
-(<c.silva@ufl.edu>) or Caio Hamamura (<hamamura.caio@ifsp.edu>).
-
-# Citing ICESat2VegR
-
-Silva,C.A; Hamamura,C. ICESat2VegR: An R Package for NASA’s Ice, Cloud,
-and Elevation Satellite (ICESat-2) Data Processing and Visualization for
-Terrestrial Applications.version 0.0.1, accessed on Jun. 13 2024,
-available at: <https://CRAN.R-project.org/package=ICESat2VegR>
-
-# Disclaimer
-
-**ICESat2VegR package comes with no guarantee, expressed or implied, and
-the authors hold no responsibility for its use or reliability of its
-outputs.**
-
-
-
-# Upscaling ICESat-2 Canopy Height Using AlphaEarth Embeddings and Ancillary Features
+#
+# Upscaling ICESat-2 canopy height using AlphaEarth Embeddings and ancillary datasets 
+#
 
 ## Introduction
 
@@ -1328,7 +1303,27 @@ stats20 <- ATL03_ATL08_compute_seg_attributes_dt_segStat(
   ),
   ph_class = c(2, 3)
 )
+
+centroid <- stats20[, .(x = mean(longitude), y = mean(latitude))]
+
+map_output <- mapview::mapview(
+  stats20_vect,
+  zcol        = "rh98",
+  col.regions = grDevices::hcl.colors(9, "RdYlGn"),
+  alpha       = 0,
+  layer.name  = "rh98 (m)",
+  map.types   = c("Esri.WorldImagery"),
+  cex         = 4
+)@map %>%
+  leaflet::setView(lng = centroid$x, lat = centroid$y, zoom = 10)
+
+map_output
 ```
+<div align="center">
+
+<img src="man/figures/image_seg.jpeg" width="500" />
+
+</div>
 
 ## Clip segments to AOI and export GeoJSON
 
@@ -1384,7 +1379,16 @@ df_vect <- terra::vect(
 yr          <- 2025
 predictors2 <- ee_build_AlphaEarth_embedding_terrain_stack(region, yr, yr)
 sampling_df <- ICESat2VegR::seg_gee_ancillary_dt_extract(predictors2, df_vect, 20)
+head(sampling_df[, 1:12])
 ```
+| **idx** | **rh98** | **beam** | **n_canopy_total** | **year** | **n_ground** | **n_top_canopy** | **n_mid_canopy** | **night_flag2** | **A43** | **A00** | **A01** |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | 14.7536 | gt1l | 11 | 2025 | 0 |  1 | 10 | 1 | -0.0888 |  0.0797 | -0.1191 |
+| 2 | 34.2744 | gt1r | 21 | 2025 | 0 |  7 | 14 | 1 | -0.0022 |  0.1417 | -0.1034 |
+| 3 | 21.3566 | gt1r | 27 | 2025 | 0 |  6 | 21 | 1 | -0.0354 |  0.0936 | -0.0630 |
+| 4 | 14.3197 | gt1l |  3 | 2025 | 0 |  0 |  3 | 1 |  0.0754 |  0.1085 | -0.1538 |
+| 5 |  0.5030 | gt1l |  1 | 2025 | 0 |  0 |  1 | 1 | -0.0062 |  0.1359 | -0.0178 |
+| 6 | 16.9825 | gt1l |  3 | 2025 | 0 |  1 |  2 | 1 | -0.0325 |  0.0936 | -0.0842 |
 
 ### Visualize the predictor stack as false-color RGB
 
@@ -1430,12 +1434,51 @@ x <- sampling_df %>%
 y <- sampling_df %>% dplyr::select("rh98") %>% data.frame()
 
 sel_rf_rfe   <- varSel(x, y$rh98)
-best_metrics <- sel_rf_rfe$importance$parameter[sel_rf_rfe$importance$importance >= 0.2]
+best_metrics <- sel_rf_rfe$selvars
 print(best_metrics)
+
+par(mfrow = c(1, 2), mar = c(4, 6, 2, 1))
+
+# Left — all RFE evaluated, colored by selection
+barplot(
+  rev(imp_desc$importance),
+  names.arg = rev(as.character(imp_desc$parameter)),
+  horiz     = TRUE,
+  las       = 1,
+  main      = "RFE importance\n(green = selected)",
+  xlab      = "Importance",
+  col       = ifelse(rev(imp_desc$selected), "#1B7837", "grey70"),
+  cex.names = 0.7
+)
+abline(v = 0.2, lty = 2, col = "red")
+
+# Right — selected only
+barplot(
+  best_imp_rfe$importance,
+  names.arg = as.character(best_imp_rfe$parameter),
+  horiz     = TRUE,
+  las       = 1,
+  main      = "Selected predictors",
+  xlab      = "Importance",
+  col       = "#1B7837",
+  cex.names = 0.8
+)
+abline(v = 0.2, lty = 2, col = "red")
+
+par(mfrow = c(1, 1), mar = c(5, 4, 4, 2))
+
 ```
 
     ##  [1] "A07"  "A22"  "A24"  "A40"  "A56"  "A62"  "A36"  "A34"  "A38"
     ## [10] "elevation" "A23" "A20"  "A18"  "A02"  "A57"  "A13"  "A21"  "A30"
+
+
+<div align="center">
+
+<img src="man/figures/image_vimp.jpeg" width="500" />
+
+</div>
+
 
 ## Train/test split and fit Random Forest model
 
@@ -1559,4 +1602,29 @@ Do not forget to close the files to properly release them.
 lapply(atl03_h5, close)
 lapply(atl08_h5, close)
 ```
+
+# Acknowledgements
+
+We gratefully acknowledge funding from NASA’s ICESat-2 (ICESat-2, grant
+22-ICESat2_22-0006), Carbon Monitoring System (CMS, grant 22-CMS22-0015)
+and Commercial Smallsat Data Scientific Analysis(CSDSA, grant
+22-CSDSA22_2-0080).
+
+# Reporting Issues
+
+Please report any issue regarding the ICESat2VegR package to Dr. Silva
+(<c.silva@ufl.edu>) or Caio Hamamura (<hamamura.caio@ifsp.edu>).
+
+# Citing ICESat2VegR
+
+Silva,C.A; Hamamura,C. ICESat2VegR: An R Package for NASA’s Ice, Cloud,
+and Elevation Satellite (ICESat-2) Data Processing and Visualization for
+Terrestrial Applications.version 0.0.1, accessed on Jun. 13 2024,
+available at: <https://CRAN.R-project.org/package=ICESat2VegR>
+
+# Disclaimer
+
+**ICESat2VegR package comes with no guarantee, expressed or implied, and
+the authors hold no responsibility for its use or reliability of its
+outputs.**
 
