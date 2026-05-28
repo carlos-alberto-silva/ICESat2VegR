@@ -19,13 +19,13 @@ ATL08 (Land and Vegetation Height) products for land and vegetation applications
 
 ``` r
 # The r-universe version (recommended for the latest version)
-#install.packages("ICESat2VegR", , repos = c("https://caiohamamura.r-universe.dev", "https://cloud.r-project.org"))
+install.packages("ICESat2VegR", , repos = c("https://caiohamamura.r-universe.dev", "https://cloud.r-project.org"))
 
 # The CRAN version
 #install.packages("ICESat2VegR")
-devtools::load_all("D:/2026/ICESat2VegR_fork")
+
 # Required additional libraries
-need_pkgs <- c(                                                                       # Packages required by the workflow
+need_pkgs <- c(   # Packages required by the workflow
   "reticulate",   # Python <-> R interface
   "leaflet",      # interactive maps
   "sf",           # spatial vectors
@@ -1040,8 +1040,6 @@ for (atl08_h5_item in atl08_h5) {
 ## Rasterizing the predicted data
 
 ``` r
-# Restart R first then:
-devtools::load_all("D:/2026/ICESat2VegR_fork")
 
 # Fix PROJ path
 Sys.setenv(PROJ_DATA = system.file("proj", package = "ICESat2VegR"))
@@ -1099,7 +1097,7 @@ res_map
 #
 # Upscaling ICESat-2 canopy height using AlphaEarth Embeddings and ancillary datasets 
 #
-  devtools::load_all("D:/2026/ICESat2VegR_fork") 
+
 ## Introduction
   
 In this workflow we model the `rh98` canopy height metric from ICESat-2 ATL03/ATL08 using
