@@ -47,7 +47,11 @@ if (!methods::isClass("data.table")) {
   methods::setOldClass(c("data.table", "data.frame"))
 }
 
-# ---- internal helper ---- 
+# Register sf S3 class for S4 dispatch
+if (!methods::isClass("sf")) {
+  methods::setOldClass(c("sf", "data.frame"))
+}
+# ---- internal helper ----
 .generic_to_vect <- function(x, lon, lat, crs = "EPSG:4326") {
   if (!requireNamespace("terra", quietly = TRUE)) {
     stop("Package 'terra' is required but not installed.")
