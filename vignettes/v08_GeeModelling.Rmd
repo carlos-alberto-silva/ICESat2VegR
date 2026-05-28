@@ -317,7 +317,7 @@ For each segment extract the hls data:
 
 
 ``` r
-extracted_dt <- seg_gee_ancillary_dt_extract(hls, atl08_seg_vect)
+extracted_dt <- seg_ancillary_extract(hls, atl08_seg_vect)
 
 head(extracted_dt)
 ```

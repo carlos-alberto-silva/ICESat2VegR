@@ -136,8 +136,8 @@ prepend_class(atl08_20m_filter, "icesat2.atl08_dt")
 
 sampled_vect <- to_vect(atl08_20m_filter)
 sampled_vect$I <- seq_along(sampled_vect)
-out_dt <- seg_gee_ancillary_dt_extract(fullStack, sampled_vect, scale = 30, chunk_size = 2000)
-# out_dt2 <- seg_gee_ancillary_dt_extract(fullStack, sampled_vect[22001:24000], scale = 30, chunk_size = 2000)
+out_dt <- seg_ancillary_extract(fullStack, sampled_vect, scale = 30, chunk_size = 2000)
+# out_dt2 <- seg_ancillary_extract(fullStack, sampled_vect[22001:24000], scale = 30, chunk_size = 2000)
 
 
 
