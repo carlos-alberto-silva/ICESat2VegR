@@ -1,7 +1,6 @@
 
 ![](https://github.com/carlos-alberto-silva/ICESat2VegR/blob/master/readme/cover.png)<br/>
-  [![ICESat2VegR status
-     badge](https://carlos-alberto-silva.r-universe.dev/badges/ICESat2VegR)](https://carlos-alberto-silva.r-universe.dev/ICESat2VegR)
+[![ICESat2VegR status badge](https://carlos-alberto-silva.r-universe.dev/badges/ICESat2VegR)](https://carlos-alberto-silva.r-universe.dev/ICESat2VegR)
 [![R-hub](https://github.com/carlos-alberto-silva/ICESat2VegR/actions/workflows/rhub.yaml/badge.svg)](https://github.com/carlos-alberto-silva/ICESat2VegR/actions/workflows/rhub.yaml)
 [![CRAN](https://www.r-pkg.org/badges/version/ICESat2VegR)](https://cran.r-project.org/package=ICESat2VegR)
 ![licence](https://img.shields.io/badge/Licence-GPL--3-blue.svg)
@@ -11,7 +10,7 @@
 Satellite (ICESat-2) Data Processing and Visualization for Land and
 Vegetation Applications.**
   
-  Authors: Carlos Alberto Silva and Caio Hamamura
+Authors: Carlos Alberto Silva, Cesar Alvites, Alexander Gaskins  and Caio Hamamura
 
 The ICESat2VegR package provides functions for downloading, reading, visualizing, processing, and exporting NASA’s ICESat-2 ATL03 (Global Geolocated Photon Data) and 
 ATL08 (Land and Vegetation Height) products for land and vegetation applications in the R environment.
