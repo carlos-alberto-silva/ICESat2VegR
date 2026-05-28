@@ -1,5 +1,5 @@
 # --- internal: normalize clip_obj to terra::SpatVector (clip_obj/Multiclip_obj) ---
-.as_spatvector_poly <- function(clip_obj) {
+.as_spatvector_poly_old <- function(clip_obj) {
   if (inherits(clip_obj, "SpatVector")) {
     sv <- clip_obj
   } else if (inherits(clip_obj, c("sf", "sfc"))) {
@@ -24,7 +24,18 @@
   }
   sv
 }
-
+.as_spatvector_poly <- function(clip_obj) {
+  if (inherits(clip_obj, "SpatVector")) {
+    sv <- clip_obj
+  } else if (inherits(clip_obj, c("sf", "sfc"))) {
+    if (!inherits(clip_obj, "sf")) clip_obj <- sf::st_as_sf(clip_obj)
+    if (any(!sf::st_is_valid(clip_obj))) clip_obj <- sf::st_make_valid(clip_obj)
+    sv <- terra::vect(clip_obj)
+  } else {
+    stop("`clip_obj` must be a terra::SpatVector or an sf/sfc object.")
+  }
+  terra::makeValid(sv)
+}
 #' Clip joined ATL03/ATL08 segment attributes by bounding extent
 #'
 #' @description

@@ -59,8 +59,7 @@ setGeneric(
 )
 
 defaultPallete <- c("#d55e00", "#cc79a7", "#f0e442", "#0072b2", "#009e73")
-# setRefClass("leaflet")
-
+if (!isClass("leaflet")) setRefClass("leaflet")
 #' Adds Earth Engine Image class to leaflet map
 #'
 #' This method handles adding an Earth Engine Image to a leaflet map.
