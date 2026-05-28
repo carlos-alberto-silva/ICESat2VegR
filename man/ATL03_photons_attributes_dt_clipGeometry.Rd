@@ -6,19 +6,19 @@
 \usage{
 ATL03_photons_attributes_dt_clipGeometry(
   atl03_photons_dt,
-  sppoly,
+  clip_obj,
   split_by = "id"
 )
 }
 \arguments{
 \item{atl03_photons_dt}{An ATL03 photon data table. An S4 object of class \code{\linkS4class{icesat2.atl03_dt}}.}
 
-\item{sppoly}{Spatial Polygon. An object of class \code{\link[terra:SpatVector-class]{terra::SpatVector}},
+\item{clip_obj}{Spatial clip_obj. An object of class \code{\link[terra:SpatVector-class]{terra::SpatVector}},
 which can be loaded as an ESRI shapefile using the \link[terra:vect]{terra::vect} function in the
 \emph{sf} package.}
 
-\item{split_by}{Polygon id. If defined, GEDI data will be clipped by each polygon using
-the polygon id from the attribute table defined by the user.}
+\item{split_by}{clip_obj id. If defined, GEDI data will be clipped by each clip_obj using
+the clip_obj id from the attribute table defined by the user.}
 }
 \value{
 Returns an S4 object of class \code{\linkS4class{icesat2.atl03_dt}}
@@ -41,7 +41,7 @@ atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 atl03_photons_dt <- ATL03_photons_attributes_dt(atl03_h5 = atl03_h5)
 
 # Specifying the path to shapefile
-polygon_filepath <-
+clip_obj_filepath <-
   system.file(
     "extdata",
     "clip_geom.shp",
@@ -49,11 +49,11 @@ polygon_filepath <-
   )
 
 # Reading shapefile as sf object
-sppoly <- terra::vect(polygon_filepath)
+clip_obj <- terra::vect(clip_obj_filepath)
 
 # Clipping ATL03 photon attributes by Geometry
 atl03_photons_dt_clip <-
-  ATL03_photons_attributes_dt_clipGeometry(atl03_photons_dt, sppoly, split_by = "id")
+  ATL03_photons_attributes_dt_clipGeometry(atl03_photons_dt, clip_obj, split_by = "id")
 
 head(atl03_photons_dt_clip)
 

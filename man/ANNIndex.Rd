@@ -8,13 +8,14 @@ This class uses Approximate Neareast Neighbor Index
 for finding points that are within a specified range.
 }
 \seealso{
-Mount, D. M.; Arya, S. ANN: A Library for Approximate Nearest Neighbor Searching,
-available in \url{https://www.cs.umd.edu/~mount/ANN/}
+Mount, D. M.; Arya, S. ANN: A Library for Approximate Nearest Neighbor
+Searching, available in \url{https://www.cs.umd.edu/~mount/ANN/}
 }
 \section{Public fields}{
 \if{html}{\out{<div class="r6-fields">}}
 \describe{
-\item{\code{tree}}{The C++ pointer for the built tree}
+\item{\code{tree}}{The C++ pointer for the built tree
+ANNIndex constructor}
 }
 \if{html}{\out{</div>}}
 }
@@ -39,9 +40,9 @@ Creates a new instance of the \code{\link{ANNIndex}} class.
 \describe{
 \item{\code{x}}{NumericVector of x/longitude}
 
-\item{\code{y}}{NumericVector of y/latitude}
+\item{\code{y}}{NumericVector of y/latitude
 
-\item{\code{radius}}{the minimum radius between the points}
+searchFixedRadius method}
 }
 \if{html}{\out{</div>}}
 }

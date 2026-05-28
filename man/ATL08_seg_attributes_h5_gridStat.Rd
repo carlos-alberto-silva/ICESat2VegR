@@ -14,10 +14,7 @@ ATL08_seg_attributes_h5_gridStat(
     "h_canopy_uncertainty", "canopy_openness", "h_max_canopy", "segment_cover"),
   beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
   out_root,
-  ul_lat,
-  ul_lon,
-  lr_lat,
-  lr_lon,
+  clip_obj,
   res,
   creation_options = def_co,
   agg_function = default_agg_function,
@@ -35,13 +32,18 @@ ATL08_seg_attributes_h5_gridStat(
 \item{out_root}{Character. The root name for the raster output files, the pattern is
 \{out_root\}\emph{\{metric\}}\{count/m1/m2\}.tif. This should include the full path for the file.}
 
-\item{ul_lat}{Numeric. Upper left latitude for the bounding box}
-
-\item{ul_lon}{Numeric. Upper left longitude for the bounding box}
-
-\item{lr_lat}{Numeric. Lower right latitude for the bounding box}
-
-\item{lr_lon}{Numeric. Lower right longitude for the bounding box}
+\item{clip_obj}{Bounding extent or spatial object used to define the clipping area.
+Supported inputs:
+\itemize{
+\item Numeric vector of length 4: \code{c(xmin, ymin, xmax, ymax)} in decimal degrees.
+\item \code{terra::SpatExtent}.
+\item \code{terra::SpatVector} (polygon/multipolygon).
+\item \code{sf} / \code{sfc} object.
+}
+When a polygon object is provided (\code{SpatVector}, \code{sf}, \code{sfc}),
+ATL08 segments are clipped using \code{ATL08_seg_attributes_dt_clipBox()}.
+Otherwise (numeric bbox or \code{SpatExtent}), clipping is done with
+\code{ATL08_seg_attributes_dt_clipBox()}.}
 
 \item{res}{NumericVector. Resolution lon lat for the output raster in coordinates decimal degrees}
 
@@ -63,8 +65,7 @@ This function will read multiple ATL08 H5 files and create a stack of raster lay
 This function will create five different aggregate statistics
 (n, mean, variance, min, max).
 One can calculate mean and standard deviation with the following
-formulas according to Terriberry (2007) and
-\insertCite{Joanes1998;textual}{ICESat2VegR}:
+formulas according to Terriberry (2007).
 
 The \code{agg_function} is a formula which return a data.table with the
 aggregate function to perform over the data.
@@ -119,8 +120,6 @@ values. It is defined as:
 }\if{html}{\out{</div>}}
 }
 \examples{
-# Specifying the path to GEDI leveatl08_canopy_dt data (zip file)
-library(ICESat2VegR)
 library(data.table)
 
 # Specifying the path to ATL08 file
@@ -132,11 +131,13 @@ atl08_path <- system.file("extdata",
 # Reading ATL08 data (h5 file)
 atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 
-# Bounding rectangle coordinates
-ul_lat <- 41.5386848449707031
-ul_lon <- -106.5708541870117188
-lr_lat <- 41.5314979553222656
-lr_lon <- -106.5699081420898438
+# Bounding rectangle as numeric bbox: c(xmin, ymin, xmax, ymax)
+clip_obj <- c(
+  xmin = -106.5708541870117188,
+  ymin =  41.5314979553222656,
+  xmax = -106.5699081420898438,
+  ymax =  41.5386848449707031
+)
 
 res <- 100 # meters
 lat_to_met_factor <- 1 / 110540
@@ -162,12 +163,30 @@ agg_join <- function(agg1, agg2) {
 }
 
 finalizer <- list(
-  mean = "sum/n",
+  mean  = "sum/n",
   range = "max-min"
 )
 
 outdir <- tempdir()
 
+# ATL08_seg_attributes_h5_gridStat(
+#   atl08_dir        = dirname(atl08_path),
+#   metrics          = c("h_canopy"),
+#   out_root         = outdir,
+#   beam             = c("gt1l","gt1r","gt2l","gt2r","gt3l","gt3r"),
+#   clip_obj         = clip_obj,
+#   res              = c(xres, -yres),
+#   creation_options = c(
+#     "COMPRESS=DEFLATE",
+#     "BIGTIFF=IF_SAFER",
+#     "TILED=YES",
+#     "BLOCKXSIZE=512",
+#     "BLOCKYSIZE=512"
+#   ),
+#   agg_function     = agg_function,
+#   agg_join         = agg_join,
+#   finalizer        = finalizer
+# )
 
 gc()
 file.remove(list.files(outdir, "*.tif"))
@@ -175,7 +194,5 @@ close(atl08_h5)
 
 }
 \references{
-\insertAllCited{}
-
 Terriberry, Timothy B. (2007), Computing Higher-Order Moments Online, archived from the original on 23 April 2014, retrieved 5 May 2008
 }

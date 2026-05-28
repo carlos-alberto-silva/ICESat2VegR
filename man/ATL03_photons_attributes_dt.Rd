@@ -2,62 +2,95 @@
 % Please edit documentation in R/ATL03_photons_attributes_dt.R
 \name{ATL03_photons_attributes_dt}
 \alias{ATL03_photons_attributes_dt}
-\title{ATL03 photons attributes}
+\title{ATL03 photon attributes}
 \usage{
 ATL03_photons_attributes_dt(
   atl03_h5,
-  beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")
+  beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),
+  attributes = c("quality_ph", "dist_ph_along")
 )
 }
 \arguments{
-\item{atl03_h5}{A ICESat-2 ATL03 object (output of \code{\link[=ATL03_read]{ATL03_read()}} function).
-An S4 object of class \code{\linkS4class{icesat2.atl03_dt}}.}
+\item{atl03_h5}{An ICESat-2 ATL03 object (output of \code{\link[=ATL03_read]{ATL03_read()}}), i.e.
+an S4 object of class \code{\link{icesat2.atl03_h5}}.}
 
-\item{beam}{Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")}
+\item{beam}{Character vector indicating beams to process
+(e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r").}
+
+\item{attributes}{Character vector of additional photon-level attributes to extract.
+See details below for available options. Default is
+\code{c("quality_ph", "dist_ph_along")}.}
 }
 \value{
-Returns an S4 object of class \code{\link[data.table:data.table-class]{data.table::data.table}}
-containing the ATL03 photons attributes.
+An S4 object of class \code{\link[data.table:data.table]{data.table::data.table}} (with class
+\code{icesat2.atl03_dt} prepended) containing photon-level ATL03
+attributes.
 }
 \description{
-This function extracts photons attributes from ICESat-2 ATL03 data
+Extract photon-level attributes from ICESat-2 ATL03 data.
 }
 \details{
-These are the photons attributes extracted:
+The returned \code{data.table} always includes the following columns:
 \itemize{
-\item \emph{lon_ph} Longitude of each received photon.
-Computed from the ECEF Cartesian coordinates of the bounce point.
-\item \emph{lat_ph} Latitude of each received photon.
-Computed from the ECEF Cartesian coordinates of the bounce point.
-\item \emph{lat_ph} Latitude of each received photon.
-Computed from the ECEF Cartesian coordinates of the bounce point.
-Height of each received photon, relative to the WGS-84 ellipsoid including
-the geophysical corrections noted in section 6.0. Please note that
-neither the geoid, ocean tide nor the dynamic atmospheric corrections (DAC) are applied to the ellipsoidal heights.
-\item \emph{quality_ph} Indicates the quality of the associated photon.
-0=nominal, 1=possible_afterpulse, 2=possible_impulse_response_
-effect, 3=possible_tep. Use this flag in conjunction with signal_conf_ph
-to identify those photons that are likely noise or likely signal
-\item \emph{night_flag}  Flag indicating the data were acquired in night
-conditions: 0=day, 1=night. Night flag is set when solar elevation is below 0.0 degrees.
+\item \code{beam}: Beam ID (e.g., \code{"gt2l"}).
+\item \code{strong_beam}: Logical indicating whether the beam is classified as
+strong for that orbit.
+\item \code{lon_ph}: Longitude of each received photon, computed from ECEF
+Cartesian coordinates of the bounce point (degrees_east).
+\item \code{lat_ph}: Latitude of each received photon, computed from ECEF
+Cartesian coordinates of the bounce point (degrees_north).
+\item \code{h_ph}: Height of each received photon, relative to the WGS-84
+ellipsoid, including the geophysical corrections described in the
+ATL03 ATBD. (Geoid, ocean tide, and dynamic atmosphere corrections
+are \emph{not} applied.)
+\item \code{solar_elevation}: Solar elevation interpolated from segment-level
+\code{geolocation/solar_elevation} to photon level.
 }
+
+Additional photon-level attributes can be requested using the
+\code{attributes} argument. These must correspond to names defined in
+\code{ATL03.photon.map}. Available optional attributes currently include:
+\itemize{
+\item \code{delta_time}: Photon transmit time in seconds since
+2018-01-01 (ATLAS SDP epoch).
+\item \code{dist_ph_across}: Across-track distance of the photon projected
+to the reference ellipsoid (meters).
+\item \code{pce_mframe_cnt}: Major frame counter (part of photon ID).
+\item \code{ph_id_channel}: Channel number assigned to the photon event.
+\item \code{ph_id_count}: Photon event counter (part of photon ID).
+\item \code{ph_id_pulse}: Laser pulse counter (part of photon ID).
+\item \code{quality_ph}: Photon quality flag indicating nominal, saturation,
+or noise conditions.
+\item \code{signal_class_ph}: Experimental photon classification flag based
+on photon weights.
+\item \code{signal_conf_ph}: Signal confidence level per surface type
+(5 x N array in original product).
+\item \code{weight_ph}: Relative photon weight (0-65535), proportional to
+photon density.
+}
+
+If a requested attribute is not present in a given beam, the
+corresponding column is filled with \code{NA}.
 }
 \examples{
-# ATL03 file path
-atl03_path <- system.file("extdata",
-  "atl03_clip.h5",
+atl03_path <- system.file(
+  "extdata", "atl03_clip.h5",
   package = "ICESat2VegR"
 )
 
-# Reading ATL03 data (h5 file)
-atl03_h5 <- ATL03_read(atl03_path = atl03_path)
+atl03_h5 <- ATL03_read(atl03_path)
 
-# Extracting ATL03 photons attributes
-atl03_photons_dt <- ATL03_photons_attributes_dt(atl03_h5 = atl03_h5)
-
+atl03_photons_dt <- ATL03_photons_attributes_dt(
+ atl03_h5,
+ beam = c("gt1r"),
+ attributes = c("quality_ph", "dist_ph_along", "ph_id_count")
+)
 head(atl03_photons_dt)
+
 close(atl03_h5)
+
+
 }
 \seealso{
-\url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
+\url{https://nsidc.org/sites/default/files/documents/technical-reference/icesat2_atl03_data_dict_v007.pdf}
 }

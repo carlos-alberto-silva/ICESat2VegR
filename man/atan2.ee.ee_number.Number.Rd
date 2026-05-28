@@ -2,16 +2,21 @@
 % Please edit documentation in R/gee-base-number.R
 \name{atan2.ee.ee_number.Number}
 \alias{atan2.ee.ee_number.Number}
-\title{Calculates the angle formed by the 2D vector x, y.}
+\title{Calculates the angle formed by the 2D vector [x, y]}
 \usage{
-atan2.ee.ee_number.Number(x)
+atan2.ee.ee_number.Number(x, e2)
 }
 \arguments{
-\item{x}{The number to calculate the \code{atan2} on.}
+\item{x}{An \code{ee$Number}}
+
+\item{e2}{An \code{ee$Number}}
 }
 \value{
-The resulting ee.Number with the results from \code{atan2}.
+An \code{ee$Number} representing the angle in radians
 }
 \description{
-Calculates the angle formed by the 2D vector x, y.
+Calculates the angle formed by the 2D vector [x, y]
+}
+\seealso{
+\url{https://developers.google.com/earth-engine/apidocs/ee-number-atan2}
 }

@@ -2,13 +2,33 @@
 % Please edit documentation in R/gee-base.R
 \name{ee_initialize}
 \alias{ee_initialize}
-\title{Initializes the Google Earth Engine API}
+\title{Initializes the Google Earth Engine API
+Initialize Earth Engine for this R session}
 \usage{
-ee_initialize()
+ee_initialize(
+  project = Sys.getenv("EE_PROJECT", unset = NA),
+  service_account = NULL,
+  keyfile = NULL,
+  quiet = FALSE,
+  force_auth = FALSE
+)
+}
+\arguments{
+\item{project}{Character. \strong{GCP Project ID} (e.g., "ice-map-2025") or a numeric project \strong{number}.
+If NULL/NA, falls back to Sys.getenv("EE_PROJECT").}
+
+\item{service_account}{Optional service account email (use with \code{keyfile}).}
+
+\item{keyfile}{Path to service-account JSON key (required if \code{service_account} is set).}
+
+\item{quiet}{Logical. Suppress messages.}
+
+\item{force_auth}{Logical. If TRUE, perform OAuth before Initialize().}
 }
 \value{
-Nothing, it just initializes the Google Earth Engine API
+TRUE on success; FALSE otherwise (invisibly).
 }
 \description{
 Initializes the Google Earth Engine API
+Initialize Earth Engine for this R session
 }

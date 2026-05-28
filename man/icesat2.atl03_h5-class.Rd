@@ -11,8 +11,9 @@ Class for ICESat-2 ATL03
 \section{Slots}{
 
 \describe{
-\item{\code{h5}}{Object of class \code{\link[hdf5r:H5File-class]{H5File}} from \code{hdf5r} package containing the
-ICESat-2 Global Geolocated Photon Data (ATL03)}
+\item{\code{h5}}{Object of class \code{\link[hdf5r:H5File-class]{H5File}} from
+\code{hdf5r} package containing the ICESat-2 Global Geolocated
+Photon Data (ATL03)}
 }}
 
 \seealso{

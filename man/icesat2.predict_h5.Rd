@@ -9,3 +9,4 @@ This is a generic prediction class for HDF5 files to make type checking
 and method matching with S4 methods.
 }
 
+\keyword{internal}

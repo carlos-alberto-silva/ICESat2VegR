@@ -2,38 +2,69 @@
 % Please edit documentation in R/ATL03_h5_clipBox.R
 \name{ATL03_h5_clipBox}
 \alias{ATL03_h5_clipBox}
-\title{Clips ICESat-2 ATL03 H5 data}
+\title{Clip ICESat-2 ATL03 HDF5 Data Using a Bounding Extent}
 \usage{
 ATL03_h5_clipBox(
   atl03,
   output,
-  bbox,
+  clip_obj,
   beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
   additional_groups = c("orbit_info")
 )
 }
 \arguments{
-\item{atl03}{\code{\linkS4class{icesat2.atl03_h5}} object,
-obtained through \code{\link[=ATL03_read]{ATL03_read()}} for clipping}
+\item{atl03}{An \code{\linkS4class{icesat2.atl03_h5}} object created by
+\code{\link[=ATL03_read]{ATL03_read()}}, representing the ATL03 HDF5 file to be clipped.}
 
-\item{output}{character. Path to the output h5 file.}
+\item{output}{Character. Path to the output HDF5 file that will store the
+clipped ATL03 dataset.}
 
-\item{bbox}{\code{\linkS4class{numeric}} or \code{\link[terra:SpatExtent-class]{terra::SpatExtent}} for clipping, the
-order of the bbox is the default from NASA's ICESat-2 CMS searching:
-(ul_lat, ul_lon, lr_lat, lr_lon).}
+\item{clip_obj}{Bounding extent used for clipping. Supported inputs:
+\itemize{
+\item A numeric vector of length 4:
+\code{c(ul_lat, ul_lon, lr_lat, lr_lon)}, following the ICESat-2 CMS
+bounding-box convention (upper-left latitude/longitude and
+lower-right latitude/longitude).
+\item A \code{\link[terra:SpatExtent-class]{terra::SpatExtent}} object.
+}}
 
-\item{beam}{\code{\linkS4class{character}}. The vector of beams to include, default
-all c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")}
+\item{beam}{Character vector specifying which ATL03 beams to include.
+Defaults to:
+\code{c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")}.}
 
-\item{additional_groups}{\code{\linkS4class{character}}. Other addional groups that should be included, default
-c("orbit_info")}
+\item{additional_groups}{Character vector of additional non-beam HDF5 groups
+to copy unchanged into the output file. Defaults to:
+\code{c("orbit_info")}.}
 }
 \value{
-Returns the clipped S4 object of class \code{\linkS4class{icesat2.atl03_h5}}
+An S4 object of class \code{\linkS4class{icesat2.atl03_h5}} representing
+the clipped ATL03 HDF5 file saved at the \code{output} location.
 }
 \description{
-This function clips ATL03 HDF5 file within beam groups,
-but keeps metada and ancillary data the same.
+Clips an ICESat-2 ATL03 HDF5 file to a specified spatial extent. Only
+geolocated photon and segment datasets within the ATL03 beam groups are
+clipped; all metadata, orbit information, and ancillary groups are preserved
+unchanged. This function provides bounding-box-based clipping, complementing
+geometry-based clipping workflows.
+}
+\details{
+The function performs spatial subsetting at the photon and segment level.
+Internally, it:
+
+\enumerate{
+\item Copies file- and group-level attributes.
+\item Extracts beam-level datasets and evaluates segment-level and
+photon-level masks using the supplied bounding box.
+\item Applies these masks to all datasets whose dimensions correspond to
+segments or photons.
+\item Recomputes dependent indexing datasets (e.g., \code{ph_index_beg})
+to maintain ATL03 structural integrity.
+\item Writes the clipped data into a new, valid ATL03 HDF5 file.
+}
+
+This function preserves the full ATL03 metadata, ancillary information, and
+file structure while trimming the spatial domain to the user-specified
+bounding extent.
 }
 \examples{
 # ATL03 file path
@@ -42,18 +73,25 @@ atl03_path <- system.file("extdata",
   package = "ICESat2VegR"
 )
 
-# Reading ATL03 data (h5 file)
-atl03_h5 <- ATL03_read(atl03_path = atl03_path)
+# Read ATL03 data (HDF5)
+atl03_h5 <- ATL03_read(atl03_path)
 
-# Bounding rectangle coordinates
+# Bounding rectangle coordinates (ul_lat, ul_lon, lr_lat, lr_lon)
 xmin <- -106.5723
 xmax <- -106.5693
 ymin <- 41.533
 ymax <- 41.537
 
-# Clipping ATL03 photons by boundary box extent
+bbox <- c(ymax, xmin, ymin, xmax)
+
+# Clip ATL03 using the bounding extent
 output <- tempfile(fileext = ".h5")
-atl03_photons_dt_clip <- ATL03_h5_clipBox(atl03_h5, output, c(ymax, xmin, ymin, xmax))
+atl03_clip <- ATL03_h5_clipBox(
+  atl03_h5,
+  output = output,
+  clip_obj = bbox
+)
 
 close(atl03_h5)
+
 }

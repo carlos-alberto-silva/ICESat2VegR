@@ -2,11 +2,11 @@
 % Please edit documentation in R/class.icesat2.h5_cloud.R
 \name{ICESat2.h5_cloud}
 \alias{ICESat2.h5_cloud}
-\title{The class representing the h5 file opened from the cloud for cloud computing.}
+\title{The class representing the h5 file opened from the cloud for cloud computing}
 \description{
-The class representing the h5 file opened from the cloud for cloud computing.
+The class representing the h5 file opened from the cloud for cloud computing
 
-The class representing the h5 file opened from the cloud for cloud computing.
+The class representing the h5 file opened from the cloud for cloud computing
 }
 \details{
 Besides representing h5 files, it is also used to represent groups

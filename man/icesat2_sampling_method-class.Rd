@@ -8,3 +8,4 @@
 Class for sampling methods to be passed on for the sample function
 }
 
+\keyword{internal}

@@ -4,11 +4,13 @@
 \alias{rgt_extract}
 \title{Extract reference ground track from ATL03 segments}
 \usage{
-rgt_extract(h5)
+rgt_extract(h5, line = TRUE)
 }
 \arguments{
 \item{h5}{A ICESat-2 ATL03 object (output of \code{\link[=ATL03_read]{ATL03_read()}} or \code{\link[=ATL08_read]{ATL08_read()}} function).
 An S4 object of class \code{\linkS4class{icesat2.atl03_dt}} or \code{\linkS4class{icesat2.atl08_dt}}.}
+
+\item{line}{Logical; if \code{TRUE}, extract the ground track as a line, default = TRUE.}
 }
 \value{
 Returns the ground track boundaries as \code{\link[terra:SpatVector-class]{terra::SpatVector}} extracted from "orbit_info",
@@ -35,11 +37,16 @@ atl03_path <- system.file("extdata",
 # Reading ATL03 data (h5 file)
 atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 
-# Extracting ATL03 photons attributes
-rgt <- rgt_extract(h5 = atl03_h5)
-head(rgt)
+# Extracting ATL03 RGT track as polygons
+rgt_polygon <- rgt_extract(h5 = atl03_h5, line = FALSE)
+head(rgt_polygon)
 
-terra::plet(rgt)
+terra::plet(rgt_polygon)
+
+# Extracting ATL03 RGT track as lines
+rgt_line <- rgt_extract(h5 = atl03_h5)
+head(rgt_line)
+terra::plet(rgt_line)
 
 close(atl03_h5)
 }

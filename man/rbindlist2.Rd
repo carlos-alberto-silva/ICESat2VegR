@@ -2,18 +2,26 @@
 % Please edit documentation in R/class.icesat2.R
 \name{rbindlist2}
 \alias{rbindlist2}
-\title{Wraps around \code{\link[data.table:rbindlist]{data.table::rbindlist()}} function}
+\title{Row-bind a list of objects while preserving class}
 \usage{
 rbindlist2(l, ...)
 }
 \arguments{
-\item{l}{A list containing data.table, data.frame or list objects. ... is the same but you pass the objects by name separately.}
+\item{l}{A list whose elements are all of the \emph{same} class, typically
+\code{data.table}, \code{data.frame}, or a custom subclass (e.g. \verb{icesat2.*_dt}).
+All elements must share identical \code{class()}; otherwise an error is raised.}
 
-\item{...}{pass directly to \code{\link[data.table:rbindlist]{data.table::rbindlist()}}}
+\item{...}{Additional arguments passed directly to
+\code{\link[data.table:rbindlist]{data.table::rbindlist()}}, such as \code{use.names} or \code{fill}.}
 }
 \value{
-The data.table with the same class as the input
+A single \code{data.table} (the result of \code{data.table::rbindlist()}), with its
+\code{class} attribute reset to match the class of the input elements.
 }
 \description{
-Wraps around \code{\link[data.table:rbindlist]{data.table::rbindlist()}} function
+Convenience wrapper around \code{\link[data.table:rbindlist]{data.table::rbindlist()}} that
+\strong{row-binds a list of homogeneous objects and then restores their class}.
+This is especially useful for custom S3/S4-like classes used in ICESat2VegR
+(e.g. \code{icesat2.atl03_dt}, \code{icesat2.atl08_dt}), where a plain
+\code{data.table::rbindlist()} call would drop the original class attribute.
 }

@@ -7,8 +7,8 @@
 ATL08_h5_clipGeometry(
   atl08,
   output,
-  vect,
-  polygon_id = "id",
+  clip_obj,
+  split_by = "id",
   beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
   additional_groups = c("orbit_info")
 )
@@ -19,10 +19,10 @@ for clipping}
 
 \item{output}{character. Path to the output h5 file.}
 
-\item{vect}{\code{\link[terra:SpatVector-class]{terra::SpatVector}} for clipping}
+\item{clip_obj}{\code{\link[terra:SpatVector-class]{terra::SpatVector}} for clipping}
 
-\item{polygon_id}{\code{\linkS4class{character}}. The attribute name used for identifying
-the different polygons. Default is "id"}
+\item{split_by}{\code{\linkS4class{character}}. The attribute name used for identifying
+the different clip_objs. Default is "id"}
 
 \item{beam}{\code{\linkS4class{character}}. The vector of beams to include, default
 all c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")}
@@ -61,7 +61,7 @@ atl08_photons_dt_clip <- ATL08_h5_clipGeometry(
   atl08_h5,
   output,
   vect,
-  polygon_id = "id"
+  split_by = "id"
 )
 
 close(atl08_h5)
