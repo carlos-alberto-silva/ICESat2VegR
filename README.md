@@ -933,15 +933,17 @@ head(atl03_atl08_seg_dt)
 ```
 
 <div align="center" style="overflow-x: scroll;">
-  | segment_id | beam | longitude | latitude | h_canopy_ge0 | h_canopy_gt0 | n_ground | n_mid_canopy | n_top_canopy | n_canopy_total |
-  |-----------:|:-----|----------:|---------:|-------------:|-------------:|---------:|-------------:|-------------:|---------------:|
-  |        352 | gt1r | -54.37593 | 42.80719 |    10.752865 |    13.017654 |       32 |            6 |            1 |              7 |
-  |        353 | gt1r | -61.84944 | 40.06217 |    11.603264 |    13.582950 |       31 |            5 |            1 |              6 |
-  |        354 | gt1r | -60.80575 | 40.45152 |    12.474311 |    14.081770 |       49 |            7 |            1 |              8 |
-  |        355 | gt1r | -74.82788 | 35.28340 |    14.985960 |    15.917793 |       38 |           17 |            2 |             19 |
-  |        356 | gt1r | -66.45581 | 38.37186 |     1.457885 |     1.672792 |       31 |           16 |            0 |             16 |
-  |        357 | gt1r | -63.74473 | 39.37878 |    14.188966 |    14.395315 |       30 |           10 |            1 |             11 |  
-  </div>
+
+| segment_id | beam | longitude | latitude | h_canopy_ge0 | h_canopy_gt0 | n_ground | n_mid_canopy | n_top_canopy | n_canopy_total |
+|-----------:|:-----|----------:|---------:|-------------:|-------------:|---------:|-------------:|-------------:|---------------:|
+|        352 | gt1r | -54.37593 | 42.80719 |    10.752865 |    13.017654 |       32 |            6 |            1 |              7 |
+|        353 | gt1r | -61.84944 | 40.06217 |    11.603264 |    13.582950 |       31 |            5 |            1 |              6 |
+|        354 | gt1r | -60.80575 | 40.45152 |    12.474311 |    14.081770 |       49 |            7 |            1 |              8 |
+|        355 | gt1r | -74.82788 | 35.28340 |    14.985960 |    15.917793 |       38 |           17 |            2 |             19 |
+|        356 | gt1r | -66.45581 | 38.37186 |     1.457885 |     1.672792 |       31 |           16 |            0 |             16 |
+|        357 | gt1r | -63.74473 | 39.37878 |    14.188966 |    14.395315 |       30 |           10 |            1 |             11 |  
+
+</div>
   
   ## Convert to SpatVector
   
@@ -986,11 +988,11 @@ map_output
   
   </div>
   
-  # Predicting and rasterizing ATL08 h_canopy data using machine learning models
+# Predicting and rasterizing ATL08 h_canopy data using machine learning models
   
-  ## Creating a simple model for ATL08 data
+## Creating a simple model for ATL08 data
   
-  Here, we will create a simple model to predict the AGBD of ATL08 data
+Here, we will create a simple model to predict the AGBD of ATL08 data
 based on the height of the canopy. We will use the `randomForest`
 package to create the model.
 
@@ -1037,6 +1039,8 @@ for (atl08_h5_item in atl08_h5) {
 ```
 
 ## Rasterizing the predicted data
+
+``` r
 # Restart R first then:
 devtools::load_all("D:/2026/ICESat2VegR_fork")
 
@@ -1060,8 +1064,6 @@ bbox
 output_raster <- tempfile(fileext = ".tif")
 rasterize_h5(predicted_h5, output_raster, bbox = bbox, res = 0.005)
 
-
-``` r
 output_raster <- tempfile(fileext = ".tif")
 x <- predicted_h5[["longitude"]][]
 y <- predicted_h5[["latitude"]][]
