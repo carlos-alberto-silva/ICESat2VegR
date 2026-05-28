@@ -1,116 +1,107 @@
-#' Clip ATL08 Terrain and Canopy Attributes by Geometry
+#' Clip ATL03 photons by Coordinates
 #'
-#' @description This function clips ATL08 Terrain and Canopy Attributes within a given geometry
+#' @description This function clips ATL03 photon attributes within given bounding coordinates.
 #'
-#' @param atl08_seg_att_dt A atl08_seg_att_dt object (output of
-#' [`ATL08_seg_attributes_dt()`] function). An S4 object of class
-#' [`ICESat2VegR::icesat2.atl08_dt-class`]
-#' @param clip_obj clip_obj. An object of class [`terra::SpatVector`],
-#' which can be loaded as an ESRI shapefile using [terra::vect] function in the
-#' \emph{sf} package.
-#' @param split_by clip_obj id. If defined, ATL08 data will be clipped by each clip_obj using
-#' the clip_obj id from table of attribute defined by the user
+#' @param atl03_photons_dt An ATL03 photon data table. An S4 object of class [`ICESat2VegR::icesat2.atl03_dt-class`].
+#' @param clip_obj Spatial clip_obj. An object of class [`terra::SpatVector`],
+#'   which can be loaded as an ESRI shapefile using the [terra::vect] function in the
+#'   \emph{sf} package.
+#' @param split_by clip_obj id. If defined, GEDI data will be clipped by each clip_obj using
+#'   the clip_obj id from the attribute table defined by the user.
 #'
-#' @return Returns an S4 object of class [`ICESat2VegR::icesat2.atl08_dt-class`]
-#' containing the clipped ATL08 Terrain and Canopy Attributes.
+#' @return Returns an S4 object of class [`ICESat2VegR::icesat2.atl03_dt-class`]
+#'   containing the ATL03 photon attributes.
+#'
+#' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
 #'
 #' @examples
-#' # Specifying the path to ATL08 file
-#' atl08_path <- system.file("extdata",
-#'   "atl08_clip.h5",
+#' # ATL03 file path
+#' atl03_path <- system.file("extdata",
+#'   "atl03_clip.h5",
 #'   package = "ICESat2VegR"
 #' )
 #'
-#' # Reading ATL08 data (h5 file)
-#' atl08_h5 <- ATL08_read(atl08_path = atl08_path)
+#' # Reading ATL03 data (h5 file)
+#' atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 #'
-#' # Extracting ATL08-derived terrain and canopy attributes
-#' atl08_seg_att_dt <- ATL08_seg_attributes_dt(atl08_h5 = atl08_h5)
+#' # Extracting ATL03 photon attributes
+#' atl03_photons_dt <- ATL03_photons_attributes_dt(atl03_h5 = atl03_h5)
 #'
-#' clip_obj_path <- system.file("extdata",
-#'   "clip_geom.shp",
-#'   package = "ICESat2VegR"
-#' )
-#'
-#' if (require(terra)) {
-#'   polygon <- terra::vect(clip_obj_path)
-#'
-#'   head(atl08_seg_att_dt)
-#'   # Clipping ATL08 Terrain and Canopy Attributes by Geometry
-#'   atl08_seg_att_dt_clip <- ATL08_seg_attributes_dt_clipGeometry(
-#'    atl08_seg_att_dt,
-#'    polygon,
-#'    split_by = "id"
+#' # Specifying the path to shapefile
+#' clip_obj_filepath <-
+#'   system.file(
+#'     "extdata",
+#'     "clip_geom.shp",
+#'     package = "ICESat2VegR"
 #'   )
 #'
-#'   hasLeaflet <- require(leaflet)
+#' # Reading shapefile as sf object
+#' clip_obj <- terra::vect(clip_obj_filepath)
 #'
-#'   if (hasLeaflet) {
-#'     leaflet() %>%
-#'       addCircleMarkers(atl08_seg_att_dt_clip$longitude,
-#'         atl08_seg_att_dt_clip$latitude,
-#'         radius = 1,
-#'         opacity = 1,
-#'         color = "red"
-#'       ) %>%
-#'       addScaleBar(options = list(imperial = FALSE)) %>%
-#'       addPolygons(
-#'         data = polygon, weight = 1, col = "white",
-#'         opacity = 1, fillOpacity = 0
-#'       ) %>%
-#'       addProviderTiles(providers$Esri.WorldImagery,
-#'         options = providerTileOptions(minZoom = 3, maxZoom = 17)
-#'       )
-#'   }
-#' }
-#' close(atl08_h5)
+#' # Clipping ATL03 photon attributes by Geometry
+#' atl03_photons_dt_clip <-
+#'   ATL03_photons_attributes_dt_clipGeometry(atl03_photons_dt, clip_obj, split_by = "id")
+#'
+#' head(atl03_photons_dt_clip)
+#'
+#' close(atl03_h5)
+#' @import hdf5r stats
 #' @export
-ATL08_seg_attributes_dt_clipGeometry <- function(atl08_seg_att_dt, clip_obj, split_by = NULL) {
-  if (!inherits(atl08_seg_att_dt, "icesat2.atl08_dt")) {
-    stop("atl08_seg_att_dt needs to be an object of class 'icesat2.atl08_dt' ")
+ATL03_photons_attributes_dt_clipGeometry <- function(atl03_photons_dt, clip_obj, split_by = "id") {
+  # Check if atl03_photons_dt is of the correct class
+  if (!inherits(atl03_photons_dt, "icesat2.atl03_dt")) {
+    stop("atl03_photons_dt needs to be an object of class 'icesat2.atl03_dt'")
   }
-  newFile <- data.table::data.table()
+
+  # Extract the bounding box of the spatial clip_obj
   exshp <- terra::ext(clip_obj)
 
-    atl08_seg_att_dt <- ATL08_seg_attributes_dt_clipBox(
-      atl08_seg_att_dt,
-      exshp
-    )
+  # Clip ATL03 photons using the bounding box of the spatial clip_obj
+  atl03_photons_dt <- ATL03_photons_attributes_dt_clipBox(
+    atl03_photons_dt,
+    clip_obj=exshp
+  )
 
-  if (any(is.na(atl08_seg_att_dt))) {
-    atl08_seg_att_dt <- na.omit(atl08_seg_att_dt)
-  } else {
-    atl08_seg_att_dt <- atl08_seg_att_dt
+  # Remove any rows with NA values
+  if (any(is.na(atl03_photons_dt))) {
+    atl03_photons_dt <- na.omit(atl03_photons_dt)
   }
 
-  atl08_seg_att_dt$nid <- 1:nrow(atl08_seg_att_dt)
+  # Add a unique identifier to each row
+  atl03_photons_dt$nid <- seq_len(nrow(atl03_photons_dt))
 
-  if (nrow(atl08_seg_att_dt) == 0) {
-    message("The clip_obj does not overlap the ATL08 data")
+  # Check if any data remains after clipping
+  if (nrow(atl03_photons_dt) == 0) {
+    warning("The clip_obj does not overlap the ATL03 data")
   } else {
+    # Convert the ATL03 photon coordinates to a spatial vector
     points <- terra::vect(
-      as.data.frame(atl08_seg_att_dt),
-      geom = c("longitude", "latitude"),
+      data.table(
+        lon_ph = atl03_photons_dt$lon_ph,
+        lat_ph = atl03_photons_dt$lat_ph
+      ),
+      geom = c("lon_ph", "lat_ph"),
       crs = terra::crs(clip_obj)
     )
 
+    # Add a row number to each point
     points$rowNumber <- as.integer(seq_along(points))
+
+    # Intersect the points with the spatial clip_obj
     pts <- terra::intersect(terra::makeValid(points), terra::makeValid(clip_obj))
 
+    # If split_by is defined, clip the data by each clip_obj id
     if (!is.null(split_by)) {
       if (any(names(clip_obj) == split_by)) {
-        newFile <- atl08_seg_att_dt[pts$nid, ]
+        newFile <- atl03_photons_dt[pts$rowNumber, ]
         newFile$poly_id <- pts[[split_by]]
       } else {
-        stop(paste("The", split_by, "is not included in the attribute table.
-                       Please check the names in the attribute table"))
+        stop("The ", split_by, " is not included in the attribute table. Please check the names in the attribute table")
       }
     } else {
-      newFile <- atl08_seg_att_dt[pts$nid, ]
+      newFile <- atl03_photons_dt[pts$rowNumber, ]
     }
 
-    prepend_class(newFile, "icesat2.atl08_dt")
-
+    return(newFile)
   }
-  return(newFile)
 }
