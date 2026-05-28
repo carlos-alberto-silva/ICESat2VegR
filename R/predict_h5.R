@@ -4,12 +4,24 @@
 #' and method matching with S4 methods.
 #'
 #' @rdname icesat2.predict_h5
-#' @export
+#' @keywords internal
 setRefClass("icesat2.predict_h5")
 
 internal_predict_h5 <- new.env()
 internal_predict_h5$path <- ""
 internal_predict_h5$h5 <- NULL
+
+#' Safely closes the ICESat Predict_h5 base classes
+#'
+#' @description
+#' Closing files will avoid locking HDF5 files.
+#'
+#' @param con An object of class [icesat2.predict_h5-class]
+#' @param ... Inherited from base, not used
+#'
+#' @rdname close
+#' @export
+setMethod("close", signature = c("icesat2.predict_h5"), h5closeall)
 
 #' Model prediction over data.tables using HDF5 file as output
 #'
@@ -34,7 +46,7 @@ internal_predict_h5$h5 <- NULL
 #' )
 #'
 #' atl03_h5 <- ATL03_read(atl03_path = atl03_path)
-#' atl03_seg_dt <- ATL03_seg_attributes_dt(atl03_h5)
+#' atl03_seg_dt <- ATL03_seg_metadata_dt(atl03_h5)
 #'
 #' linear_model <- stats::lm(h_ph ~ segment_ph_cnt, data = atl03_seg_dt)
 #' output_h5 <- tempfile(fileext = ".h5")
@@ -74,10 +86,11 @@ setGeneric("predict_h5", function(model, dt, output) {
 #' )
 #'
 #' atl03_h5 <- ATL03_read(atl03_path = atl03_path)
-#' atl03_seg_dt <- ATL03_seg_attributes_dt(atl03_h5)
+#' atl03_seg_dt <- ATL03_seg_metadata_dt(atl03_h5)
 #'
 #' linear_model <- stats::lm(h_ph ~ segment_ph_cnt, data = atl03_seg_dt)
 #' output_h5 <- tempfile(fileext = ".h5")
+#'
 #' predicted_h5 <- predict_h5(linear_model, atl03_seg_dt, output_h5)
 #'
 #' # List datasets

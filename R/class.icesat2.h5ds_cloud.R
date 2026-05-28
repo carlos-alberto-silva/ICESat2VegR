@@ -1,11 +1,14 @@
-h5dtypes <- list()
-h5dtypes[["int8"]] <- hdf5r::h5types$H5T_STD_I8LE
-h5dtypes[["int32"]] <- hdf5r::h5types$H5T_STD_I32LE
-h5dtypes[["int16"]] <- hdf5r::h5types$H5T_STD_I16LE
-h5dtypes[["int64"]] <- hdf5r::h5types$H5T_STD_I64LE
-h5dtypes[["uint16"]] <- hdf5r::h5types$H5T_STD_U16LE
-h5dtypes[["float32"]] <- hdf5r::h5types$H5T_IEEE_F32LE
-h5dtypes[["float64"]] <- hdf5r::h5types$H5T_IEEE_F64LE
+get_h5dtype <- function(dtype) {
+  switch(dtype,
+    "int8"    = hdf5r::h5types$H5T_STD_I8LE,
+    "int16"   = hdf5r::h5types$H5T_STD_I16LE,
+    "int32"   = hdf5r::h5types$H5T_STD_I32LE,
+    "int64"   = hdf5r::h5types$H5T_STD_I64LE,
+    "uint16"  = hdf5r::h5types$H5T_STD_U16LE,
+    "float32" = hdf5r::h5types$H5T_IEEE_F32LE,
+    "float64" = hdf5r::h5types$H5T_IEEE_F64LE
+  )
+}
 
 #' Class representing dataset opened from the cloud using h5py
 #'
@@ -36,7 +39,7 @@ ICESat2.h5ds_cloud <- R6::R6Class("ICESat2.h5ds_cloud", list(
 
   #' @description Get the type of data for this dataset
   get_type = function() {
-    h5dtypes[[as.character(self$ds$dtype)]]
+    get_h5dtype(as.character(self$ds$dtype))
   },
 
   #' @description Get the fill_value used by the dataset

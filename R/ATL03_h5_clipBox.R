@@ -76,7 +76,7 @@
 #' atl03_clip <- ATL03_h5_clipBox(
 #'   atl03_h5,
 #'   output = output,
-#'   bbox = bbox
+#'   clip_obj = bbox
 #' )
 #'
 #' close(atl03_h5)

@@ -1,4 +1,4 @@
-#' The class representing the h5 file opened from the cloud for cloud computing.
+#' The class representing the h5 file opened from the cloud for cloud computing
 #'
 #' @field h5 A pointer to `h5py` in case the user wants to access features not
 #' implemented yet
@@ -64,8 +64,11 @@ try with only one granule [i].")
       if (sc_orient == 2) {
         warning("Cannot determine the strong and weak beams from sc_orient == 2")
       }
-      self$weak_beams <- separated_beams[[sc_orient + 1]]
-      self$strong_beams <- setdiff(self$beams, self$weak_beams)
+      strong_index <- sc_orient + 1
+      weak_index <- 2 - sc_orient
+
+      self$weak_beams <- separated_beams[[weak_index]]
+      self$strong_beams <- separated_beams[[strong_index]]
     } else {
       self$h5 <- h5
     }

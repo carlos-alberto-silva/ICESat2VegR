@@ -1,22 +1,19 @@
-# #' Clips ICESat-2 ATL08 H5 data
-# #'
-# #' @param x [`ICESat2VegR::icesat2.atl08_h5-class`] object,
-# #' obtained through [`ATL08_read()`] for clipping
-# #' @param output character. Path to the output h5 file.
-# #' @param bbox [`numeric-class`] or [`terra::SpatExtent`] for clipping, the
-# #' order of the bbox is the default from NASA's ICESat-2 CMS searching:
-# #' (ul_lat, ul_lon, lr_lat, lr_lon).
-# #' @param beam [`character-class`]. The vector of beams to include, default
-# #' all c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")
-# #' @param additional_groups [`character-class`]. Other addional groups that should be included, default
-# #' c("METADATA", "orbit_info", "quality_assessment", "ancillary_data")
-# #'
-# #' @return Returns the clipped S4 object of class [`ICESat2VegR::icesat2.atl08_h5-class`]
-# #'
-# #' @description This function clips ATL08 HDF5 file within beam groups,
-# #' but keeps metada and ancillary data the same.
-# #'
-# #' @export
+#' Clip ICESat-2 ATL08 HDF5 data
+#'
+#' @description
+#' Clips an ATL08 HDF5 file within beam groups, preserving metadata
+#' and ancillary data unchanged.
+#'
+#' @param atl08 An [`icesat2.atl08_h5-class`] object from [`ATL08_read()`].
+#' @param output Character. Path to the output HDF5 file.
+#' @param clip_obj A [`terra::SpatExtent`] or numeric bbox for clipping.
+#' @param landSegmentsMask_fn Function to compute the land segments mask.
+#' @param beam Character vector of beams to include. Default all six beams.
+#' @param additional_groups Character vector of non-beam HDF5 groups to copy.
+#'
+#' @return The clipped [`icesat2.atl08_h5-class`] object.
+#'
+#' @export
 #' @include class.icesat2.R ATL08_read.R
 #' @import data.table hdf5r
 ATL08_h5_clip <- function(
@@ -42,7 +39,7 @@ ATL08_h5_clip <- function(
   for (group in groups) {
     grp <- newFile$create_group(group)
 
-    # Create all atributes within group
+    # Create all attributes within group
     attributes <- atl08[[group]]$ls_attrs()
     for (attribute in attributes) {
       grp$create_attr(attribute, atl08[[group]]$attr(attribute))
@@ -89,9 +86,9 @@ ATL08_h5_clip <- function(
 
     # Get the reference beam
     beam <- atl08[[beamName]]
-
-    # Get the beam to update
-    updateBeam <- newFile[[beamName]]
+    if (beam$exists('land_segments/latitude') == FALSE) {
+      next
+    }
 
     # Get land segments mask
     landSegmentsMask <- landSegmentsMask_fn(beam, clip_obj)
@@ -99,6 +96,7 @@ ATL08_h5_clip <- function(
     if (length(landSegmentsMask) == 0) {
       next
     }
+
 
     # Get photons for the masked land segments
     ph_ndx_beg <- beam[["land_segments/ph_ndx_beg"]][landSegmentsMask]
@@ -136,7 +134,7 @@ ATL08_h5_clip <- function(
     qtyList <- lapply(datasets_dt$dataset.dims, function(x) eval(parse(text = gsub("x", "*", x))))
     qty <- sum(unlist(qtyList))
 
-    pb <- utils::txtProgressBar(min = 0, max = qty, style = 3, file = stderr())
+    pb <- utils::txtProgressBar(min = 0, max = qty, style = 3)
 
     # Do clipping and copying
     if (length(landSegmentsMask) == 0) {
@@ -144,11 +142,15 @@ ATL08_h5_clip <- function(
       close(pb)
       next
     }
-
+    
+    # Get the beam to update
+    updateBeam <- newFile[[beamName]]
     clipByMask(beam, updateBeam, segmentsCut, landSegmentsMask, pb)
     clipByMask2D(beam, updateBeam, segmentsCut2D, landSegmentsMask, pb)
     clipByMask(beam, updateBeam, photonsCut, photonsMask, pb)
-    updateBeam[["land_segments/ph_ndx_beg"]][] <- c(1, cumsum(updateBeam[["land_segments/n_seg_ph"]][])[-1])
+    n_seg_ph_new <- updateBeam[["land_segments/n_seg_ph"]][]
+    new_ph_ndx_beg <- cumsum(c(1, utils::head(n_seg_ph_new, -1)))
+    updateBeam[["land_segments/ph_ndx_beg"]][] <- new_ph_ndx_beg
 
     for (dataset in nonCuts) {
       createDatasetClip(beam, updateBeam, dataset, beam[[dataset]][], pb)

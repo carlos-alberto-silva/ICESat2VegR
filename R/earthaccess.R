@@ -6,8 +6,9 @@
 #'
 #' @examples
 #' # Try to login in NASA earthaccess
-#' \donttest{
-#' # Shouldn't be tested because it relies on a web services requiring authentication.
+#' @examples
+#' \dontrun{
+#' # Requires NASA Earthdata Login credentials
 #' earthaccess_login()
 #' }
 #'

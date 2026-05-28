@@ -1,4 +1,4 @@
-#' The class representing the h5 file opened from local files.
+#' The class representing the h5 file opened from local files
 #'
 #' @details
 #' The variants `_cloud` and `_local` allows all the other functions
@@ -19,6 +19,7 @@
 #'
 #' @include class.icesat2.R class.icesat2.h5ds_local.R
 #' @import R6 reticulate hdf5r
+#' @export
 ICESat2.h5_local <- R6::R6Class("ICESat2.h5_local", list(
   h5 = NULL,
   beams = NULL,
@@ -45,8 +46,11 @@ ICESat2.h5_local <- R6::R6Class("ICESat2.h5_local", list(
         if (sc_orient == 2) {
           warning("Cannot determine the strong and weak beams from sc_orient == 2")
         }
-        self$weak_beams <- separated_beams[[sc_orient + 1]]
-        self$strong_beams <- setdiff(self$beams, self$weak_beams)
+        strong_index <- sc_orient + 1
+        weak_index <- 2 - sc_orient
+
+        self$weak_beams <- separated_beams[[weak_index]]
+        self$strong_beams <- separated_beams[[strong_index]]
       } else {
         warning("Can't determine strong and weak beams, no [['orbit_info/sc_orient']] information!")
       }
@@ -54,6 +58,11 @@ ICESat2.h5_local <- R6::R6Class("ICESat2.h5_local", list(
       self$h5 <- h5
     }
     prepend_class(self, "icesat2.h5")
+    reg.finalizer(self, function(e) {
+      if (!is.null(e$h5)) {
+        try(e$h5$close_all(), silent = TRUE)
+      }
+    }, onexit = TRUE)
   },
   #' @description Lists the groups and datasets that are within current group
   #'

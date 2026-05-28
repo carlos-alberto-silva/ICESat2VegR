@@ -65,6 +65,7 @@ sample.default <- function(x, ...) base::sample(x, ...)
 }
 
 #' Class for sampling methods to be passed on for the sample function
+#' @keywords internal
 setRefClass("icesat2_sampling_method")
 
 #' @export
@@ -118,9 +119,9 @@ spacedSamplingWorker <- function(dt, size, radius, spatialIndex = NULL, chainSam
   )
 
   if (is.null(chainSampling)) {
-    return(dt[idx])
+    return(dt[idx,])
   }
-  return(do.call(chainSampling$fn, c(list(dt[idx]), chainSampling$params)))
+  return(do.call(chainSampling$fn, c(list(dt[idx,]), chainSampling$params)))
 }
 
 gridSamplingWorker <- function(dt, size, grid_size, chainSampling = NULL) {

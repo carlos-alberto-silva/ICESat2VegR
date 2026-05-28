@@ -2,13 +2,34 @@ setRefClass("ee.imagecollection.ImageCollection")
 setRefClass("ee.image.Image")
 
 #' Initializes the Google Earth Engine API
+#' Initialize Earth Engine for this R session
 #'
-#' @return Nothing, it just initializes the Google Earth Engine API
-#'
+#' @param project Character. **GCP Project ID** (e.g., "ice-map-2025") or a numeric project **number**.
+#'   If NULL/NA, falls back to Sys.getenv("EE_PROJECT").
+#' @param service_account Optional service account email (use with `keyfile`).
+#' @param keyfile Path to service-account JSON key (required if `service_account` is set).
+#' @param quiet Logical. Suppress messages.
+#' @param force_auth Logical. If TRUE, perform OAuth before Initialize().
+#' @return TRUE on success; FALSE otherwise (invisibly).
 #' @export
-ee_initialize <- function() {
-  tryInitializeEarthEngine()
+ee_initialize <- function(project = Sys.getenv("EE_PROJECT", unset = NA),
+                          service_account = NULL,
+                          keyfile = NULL,
+                          quiet = FALSE,
+                          force_auth = FALSE) {
+  ok <- try(
+    tryInitializeEarthEngine(
+      project         = project,
+      service_account = service_account,
+      keyfile         = keyfile,
+      quiet           = quiet,
+      force_auth      = force_auth
+    ),
+    silent = TRUE
+  )
+  isTRUE(ok)
 }
+
 
 #' Returns the number of images in an ImageCollection
 #'
@@ -339,34 +360,64 @@ glcmTexture <- function(x, size = 1, kernel = NULL, average = TRUE) {
   invisible()
 }
 
-#' Calculates slope in degrees from a terrain DEM.
+#' Compute terrain slope (degrees) from a DEM image
 #'
-#' The local gradient is computed using the 4-connected neighbors of each pixel,
-#' so missing values will occur around the edges of an image.
+#' @description
+#' Computes the terrain **slope** in degrees for each pixel of an Earth Engine
+#' `ee$Image` representing a digital elevation model (DEM).
 #'
-#' @param x The `ee.Image` on which to apply the aspect function.
+#' This method is a thin wrapper around `ee$Terrain$slope()` and returns the
+#' same output structure. Slope is computed using Earth Engine's internal
+#' gradient operator, which relies on the 4-connected neighborhood around each
+#' pixel. As a result, edge pixels may contain missing values depending on the
+#' input DEM.
 #'
-#' @return An `ee.Image` with a single band named "Slope".
+#' @param x An `ee$Image` representing a DEM from which slope will be derived.
+#'
+#' @return An `ee$Image` with one band named `slope` containing terrain
+#'   slope values in degrees.
+#'
+#' @examples
+#' \dontrun{
+#'   ee <- reticulate::import("ee")
+#'   dem <- ee$Image("NASA/NASADEM_HGT/001")
+#'   slp <- slope(dem)
+#' }
 #'
 #' @export
 slope <- function(x) {
   UseMethod("slope")
 }
 
-
 #' @export
 "slope.ee.image.Image" <- function(x) {
-  return(invisible(ee$Terrain$slope(x)))
+  invisible(ee$Terrain$slope(x))
 }
 
-#' Calculates aspect in degrees from a terrain DEM.
+
+#' Compute terrain aspect (degrees) from a DEM image
 #'
-#' The local gradient is computed using the 4-connected neighbors of each
-#' pixel, so missing values will occur around the edges of an image.
+#' @description
+#' Computes the terrain *aspect* in degrees for each pixel of an Earth Engine
+#' `ee$Image` representing a digital elevation model (DEM).
 #'
-#' @param x The `ee.Image` on which to apply the aspect function.
+#' Aspect describes the downslope direction of the steepest gradient and is
+#' expressed in degrees clockwise from north. The computation is performed
+#' using Earth Engine's built-in `ee$Terrain$aspect()` function. As with slope,
+#' Earth Engine uses the 4-connected neighborhood, so missing values may occur
+#' near image edges.
 #'
-#' @return An `ee.Image` with a single band named "Aspect".
+#' @param x An `ee$Image` representing a DEM from which aspect will be derived.
+#'
+#' @return An `ee$Image` with one band named `aspect` containing aspect
+#'   values in degrees clockwise from north.
+#'
+#' @examples
+#' \dontrun{
+#'   ee <- reticulate::import("ee")
+#'   dem <- ee$Image("NASA/NASADEM_HGT/001")
+#'   asp <- aspect(dem)
+#' }
 #'
 #' @export
 aspect <- function(x) {
@@ -375,5 +426,5 @@ aspect <- function(x) {
 
 #' @export
 "aspect.ee.image.Image" <- function(x) {
-  return(invisible(ee$Terrain$aspect(x)))
+  invisible(ee$Terrain$aspect(x))
 }

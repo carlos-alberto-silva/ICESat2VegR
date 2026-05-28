@@ -1,116 +1,5 @@
-check_conda <- function() {
-  tryCatch(
-    {
-      reticulate::conda_version()
-    },
-    error = function(err) {}
-  )
-}
-
-tryRestart <- function(auto = TRUE) {
-  resp <- readline("I will need to restart RSession, would you like to proceed? y/[n]")
-  if (substr(tolower(resp), 1, 1) == "y") {
-    if (requireNamespace("rstudioapi", quietly = TRUE)) {
-      try(rstudioapi::restartSession(), silent = TRUE)
-    }
-  }
-  message("Please restart your R environment manually and run this function again.")
-}
-
-#' Configure environment for using Google Earth Engine functions
-#' and accessing earthaccess cloud data
-#'
-#' @details
-#' This function will configure the python environment as required by this package for:
-#'  - Accessing the h5 files directly from the cloud for cloud computing
-#'  - Using earth engine functions wrappers that are made available within this package.
-#'
-#' @return TRUE if everything works as expected, it is just an interactive installer
-#' @export
-ICESat2VegR_configure_old <- function() {
-  if (is.null(check_conda())) {
-    answer <- readline("Ananconda seems not to be available, would you like to install it? [y/N]: ")
-    if (tolower(answer) == "y") {
-      reticulate::install_miniconda()
-      message("Miniconda was successfully installed!")
-    }
-  }
-
-  if (!is.null(check_conda())) {
-    reticulate::use_condaenv("r-reticulate", required = FALSE)
-    if (reticulate::py_module_available("h5py") == FALSE) {
-      reticulate::py_install("h5py")
-    }
-    if (reticulate::py_module_available("h5py") == FALSE) {
-      message("h5py is not compatible with this version of Python, upgrading...")
-      reticulate::py_install("python")
-      tryRestart()
-    }
-
-    if (reticulate::py_module_available("earthaccess") == FALSE) {
-      reticulate::py_install("earthaccess")
-    }
-    if (reticulate::py_module_available("earthaccess") == FALSE) {
-      message("earthaccess is not compatible with this version of Python, upgrading...")
-      reticulate::py_install("python")
-      tryRestart()
-    }
-    if (reticulate::py_module_available("ee") == FALSE) {
-      reticulate::py_install("earthengine-api")
-    }
-  } else {
-    warning("Something went wrong, conda is still not installed properly!")
-  }
-
-  if (!requireNamespace("ICESat2VegR", quietly = TRUE) || is.null(ee) || is.null(h5py) || is.null(earthaccess)) {
-    warning("The package could not be loaded properly please read the readme in")
-    warning("https://github.com/carlos-alberto-silva/ICESat2VegR and file a new issue")
-    warning("if the problem is not solved.")
-    return(FALSE)
-  } else {
-    return(TRUE)
-  }
-}
-
-tryInitializeCloudCapabilities_old <- function() {
-  # Reload namespace
-  unloadNamespace("ICESat2VegR")
-  loadNamespace("ICESat2VegR")
-
-  if (is.null(h5py) || is.null(earthaccess)) {
-    warning("The package's earthaccess functions were not loaded properly")
-    warning("use ICESat2VegR_configure() function and reload the package!")
-  }
-}
-
-tryInitializeEarthEngine_old <- function() {
-  # Reload namespace
-  unloadNamespace("ICESat2VegR")
-  loadNamespace("ICESat2VegR")
-
-  if (is.null(ee)) {
-    warning("The package's earth-engine functions were not loaded properly")
-    warning("use ICESat2VegR_configure() function and reload the package!")
-  }
-
-  tryCatch(
-    {
-      ee$Initialize()
-    },
-    error = function(e) {
-      tryCatch(
-        {
-          ee$Authenticate()
-        },
-        error = function(e) {
-          stop("Could not authenticate within earth-engine")
-        }
-      )
-    }
-  )
-}
 # ==============================================================================
-# ICESat2VegR -- Python Environment Configuration + Earth Engine Initialization
+# ICESat2VegR — Python Environment Configuration + Earth Engine Initialization
 # ==============================================================================
 
 #' Configure Python environment for ICESat2VegR cloud features
@@ -309,7 +198,7 @@ ICESat2VegR_configure <- function(
   try_restart <- function() {
     if (!isTRUE(auto_restart)) return(invisible(FALSE))
     if (requireNamespace("rstudioapi", quietly = TRUE)) {
-      say("Restarting R session to bind the new environment...")
+      say("Restarting R session to bind the new environment…")
       try(rstudioapi::restartSession(), silent = TRUE)
       return(invisible(TRUE))
     }
@@ -348,7 +237,7 @@ ICESat2VegR_configure <- function(
 
       # Ensure Miniconda is available
       if (!has_conda()) {
-        say("Miniconda not found; installing Miniconda...")
+        say("Miniconda not found; installing Miniconda…")
         reticulate::install_miniconda()
         if (!has_conda()) {
           warning("Miniconda installation failed.")
@@ -367,7 +256,7 @@ ICESat2VegR_configure <- function(
       # Create env if needed
       envs <- tryCatch(reticulate::conda_list()$name, error = function(e) character())
       if (!(envname %in% envs)) {
-        say(sprintf("Creating conda env '%s' (Python %s)...", envname, py_ver))
+        say(sprintf("Creating conda env '%s' (Python %s)…", envname, py_ver))
         st <- conda_run(c("create", "--yes", "--name", envname, paste0("python=", py_ver)))
         if (!identical(st, 0L)) {
           warning(sprintf("Failed to create env '%s'.", envname))
@@ -377,7 +266,7 @@ ICESat2VegR_configure <- function(
 
       # Bind to this environment
       reticulate::use_condaenv(envname, required = TRUE)
-      say(sprintf("Bound to '%s'. Checking and installing missing dependencies...", envname))
+      say(sprintf("Bound to '%s'. Checking and installing missing dependencies…", envname))
 
       # Install missing imports via conda (pip fallback)
       miss <- missing_imports(py_imports)
@@ -389,7 +278,7 @@ ICESat2VegR_configure <- function(
           error = function(e) { ok <<- FALSE }
         )
         if (!ok) {
-          say("conda solver failed; falling back to pip for missing packages...")
+          say("conda solver failed; falling back to pip for missing packages…")
           reticulate::py_install(pkgs, method = "pip", pip = TRUE)
         }
       }
@@ -397,11 +286,11 @@ ICESat2VegR_configure <- function(
     } else {
       # ---- Path 2: virtualenv route -----------------------------------------
       if (!reticulate::virtualenv_exists(envname)) {
-        say(sprintf("Creating virtualenv '%s'...", envname))
+        say(sprintf("Creating virtualenv '%s'…", envname))
         reticulate::virtualenv_create(envname)
       }
       reticulate::use_virtualenv(envname, required = TRUE)
-      say("Checking and installing missing dependencies into virtualenv via pip...")
+      say("Checking and installing missing dependencies into virtualenv via pip…")
       miss <- missing_imports(py_imports)
       if (length(miss)) {
         pkgs <- unname(install_name[miss])
@@ -425,7 +314,7 @@ ICESat2VegR_configure <- function(
       say(paste0(
         "Active Python is initialized (possibly ephemeral). Missing modules: ",
         paste(miss, collapse = ", "),
-        "\nTrying py_require() for this session..."
+        "\nTrying py_require() for this session…"
       ))
 
       req_ok <- TRUE
@@ -435,7 +324,7 @@ ICESat2VegR_configure <- function(
       )
 
       if (!req_ok) {
-        say("py_require() failed; attempting in-session pip install via py_run_string()...")
+        say("py_require() failed; attempting in-session pip install via py_run_string()…")
         pip_ok <- TRUE
         pip_cmd <- sprintf(
           "import sys, subprocess; subprocess.check_call([sys.executable,'-m','pip','install','-U',%s])",
@@ -454,10 +343,10 @@ ICESat2VegR_configure <- function(
 
     # 2) If still missing, prepare persistent conda env
     if (length(miss)) {
-      say("Preparing a persistent conda environment with required packages...")
+      say("Preparing a persistent conda environment with required packages…")
 
       if (!has_conda()) {
-        say("Miniconda not found; installing Miniconda...")
+        say("Miniconda not found; installing Miniconda…")
         reticulate::install_miniconda()
         if (!has_conda()) {
           warning("Miniconda installation failed; cannot prepare persistent environment.")
@@ -474,7 +363,7 @@ ICESat2VegR_configure <- function(
 
       envs <- tryCatch(reticulate::conda_list()$name, error = function(e) character())
       if (!(envname %in% envs)) {
-        say(sprintf("Creating conda env '%s' (Python %s)...", envname, py_ver))
+        say(sprintf("Creating conda env '%s' (Python %s)…", envname, py_ver))
         st <- conda_run(c("create", "--yes", "--name", envname, paste0("python=", py_ver)))
         if (!identical(st, 0L)) {
           warning(sprintf("Failed to create env '%s'.", envname))
@@ -490,7 +379,8 @@ ICESat2VegR_configure <- function(
         error = function(e) { ok <<- FALSE }
       )
       if (!ok) {
-        say("conda solver failed; falling back to pip for required packages...")
+        say("conda solver failed; falling back to pip for required packages…")
+        # Let reticulate handle pip into target env
         try(
           reticulate::py_install(need_pkgs, envname = envname, method = "pip", pip = TRUE),
           silent = TRUE
@@ -535,7 +425,7 @@ ICESat2VegR_configure <- function(
     if (inherits(chk, "error") &&
         grepl("aiobotocore .* requires botocore", conditionMessage(chk))) {
 
-      say("Resolving aiobotocore/botocore conflict by pinning boto3/botocore/s3transfer...")
+      say("Resolving aiobotocore/botocore conflict by pinning boto3/botocore/s3transfer…")
       reticulate::py_install(
         c("botocore==1.40.49", "boto3==1.40.49", "s3transfer==0.14.0"),
         method = "pip",
@@ -545,7 +435,7 @@ ICESat2VegR_configure <- function(
       chk2 <- pip_check()
       if (inherits(chk2, "error") &&
           grepl("aiobotocore .* requires botocore", conditionMessage(chk2))) {
-        say("Uninstalling aiobotocore (not required by ICESat2VegR)...")
+        say("Uninstalling aiobotocore (not required by ICESat2VegR)…")
         reticulate::py_run_string(
           "import sys, subprocess; subprocess.call([sys.executable,'-m','pip','uninstall','-y','aiobotocore'])"
         )
@@ -612,12 +502,12 @@ ICESat2VegR_configure <- function(
     )
   }
 
-  # Validate format: start letter; 6-30 chars; letters/digits/hyphens; not end with hyphen
+  # Validate format: start letter; 6–30 chars; letters/digits/hyphens; not end with hyphen
   if (!grepl("^[a-z][a-z0-9-]{4,29}$", project) || grepl("-$", project)) {
     stop(
       "Invalid project ID '", project, "'. A valid ID must:\n",
       " - start with a lowercase letter\n",
-      " - be 6-30 characters long\n",
+      " - be 6–30 characters long\n",
       " - contain only lowercase letters, digits, and hyphens\n",
       " - not end with a hyphen"
     )
@@ -717,7 +607,7 @@ tryInitializeEarthEngine <- function(
 
   # --- User OAuth branch ------------------------------------------------------
   if (isTRUE(force_auth)) {
-    msg("Forcing OAuth flow...")
+    msg("Forcing OAuth flow…")
     try(ee$Authenticate(), silent = TRUE)
   }
 
@@ -727,7 +617,7 @@ tryInitializeEarthEngine <- function(
       TRUE
     },
     error = function(e) {
-      msg("Initialize() failed (", conditionMessage(e), "). Attempting OAuth...")
+      msg("Initialize() failed (", conditionMessage(e), "). Attempting OAuth…")
       FALSE
     }
   )
@@ -799,4 +689,3 @@ tryInitializeCloudCapabilities <- function() {
 
   invisible(TRUE)
 }
-

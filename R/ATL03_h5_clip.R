@@ -2,13 +2,15 @@
 ATL03_h5_clip <- function(
   atl03,
   output,
-  clipObj,
+  clip_obj,
   mask_fn,
   beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
   additional_groups = c("orbit_info")
 ) {
   # Create a new HDF5 file
+  #output <- gsub("\\\\", "/", output)  # optional
   newFile <- hdf5r::H5File$new(output, mode = "w")
+
 
   if (!"orbit_info" %in% additional_groups) {
     additional_groups <- c("orbit_info", additional_groups)
@@ -26,7 +28,7 @@ ATL03_h5_clip <- function(
   copyNonBeamGroupsAndDatasets(atl03, newFile, beam, groups)
 
   # Loop through beams
-  clipBeams(atl03, newFile, beam, mask_fn, clipObj)
+  clipBeams(atl03, newFile, beam, mask_fn, clip_obj)
 
   newFile$close_all()
   ATL03_read(output)
@@ -53,7 +55,7 @@ copyNonBeamGroupsAndDatasets <- function(atl03, newFile, beam, groups) {
   # non_beam_group <- "orbit_info"
   for (non_beam_group in non_beams_groups) {
     datasets_dt <- atl03[[non_beam_group]]$dt_datasets()
-    # dataset <- "bounding_polygon_lat1"
+    # dataset <- "bounding_clip_obj_lat1"
     for (dataset in datasets_dt$name) {
       ds_dims <- length(atl03[[non_beam_group]][[dataset]]$dims)
       args <- list(atl03[[non_beam_group]][[dataset]])
@@ -71,7 +73,7 @@ copyNonBeamGroupsAndDatasets <- function(atl03, newFile, beam, groups) {
   }
 }
 
-clipBeams <- function(atl03, newFile, beam, mask_fn, clipObj) {
+clipBeams <- function(atl03, newFile, beam, mask_fn, clip_obj) {
   # Avoid R CMD check warnings about no visible binding
   dataset.dims <- dataset.rank <- name <- NULL
 
@@ -85,7 +87,7 @@ clipBeams <- function(atl03, newFile, beam, mask_fn, clipObj) {
     beam <- atl03[[beamName]]
     updateBeam <- newFile[[beamName]]
 
-    segmentsMask <- mask_fn(beam, clipObj)
+    segmentsMask <- mask_fn(beam, clip_obj)
     photonsMask <- ATL03_photons_segment_mask(beam, segmentsMask)
 
     photonsSize <- beam[["heights/h_ph"]]$dims

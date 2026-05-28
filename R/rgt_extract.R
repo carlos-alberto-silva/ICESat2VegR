@@ -5,6 +5,7 @@
 #'
 #' @param h5 A ICESat-2 ATL03 object (output of [`ATL03_read()`] or [`ATL08_read()`] function).
 #' An S4 object of class [`ICESat2VegR::icesat2.atl03_dt-class`] or [`ICESat2VegR::icesat2.atl08_dt-class`].
+#' @param line Logical; if `TRUE`, extract the ground track as a line, default = TRUE.
 #'
 #' @return Returns the ground track boundaries as [`terra::SpatVector-class`] extracted from "orbit_info",
 #' along with other orbit information.
@@ -27,36 +28,59 @@
 #' # Reading ATL03 data (h5 file)
 #' atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 #'
-#' # Extracting ATL03 photons attributes
-#' rgt <- rgt_extract(h5 = atl03_h5)
-#' head(rgt)
+#' # Extracting ATL03 RGT track as polygons
+#' rgt_polygon <- rgt_extract(h5 = atl03_h5, line = FALSE)
+#' head(rgt_polygon)
 #' 
-#' terra::plet(rgt)
+#' terra::plet(rgt_polygon)
 #'
+#' # Extracting ATL03 RGT track as lines
+#' rgt_line <- rgt_extract(h5 = atl03_h5)
+#' head(rgt_line)
+#' terra::plet(rgt_line)
+#' 
 #' close(atl03_h5)
 #' @include class.icesat2.R
 #' @importFrom data.table data.table rbindlist
 #' @importFrom terra writeVector
 #' @export
-rgt_extract <- function(h5) {
+rgt_extract <- function(h5, line = TRUE) {
   stopifnot(
     "The input file needs to be one ATL03_read or ATL08_read products" = inherits(h5, "icesat2.h5")
   )
 
-  rgt_data <- data.frame(
+  rgt_data <- cbind(
     cycle_number = h5[["orbit_info/cycle_number"]][],
     orbit_number = h5[["orbit_info/orbit_number"]][],
     rgt = h5[["orbit_info/rgt"]][]
   )
 
-  rgt <- terra::vect(
-    cbind(
-      h5[["orbit_info/bounding_polygon_lon1"]][],
-      h5[["orbit_info/bounding_polygon_lat1"]][]),
-    type = "polygons",
-    atts = rgt_data,
-    crs = "epsg:4326"
-  )
+  rgt_coords = cbind(
+        h5[["orbit_info/bounding_polygon_lon1"]][],
+        h5[["orbit_info/bounding_polygon_lat1"]][])
 
+  if (line == TRUE) {
+    n <- nrow(rgt_coords)
+    half <- floor(n/2)
+    side1 <- rgt_coords[1:half,]
+    side2 <- rgt_coords[(n-1):(half+1), ]  # reverse direction
+    mid <- (side1 + side2) / 2
+
+    rgt <- terra::vect(
+      mid,
+      type = "lines",
+      atts = rgt_coords,
+      crs = "epsg:4326"
+    )
+  } else {
+    rgt <- terra::vect(
+      rgt_coords,
+      type = "polygons",
+      atts = rgt_data,
+      crs = "epsg:4326"
+    )
+
+
+  }
   return(rgt)
 }

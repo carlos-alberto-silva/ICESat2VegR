@@ -1,8 +1,9 @@
 #' The pointer to the `earthaccess` python reticulate module
+#'
 #' @useDynLib ICESat2VegR
-#' @import Rcpp Rdpack
+#' @import Rcpp Rdpack mathjaxr
 #' @importFrom Rdpack reprompt
-#' @export
+#' @keywords internal
 earthaccess <- NULL
 
 #' The pointer to the `earth-engine-api` python reticulate module
@@ -14,43 +15,43 @@ ee <- NULL
 # Private h5py module
 h5py <- NULL
 
-# Private package environment
-pkg_env <- environment()
-
-# Module with the Rcpp ANN indexing functions
-pkg_module <- Rcpp::Module("icesat2_module")
+# Private pkg_module
+pkg_module <- NULL
 
 # Private cache for the Earth Engine search
 ee_cache <- new.env(parent = emptyenv())
 ee_cache$search <- NULL
 
 .onLoad <- function(libname, pkgname) {
+  try(
+    suppressWarnings(
+      suppressMessages(
+        reticulate::py_require(c(
+          "earthaccess",
+          "earthengine-api",
+          "h5py"
+        ))
+      )
+    ),
+    silent = TRUE
+  )
+
+  # Python modules ..
   if (reticulate::py_module_available("earthaccess")) {
     earthaccess <<- reticulate::import("earthaccess", convert = FALSE)
   }
-
   if (reticulate::py_module_available("ee")) {
     ee <<- reticulate::import("ee", convert = TRUE)
-    tryCatch(
-      {
-        ee$Initialize()
-      },
-      error = function(e) {
-        tryCatch(
-          {
-            ee$Authenticate()
-          },
-          error = function(e) {}
-        )
-      }
-    )
   }
-
   if (reticulate::py_module_available("h5py")) {
     h5py <<- reticulate::import("h5py", convert = TRUE)
   }
 
+  # GDAL module load
   loadGdal(pkgname)
+
+  # Rcpp module load
+  pkg_module <<- Rcpp::Module("icesat2_module")
 }
 
 
@@ -63,8 +64,7 @@ loadGdal <- function(pkg_name) {
   minor <- proj_version[2]
 
   # Since PROJ 9.1, the data files are in PROJ_DATA instead of PROJ_LIB
-  if (major > 9 ||
-    (major == 9 && minor >= 1)) {
+  if (major > 9 || (major == 9 && minor >= 1)) {
     proj_path <- Sys.getenv("PROJ_DATA")
   } else {
     proj_path <- Sys.getenv("PROJ_LIB")
@@ -87,7 +87,8 @@ loadGdal <- function(pkg_name) {
     info$Date <- "2024-03-06 UTC"
   }
   base::packageStartupMessage(
-    paste("\n##----------------------------------------------------------------##\n",
+    paste(
+      "\n##----------------------------------------------------------------##\n",
       "##  ICESat2VegR package, version ", info$Version, ", Released ", info$Date,
       "    #",
       "\n##----------------------------------------------------------------##\n",
@@ -106,3 +107,4 @@ loadGdal <- function(pkg_name) {
     )
   )
 }
+
