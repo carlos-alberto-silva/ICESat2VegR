@@ -86,7 +86,6 @@
 #' @import data.table
 #' @export
 ATL03_ATL08_photons_seg_dt_height_normalize <- function(
-ATL03_ATL08_photons_seg_dt_height_normalize <- function(
     atl03_atl08_seg_dt,
     smoothing_window = NA,
     smoothing_func = median,
