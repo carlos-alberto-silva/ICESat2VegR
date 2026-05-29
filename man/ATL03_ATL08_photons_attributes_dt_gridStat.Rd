@@ -69,8 +69,8 @@ mean_ph_h <- ATL03_ATL08_photons_attributes_dt_gridStat(atl03_atl08_dt,
   func = mean(ph_h),
   res = 0.0002
 )
-
-plot(mean_ph_h)
+library(terra)
+raster::plot(mean_ph_h)
 
 # Define your own function
 mySetOfMetrics <- function(x) {
@@ -88,7 +88,7 @@ ph_h_metrics <- ATL03_ATL08_photons_attributes_dt_gridStat(atl03_atl08_dt,
   func = mySetOfMetrics(ph_h), res = 0.0002
 )
 
-plot(ph_h_metrics)
+raster::plot(ph_h_metrics)
 
 close(atl03_h5)
 close(atl08_h5)

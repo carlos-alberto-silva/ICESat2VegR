@@ -15,68 +15,157 @@ ATL03_ATL08_photons_seg_dt_fitground(
 )
 }
 \arguments{
-\item{atl03_atl08_seg_dt}{An S4 object of class \code{\linkS4class{icesat2.atl03_atl08_seg_dt}} containing ATL03 and ATL08 data
-(output of \code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}} function).}
+\item{atl03_atl08_seg_dt}{An S4 object of class
+\code{\linkS4class{icesat2.atl03_atl08_seg_dt}} containing ATL03
+and ATL08 data (output of \code{\link[=ATL03_ATL08_segment_create]{ATL03_ATL08_segment_create()}} function).}
 
-\item{smoothing_window}{numeric. The smoothing window size in meters for smoothing the photon cloud.
-Default is NA, see details for more information.}
+\item{smoothing_window}{numeric. The smoothing window size in meters
+for aggregating ground photons before interpolation.
+Default is \code{NA}, which uses the ATBD adaptive window size.
+See Details for more information.}
 
-\item{smoothing_func}{function. The smoothing function to be applied on the smoothing window.}
+\item{smoothing_func}{function. The aggregation function applied to
+ground photon elevations within each smoothing window.
+Default is \code{median}.}
 
-\item{interpolation_func}{function. The interpolation function to estimate the ground elevation.}
+\item{interpolation_func}{function. The interpolation function used
+to estimate ground elevation from the smoothed ground photons.
+Default is \code{NA}, which falls back to \code{stats::approxfun}.
+See Details for more information.}
 
-\item{xout_parameter_name}{character. Optional, can be used to inform the parameter name that the
-interpolation_func uses for passing the prediction vector and already use the photons for prediction.
-Default NA will use the ...}
+\item{xout_parameter_name}{character. The name of the parameter used
+by \code{interpolation_func} to receive the prediction vector.
+When set to \code{"xout"} (default), the function predicts ground
+elevation at every photon's \code{dist_ph_along} position.
+When set to \code{NA}, the raw output of \code{interpolation_func}
+is returned directly without predicting at photon locations (useful
+when \code{interpolation_func} returns a function, e.g.
+\code{approxfun}). See Details for more information.}
 
-\item{...}{Optional parameters to pass to the interpolation_func, see details for more information.}
+\item{...}{Optional additional parameters passed to
+\code{interpolation_func}. See Details for more information.}
+}
+\value{
+When \code{xout_parameter_name} is not \code{NA}, returns a
+named list with two numeric vectors:
+\describe{
+\item{x}{Distance along track (\code{dist_ph_along}) for each
+photon, in meters.}
+\item{y}{Interpolated ground elevation (\code{h_ph}) at each
+photon location, in meters. Values are \code{NA} for photons
+outside the smoothed ground range (controlled by the
+\code{rule} argument of the interpolation function).}
+}
+When \code{xout_parameter_name = NA}, returns the raw output of
+\code{interpolation_func} directly — for example, a callable
+\code{function} when \code{interpolation_func = approxfun}, which
+can then be evaluated at arbitrary distances along the track.
 }
 \description{
 Function to estimate ground elevation using smoothing and
-interpolation functions
+interpolation functions. Ground photons (classed_pc_flag == 1) are
+first aggregated within a smoothing window, then an interpolation
+function is applied to estimate the ground elevation at each photon
+location or at arbitrary distances along the track.
 }
 \details{
 The function for calculating the ground will first pass a smoothing
-window with \code{smoothing_window} size,
-applying the \code{smoothing_func} to aggregate the ground photons.
+window with \code{smoothing_window} size, applying the
+\code{smoothing_func} to aggregate the ground photons
+(\code{classed_pc_flag == 1}).
 
-Then it will use an interpolation function between those
-aggregated photons to calculate a smooth surface.
+Then it will use an interpolation function between those aggregated
+photons to estimate a smooth ground surface.
 
 The \code{smoothing_func} signature will depend on the function used.
-It is assumed that the first two arguments are vectors of \code{x} (independent
-variable) and \code{y} (the prediction to be interpolated). The remaining
-arguments are passed through \code{...}.
+It is assumed that the first two arguments are vectors of \code{x}
+(independent variable) and \code{y} (the values to be aggregated).
+The remaining arguments are passed through \code{...}.
 
 The interpolation functions need a third parameter which is the
-\code{x} vector to be interpolated. Functions from \code{stats} base package
-\code{stats::approx()} and \code{stats::spline()} name this argument as \code{xout},
-so you can use:
+\code{x} vector to predict at. Functions from the \code{stats} base
+package such as \code{stats::approx()} and \code{stats::spline()}
+name this argument \code{xout}, so you can use:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{ATL03_ATL08_photons_fitground_seg_dt(
-  dt,
+\if{html}{\out{<div class="sourceCode">}}\preformatted{ATL03_ATL08_photons_seg_dt_fitground(
+  atl03_atl08_seg_dt,
   interpolation_func = approx,
-  xout = 1:30
+  xout_parameter_name = "xout"
 )
 }\if{html}{\out{</div>}}
 
-For example, to interpolate the values for the 1:30 vector. However, other
-functions may name the parameter differently, such as \code{signal::pchip()},
-which calls the parameter \code{xi} instead of \code{xout}.
-The \code{pchip} algorithm (as implemented in the \strong{signal} package)
-is the one used by the ATL08 ATBD.
+to predict at every photon location along the track. Other functions
+may name the prediction parameter differently — for example,
+\code{signal::pchip()} uses \code{xi} instead of \code{xout}.
+The \code{pchip} algorithm (as implemented in the
+\strong{signal} package) is the algorithm used by the ATL08 ATBD.
 
-The \code{smoothing_window} can be left NA, which will use the ATBD algoritm
-for calculating the window size:
+The \code{smoothing_window} can be left \code{NA}, which will use
+the ATBD adaptive algorithm for calculating the window size:
 
-\eqn{Sspan = ceil[5 + 46 * (1 - e^{-a * length})]}, where \emph{length}
-is the number of photons within segment.
+\eqn{Sspan = \lceil 5 + 46 \times (1 - e^{-a \times length}) \rceil},
+where \emph{length} is the number of photons within the segment.
 
-\deqn{a \approx 21x10^{-6}}
+\deqn{a \approx 21 \times 10^{-6}}
 
-\deqn{window_size = \frac{2}{3} Sspan}
+\deqn{window\_size = \frac{2}{3} \times Sspan}
 
-This is not the same algorithm as used in ATL08
-but is an adapted version that uses the ATL08
-pre-classification
+This is not the same algorithm as used in ATL08 but is an adapted
+version that uses the ATL08 pre-classification.
+}
+\examples{
+# Specifying the path to ATL03 and ATL08 files
+atl03_path <- system.file("extdata", "atl03_clip.h5", package = "ICESat2VegR")
+atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
+
+# Reading ATL03 and ATL08 data (h5 files)
+atl03_h5 <- ATL03_read(atl03_path = atl03_path)
+atl08_h5 <- ATL08_read(atl08_path = atl08_path)
+
+# Extracting ATL03 and ATL08 photons and heights
+atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
+
+# Converting to seg_dt class (required input for fitground)
+atl03_atl08_seg_dt <- ATL03_ATL08_segment_create(
+  atl03_atl08_dt,
+  segment_length = 30
+)
+
+# Example 1: ATBD adaptive smoothing window + linear interpolation
+# at each photon location along the track.
+# Returns a list with $x (dist_ph_along) and $y (ground elevation in meters).
+# NAs appear at photon locations outside the smoothed ground range.
+ground_approx <- ATL03_ATL08_photons_seg_dt_fitground(
+  atl03_atl08_seg_dt,
+  interpolation_func = approx,
+  xout_parameter_name = "xout"
+)
+head(ground_approx$x) # photon distances along track (meters)
+head(ground_approx$y) # interpolated ground elevations (meters)
+
+# Example 2: Return an interpolation function (approxfun) for
+# querying ground elevation at arbitrary distances along the track.
+# xout_parameter_name = NA skips prediction at photon locations
+# and returns the interpolation function directly.
+ground_fun <- ATL03_ATL08_photons_seg_dt_fitground(
+  atl03_atl08_seg_dt,
+  interpolation_func = approxfun,
+  xout_parameter_name = NA
+)
+# Query ground elevation at custom distances along track (meters)
+ground_fun(c(100, 200, 300))
+
+# Example 3: Fixed 5 m smoothing window using mean instead of median
+ground_mean <- ATL03_ATL08_photons_seg_dt_fitground(
+  atl03_atl08_seg_dt,
+  smoothing_window = 5,
+  smoothing_func = mean,
+  interpolation_func = approx,
+  xout_parameter_name = "xout"
+)
+head(ground_mean$y)
+
+close(atl03_h5)
+close(atl08_h5)
+
 }
