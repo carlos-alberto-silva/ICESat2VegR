@@ -28,9 +28,11 @@
 #'   \code{\link{ATL03_ATL08_photons_seg_dt_fitground}}.
 #'
 #' @return Returns the input \code{atl03_atl08_seg_dt} object with the
-#'   \code{ph_h} column updated in place to contain height above ground
-#'   level (AGL) in meters, computed as \code{h_ph - ground_elevation}.
+#'   \code{ph_h} column updated \strong{in place} to contain height above
+#'   ground level (AGL) in meters, computed as \code{h_ph - ground_elevation}.
 #'   Values are \code{NA} for photons outside the interpolated ground range.
+#'   Note: as this function uses \code{data.table} assignment by reference,
+#'   the original input object is also modified.
 #'
 #' @details
 #' This function is a wrapper around
@@ -62,7 +64,7 @@
 #'   segment_length = 30
 #' )
 #'
-#' # Normalize photon heights using default ATBD smoothing window
+#' # Example 1: Normalize photon heights using default ATBD smoothing window
 #' atl03_atl08_seg_dt_norm <- ATL03_ATL08_photons_seg_dt_height_normalize(
 #'   atl03_atl08_seg_dt,
 #'   interpolation_func = approx,
@@ -70,7 +72,12 @@
 #' )
 #' head(atl03_atl08_seg_dt_norm)
 #'
-#' # Normalize using a fixed 5 m smoothing window and mean aggregation
+#' # Example 2: Fixed 5 m smoothing window using mean aggregation
+#' # Recreate seg_dt since ph_h was modified in place by the previous call
+#' atl03_atl08_seg_dt <- ATL03_ATL08_segment_create(
+#'   atl03_atl08_dt,
+#'   segment_length = 30
+#' )
 #' atl03_atl08_seg_dt_norm2 <- ATL03_ATL08_photons_seg_dt_height_normalize(
 #'   atl03_atl08_seg_dt,
 #'   smoothing_window = 5,
@@ -93,22 +100,13 @@ ATL03_ATL08_photons_seg_dt_height_normalize <- function(
     xout_parameter_name = "xout",
     ...) {
   ph_h <- dist_ph_along <- classed_pc_flag <- h_ph <- NA
-
   stopifnot(
     "atl03_atl08_seg_dt seems to be invalid, use the package function" =
       inherits(atl03_atl08_seg_dt, "icesat2.atl03_atl08_seg_dt")
   )
-
   if (!inherits(interpolation_func, "function")) {
     interpolation_func <- stats::approx
   }
-
-  params <- list(
-    ...
-  )
-  params[[xout_parameter_name]] <- list(atl03_atl08_seg_dt[, list(dist_ph_along)])
-
-
   elevation <- ATL03_ATL08_photons_seg_dt_fitground(
     atl03_atl08_seg_dt,
     smoothing_window,
@@ -117,14 +115,9 @@ ATL03_ATL08_photons_seg_dt_height_normalize <- function(
     xout_parameter_name,
     ...
   )
-
-
   atl03_atl08_seg_dt[
     ,
-    ph_h := h_ph - elevation
+    ph_h := h_ph - elevation$y
   ]
-
-  range(atl03_atl08_seg_dt[classed_pc_flag >= 1, list(ph_h)], na.rm = TRUE)
-
   atl03_atl08_seg_dt
 }

@@ -2,8 +2,7 @@
 % Please edit documentation in R/ATL03_ATL08_photons_seg_dt_height_normalize.R
 \name{ATL03_ATL08_photons_seg_dt_height_normalize}
 \alias{ATL03_ATL08_photons_seg_dt_height_normalize}
-\title{Fit and estimate ground elevation for photons or arbitrary distances
-from the track beginning}
+\title{Normalize photon heights relative to estimated ground elevation}
 \usage{
 ATL03_ATL08_photons_seg_dt_height_normalize(
   atl03_atl08_seg_dt,
@@ -15,68 +14,93 @@ ATL03_ATL08_photons_seg_dt_height_normalize(
 )
 }
 \arguments{
-\item{atl03_atl08_seg_dt}{An S4 object of class \code{\linkS4class{icesat2.atl03_atl08_seg_dt}} containing ATL03 and ATL08 data
-(output of \code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}} function).}
+\item{atl03_atl08_seg_dt}{An S4 object of class
+\code{\linkS4class{icesat2.atl03_atl08_seg_dt}} containing ATL03
+and ATL08 data (output of \code{\link[=ATL03_ATL08_segment_create]{ATL03_ATL08_segment_create()}} function).}
 
-\item{smoothing_window}{numeric. The smoothing window size in meters for smoothing the photon cloud.
-Default is NA, see details for more information.}
+\item{smoothing_window}{numeric. The smoothing window size in meters
+for aggregating ground photons before interpolation.
+Default is \code{NA}, which uses the ATBD adaptive window size.
+See Details for more information.}
 
-\item{smoothing_func}{function. The smoothing function to be applied on the smoothing window.}
+\item{smoothing_func}{function. The aggregation function applied to
+ground photon elevations within each smoothing window.
+Default is \code{median}.}
 
-\item{interpolation_func}{function. The interpolation function to estimate the ground elevation.
-Default \code{\link[stats:approxfun]{stats::approx()}}.}
+\item{interpolation_func}{function. The interpolation function used
+to estimate ground elevation from the smoothed ground photons.
+Default is \code{NA}, which falls back to \code{stats::approx}.
+See Details for more information.}
 
-\item{xout_parameter_name}{character. The parameter name used for the \code{interpolation_func} to
-which will be used to predict, default "xout".}
+\item{xout_parameter_name}{character. The name of the parameter used
+by \code{interpolation_func} to receive the prediction vector.
+Default is \code{"xout"}. See Details for more information.}
 
-\item{...}{parameters to be passed forward to \code{\link[=ATL03_ATL08_photons_seg_dt_fitground]{ATL03_ATL08_photons_seg_dt_fitground()}}.}
+\item{...}{Additional parameters passed forward to
+\code{\link{ATL03_ATL08_photons_seg_dt_fitground}}.}
+}
+\value{
+Returns the input \code{atl03_atl08_seg_dt} object with the
+\code{ph_h} column updated in place to contain height above ground
+level (AGL) in meters, computed as \code{h_ph - ground_elevation}.
+Values are \code{NA} for photons outside the interpolated ground range.
 }
 \description{
-Function to estimate ground elevation using smoothing and
-interpolation functions
+Normalizes ATL03 and ATL08 photon heights (\code{ph_h}) by subtracting
+the estimated ground elevation at each photon location. Ground elevation
+is estimated internally using \code{\link{ATL03_ATL08_photons_seg_dt_fitground}}.
+The function updates the \code{ph_h} column in place and returns the
+modified \code{atl03_atl08_seg_dt} object.
 }
 \details{
-The function for calculating the ground will first pass a smoothing
-window with \code{smoothing_window} size,
-applying the \code{smoothing_func} to aggregate the ground photons.
+This function is a wrapper around
+\code{\link{ATL03_ATL08_photons_seg_dt_fitground}}. It first estimates
+the ground elevation at every photon location using the smoothing and
+interpolation approach described in that function, then subtracts the
+estimated ground elevation from the raw photon height (\code{h_ph})
+to produce height above ground level.
 
-Then it will use an interpolation function between those
-aggregated photons to calculate a smooth surface.
+For full details on the smoothing window, smoothing function, and
+interpolation function behaviour, see
+\code{\link{ATL03_ATL08_photons_seg_dt_fitground}}.
+}
+\examples{
+# Specifying the path to ATL03 and ATL08 files
+atl03_path <- system.file("extdata", "atl03_clip.h5", package = "ICESat2VegR")
+atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
 
-The \code{smoothing_func} signature will depend on the function used.
-It is assumed that the first two arguments are vectors of \code{x} (independent
-variable) and \code{y} (the prediction to be interpolated). The remaining
-arguments are passed through \code{...}.
+# Reading ATL03 and ATL08 data (h5 files)
+atl03_h5 <- ATL03_read(atl03_path = atl03_path)
+atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 
-The interpolation functions need a third parameter which is the
-\code{x} vector to be interpolated. Functions from \code{stats} base package
-\code{stats::approx()} and \code{stats::spline()} name this argument as \code{xout},
-so you can use:
+# Extracting ATL03 and ATL08 photons and heights
+atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{ATL03_ATL08_photons_fitground_seg_dt(
-  dt,
-  interpolation_func = approx,
-  xout = 1:30
+# Converting to seg_dt class (required input)
+atl03_atl08_seg_dt <- ATL03_ATL08_segment_create(
+  atl03_atl08_dt,
+  segment_length = 30
 )
-}\if{html}{\out{</div>}}
 
-For example, to interpolate the values for the 1:30 vector. However, other
-functions may name the parameter differently, such as \code{signal::pchip()},
-which calls the parameter \code{xi} instead of \code{xout}.
-The \code{pchip} algorithm (as implemented in the \strong{signal} package)
-is the one used by the ATL08 ATBD.
+# Normalize photon heights using default ATBD smoothing window
+atl03_atl08_seg_dt_norm <- ATL03_ATL08_photons_seg_dt_height_normalize(
+  atl03_atl08_seg_dt,
+  interpolation_func = approx,
+  xout_parameter_name = "xout"
+)
+head(atl03_atl08_seg_dt_norm)
 
-The \code{smoothing_window} can be left NA, which will use the ATBD algoritm
-for calculating the window size:
+# Normalize using a fixed 5 m smoothing window and mean aggregation
+atl03_atl08_seg_dt_norm2 <- ATL03_ATL08_photons_seg_dt_height_normalize(
+  atl03_atl08_seg_dt,
+  smoothing_window = 5,
+  smoothing_func = mean,
+  interpolation_func = approx,
+  xout_parameter_name = "xout"
+)
+head(atl03_atl08_seg_dt_norm2)
 
-\eqn{Sspan = ceil[5 + 46 * (1 - e^{-a * length})]}, where \emph{length}
-is the number of photons within segment.
+close(atl03_h5)
+close(atl08_h5)
 
-\deqn{a \approx 21x10^{-6}}
-
-\deqn{window_size = \frac{2}{3} Sspan}
-
-This is not the same algorithm as used in ATL08
-but is an adapted version that uses the ATL08
-pre-classification
 }
