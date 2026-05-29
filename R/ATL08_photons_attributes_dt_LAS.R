@@ -22,7 +22,7 @@
 #' close(atl08)
 #' @import hdf5r
 #' @export
-ATL08_attributes_dt_LAS <- function(atl08_path) {
+ATL08_photons_attributes_dt_LAS  <- function(atl08_path) {
   if (!is.character(atl08_path) | !tools::file_ext(atl08_path) == "h5") {
     stop("atl08_path must be a path to a h5 file")
   }

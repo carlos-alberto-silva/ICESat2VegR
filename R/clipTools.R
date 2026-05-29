@@ -160,8 +160,6 @@ ATL03_segments_mask_geometry <- function(beam, geom) {
   return(res$row)
 }
 
-
-
 ATL03_photons_mask_geometry <- function(beam, geom) {
   ext <- terra::ext(geom)
   mask_ext <- ATL03_photons_mask(beam, ext)
@@ -181,8 +179,6 @@ ATL03_photons_mask_geometry <- function(beam, geom) {
   return(res$row)
 }
 
-
-
 ATL03_photons_segment_mask <- function(beam, segmentsMask) {
   if (is.null(segmentsMask)) {
     return(integer(0))
@@ -194,7 +190,6 @@ ATL03_photons_segment_mask <- function(beam, segmentsMask) {
   photons_mask <- pkg_module$seq_lens_simplify(seg_indices[mask2], ph_cnt[mask2])
   photons_mask
 }
-
 
 ATL03_photons_per_segment <- function(beam, photonsMask) {
   seg_indices <- beam[["geolocation/ph_index_beg"]][]
