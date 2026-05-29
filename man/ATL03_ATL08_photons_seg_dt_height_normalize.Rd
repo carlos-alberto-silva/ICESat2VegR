@@ -41,9 +41,11 @@ Default is \code{"xout"}. See Details for more information.}
 }
 \value{
 Returns the input \code{atl03_atl08_seg_dt} object with the
-\code{ph_h} column updated in place to contain height above ground
-level (AGL) in meters, computed as \code{h_ph - ground_elevation}.
+\code{ph_h} column updated \strong{in place} to contain height above
+ground level (AGL) in meters, computed as \code{h_ph - ground_elevation}.
 Values are \code{NA} for photons outside the interpolated ground range.
+Note: as this function uses \code{data.table} assignment by reference,
+the original input object is also modified.
 }
 \description{
 Normalizes ATL03 and ATL08 photon heights (\code{ph_h}) by subtracting
@@ -82,7 +84,7 @@ atl03_atl08_seg_dt <- ATL03_ATL08_segment_create(
   segment_length = 30
 )
 
-# Normalize photon heights using default ATBD smoothing window
+# Example 1: Normalize photon heights using default ATBD smoothing window
 atl03_atl08_seg_dt_norm <- ATL03_ATL08_photons_seg_dt_height_normalize(
   atl03_atl08_seg_dt,
   interpolation_func = approx,
@@ -90,7 +92,12 @@ atl03_atl08_seg_dt_norm <- ATL03_ATL08_photons_seg_dt_height_normalize(
 )
 head(atl03_atl08_seg_dt_norm)
 
-# Normalize using a fixed 5 m smoothing window and mean aggregation
+# Example 2: Fixed 5 m smoothing window using mean aggregation
+# Recreate seg_dt since ph_h was modified in place by the previous call
+atl03_atl08_seg_dt <- ATL03_ATL08_segment_create(
+  atl03_atl08_dt,
+  segment_length = 30
+)
 atl03_atl08_seg_dt_norm2 <- ATL03_ATL08_photons_seg_dt_height_normalize(
   atl03_atl08_seg_dt,
   smoothing_window = 5,

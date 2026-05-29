@@ -8,35 +8,73 @@ ATL03_ATL08_seg_attributes_dt_clipBox(atl03_atl08_dt, clip_obj)
 }
 \arguments{
 \item{atl03_atl08_dt}{An object of class
-\code{\linkS4class{icesat2.atl03_atl08_seg_dt}}, typically produced by a
-join function that combines ATL03 and ATL08 segment attributes.}
+\code{\linkS4class{icesat2.atl08_dt}}, typically produced by
+\code{\link[=ATL08_seg_attributes_dt]{ATL08_seg_attributes_dt()}}.}
 
 \item{clip_obj}{Bounding extent used for clipping. Supported inputs:
 \itemize{
 \item A numeric vector of length 4:
 \code{c(xmin, ymin, xmax, ymax)} in decimal degrees.
-\item A \code{\link[terra:SpatExtent-class]{terra::SpatExtent}} object.
+\item A \code{\link[terra]{SpatExtent}} object.
 }}
 }
 \value{
-An object of the same class as \code{atl03_atl08_dt}, containing only
-segments whose coordinates fall inside the bounding extent.
+An object of the same class as \code{atl03_atl08_dt}, containing
+only segments whose \code{longitude} and \code{latitude} fall inside
+the bounding extent.
 }
 \description{
-Clips a joined ATL03/ATL08 segments table to a given spatial extent. Only
-rows whose \code{longitude} and \code{latitude} fall inside the specified bounding
-extent are retained. This is the bounding-box counterpart to any
-geometry-based clipping applied to
-\code{\linkS4class{icesat2.atl03_atl08_seg_dt}} objects.
+Clips an \code{icesat2.atl08_dt} object to a given spatial extent. Only
+rows whose \code{longitude} and \code{latitude} fall inside the specified
+bounding extent are retained. This is the bounding-box counterpart to
+geometry-based clipping via
+\code{\link{ATL03_ATL08_seg_attributes_dt_clipGeometry}}.
 }
 \details{
 The function:
 \enumerate{
-\item Validates that the input has \code{longitude} and \code{latitude} columns.
-\item Converts \code{clip_obj} to numeric bounds \code{xmin}, \code{ymin},
-\code{xmax}, \code{ymax}.
+\item Validates that the input has \code{longitude} and \code{latitude}
+columns.
+\item Converts \code{clip_obj} to numeric bounds \code{xmin},
+\code{ymin}, \code{xmax}, \code{ymax}.
 \item Drops rows with missing coordinates.
 \item Returns a subset of \code{atl03_atl08_dt} where
 \code{longitude} and \code{latitude} fall inside the bounding box.
 }
+}
+\examples{
+# Specifying the path to ATL08 file
+atl08_path <- system.file("extdata",
+  "atl08_clip.h5",
+  package = "ICESat2VegR"
+)
+
+# Reading ATL08 data (h5 file)
+atl08_h5 <- ATL08_read(atl08_path = atl08_path)
+
+# Extracting ATL08 segment attributes
+atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5)
+head(atl08_seg_dt)
+
+# Example 1: Clip using a numeric bounding box (xmin, ymin, xmax, ymax)
+bbox <- c(-106.571, 41.532, -106.570, 41.537)
+atl08_seg_clip <- ATL03_ATL08_seg_attributes_dt_clipBox(
+  atl08_seg_dt,
+  clip_obj = bbox
+)
+head(atl08_seg_clip)
+nrow(atl08_seg_clip)
+
+# Example 2: Clip using a terra SpatExtent object
+library(terra)
+ext_obj <- terra::ext(bbox)
+atl08_seg_clip2 <- ATL03_ATL08_seg_attributes_dt_clipBox(
+  atl08_seg_dt,
+  clip_obj = ext_obj
+)
+head(atl08_seg_clip2)
+nrow(atl08_seg_clip2)
+
+close(atl08_h5)
+
 }
