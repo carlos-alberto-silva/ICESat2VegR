@@ -52,9 +52,8 @@ plot_icesat2_orbit_animation <- function(
   # ------------------------------------------------------------
   # Internal package assets
   # ------------------------------------------------------------
-
-  earth_texture <- "Stylized_World_Topo_5400x2700.JPG"
-  satellite_image <- "ICESAT_BeautyShot_noLaser2.png"
+  earth_texture <- "Stylized_World_Topo_5400x2700.jpeg"
+  satellite_image <- "extdataICESat2_wLasers.png"
 
   extdata_dir <- system.file(
     "extdata",
