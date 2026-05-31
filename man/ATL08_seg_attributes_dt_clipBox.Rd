@@ -51,7 +51,7 @@ atl08_h5 <- ATL08_read(atl08_path)
 atl08_seg_att_dt <- ATL08_seg_attributes_dt(atl08_h5 = atl08_h5)
 
 # 1) Using a numeric bounding box: xmin ymin xmax ymax
-bbox <- c(-103.7604, 59.4672, -103.7600, 59.4680)
+bbox <- c(-106.57, 41.53, -106.5698, 41.54)
 
 atl08_seg_att_dt_clip <- ATL08_seg_attributes_dt_clipBox(
   atl08_seg_att_dt = atl08_seg_att_dt,

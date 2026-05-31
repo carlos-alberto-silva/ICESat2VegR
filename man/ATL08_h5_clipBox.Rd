@@ -2,7 +2,7 @@
 % Please edit documentation in R/ATL08_h5_clipBox.R
 \name{ATL08_h5_clipBox}
 \alias{ATL08_h5_clipBox}
-\title{Clip ICESat-2 ATL08 HDF5 Data Using a Bounding Extent}
+\title{Clip ICESat-2 ATL08 HDF5 data by bounding box}
 \usage{
 ATL08_h5_clipBox(
   atl08,
@@ -13,77 +13,79 @@ ATL08_h5_clipBox(
 )
 }
 \arguments{
-\item{atl08}{An \code{\linkS4class{icesat2.atl08_h5}} object obtained via
-\code{\link[=ATL08_read]{ATL08_read()}}, representing the ATL08 HDF5 file to be clipped.}
+\item{atl08}{An object of class \code{icesat2.atl08_h5},
+typically produced by \code{\link[=ATL08_read]{ATL08_read()}}.}
 
-\item{output}{Character path specifying where the clipped HDF5 file should be
-written.}
+\item{output}{Character. Full path to the output HDF5 file
+(must include the \code{.h5} extension).}
 
-\item{clip_obj}{Bounding extent used for clipping. Supported inputs:
+\item{clip_obj}{Bounding extent for clipping. Supported inputs:
 \itemize{
 \item A numeric vector of length 4:
-\code{c(ul_lat, ul_lon, lr_lat, lr_lon)}, following the ICESat-2 CMS
-bounding-box convention (upper-left latitude/longitude and
-lower-right latitude/longitude).
-\item A \code{\link[terra:SpatExtent-class]{terra::SpatExtent}} object.
+\code{c(ymax, xmin, ymin, xmax)} in decimal degrees.
+\item A \code{\link[terra]{SpatExtent}} object
+(\code{xmin, xmax, ymin, ymax}).
 }}
 
-\item{beam}{Character vector specifying which ATL08 beams to include.
-Defaults to:
-\code{c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")}.}
+\item{beam}{Character vector of beam names to include.
+Default is all six beams:
+\code{c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l")}.}
 
-\item{additional_groups}{Character vector specifying additional non-beam
-HDF5 groups to copy unchanged into the output file. Defaults to:
-\code{c("orbit_info")}.}
+\item{additional_groups}{Character vector of non-beam HDF5 groups
+to copy into the output file. Default is \code{"orbit_info"}.}
 }
 \value{
-An S4 object of class \code{\linkS4class{icesat2.atl08_h5}} representing
-the clipped ATL08 HDF5 file.
+An object of class \code{icesat2.atl08_h5} pointing to
+the clipped output HDF5 file.
 }
 \description{
-Clips an ICESat-2 ATL08 HDF5 file to a specified spatial extent. Only
-segment-level datasets within the ATL08 beam groups are clipped; all metadata,
-orbit information, and ancillary groups are preserved unchanged. This
-function is the bounding-box-based counterpart to geometry-based clipping
-functions.
+Clips an ATL08 HDF5 file to a given bounding extent, preserving
+the original file structure, metadata, and ancillary data unchanged.
+Returns the clipped data as a new \code{icesat2.atl08_h5} object.
 }
 \details{
-The function performs the following steps:
-\enumerate{
-\item Copies file-level attributes and all requested non-beam groups.
-\item Clips beam-level datasets based on latitude/longitude coordinates and
-the supplied spatial extent.
-\item Reconstructs dependent indexing datasets (e.g., photon index ranges)
-when necessary to maintain valid ATL08 structure.
-}
+The function clips the ATL08 HDF5 file beam by beam, retaining only
+land segments whose coordinates fall within the specified bounding
+extent. All beam datasets (photon-level and segment-level) are clipped
+consistently. Non-beam groups (e.g. \code{orbit_info}) are copied
+unchanged. The clipped file is written to \code{output} and returned
+as a new \code{icesat2.atl08_h5} object.
 
-The resulting HDF5 file remains fully compliant with the ATL08 product
-structure, but contains only data within the specified bounding extent.
+Note: \code{output} must be a full file path ending in \code{.h5}.
+If the file already exists and is open, the function will fail with
+an HDF5 error — always \code{close()} any open handles before
+rerunning.
 }
 \examples{
-# ATL08 file path
+# Specifying the path to ATL08 file
 atl08_path <- system.file("extdata",
   "atl08_clip.h5",
   package = "ICESat2VegR"
 )
 
-# Read ATL08 data
-atl08_h5 <- ATL08_read(atl08_path)
+# Reading ATL08 data (h5 file)
+atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 
-# Bounding rectangle coordinates (ul_lat, ul_lon, lr_lat, lr_lon)
-ul_lon <- -106.5723
-lr_lon <- -106.5693
-lr_lat <- 41.533
-ul_lat <- 41.537
+# Output file path in temp directory
+output <- file.path(tempdir(), "atl08_clipped.h5")
 
-# Clip ATL08 data using the bounding extent
-atl08_clip <- ATL08_h5_clipBox(
+# Clip using a terra SpatExtent
+library(terra)
+ext_obj <- terra::ext(-106.5709, -106.5699, 41.5315, 41.535)
+
+atl08_clipped <- ATL08_h5_clipBox(
   atl08_h5,
-  output = tempfile(fileext = ".h5"),
-  clip_obj = c(ul_lat, ul_lon, lr_lat, lr_lon)
+  output = output,
+  clip_obj = ext_obj
 )
+atl08_clipped
+
+# Inspect the clipped segments
+atl08_seg_clip <- ATL08_seg_attributes_dt(atl08_clipped)
+head(atl08_seg_clip)
+nrow(atl08_seg_clip)
 
 close(atl08_h5)
-close(atl08_clip)
+close(atl08_clipped)
 
 }
