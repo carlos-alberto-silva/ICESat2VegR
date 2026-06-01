@@ -223,7 +223,9 @@
 #' require(randomForest)
 #'
 #' data(airquality)
-#' airquality <- na.omit(airquality)
+#'   # Requires Google Earth Engine authentication
+#'   Sys.setenv(EE_PROJECT = "your-ee-project-id")
+#'   ICESat2VegR::ee_initialize()
 #'
 #' xdata <- airquality[, 2:6]
 #' ydata <- airquality[, 1]
