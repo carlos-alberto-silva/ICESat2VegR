@@ -14,18 +14,62 @@
 #' @return A [`terra::SpatVector-class`] object.
 #'
 #' @examples
-#' # ICESat2VegR examples (package objects keep their classes):
+#' # ── Setup ──────────────────────────────────────────────────
 #' atl03_path <- system.file("extdata", "atl03_clip.h5", package = "ICESat2VegR")
-#' atl03_h5 <- ATL03_read(atl03_path = atl03_path)
-#' atl03_segment_dt <- ATL03_seg_metadata_dt(atl03_h5 = atl03_h5)
+#' atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
+#' atl03_h5   <- ATL03_read(atl03_path = atl03_path)
+#' atl08_h5   <- ATL08_read(atl08_path = atl08_path)
+#'
+#' # ── icesat2.atl03_seg_dt ───────────────────────────────────
+#' atl03_segment_dt   <- ATL03_seg_metadata_dt(atl03_h5 = atl03_h5)
 #' atl03_segment_vect <- to_vect(atl03_segment_dt)
 #' terra::plot(atl03_segment_vect, col = atl03_segment_vect$segment_ph_cnt)
-#' close(atl03_h5)
 #'
-#' # Plain data.frame / data.table usage:
-#' # df <- data.frame(longitude = c(-84, -84.1), latitude = c(29.6, 29.7), z = 1:2)
-#' # v  <- to_vect(df)
-#' # v2 <- to_vect(df, lon = "longitude", lat = "latitude", crs = "EPSG:4326")
+#' # ── icesat2.atl08_dt ───────────────────────────────────────
+#' atl08_dt   <- ATL08_seg_attributes_dt(atl08_h5)
+#' atl08_vect <- to_vect(atl08_dt)
+#' terra::plot(atl08_vect)
+#'
+#' # ── icesat2.atl03atl08_dt ──────────────────────────────────
+#' atl03_atl08_dt   <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
+#' atl03_atl08_vect <- to_vect(atl03_atl08_dt)
+#' terra::plot(atl03_atl08_vect)
+#'
+#' # ── icesat2.atl03_atl08_seg_dt ─────────────────────────────
+#' # rename lon_ph/lat_ph to longitude/latitude first
+#' atl03_atl08_seg_dt <- ATL03_ATL08_segment_create(
+#'   atl03_atl08_dt,
+#'   segment_length = 30
+#' )
+#' atl03_atl08_seg_dt_renamed <- data.table::copy(atl03_atl08_seg_dt)
+#' data.table::setnames(
+#'   atl03_atl08_seg_dt_renamed,
+#'   old = c("lon_ph", "lat_ph"),
+#'   new = c("longitude", "latitude")
+#' )
+#' atl03_atl08_seg_vect <- to_vect(atl03_atl08_seg_dt_renamed)
+#' terra::plot(atl03_atl08_seg_vect)
+#'
+#' # ── data.frame ─────────────────────────────────────────────
+#' df <- data.frame(
+#'   longitude = c(-106.57, -106.57),
+#'   latitude  = c(41.53, 41.54),
+#'   value     = c(1, 2)
+#' )
+#' df_vect <- to_vect(df, lon = "longitude", lat = "latitude")
+#' terra::plot(df_vect)
+#'
+#' # ── sf object ──────────────────────────────────────────────
+#' polygon_filepath <- system.file("extdata",
+#'   "clip_geom.shp",
+#'   package = "ICESat2VegR"
+#' )
+#' sf_obj  <- sf::st_read(polygon_filepath, quiet = TRUE)
+#' sf_vect <- to_vect(sf_obj)
+#' terra::plot(sf_vect)
+#'
+#' close(atl03_h5)
+#' close(atl08_h5)
 #'
 #' @include class.icesat2.R
 #' @export
