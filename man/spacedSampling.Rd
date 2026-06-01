@@ -2,27 +2,43 @@
 % Please edit documentation in R/sample.R
 \name{spacedSampling}
 \alias{spacedSampling}
-\title{Get observations given a minimum radius distance between samples}
+\title{Get observations with a minimum radius distance between samples}
 \usage{
 spacedSampling(size, radius, spatialIndex = NULL, chainSampling = NULL)
 }
 \arguments{
-\item{size}{the sample size. Either an integer of absolute number of samples or
-if it is between (0, 1) it will sample a percentage relative to the number of
-available observations within the group.}
+\item{size}{numeric. The sample size. Either an integer or a value between
+\code{(0, 1)} for a percentage.}
 
-\item{radius}{the minimum radius between samples.}
+\item{radius}{numeric. The minimum radius in decimal degrees between samples.}
 
-\item{spatialIndex}{optional parameter. You can create a spatial index for accelerating
-the search space with \code{\link{ANNIndex}} and reuse that if needed elsewhere. It will create
-one automatically everytime if you don't specify one.}
+\item{spatialIndex}{optional. A pre-built \code{\link{ANNIndex}} spatial
+index for accelerating the search. Created automatically if not provided.}
 
-\item{chainSampling}{chains different methods of sampling by providing the result
-of another samplingMethod \code{\link[=randomSampling]{randomSampling()}}, \code{\link[=spacedSampling]{spacedSampling()}}, \code{\link[=stratifiedSampling]{stratifiedSampling()}}.}
+\item{chainSampling}{optional. Chain with another sampling method.}
 }
 \value{
-A \code{\linkS4class{icesat2_sampling_method}} for defining the method used in \code{\link[=sample]{sample()}}
+A \code{\link{icesat2_sampling_method}} object for use in
+\code{\link{sample}}.
 }
 \description{
-Get observations given a minimum radius distance between samples
+Get observations with a minimum radius distance between samples
+}
+\examples{
+atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
+atl08_h5   <- ATL08_read(atl08_path = atl08_path)
+atl08_dt   <- ATL08_seg_attributes_dt(atl08_h5)
+
+# Sample up to 5 observations with minimum 0.01 degree spacing
+set.seed(1)
+sampled <- ICESat2VegR::sample(
+  atl08_dt,
+  method = spacedSampling(size = 5, radius = 0.01)
+)
+head(sampled)
+
+close(atl08_h5)
+}
+\seealso{
+\code{\link{sample}}, \code{\link{randomSampling}}
 }

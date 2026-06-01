@@ -2,16 +2,60 @@
 % Please edit documentation in R/gee-search.R
 \name{get_catalog_id}
 \alias{get_catalog_id}
-\title{Retrieve the Google Earth Engine image catalog id}
+\title{Retrieve the Google Earth Engine image catalog ID}
 \usage{
 get_catalog_id(id)
 }
 \arguments{
-\item{id}{character. The id retrieved from the data.table resulting from \code{\link[=search_datasets]{search_datasets()}}.}
+\item{id}{Either a \code{\link[data.table]{data.table}} returned by
+\code{\link{search_datasets}}, or a character string containing the
+dataset ID in the underscore-separated format.}
 }
 \value{
-The catalog id to open within Google Earth Engine.
+A character string containing the GEE-formatted catalog ID
+(slash-separated) ready for use with \code{ee$Image()} or
+\code{ee$ImageCollection()}.
 }
 \description{
-Retrieve the Google Earth Engine image catalog id
+Converts a dataset ID from the \code{\link{search_datasets}} result
+into the GEE-formatted catalog ID required by \code{ee$Image()} or
+\code{ee$ImageCollection()}. The function converts the underscore-separated
+format returned by \code{\link{search_datasets}} into the slash-separated
+format used by GEE (e.g., \code{"NASA_NASADEM_HGT_001"} becomes
+\code{"NASA/NASADEM_HGT/001"}).
+}
+\details{
+This function is typically used together with \code{\link{search_datasets}}
+to find and load GEE datasets:
+
+\enumerate{
+\item Use \code{\link{search_datasets}} to find the dataset.
+\item Pass the result to \code{get_catalog_id} to get the GEE ID.
+\item Use the ID with \code{ee$Image()} or \code{ee$ImageCollection()}.
+}
+}
+\examples{
+\dontrun{
+  Sys.setenv(EE_PROJECT = "your-ee-project-id")
+  ICESat2VegR::ee_initialize()
+
+  # Search and retrieve catalog ID for NASA DEM
+  result <- search_datasets("nasa", "dem")
+  dem_id <- get_catalog_id(result)
+  dem_id
+
+  # Load the dataset in GEE
+  elevation <- ee$Image(dem_id)
+  elevation
+
+  # Search and retrieve catalog ID for HLS
+  hls    <- search_datasets("hls")
+  hls_id <- get_catalog_id(hls)
+  hls_id
+
+  # Load as ImageCollection
+  hls_ic <- ee$ImageCollection(hls_id)
+  hls_ic
+}
+
 }

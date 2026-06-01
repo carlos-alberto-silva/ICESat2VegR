@@ -7,13 +7,36 @@
 randomSampling(size)
 }
 \arguments{
-\item{size}{the sample size. Either an integer of absolute number of samples or
-if it is between (0, 1) it will sample a percentage relative to the number of
-available observations within the group.}
+\item{size}{numeric. The sample size. Either an integer for absolute number
+of samples, or a value between \code{(0, 1)} to sample a percentage
+relative to the number of available observations.}
 }
 \value{
-A \code{\linkS4class{icesat2_sampling_method}} for defining the method used in \code{\link[=sample]{sample()}}
+A \code{\link{icesat2_sampling_method}} object for use in
+\code{\link{sample}}.
 }
 \description{
 Pure random sampling method
+}
+\examples{
+atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
+atl08_h5   <- ATL08_read(atl08_path = atl08_path)
+atl08_dt   <- ATL08_seg_attributes_dt(atl08_h5)
+
+# Sample 5 random observations
+set.seed(1)
+sampled <- ICESat2VegR::sample(atl08_dt, method = randomSampling(5))
+head(sampled)
+
+# Sample 50\% of observations
+set.seed(1)
+sampled_pct <- ICESat2VegR::sample(atl08_dt, method = randomSampling(0.5))
+nrow(sampled_pct)
+
+close(atl08_h5)
+}
+\seealso{
+\code{\link{sample}}, \code{\link{gridSampling}},
+\code{\link{stratifiedSampling}}, \code{\link{spacedSampling}},
+\code{\link{geomSampling}}, \code{\link{rasterSampling}}
 }

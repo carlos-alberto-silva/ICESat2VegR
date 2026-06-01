@@ -13,21 +13,84 @@ search_datasets(
 )
 }
 \arguments{
-\item{...}{character arguments to search for within title and/or description}
+\item{...}{One or more character strings to search for within the dataset
+title and/or description. Multiple terms are combined using the
+\code{operator} argument.}
 
-\item{title}{logical. Whether should search within the title, default TRUE.}
+\item{title}{logical. Whether to search within dataset titles.
+Default is \code{TRUE}.}
 
-\item{description}{logical. Whether should search within the description of the dataset, default TRUE.}
+\item{description}{logical. Whether to search within dataset descriptions.
+Default is \code{TRUE}.}
 
-\item{operator}{character. Should be either "OR" or "AND" to tell if the search needs to include
-all the queries "AND" or any of the queries "OR". Default "AND".}
+\item{operator}{character. How to combine multiple search terms.
+Use \code{"AND"} to require all terms to match, or \code{"OR"} to
+return datasets matching any term. Default is \code{"AND"}.}
 
-\item{refresh_cache}{flag indicating if the results cache should be refreshed, default FALSE.}
+\item{refresh_cache}{logical. Whether to refresh the local dataset catalog
+cache. Set to \code{TRUE} to force a fresh download of the catalog.
+Default is \code{FALSE}.}
 }
 \value{
-A \code{data.table} containing the id, title and description of the datasets that matched
-the supplied query ordered by relevance.
+A \code{\link[data.table]{data.table}} with three columns:
+\describe{
+\item{id}{Character. The dataset catalog ID used to load the dataset
+in GEE (e.g., \code{"NASA/NASADEM_HGT/001"}).}
+\item{title}{Character. The dataset title.}
+\item{description}{Character. A brief description of the dataset.}
+}
+Results are ordered by relevance to the search query.
 }
 \description{
-Search for Google Earth Engine datasets
+Searches the Google Earth Engine public data catalog for datasets matching
+one or more keywords. Results are filtered by matching the query terms
+against dataset titles and/or descriptions, and are returned ordered by
+relevance. The catalog is cached locally after the first call to avoid
+repeated network requests.
+}
+\details{
+The function queries the GEE public data catalog, which is cached locally
+after the first call. Use \code{refresh_cache = TRUE} to force a fresh
+download if the catalog may have been updated.
+
+The returned \code{id} column can be passed to
+\code{\link{get_catalog_id}} to extract the GEE-formatted dataset ID
+for use with \code{ee$Image()} or \code{ee$ImageCollection()}.
+}
+\examples{
+\dontrun{
+  Sys.setenv(EE_PROJECT = "your-ee-project-id")
+  ICESat2VegR::ee_initialize()
+
+  # Search for NASA DEM datasets
+  result <- search_datasets("nasa", "dem")
+  result
+
+  # Search for HLS datasets
+  hls <- search_datasets("hls")
+  hls
+
+  # Search within title only
+  landsat <- search_datasets("landsat",
+    title       = TRUE,
+    description = FALSE
+  )
+  landsat
+
+  # Search with OR operator
+  dem_or_elevation <- search_datasets(
+    "dem", "elevation",
+    operator = "OR"
+  )
+  dem_or_elevation
+
+  # Get the catalog ID for use in GEE
+  dem_id <- get_catalog_id(result)
+  dem_id
+
+  # Load the dataset in GEE
+  elevation <- ee$Image(dem_id)
+  elevation
+}
+
 }

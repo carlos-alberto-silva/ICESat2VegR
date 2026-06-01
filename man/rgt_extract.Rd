@@ -7,27 +7,37 @@
 rgt_extract(h5, line = TRUE)
 }
 \arguments{
-\item{h5}{A ICESat-2 ATL03 object (output of \code{\link[=ATL03_read]{ATL03_read()}} or \code{\link[=ATL08_read]{ATL08_read()}} function).
-An S4 object of class \code{\linkS4class{icesat2.atl03_dt}} or \code{\linkS4class{icesat2.atl08_dt}}.}
+\item{h5}{An ICESat-2 HDF5 object, output of \code{\link{ATL03_read}}
+or \code{\link{ATL08_read}}.}
 
-\item{line}{Logical; if \code{TRUE}, extract the ground track as a line, default = TRUE.}
+\item{line}{logical. If \code{TRUE} (default), extracts the ground track
+centerline as a \code{lines} geometry. If \code{FALSE}, extracts the
+bounding polygon as a \code{polygons} geometry.}
 }
 \value{
-Returns the ground track boundaries as \code{\link[terra:SpatVector-class]{terra::SpatVector}} extracted from "orbit_info",
-along with other orbit information.
+A \code{\link[terra]{SpatVector}} object in \code{EPSG:4326}
+containing the ground track geometry with the following attributes:
+\describe{
+\item{cycle_number}{ICESat-2 cycle number.}
+\item{orbit_number}{Orbit number.}
+\item{rgt}{Reference Ground Track number.}
+}
 }
 \description{
-This function extracts reference ground track from ICESat-2 ATL03 data
-and writes it as a GDAL vector format.
+Extracts the reference ground track from ICESat-2 ATL03 or ATL08 HDF5
+data as either a centerline or a bounding polygon, returned as a
+\code{\link[terra]{SpatVector}} object with orbit metadata attributes.
 }
 \details{
-This function will use the reference photons from the segments as reference
-for deriving the ground tracks. The begining and end of the lines are interpolated from
-the information regarding the position of the reference photon within the segment and the
-segment length.
+When \code{line = TRUE}, the centerline is computed as the mean of the
+two sides of the bounding polygon derived from
+\code{orbit_info/bounding_polygon_lon1} and
+\code{orbit_info/bounding_polygon_lat1}.
+
+When \code{line = FALSE}, the full bounding polygon is returned directly
+from the \code{orbit_info} group.
 }
 \examples{
-
 # Specifying the path to ATL03 H5 file
 atl03_path <- system.file("extdata",
   "atl03_clip.h5",
@@ -37,18 +47,18 @@ atl03_path <- system.file("extdata",
 # Reading ATL03 data (h5 file)
 atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 
-# Extracting ATL03 RGT track as polygons
+# Extracting ATL03 RGT track as polygon
 rgt_polygon <- rgt_extract(h5 = atl03_h5, line = FALSE)
 head(rgt_polygon)
-
 terra::plet(rgt_polygon)
 
-# Extracting ATL03 RGT track as lines
-rgt_line <- rgt_extract(h5 = atl03_h5)
+# Extracting ATL03 RGT track as centerline
+rgt_line <- rgt_extract(h5 = atl03_h5, line = TRUE)
 head(rgt_line)
 terra::plet(rgt_line)
 
 close(atl03_h5)
+
 }
 \seealso{
 \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
