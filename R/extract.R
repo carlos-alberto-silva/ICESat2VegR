@@ -1,16 +1,103 @@
-#' Given a stack image raster from GEE
-#' retrieve the point geometry with values for the images
+#' Extract ancillary stack values at point locations from Google Earth Engine
 #'
-#' @param stack A single image or a vector/list of images from Earth Engine.
-#' @param geom A geometry from [`terra::SpatVector-class`] read with [`terra::vect`].
-#' @param scale The scale in meters for the extraction (image resolution).
-#' @param chunk_size If the number of observations is greater than 1000,
-#' it is recommended to chunk the results for not running out of memory within GEE server,
-#' default is chunk by 1000.
+#' @description
+#' Extracts pixel values from a Google Earth Engine image stack at a set of
+#' point locations defined by a \code{SpatVector} object. The extraction is
+#' performed server-side in GEE and the results are returned as a
+#' \code{data.table}. For large point sets, the extraction is automatically
+#' chunked to avoid exceeding GEE server memory limits.
 #'
-#' @return A [data.table::data.table-class] with the properties extracted
-#' from the ee images.
+#' \strong{Authentication:} This function requires an active Google Earth
+#' Engine session. Authenticate using \code{ICESat2VegR::ee_initialize()}
+#' before calling this function.
 #'
+#' @param stack A Google Earth Engine \code{ee$Image} object, typically
+#'   the output of \code{\link{ee_build_AlphaEarth_embedding_terrain_stack}}
+#'   or \code{\link{ee_build_hls_s1c_terrain_stack}}.
+#' @param geom A \code{\link[terra]{SpatVector}} object containing the point
+#'   locations at which to extract values. Must be in \code{EPSG:4326}
+#'   (WGS84 geographic coordinates). Typically created with
+#'   \code{\link[terra]{vect}}.
+#' @param scale numeric. The spatial resolution in meters at which to perform
+#'   the extraction. Should match the native resolution of the \code{stack}
+#'   (e.g., \code{30} for HLS or Landsat-based stacks, \code{10} for
+#'   Sentinel-2-based stacks). Default is \code{10}.
+#' @param chunk_size numeric. Number of points to process per GEE request.
+#'   When the number of points exceeds this value, the extraction is split
+#'   into chunks to avoid exceeding GEE server memory limits.
+#'   Default is \code{1000}.
+#'
+#' @return A \code{\link[data.table]{data.table}} with one row per input
+#'   point and one column per band in \code{stack}, containing the extracted
+#'   pixel values at each point location.
+#'
+#' @details
+#' The function converts the \code{SpatVector} points to GEE geometries
+#' and uses \code{ee$Image$sampleRegions()} to extract pixel values at
+#' each point. When the number of points exceeds \code{chunk_size}, the
+#' points are split into batches and processed sequentially to avoid
+#' memory errors on the GEE server.
+#'
+#' \strong{Authentication:} requires an active GEE session via
+#' \code{ICESat2VegR::ee_initialize()}.
+#'
+#' @examples
+#' \dontrun{
+#'   Sys.setenv(EE_PROJECT = "your-ee-project-id")
+#'   ICESat2VegR::ee_initialize()
+#'
+#'   library(sf)
+#'   library(terra)
+#'
+#'   # ── AOI from extdata ────────────────────────────────────────
+#'   aoi_path <- system.file("extdata",
+#'     "aoi_4326.geojson",
+#'     package = "ICESat2VegR"
+#'   )
+#'   boundary <- sf::st_read(aoi_path, quiet = TRUE)
+#'   aoi      <- sf::st_as_sfc(sf::st_bbox(boundary))
+#'   ee_geom  <- ICESat2VegR:::.as_ee_geom(aoi)
+#'
+#'   # ── Build embedding + terrain stack ─────────────────────────
+#'   stack <- ee_build_AlphaEarth_embedding_terrain_stack(
+#'     geom       = ee_geom,
+#'     start_year = 2025,
+#'     end_year   = 2025
+#'   )
+#'
+#'   # ── Load and sample ICESat-2 segment points ──────────────────
+#'   seg_path <- system.file("extdata",
+#'     "ATL03_ATL08_example_segments.geojson",
+#'     package = "ICESat2VegR"
+#'   )
+#'   data_raw <- sf::read_sf(seg_path, quiet = TRUE)
+#'
+#'   df_dt <- data.table::as.data.table(sf::st_drop_geometry(data_raw))
+#'   class(df_dt) <- c("icesat2.atl03_atl08_seg_dt", "data.table", "data.frame")
+#'
+#'   set.seed(1)
+#'   df_sampled <- ICESat2VegR::sample(df_dt, method = randomSampling(500))
+#'
+#'   df_vect <- terra::vect(
+#'     as.data.frame(df_sampled),
+#'     geom = c("longitude", "latitude"),
+#'     crs  = "EPSG:4326"
+#'   )
+#'
+#'   # ── Extract ancillary values at segment locations ────────────
+#'   result <- seg_ancillary_extract(
+#'     stack      = stack,
+#'     geom       = df_vect,
+#'     scale      = 30,
+#'     chunk_size = 1000
+#'   )
+#'
+#'   head(result)
+#'   nrow(result)
+#'   names(result)
+#' }
+#'
+#' @import data.table
 #' @export
 seg_ancillary_extract <- function(stack, geom, scale = 10, chunk_size = 1000) {
   n <- nrow(geom)
@@ -35,15 +122,103 @@ seg_ancillary_extract <- function(stack, geom, scale = 10, chunk_size = 1000) {
 }
 
 
-#' Given a geometry with point samples and images from Earth Engine
-#' retrieve the point geometry with values for the images
+#' Extract stack values at point locations from Google Earth Engine
 #'
-#' @param stack A single image or a vector/list of images from Earth Engine.
-#' @param geom A geometry from [`terra::SpatVector-class`] read with [`terra::vect()`].
-#' @param scale The scale in meters for the extraction (image resolution).
+#' @description
+#' Extracts pixel values from a Google Earth Engine image stack at a set of
+#' point locations defined by a \code{SpatVector} object. The extraction is
+#' performed server-side in GEE using \code{ee$Image$sampleRegions()} and
+#' returns an \code{ee.FeatureCollection} that can be converted to a
+#' \code{data.table} using \code{getInfo()}.
 #'
-#' @return An ee.FeatureCollection with the properties extracted from the
-#' stack of images from ee.
+#' \strong{Authentication:} This function requires an active Google Earth
+#' Engine session. Authenticate using \code{ICESat2VegR::ee_initialize()}
+#' before calling this function.
+#'
+#' @param stack A Google Earth Engine \code{ee$Image} object or a list of
+#'   \code{ee$Image} objects. Typically the output of
+#'   \code{\link{ee_build_AlphaEarth_embedding_terrain_stack}} or
+#'   \code{\link{ee_build_hls_s1c_terrain_stack}}.
+#' @param geom A \code{\link[terra]{SpatVector}} object containing the point
+#'   locations at which to extract values. Must be in \code{EPSG:4326}
+#'   (WGS84 geographic coordinates). Typically created with
+#'   \code{\link[terra]{vect}}.
+#' @param scale numeric. The spatial resolution in meters at which to perform
+#'   the extraction. Should match the native resolution of the \code{stack}
+#'   (e.g., \code{30} for HLS or Landsat-based stacks, \code{10} for
+#'   Sentinel-2-based stacks).
+#'
+#' @return An \code{ee.FeatureCollection} with the properties extracted from
+#'   the \code{stack} at each point location. Convert to a
+#'   \code{\link[data.table]{data.table}} using \code{result$getInfo()}.
+#'
+#' @details
+#' The function internally converts the \code{SpatVector} points to a GEE
+#' \code{FeatureCollection} via \code{.points_to_ee_fc()} and composes the
+#' input images into a single \code{ee$Image} via \code{.compose_ee_image()}.
+#' Extraction is performed with \code{tileScale = 16} to handle large images
+#' without running out of GEE memory.
+#'
+#' For large point sets it is recommended to use
+#' \code{\link{seg_ancillary_extract}} instead, which automatically chunks
+#' the extraction into batches of \code{chunk_size} points.
+#'
+#' @examples
+#' \dontrun{
+#'   Sys.setenv(EE_PROJECT = "your-ee-project-id")
+#'   ICESat2VegR::ee_initialize()
+#'
+#'   library(sf)
+#'   library(terra)
+#'
+#'   # ── AOI and embedding stack ──────────────────────────────────
+#'   aoi_path <- system.file("extdata",
+#'     "aoi_4326.geojson",
+#'     package = "ICESat2VegR"
+#'   )
+#'   boundary <- sf::st_read(aoi_path, quiet = TRUE)
+#'   aoi      <- sf::st_as_sfc(sf::st_bbox(boundary))
+#'   ee_geom  <- ICESat2VegR:::.as_ee_geom(aoi)
+#'
+#'   stack <- ee_build_AlphaEarth_embedding_terrain_stack(
+#'     geom       = ee_geom,
+#'     start_year = 2025,
+#'     end_year   = 2025
+#'   )
+#'
+#'   # ── Load and sample ICESat-2 segment points ──────────────────
+#'   seg_path <- system.file("extdata",
+#'     "ATL03_ATL08_example_segments.geojson",
+#'     package = "ICESat2VegR"
+#'   )
+#'   data_raw <- sf::read_sf(seg_path, quiet = TRUE)
+#'
+#'   df_dt <- data.table::as.data.table(sf::st_drop_geometry(data_raw))
+#'   class(df_dt) <- c("icesat2.atl03_atl08_seg_dt", "data.table", "data.frame")
+#'
+#'   set.seed(1)
+#'   df_sampled <- ICESat2VegR::sample(df_dt, method = randomSampling(500))
+#'
+#'   df_vect <- terra::vect(
+#'     as.data.frame(df_sampled),
+#'     geom = c("longitude", "latitude"),
+#'     crs  = "EPSG:4326"
+#'   )
+#'
+#'   # ── Extract values at point locations ────────────────────────
+#'   result_ee <- extract(
+#'     stack = stack,
+#'     geom  = df_vect,
+#'     scale = 30
+#'   )
+#'
+#'   # result_ee is an ee.FeatureCollection
+#'   class(result_ee)
+#'
+#'   # Convert to data.table
+#'   result_dt <- result_ee$getInfo()
+#'   head(result_dt)
+#' }
 #'
 #' @export
 extract <- function(stack, geom, scale) {
@@ -71,8 +246,6 @@ extract <- function(stack, geom, scale) {
 
 #   return(sampled)
 # }
-
-
 
 # Compose a single ee.Image from common inputs
 .compose_ee_image <- function(stack) {
