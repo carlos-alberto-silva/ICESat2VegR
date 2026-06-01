@@ -180,16 +180,22 @@ index_to_xy <- function(index, ysize) {
 #' ymax <- max(atl08_dt$latitude)
 #'
 #' linear_model <- stats::lm(h_canopy ~ canopy_openness, data = atl08_dt)
-#' output_h5 <- tempfile(fileext = ".h5")
+#' output_h5    <- tempfile(fileext = ".h5")
 #' predicted_h5 <- predict_h5(linear_model, atl08_dt, output_h5)
 #' output_raster <- tempfile(fileext = ".tif")
 #'
 #' rasterize_h5(
 #'   predicted_h5,
 #'   output = output_raster,
-#'   bbox = terra::ext(xmin, xmax, ymin, ymax),
-#'   res = 0.003
+#'   bbox   = terra::ext(xmin, xmax, ymin, ymax),
+#'   res    = 0.003
 #' )
+#'
+#' # Load and plot the raster
+#' r <- terra::rast(output_raster)
+#' terra::plot(r[[1]])
+#'
+#' close(atl08_h5)
 #'
 #' @export
 setGeneric("rasterize_h5", function(

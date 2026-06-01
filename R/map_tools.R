@@ -96,81 +96,122 @@ fit_map_to_aoi <- function(m, aoi) {
 # Model -> EE prediction image ("prediction_layer")
 # ============================================================
 
-#' Create a Prediction Map in Google Earth Engine Using a Fitted Random Forest Model
+#' Create a prediction map in Google Earth Engine using a fitted Random Forest model
 #'
 #' @description
-#' Applies a fitted Random Forest model (from R's `randomForest` package)
-#' to a Google Earth Engine (\strong{EE}) image or image collection and returns
-#' an EE image containing predicted values.
+#' Applies a fitted Random Forest model (from R's \code{randomForest} package)
+#' to a Google Earth Engine image stack and returns an \code{ee$Image}
+#' containing the predicted values. The model is converted to a GEE
+#' \code{Classifier} via \code{\link{build_ee_forest}}, which serializes
+#' the R forest through the ICESat2VegR C++ module and constructs an EE
+#' estimator using \code{ee$Classifier$decisionTreeEnsemble()}.
 #'
-#' The model is converted to an Earth Engine estimator using
-#' `\link{build_ee_forest`}, which internally serializes the R forest
-#' through the ICESat2VegR C++ module (`icesat2_module`) and constructs an
-#' EE `Classifier` via `ee$Classifier$decisionTreeEnsemble()`.
+#' \strong{Authentication:} This function requires an active Google Earth
+#' Engine session. Authenticate using \code{ICESat2VegR::ee_initialize()}
+#' before calling this function.
 #'
-#' @param model A fitted `randomForest::randomForest` model, or a wrapper
-#'   object containing an element named `model`.
-#' @param stack An `ee$Image` or `ee$ImageCollection` providing the
-#'   predictor variables (bands) matching those used to train the model.
-#' @param aoi Optional EE geometry. If provided, the output map is clipped to it.
-#' @param reducer Aggregation method when `stack` is an image collection.
-#'   One of: `mosaic` (default) or `median`.
-#' @param mode Controls how the estimator is applied. Currently supported:
+#' @param model A fitted \code{\link[randomForest]{randomForest}} model,
+#'   or a wrapper object containing an element named \code{model}. The
+#'   predictor variable names in the model must match the band names in
+#'   \code{stack}.
+#' @param stack An \code{ee$Image} or \code{ee$ImageCollection} providing
+#'   the predictor variables (bands) matching those used to train the model.
+#'   Typically the output of
+#'   \code{\link{ee_build_AlphaEarth_embedding_terrain_stack}} or
+#'   \code{\link{ee_build_hls_s1c_terrain_stack}}.
+#' @param aoi Optional. An EE geometry (\code{ee$Geometry}) defining the
+#'   area of interest. If provided, the output prediction image is clipped
+#'   to this geometry. Default is \code{NULL}.
+#' @param reducer character. Aggregation method when \code{stack} is an
+#'   \code{ee$ImageCollection}. One of \code{"mosaic"} (default) or
+#'   \code{"median"}.
+#' @param mode character. Controls how the estimator is applied. One of:
 #'   \itemize{
-#'     \item `auto`       - (default) applies the classifier with
-#'       `img$classify()`.
-#'     \item `classifier` - explicitly applies `img$classify()`.
+#'     \item \code{"auto"} (default) — applies the classifier using
+#'       \code{img$classify()}.
+#'     \item \code{"classifier"} — explicitly applies \code{img$classify()}.
 #'   }
-#'   The `regressor` option is not supported, as the current
-#'   implementation only builds an Earth Engine classifier.
-#' @param to_float Logical; if `TRUE` (default) converts the output band to
-#'   32-bit float.
+#' @param to_float logical. If \code{TRUE} (default), converts the output
+#'   prediction band to 32-bit float.
+#'
+#' @return An \code{ee$Image} containing one band named
+#'   \code{"prediction_layer"} with the model predictions at each pixel.
 #'
 #' @details
-#' This function works for both:
+#' The function works for both:
 #' \itemize{
-#'   \item EE images: predictors already merged into one raster.
-#'   \item EE image collections: predictions computed for each image and reduced
-#'     using mosaic or median.
+#'   \item \code{ee$Image}: predictors already merged into one raster.
+#'   \item \code{ee$ImageCollection}: predictions computed for each image
+#'     and reduced using \code{mosaic} or \code{median}.
 #' }
 #'
-#' The output band is always named `prediction_layer`.
+#' The output band is always named \code{prediction_layer}. Properties
+#' from a zero-pixel placeholder image are copied to preserve band metadata.
 #'
-#' Properties from a zero-pixel placeholder image are copied to preserve band
-#' metadata.
-#'
-#' @return An Earth Engine `ee$Image` containing model predictions.
+#' The predictor variable names used to train the \code{model} must exactly
+#' match the band names in \code{stack}. Use \code{names(stack)} to verify
+#' the available bands before training the model.
 #'
 #' @examples
 #' \dontrun{
+#'   Sys.setenv(EE_PROJECT = "your-ee-project-id")
+#'   ICESat2VegR::ee_initialize()
+#'
+#'   library(sf)
 #'   library(randomForest)
 #'
-#'   # Fit a model in R
-#'   data(airquality)
-#'   air <- na.omit(airquality)
+#'   # ── AOI as simple bounding box ───────────────────────────────
+#'   aoi <- sf::st_as_sfc(sf::st_bbox(c(
+#'     xmin = -82.4, xmax = -82.2,
+#'     ymin =  29.6, ymax =  29.8
+#'   ), crs = 4326))
+#'   ee_geom <- ICESat2VegR:::.as_ee_geom(aoi)
 #'
-#'   rf_model <- randomForest(
-#'     x = air[, 2:6],
-#'     y = air[, 1],
-#'     ntree = 100,
-#'     importance = TRUE
+#'   # ── Build embedding + terrain stack ─────────────────────────
+#'   stack <- ee_build_AlphaEarth_embedding_terrain_stack(
+#'     geom       = ee_geom,
+#'     start_year = 2025,
+#'     end_year   = 2025
 #'   )
 #'
-#'   # Suppose 'stack_ee' is an Earth Engine image with matching bands
+#'   # ── Synthetic training data using stack band names ───────────
+#'   # In practice, use real ICESat-2 extracted values
+#'   set.seed(42)
+#'   n              <- 200
+#'   predictor_cols <- head(names(stack), 10)
+#'
+#'   X <- as.data.frame(matrix(
+#'     rnorm(n * length(predictor_cols)),
+#'     nrow      = n,
+#'     ncol      = length(predictor_cols),
+#'     dimnames  = list(NULL, predictor_cols)
+#'   ))
+#'
+#'   # Synthetic canopy height response
+#'   y <- 5 + 2 * X[[1]] + 3 * X[[2]] + rnorm(n, sd = 1)
+#'
+#'   # ── Fit Random Forest model ──────────────────────────────────
+#'   rf_model <- randomForest(x = X, y = y, ntree = 100)
+#'   rf_model
+#'
+#'   # ── Create prediction map in GEE ────────────────────────────
 #'   pred <- map_create(
 #'     model = rf_model,
-#'     stack = stack_ee,
-#'     aoi   = NULL,
+#'     stack = stack,
+#'     aoi   = ee_geom,
 #'     mode  = "auto"
 #'   )
 #'
-#'   # Now pred is: ee$Image with one band ("prediction_layer")
+#'   # pred is an ee$Image with one band: "prediction_layer"
+#'   class(pred)
+#'   names(pred)
+#'   pred
 #' }
 #'
 #' @seealso
-#'   `\link{build_ee_forest`}
-#'   `randomForest::randomForest`
-#'   Earth Engine API reference: <https://developers.google.com/earth-engine>
+#'   \code{\link{build_ee_forest}},
+#'   \code{\link{ee_build_AlphaEarth_embedding_terrain_stack}},
+#'   \code{\link{seg_ancillary_extract}}
 #'
 #' @export
 map_create <- function(model,
