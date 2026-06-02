@@ -8,14 +8,14 @@ ATL03_ATL08_seg_attributes_dt_clipBox(atl03_atl08_dt, clip_obj)
 }
 \arguments{
 \item{atl03_atl08_dt}{An object of class
-\code{\linkS4class{icesat2.atl03_atl08_seg_dt}}, typically produced by a
+\code{\link[=icesat2.atl03_atl08_seg_dt-class]{icesat2.atl03_atl08_seg_dt}}, typically produced by a
 join function that combines ATL03 and ATL08 segment attributes.}
 
 \item{clip_obj}{Bounding extent used for clipping. Supported inputs:
 \itemize{
 \item A numeric vector of length 4:
 \code{c(xmin, ymin, xmax, ymax)} in decimal degrees.
-\item A \code{\link[terra:SpatExtent-class]{terra::SpatExtent}} object.
+\item A \code{\link[terra:SpatExtent]{terra::SpatExtent}} object.
 }}
 }
 \value{
@@ -27,7 +27,7 @@ Clips a joined ATL03/ATL08 segments table to a given spatial extent. Only
 rows whose \code{longitude} and \code{latitude} fall inside the specified bounding
 extent are retained. This is the bounding-box counterpart to any
 geometry-based clipping applied to
-\code{\linkS4class{icesat2.atl03_atl08_seg_dt}} objects.
+\code{\link[=icesat2.atl03_atl08_seg_dt-class]{icesat2.atl03_atl08_seg_dt}} objects.
 }
 \details{
 The function:

@@ -12,7 +12,7 @@ ATL03_ATL08_seg_attributes_dt_clipGeometry(
 }
 \arguments{
 \item{atl03_atl08_dt}{Object of class
-\code{\linkS4class{icesat2.atl03_atl08_seg_dt}}.}
+\code{\link[=icesat2.atl03_atl08_seg_dt-class]{icesat2.atl03_atl08_seg_dt}}.}
 
 \item{clip_obj}{A clip_obj as \code{terra::SpatVector} or \code{sf}/\code{sfc}.}
 
