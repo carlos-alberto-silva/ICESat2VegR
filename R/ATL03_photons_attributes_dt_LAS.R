@@ -53,5 +53,5 @@ ATL03_photons_attributes_dt_LAS <- function(atl03_dt, output) {
   )])
 
   # Call the function to convert the data.table to LAS format and save to output path
-  dt_to_las(dt, output)
+  ICESat2VegR:::dt_to_lasdt_to_las(dt, output)
 }
