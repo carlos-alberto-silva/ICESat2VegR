@@ -64,7 +64,7 @@ PAGE_SIZE <- 2000
 #'   lower_left_lat,
 #'   upper_right_lon,
 #'   upper_right_lat,
-#'   version = "006",
+#'   version = "007",
 #'   daterange = daterange
 #' )
 #' }
