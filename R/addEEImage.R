@@ -11,7 +11,41 @@
 #' @param ... Passed to `leaflet::addTiles()` (e.g., `options = leaflet::tileOptions(opacity = 0.8)`).
 #'
 #' @return The input `leaflet` map with the EE image layer added.
-#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Initialize Earth Engine (use your own project id)
+#' Sys.setenv(EE_PROJECT = "your-ee-project-id")
+#' ee_initialize()
+#'
+#' # Harmonized Landsat-Sentinel (HLS) surface reflectance collection
+#' collection_id <- "NASA/HLS/HLSL30/v002"
+#' ee_collection <- ee$ImageCollection(collection_id)
+#'
+#' # Mask cloud, cloud-shadow and adjacent-cloud pixels (Fmask bits 1-3)
+#' cloudMask <- 2^1 + 2^2 + 2^3
+#' hlsMask <- function(image) {
+#'   image$updateMask(!(image[["Fmask"]] & cloudMask))
+#' }
+#'
+#' # Cloud-free median composite over two summer seasons
+#' image <- c(
+#'   ee_collection$filterDate("2020-04-01", "2020-07-31")$map(hlsMask),
+#'   ee_collection$filterDate("2021-04-01", "2021-07-31")$map(hlsMask)
+#' )$filter("CLOUD_COVERAGE < 30")$median()
+#'
+#' # Show the RGB composite (bands 3-2-1) on an interactive map
+#' if (require("leaflet")) {
+#'   leaflet() %>%
+#'     addEEImage(
+#'       image,
+#'       bands = c(3, 2, 1),
+#'       min_value = 0.001,
+#'       max_value = 0.2
+#'     ) %>%
+#'     setView(lng = -82.2345, lat = 29.6552, zoom = 10)
+#' }
+#' }
 addEEImage <- function(map,
                        img,
                        bands = NULL,
