@@ -1,16 +1,21 @@
-#' Statistics of ATL08 Terrain and Canopy Attributes at grid level
+#' Statistics of ATL08 terrain and canopy attributes at grid level
 #'
-#' @description This function computes a series of user defined descriptive statistics within
-#' each grid cell for ATL08 Terrain and Canopy Attributes
+#' @description
+#' Computes a series of user-defined descriptive statistics within
+#' each grid cell for ATL08 terrain and canopy attributes.
 #'
-#' @param atl08_seg_att_dt  An S4 object of class 
-#' [`ICESat2VegR::icesat2.atl08_dt-class`] containing ATL08 data
-#' (output of [ATL08_seg_attributes_dt()] functions).
-#' @param func The function to be applied for computing the defined statistics
-#' @param res Spatial resolution in decimal degrees for the output SpatRast raster layer.
-#' Default is 0.5.
+#' @param atl08_seg_att_dt An object of class
+#'   [`ICESat2VegR::icesat2.atl08_dt-class`] containing ATL08 data
+#'   (output of [ATL08_seg_attributes_dt()] function).
+#' @param func The function to be applied for computing the defined
+#'   statistics. Can be a single function (e.g. \code{mean(h_canopy)})
+#'   or a list of functions returning named metrics.
+#' @param res numeric. Spatial resolution in decimal degrees for the
+#'   output \code{SpatRaster} layer. Default is \code{0.5}.
 #'
-#' @return Return a SpatRast raster layer(s) of selected ATL08 terrain and canopy attribute(s)
+#' @return Returns a \code{SpatRaster} object containing one layer per
+#'   computed statistic of the selected ATL08 terrain and canopy
+#'   attribute(s).
 #'
 #' @examples
 #' # Specifying the path to ATL08 file
@@ -25,38 +30,36 @@
 #' # Extracting ATL08-derived terrain and canopy attributes
 #' atl08_seg_att_dt <- ATL08_seg_attributes_dt(atl08_h5 = atl08_h5)
 #'
-#' # Computing the top h_canopy at 0.05 degree grid cell
-#' res <- 0.0001
+#' # Computing mean h_canopy at 0.0001 degree grid cell
+#' library(terra)
 #' mean_h_canopy <- ATL08_seg_attributes_dt_gridStat(
 #'   atl08_seg_att_dt,
 #'   func = mean(h_canopy),
-#'   res = res
+#'   res = 0.0001
 #' )
+#' terra::plot(mean_h_canopy)
 #'
-#' plot(mean_h_canopy)
-#'
-#' # Define your own function
+#' # Define a custom set of metrics
 #' mySetOfMetrics <- function(x) {
 #'   metrics <- list(
-#'     min = min(x, na.rm = TRUE), # Min of x
-#'     max = max(x, na.rm = TRUE), # Max of x
-#'     mean = mean(x, na.rm = TRUE), # Mean of x
-#'     sd = sd(x, na.rm = TRUE) # Sd of x
+#'     min = min(x, na.rm = TRUE),
+#'     max = max(x, na.rm = TRUE),
+#'     mean = mean(x, na.rm = TRUE),
+#'     sd = sd(x, na.rm = TRUE)
 #'   )
 #'   return(metrics)
 #' }
 #'
-#' res <- 0.05
-#' # Computing h_canopy statistics at 0.05 degree grid cell from user-defined function
+#' # Computing h_canopy statistics at 0.05 degree grid cell
 #' h_canopy_metrics <- ATL08_seg_attributes_dt_gridStat(
 #'   atl08_seg_att_dt,
 #'   func = mySetOfMetrics(h_canopy),
-#'   res = res
+#'   res = 0.05
 #' )
-#'
-#' plot(h_canopy_metrics)
+#' terra::plot(h_canopy_metrics)
 #'
 #' close(atl08_h5)
+#'
 #' @import data.table
 #' @export
 ATL08_seg_attributes_dt_gridStat <- function(atl08_seg_att_dt, func, res = 0.5) {
