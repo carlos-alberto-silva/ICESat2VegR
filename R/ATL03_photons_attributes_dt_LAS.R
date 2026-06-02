@@ -12,6 +12,9 @@
 #' we use helper functions to define UTM zones to which the original
 #' ICESat-2 data will be converted.
 #'
+#' Writing LAS/LAZ files requires the `lidR` package; if it is not installed
+#' the function stops with an informative message.
+#'
 #' The function credits go to Chuck Gantz- chuck.gantz@globalstar.com.
 #'
 #' @seealso
@@ -28,20 +31,28 @@
 #' # Reading ATL03 data (h5 file)
 #' atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 #'
-#' # Extracting ATL03 and ATL08 photons and heights
+#' # Extracting ATL03 photons and heights
 #' atl03_dt <- ATL03_photons_attributes_dt(atl03_h5, beam = "gt1r")
 #'
-#' outdir <- tempdir()
-#' ATL03_photons_attributes_dt_LAS(
-#'   atl03_dt,
-#'   file.path(outdir, "output.laz")
-#' )
+#' # Writing to LAS/LAZ requires the 'lidR' package
+#' if (requireNamespace("lidR", quietly = TRUE)) {
+#'   outdir <- tempdir()
+#'   ATL03_photons_attributes_dt_LAS(
+#'     atl03_dt,
+#'     file.path(outdir, "output.laz")
+#'   )
+#' }
 #'
 #' close(atl03_h5)
 #' @include utmTools.R lasTools.R
 #' @importFrom data.table as.data.table
 #' @export
 ATL03_photons_attributes_dt_LAS <- function(atl03_dt, output) {
+  if (!requireNamespace("lidR", quietly = TRUE)) {
+    stop("Package 'lidR' is required to write LAS/LAZ files. ",
+         "Install it with install.packages('lidR').")
+  }
+
   # Define placeholders to avoid R CMD check warnings
   lon_ph <- lat_ph <- h_ph <- NA
 
@@ -52,6 +63,6 @@ ATL03_photons_attributes_dt_LAS <- function(atl03_dt, output) {
     Z = h_ph
   )])
 
-  # Call the function to convert the data.table to LAS format and save to output path
-  ICESat2VegR:::dt_to_lasdt_to_las(dt, output)
+  # Call the internal helper to convert the data.table to LAS and save it
+  dt_to_las(dt, output)
 }
