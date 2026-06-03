@@ -19,7 +19,8 @@ ATL08 (Land and Vegetation Height) products for land and vegetation applications
 
 ``` r
 # The r-universe version (recommended for the latest version)
-install.packages('ICESat2VegR', repos = c('https://carlos-alberto-silva.r-universe.dev', 'https://cloud.r-project.org'))
+install.packages("ICESat2VegR", , repos = c("https://caiohamamura.r-universe.dev", "https://cloud.r-project.org"))
+#install.packages('ICESat2VegR', repos = c('https://carlos-alberto-silva.r-universe.dev', 'https://cloud.r-project.org'))
 
 # The CRAN version
 #install.packages("ICESat2VegR")
@@ -1128,7 +1129,8 @@ The script includes:
 
 ``` r
 # The r-universe version (recommended for the latest version)
-install.packages('ICESat2VegR', repos = c('https://carlos-alberto-silva.r-universe.dev', 'https://cloud.r-project.org'))
+install.packages("ICESat2VegR", , repos = c("https://caiohamamura.r-universe.dev", "https://cloud.r-project.org"))
+#install.packages('ICESat2VegR', repos = c('https://carlos-alberto-silva.r-universe.dev', 'https://cloud.r-project.org'))
 
 # The CRAN version
 #install.packages("ICESat2VegR")
