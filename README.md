@@ -1108,7 +1108,7 @@ A Random Forest model is trained on sampled segments and applied wall-to-wall ac
 
 The complete R workflow used in this example is available as a standalone script:
 
-🔵 [![R Script](https://img.shields.io/badge/R-Workflow-blue)](inst/scripts/upscaling_alphaearth_workflow.R)
+ [![R Script](https://img.shields.io/badge/R-Workflow-blue)](inst/scripts/upscaling_alphaearth_workflow.R)
 
 The script includes:
 
