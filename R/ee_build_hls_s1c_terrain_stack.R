@@ -302,11 +302,11 @@ ee_build_hls_s1c_terrain_stack <- function(
   # -----------------------------
   # DEM
   # -----------------------------
-  dem_result <- ICESat2VegR:::search_datasets("nasa", "dem")
-  catalog_id <- ICESat2VegR:::get_catalog_id(dem_result)
+  dem_result <- search_datasets("nasa", "dem")
+  catalog_id <- get_catalog_id(dem_result)
   elevation  <- ee$Image(catalog_id)
-  the_slope  <- as.integer(ICESat2VegR:::slope(as.integer(elevation)) * 1000)
-  the_aspect <- ICESat2VegR:::aspect(elevation)
+  the_slope  <- as.integer(slope(as.integer(elevation)) * 1000)
+  the_aspect <- aspect(elevation)
   stackDem   <- c(elevation, the_slope, the_aspect)$clip(aoi)
   # -----------------------------
   # Sentinel-1C

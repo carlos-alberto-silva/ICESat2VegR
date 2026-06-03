@@ -16,7 +16,7 @@ or a value between \code{(0, 1)} for a percentage.}
 \item{chainSampling}{optional. Chain with another sampling method.}
 }
 \value{
-A \code{\link{icesat2_sampling_method}} object for use in
+A \code{\link{icesat2_sampling_method-class}} object for use in
 \code{\link{sample}}.
 }
 \description{

@@ -9,28 +9,32 @@ Description: Set of tools for downloading, reading, visualizing, processing and 
            ICESat-2 ATL03 (Global Geolocated Photon Data) and ATL08 (Land and Vegetation Height)
            products for Land and Vegetation Applications.
 Depends: R (>= 4.1.0)
-Imports: 
-  curl, 
-  data.table, 
-  sf, 
-  fs, 
-  getPass, 
+Imports:
+  curl,
+  data.table,
+  sf,
+  fs,
+  getPass,
   geojsonsf,
   googledrive,
   googleCloudStorageR,
   grDevices,
-  jsonlite, 
+  jsonlite,
   hdf5r,
-  httr2, 
-  magrittr, 
-  mathjaxr, 
-  methods, 
-  Rcpp, 
-  Rdpack, 
+  httr2,
+  magrittr,
+  mathjaxr,
+  methods,
+  Rcpp,
+  Rdpack,
   R6,
   randomForest,
   reticulate,
   terra,
+  dplyr,
+  purrr,
+  servr,
+  stringr,
   xml2
 Encoding: UTF-8
 URL: https://github.com/carlos-alberto-silva/ICESat2VegR
@@ -114,6 +118,7 @@ Collate:
     'gee-base-number.R'
     'gee-base.R'
     'gee-search.R'
+    'globals.R'
     'map_tools.R'
     'model_tools.R'
     'plot_icesat2_orbit_animation.R'

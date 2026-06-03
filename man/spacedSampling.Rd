@@ -18,7 +18,7 @@ index for accelerating the search. Created automatically if not provided.}
 \item{chainSampling}{optional. Chain with another sampling method.}
 }
 \value{
-A \code{\link{icesat2_sampling_method}} object for use in
+A \code{\link{icesat2_sampling_method-class}} object for use in
 \code{\link{sample}}.
 }
 \description{

@@ -17,7 +17,7 @@ a value between \code{(0, 1)} for a percentage.}
 \code{\link{stratifiedSampling}}.}
 }
 \value{
-A \code{\link{icesat2_sampling_method}} object for use in
+A \code{\link{icesat2_sampling_method-class}} object for use in
 \code{\link{sample}}.
 }
 \description{

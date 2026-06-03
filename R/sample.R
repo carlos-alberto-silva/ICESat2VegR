@@ -272,7 +272,7 @@ genericSamplingMethod <- function(fn) {
 #'   of samples, or a value between \code{(0, 1)} to sample a percentage
 #'   relative to the number of available observations.
 #'
-#' @return A \code{\link{icesat2_sampling_method}} object for use in
+#' @return A \code{\link{icesat2_sampling_method-class}} object for use in
 #'   \code{\link{sample}}.
 #'
 #' @seealso \code{\link{sample}}, \code{\link{gridSampling}},
@@ -307,7 +307,7 @@ randomSampling <- genericSamplingMethod(randomSamplingWorker)
 #'   \code{\link{randomSampling}}, \code{\link{spacedSampling}}, or
 #'   \code{\link{stratifiedSampling}}.
 #'
-#' @return A \code{\link{icesat2_sampling_method}} object for use in
+#' @return A \code{\link{icesat2_sampling_method-class}} object for use in
 #'   \code{\link{sample}}.
 #'
 #' @seealso \code{\link{sample}}, \code{\link{randomSampling}}
@@ -352,7 +352,7 @@ gridSampling <- genericSamplingMethod(gridSamplingWorker)
 #' @param ... Additional arguments forwarded to \code{\link[graphics]{hist}},
 #'   where you can manually define the breaks.
 #'
-#' @return A \code{\link{icesat2_sampling_method}} object for use in
+#' @return A \code{\link{icesat2_sampling_method-class}} object for use in
 #'   \code{\link{sample}}.
 #'
 #' @seealso \code{\link{sample}}, \code{\link{randomSampling}}
@@ -383,7 +383,7 @@ stratifiedSampling <- genericSamplingMethod(stratifiedSamplingWorker)
 #'   index for accelerating the search. Created automatically if not provided.
 #' @param chainSampling optional. Chain with another sampling method.
 #'
-#' @return A \code{\link{icesat2_sampling_method}} object for use in
+#' @return A \code{\link{icesat2_sampling_method-class}} object for use in
 #'   \code{\link{sample}}.
 #'
 #' @seealso \code{\link{sample}}, \code{\link{randomSampling}}
@@ -416,7 +416,7 @@ spacedSampling <- genericSamplingMethod(spacedSamplingWorker)
 #'   the grouping factor for sampling.
 #' @param chainSampling optional. Chain with another sampling method.
 #'
-#' @return A \code{\link{icesat2_sampling_method}} object for use in
+#' @return A \code{\link{icesat2_sampling_method-class}} object for use in
 #'   \code{\link{sample}}.
 #'
 #' @seealso \code{\link{sample}}, \code{\link{randomSampling}}
@@ -453,7 +453,7 @@ geomSampling <- genericSamplingMethod(geomSamplingWorker)
 #'   \code{\link[terra]{rast}}.
 #' @param chainSampling optional. Chain with another sampling method.
 #'
-#' @return A \code{\link{icesat2_sampling_method}} object for use in
+#' @return A \code{\link{icesat2_sampling_method-class}} object for use in
 #'   \code{\link{sample}}.
 #'
 #' @seealso \code{\link{sample}}, \code{\link{randomSampling}}
