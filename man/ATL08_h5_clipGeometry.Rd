@@ -14,24 +14,24 @@ ATL08_h5_clipGeometry(
 )
 }
 \arguments{
-\item{atl08}{\code{\linkS4class{icesat2.atl08_h5}} object, obtained through \code{\link[=ATL08_read]{ATL08_read()}}
+\item{atl08}{\code{\link[=icesat2.atl08_h5-class]{icesat2.atl08_h5}} object, obtained through \code{\link[=ATL08_read]{ATL08_read()}}
 for clipping}
 
 \item{output}{character. Path to the output h5 file.}
 
 \item{clip_obj}{\code{\link[terra:SpatVector-class]{terra::SpatVector}} for clipping}
 
-\item{split_by}{\code{\linkS4class{character}}. The attribute name used for identifying
+\item{split_by}{\code{\link[=character-class]{character}}. The attribute name used for identifying
 the different clip_objs. Default is "id"}
 
-\item{beam}{\code{\linkS4class{character}}. The vector of beams to include, default
+\item{beam}{\code{\link[=character-class]{character}}. The vector of beams to include, default
 all c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")}
 
-\item{additional_groups}{\code{\linkS4class{character}}. Other addional groups that should be included, default
+\item{additional_groups}{\code{\link[=character-class]{character}}. Other addional groups that should be included, default
 c("orbit_info")}
 }
 \value{
-Returns a list of clipped S4 object of class \code{\linkS4class{icesat2.atl08_h5}}
+Returns a list of clipped S4 object of class \code{\link[=icesat2.atl08_h5-class]{icesat2.atl08_h5}}
 }
 \description{
 This function clips ATL08 HDF5 file within beam groups,

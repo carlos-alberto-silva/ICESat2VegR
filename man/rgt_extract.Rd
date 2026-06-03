@@ -8,7 +8,7 @@ rgt_extract(h5, line = TRUE)
 }
 \arguments{
 \item{h5}{A ICESat-2 ATL03 object (output of \code{\link[=ATL03_read]{ATL03_read()}} or \code{\link[=ATL08_read]{ATL08_read()}} function).
-An S4 object of class \code{\linkS4class{icesat2.atl03_dt}} or \code{\linkS4class{icesat2.atl08_dt}}.}
+An S4 object of class \code{\link[=icesat2.atl03_dt-class]{icesat2.atl03_dt}} or \code{\link[=icesat2.atl08_dt-class]{icesat2.atl08_dt}}.}
 
 \item{line}{Logical; if \code{TRUE}, extract the ground track as a line, default = TRUE.}
 }

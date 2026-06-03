@@ -7,7 +7,7 @@
 \S4method{clip}{icesat2.atl03_h5,SpatExtent}(x, clip_obj, ...)
 }
 \arguments{
-\item{x}{An \code{\linkS4class{icesat2.atl03_h5}} object created by
+\item{x}{An \code{\link[=icesat2.atl03_h5-class]{icesat2.atl03_h5}} object created by
 \code{\link[=ATL03_read]{ATL03_read()}}, representing the ATL03 HDF5 file to be clipped.}
 
 \item{clip_obj}{Bounding extent used for clipping. Supported inputs:
@@ -16,7 +16,7 @@
 \code{c(ul_lat, ul_lon, lr_lat, lr_lon)}, following the ICESat-2 CMS
 bounding-box convention (upper-left latitude/longitude and
 lower-right latitude/longitude).
-\item A \code{\link[terra:SpatExtent-class]{terra::SpatExtent}} object.
+\item A \code{\link[terra:SpatExtent]{terra::SpatExtent}} object.
 }}
 
 \item{...}{Additional arguments:
@@ -32,7 +32,7 @@ to copy unchanged into the output file. Defaults to:
 }}
 }
 \value{
-An S4 object of class \code{\linkS4class{icesat2.atl03_h5}} representing
+An S4 object of class \code{\link[=icesat2.atl03_h5-class]{icesat2.atl03_h5}} representing
 the clipped ATL03 HDF5 file saved at the \code{output} location.
 }
 \description{

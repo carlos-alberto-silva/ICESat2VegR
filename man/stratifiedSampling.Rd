@@ -7,20 +7,38 @@
 stratifiedSampling(size, variable, chainSampling = NULL, ...)
 }
 \arguments{
-\item{size}{the sample size. Either an integer of absolute number of samples or
-if it is between (0, 1) it will sample a percentage relative to the number of
-available observations within the group.}
+\item{size}{numeric. The sample size per stratum. Either an integer or
+a value between \code{(0, 1)} for a percentage.}
 
-\item{variable}{Variable name used for the stratification}
+\item{variable}{character. Variable name used for the stratification.}
 
-\item{chainSampling}{chains different methods of sampling by providing the result
-of another samplingMethod \code{\link[=randomSampling]{randomSampling()}}, \code{\link[=spacedSampling]{spacedSampling()}}, \code{\link[=stratifiedSampling]{stratifiedSampling()}}.}
+\item{chainSampling}{optional. Chain with another sampling method.}
 
-\item{...}{forward to the \code{\link[graphics:hist]{graphics::hist()}}, where you can manually define the breaks.}
+\item{...}{Additional arguments forwarded to \code{\link[graphics]{hist}},
+where you can manually define the breaks.}
 }
 \value{
-A \code{\linkS4class{icesat2_sampling_method}} for defining the method used in \code{\link[=sample]{sample()}}
+A \code{\link{icesat2_sampling_method-class}} object for use in
+\code{\link{sample}}.
 }
 \description{
 Get samples stratified by a variable binning histogram
+}
+\examples{
+atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
+atl08_h5   <- ATL08_read(atl08_path = atl08_path)
+atl08_dt   <- ATL08_seg_attributes_dt(atl08_h5)
+
+# Sample 2 observations per h_canopy stratum
+set.seed(1)
+sampled <- ICESat2VegR::sample(
+  atl08_dt,
+  method = stratifiedSampling(size = 2, variable = "h_canopy")
+)
+head(sampled)
+
+close(atl08_h5)
+}
+\seealso{
+\code{\link{sample}}, \code{\link{randomSampling}}
 }

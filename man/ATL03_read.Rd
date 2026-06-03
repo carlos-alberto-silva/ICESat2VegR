@@ -11,7 +11,7 @@ ATL03_read(atl03_path)
 returned by \code{\link[=ATLAS_dataFinder]{ATLAS_dataFinder()}} when \code{cloud_computing = TRUE}.}
 }
 \value{
-An S4 object of class \code{\linkS4class{icesat2.atl03_dt}} containing ICESat-2
+An S4 object of class \code{\link[=icesat2.atl03_dt-class]{icesat2.atl03_dt}} containing ICESat-2
 ATL03 data.
 }
 \description{

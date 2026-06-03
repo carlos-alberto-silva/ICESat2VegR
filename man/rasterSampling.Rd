@@ -2,23 +2,52 @@
 % Please edit documentation in R/sample.R
 \name{rasterSampling}
 \alias{rasterSampling}
-\title{Get observations given a minimum radius distance between samples}
+\title{Get observations sampled by raster class}
 \usage{
 rasterSampling(size, raster, chainSampling = NULL)
 }
 \arguments{
-\item{size}{the sample size. Either an integer of absolute number of samples or
-if it is between (0, 1) it will sample a percentage relative to the number of
-available observations within the group.}
+\item{size}{numeric. The sample size per raster class. Either an integer
+or a value between \code{(0, 1)} for a percentage.}
 
-\item{raster}{a \code{\link[terra:SpatRaster-class]{terra::SpatRaster}} object opened with \code{\link[terra:rast]{terra::rast()}}}
+\item{raster}{A \code{\link[terra]{SpatRaster}} object opened with
+\code{\link[terra]{rast}}.}
 
-\item{chainSampling}{chains different methods of sampling by providing the result
-of another samplingMethod \code{\link[=randomSampling]{randomSampling()}}, \code{\link[=spacedSampling]{spacedSampling()}}, \code{\link[=stratifiedSampling]{stratifiedSampling()}}.}
+\item{chainSampling}{optional. Chain with another sampling method.}
 }
 \value{
-A \code{\linkS4class{icesat2_sampling_method}} for defining the method used in \code{\link[=sample]{sample()}}
+A \code{\link{icesat2_sampling_method-class}} object for use in
+\code{\link{sample}}.
 }
 \description{
-Get observations given a minimum radius distance between samples
+Get observations sampled by raster class
+}
+\examples{
+atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
+atl08_h5   <- ATL08_read(atl08_path = atl08_path)
+atl08_dt   <- ATL08_seg_attributes_dt(atl08_h5)
+
+# Create a raster over the data extent
+r <- terra::rast(
+  xmin       = min(atl08_dt$longitude),
+  xmax       = max(atl08_dt$longitude),
+  ymin       = min(atl08_dt$latitude),
+  ymax       = max(atl08_dt$latitude),
+  resolution = 0.005,
+  crs        = "EPSG:4326"
+)
+terra::values(r) <- sample(1:3, terra::ncell(r), replace = TRUE)
+
+# Sample 2 observations per raster class
+set.seed(1)
+sampled <- ICESat2VegR::sample(
+  atl08_dt,
+  method = rasterSampling(size = 2, raster = r)
+)
+head(sampled)
+
+close(atl08_h5)
+}
+\seealso{
+\code{\link{sample}}, \code{\link{randomSampling}}
 }

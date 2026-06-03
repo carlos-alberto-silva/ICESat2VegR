@@ -9,251 +9,190 @@ ee_build_hls_s1c_terrain_stack(
   start_date,
   end_date,
   cloud_max = 10,
-  buffer_m = 30
+  buffer_m = 30,
+  hls_collection_id = c("NASA/HLS/HLSS30/v002", "NASA/HLS/HLSL30/v002")
 )
 }
 \arguments{
 \item{x}{Spatial input defining the area of interest. Can be:
 \itemize{
-\item a character path to a vector file readable by \code{\link[terra:vect]{terra::vect()}} (e.g., SHP, GPKG),
-\item a \link[terra:SpatVector-class]{terra::SpatVector},
-\item a \link[terra:SpatRaster-class]{terra::SpatRaster} (its extent will be used),
-\item an \link[sf:sf]{sf::st_sf} or \link[sf:sfc]{sf::st_sfc} object,
-\item a \link[terra:SpatExtent-class]{terra::SpatExtent} object (e.g., from \code{\link[terra:ext]{terra::ext()}}),
-\item a numeric vector of length 4 giving an extent as
+\item a character path to a vector file readable by
+\code{\link[terra]{vect}} (e.g., SHP, GPKG),
+\item a \code{\link[terra]{SpatVector}},
+\item a \code{\link[terra]{SpatRaster}} (its extent will be used),
+\item an \code{sf} or \code{sfc} object,
+\item a \code{\link[terra]{SpatExtent}} object,
+\item a numeric vector of length 4:
 \code{c(xmin, xmax, ymin, ymax)}.
 }}
 
-\item{start_date}{Character. Start date of the temporal filter
-(\code{YYYY-MM-DD}). \strong{Required.}}
+\item{start_date}{character. Start date of the temporal filter
+in \code{YYYY-MM-DD} format. \strong{Required.}}
 
-\item{end_date}{Character. End date of the temporal filter
-(\code{YYYY-MM-DD}). \strong{Required.}}
+\item{end_date}{character. End date of the temporal filter
+in \code{YYYY-MM-DD} format. \strong{Required.}}
 
-\item{cloud_max}{Numeric. Maximum allowed cloud coverage percentage for HLS
-scenes (used in the \code{CLOUD_COVERAGE < cloud_max} filter). Default is 10.}
+\item{cloud_max}{numeric. Maximum allowed cloud coverage percentage
+for HLS scenes. Default is \code{10}.}
 
-\item{buffer_m}{Numeric. Buffer distance in meters applied to the AOI
-bounding box before filtering and clipping. Default is 30.}
+\item{buffer_m}{numeric. Buffer distance in meters applied to the AOI
+bounding box before filtering and clipping. Default is \code{30}.}
+
+\item{hls_collection_id}{character vector. HLS collection IDs to try
+in order until one has data for the AOI and date range. Default tries
+Sentinel-2 HLS first, then Landsat HLS as fallback:
+\code{c("NASA/HLS/HLSS30/v002", "NASA/HLS/HLSL30/v002")}.}
 }
 \value{
-A named list with the following Earth Engine objects:
-\describe{
-\item{aoi}{EE geometry representing the buffered AOI bounding box.}
-\item{hls}{HLS image with reflectance bands, vegetation indices, and
-spectral unmixing fractions.}
-\item{s1c}{Sentinel-1C image with VV/VH backscatter and radar indices.}
-\item{dem}{Terrain stack including elevation, slope, and aspect.}
-\item{stack}{Full ancillary stack combining HLS, Sentinel-1C, and terrain,
-including neighborhood statistics and texture metrics.}
+Returns an \code{ee$Image} object containing 244 bands:
+\itemize{
+\item HLS reflectance bands and vegetation indices
+(blue, green, red, nir, swir1, swir2, ndvi, kndvi, evi,
+savi, msavi, f_soil, f_veg, f_water, sri, ndwi, gci,
+wdrvi, gvmi, cvi, cmr).
+\item Sentinel-1C SAR bands and radar indices
+(vv, vh, rvi, copol, copol2, copol3).
+\item Terrain bands (elevation, slope, aspect).
+\item Neighborhood statistics (mean, min, max, stdDev)
+for HLS and terrain bands.
+\item GLCM texture metrics for HLS reflectance bands.
 }
 }
 \description{
-Constructs a multi-source ancillary stack in Earth Engine composed of:
-(1) optical features from the Harmonized Landsat and Sentinel-2 (HLS) product,
-including several vegetation indices and spectral unmixing fractions;
-(2) C-band SAR backscatter and radar-based indices from Sentinel-1C GRD; and
-(3) terrain variables (elevation, slope, aspect) from a DEM.
+Constructs a multi-source ancillary stack in Google Earth Engine composed of:
+\enumerate{
+\item Optical features from the Harmonized Landsat and Sentinel-2 (HLS)
+product, including spectral bands, vegetation indices, and spectral
+unmixing fractions.
+\item C-band SAR backscatter and radar-based indices from Sentinel-1C GRD.
+\item Terrain variables (elevation, slope, aspect) from a NASA DEM.
+\item Neighborhood statistics (mean, min, max, stdDev) computed over a
+3x3 kernel for HLS and terrain bands.
+\item GLCM texture metrics computed from scaled HLS reflectance bands.
+}
 
-The user must provide a temporal window via \code{start_date} and \code{end_date}.
-The HLS image collection is filtered to this period and mosaicked using
-\code{median()}. Sentinel-1C is filtered to the same period and reduced using
-\code{ee$Reducer$firstNonNull()}, following the original workflow. The final
-stack includes neighborhood statistics and GLCM texture features.
+The final stack contains 244 bands covering spectral, radar, terrain,
+neighborhood, and texture features.
+
+\strong{Authentication:} This function requires an active Google Earth
+Engine session. Authenticate using \code{ICESat2VegR::ee_initialize()}
+before calling this function.
 }
 \details{
-This function assumes that:
-\itemize{
-\item Earth Engine access is provided via the \code{ICESat2VegR} internal
-\code{ee} handle.
-\item Dataset search and catalog ID retrieval are performed by
-\code{\link[=search_datasets]{search_datasets()}} and \code{\link[=get_catalog_id]{get_catalog_id()}} from \code{ICESat2VegR}.
-}
+The HLS collection is selected automatically from \code{hls_collection_id}
+by trying each ID in order and using the first one that contains scenes
+for the specified AOI and date range. By default, Sentinel-2 HLS
+(\code{NASA/HLS/HLSS30/v002}) is tried first, followed by Landsat HLS
+(\code{NASA/HLS/HLSL30/v002}).
 
-The HLS component follows the original workflow: the collection is filtered
-by AOI and date, filtered by cloud coverage, cloud and water masks are
-applied, and a \code{median()} mosaic is computed. Reflectance bands are renamed
-(blue, green, red, nir, swir1, swir2) and a set of vegetation indices and
-linear spectral unmixing fractions are added.
+Cloud masks are applied using the \code{Fmask} band before computing
+the median mosaic. Sentinel-1C is filtered by VV/VH polarization and
+IW instrument mode, sorted by acquisition time, and reduced using
+\code{ee$Reducer$firstNonNull()}.
 
-Sentinel-1C (COPERNICUS/S1_GRD) is filtered by AOI, date, polarization
-(VV/VH), and instrument mode ("IW"), sorted by time, and reduced using
-\code{ee$Reducer$firstNonNull()}. VV and VH are scaled, and RVI and
-co-polarization indices are derived.
-
-A DEM is retrieved from the NASA catalog via \code{\link[=search_datasets]{search_datasets()}} and
-\code{\link[=get_catalog_id]{get_catalog_id()}}, and slope and aspect are derived following the original
-code pattern. Neighborhood statistics (mean, min, max, stdDev) are computed
-for the HLS and DEM components using a fixed 3x3 kernel, and GLCM texture
-metrics are computed from scaled HLS reflectance bands.
+Neighborhood statistics (mean, min, max, stdDev) are computed over a
+fixed 3x3 kernel for HLS and terrain bands. GLCM texture metrics are
+computed from scaled (x10000) HLS reflectance bands using a window
+size of 3.
 }
 \examples{
 \dontrun{
-# ================================================================
-# Example 1 - Using the function
-# ================================================================
-res <- ee_build_hls_s1c_terrain_stack(
-  x          = system.file("extdata", "all_boundary.shp", package = "ICESat2VegR"),
-  start_date = "2019-04-01",
-  end_date   = "2019-05-31"
-)
+  # Requires Google Earth Engine authentication
+  Sys.setenv(EE_PROJECT = "your-ee-project-id")
+  ICESat2VegR::ee_initialize()
 
-full_stack <- res$stack
+  library(sf)
+  library(terra)
 
+  # AOI in Ocala National Forest, Florida
+  aoi <- st_as_sfc(st_bbox(c(
+    xmin = -81.8, xmax = -81.6,
+    ymin =  29.1, ymax =  29.3
+  ), crs = 4326))
 
-# ================================================================
-# Example 2 - FULL SCRIPT (no function)
-# Users may copy/paste and modify as needed
-# ================================================================
-
-library(ICESat2VegR)
-library(terra)
-
-# AOI
-geom <- terra::vect(system.file("extdata", "all_boundary.shp", package="ICESat2VegR"))
-bbox <- terra::ext(geom)
-
-aoi <- ee$Geometry$BBox(
-  west  = bbox$xmin,
-  south = bbox$ymin,
-  east  = bbox$xmax,
-  north = bbox$ymax
-)$buffer(30)
-
-# ---------------------------------------------------------------
-# HLS
-# ---------------------------------------------------------------
-search <- search_datasets("hls")
-id     <- get_catalog_id(search)
-
-cloudMask <- 2^1 + 2^2 + 2^3
-
-hlsMask <- function(image) image$updateMask(!(image[["Fmask"]] & cloudMask))
-waterMask <- function(image) image$updateMask(image[["B5"]] >= 0.2)
-
-hls <- ee$ImageCollection(id)$
-  filterBounds(aoi)$
-  filterDate("2019-04-01", "2019-05-31")$
-  filter("CLOUD_COVERAGE < 10")$
-  map(hlsMask)$
-  map(waterMask)$
-  median()$
-  clip(aoi)
-
-hls <- hls[["B2","B3","B4","B5","B6","B7"]]
-names(hls) <- c("blue","green","red","nir","swir1","swir2")
-
-# Vegetation indices
-nir     <- hls[["nir"]]
-red     <- hls[["red"]]
-blue    <- hls[["blue"]]
-green   <- hls[["green"]]
-swir1   <- hls[["swir1"]]
-swir2   <- hls[["swir2"]]
-nir_red <- nir - red
-
-hls[["ndvi"]] <- (nir - red) / (nir + red)
-
-sigma <- 1
-knr <- exp((nir_red)^2 / (2*sigma^2))
-hls[["kndvi"]] <- (1 - knr) / (1 + knr)
-
-hls[["evi"]]  <- 2.5 * nir_red / (nir + 6*red - 7.5*blue + 1)
-hls[["savi"]] <- 1.5 * nir_red / (nir + red + 0.5)
-
-p1 <- 2*nir + 1
-hls[["msavi"]] <- p1 - sqrt(p1^2 - 8*nir_red)/2
-
-# Spectral unmixing
-soil  <- c(0.14, 0.16, 0.22, 0.39, 0.45, 0.27)
-veg   <- c(0.086,0.062,0.043,0.247,0.109,0.039)
-water <- c(0.07,0.039,0.023,0.031,0.011,0.007)
-
-img <- hls[[c("blue","green","red","nir","swir1","swir2")]]
-unmixing <- img$unmix(list(soil,veg,water))
-names(unmixing) <- c("f_soil","f_veg","f_water")
-
-hls <- c(hls, unmixing)
-
-# More indices
-hls[["sri"]]  <- nir / red
-hls[["ndwi"]] <- (green - nir)/(green + nir)
-hls[["gci"]]  <- nir/green - 1
-hls[["wdrvi"]] <- ((0.1*nir) - red)/((0.1*nir) + red)
-hls[["gvmi"]]  <- ((nir+0.1)-(swir1+0.02))/((nir+0.1)+(swir1+0.02))
-hls[["cvi"]]   <- nir * (red/(green^2))
-hls[["cmr"]]   <- swir1/swir2
-
-
-# ---------------------------------------------------------------
-# DEM (NASA)
-# ---------------------------------------------------------------
-dem_search <- search_datasets("nasa","dem")
-dem_id     <- get_catalog_id(dem_search)
-
-elevation <- ee$Image(dem_id)
-the_slope  <- as.integer(slope(as.integer(elevation)) * 1000)
-the_aspect <- aspect(elevation)
-
-stackDem <- c(elevation, the_slope, the_aspect)$clip(aoi)
-
-
-# ---------------------------------------------------------------
-# Sentinel-1C
-# ---------------------------------------------------------------
-s1c <- ee$ImageCollection("COPERNICUS/S1_GRD")$
-  filterBounds(aoi)$
-  filterDate("2019-04-01","2019-05-31")$
-  filter(ee$Filter$listContains("transmitterReceiverPolarisation","VV"))$
-  filter(ee$Filter$listContains("transmitterReceiverPolarisation","VH"))$
-  filter(ee$Filter$eq("instrumentMode","IW"))
-
-s1c <- s1c$sort("system:time_start", FALSE)
-s1c <- s1c$reduce(ee$Reducer$firstNonNull())
-s1c <- s1c[["VV_first","VH_first"]]
-names(s1c) <- c("vv","vh")
-
-s1c <- as.integer(s1c * 100)
-vv <- s1c[["vv"]]
-vh <- s1c[["vh"]]
-
-s1c[["rvi"]]   <- as.integer(sqrt(vv/(vv+vh)) * (vv/vh) * 10000)
-s1c[["copol"]] <- as.integer((vv/vh) * 10000)
-s1c[["copol2"]] <- as.integer(((vv - vh)/(vv + vh)) * 10000)
-s1c[["copol3"]] <- as.integer((vh/vv) * 10000)
-
-
-# ---------------------------------------------------------------
-# Final stack + neighborhood + texture
-# ---------------------------------------------------------------
-fullStack <- c(hls, s1c, stackDem)
-
-kernel <- ee$Kernel$fixed(
-  3, 3,
-  list(c(1,1,1), c(1,1,1), c(1,1,1)),
-  3, 3, FALSE
-)
-
-for (nm in c("mean","min","max","stdDev")) {
-  reducer <- ee$Reducer[[nm]]()
-
-  fullStack <- c(
-    fullStack,
-    hls$reduceNeighborhood(reducer, kernel),
-    stackDem$reduceNeighborhood(reducer, kernel)
+  # Build the full ancillary stack (244 bands)
+  stack <- ee_build_hls_s1c_terrain_stack(
+    x          = aoi,
+    start_date = "2024-03-01",
+    end_date   = "2024-06-01",
+    cloud_max  = 10
   )
-}
 
-img_tex <- as.integer(
-  (hls[[c("blue","green","red","nir","swir1","swir2")]]) * 1e4
-)
+  # Check available bands
+  names(stack)
 
-tex <- img_tex$glcmTexture(size=3)
+  # Compute AOI centroid for map view
+  centroid_lon <- mean(terra::ext(terra::vect(aoi))[c(1, 2)])
+  centroid_lat <- mean(terra::ext(terra::vect(aoi))[c(3, 4)])
 
-fullStack <- c(fullStack, tex)
+  # Visualize true color RGB
+  leaflet::leaflet() |>
+    leaflet::addProviderTiles("Esri.WorldImagery") |>
+    ICESat2VegR::addEEImage(
+      stack$select(c("red", "green", "blue")),
+      bands = c("red", "green", "blue"),
+      group = "True Color",
+      min   = 0,
+      max   = 0.3
+    ) |>
+    leaflet::addControl(
+      html     = "<b>True Color</b><br>red / green / blue",
+      position = "bottomleft"
+    ) |>
+    leaflet::setView(lng = centroid_lon, lat = centroid_lat, zoom = 11) |>
+    leaflet::addLayersControl(
+      overlayGroups = "True Color",
+      options = leaflet::layersControlOptions(collapsed = FALSE)
+    )
 
-# fullStack is the ancillary layers image
-fullStack
+  # Visualize false color (nir, red, green)
+  leaflet::leaflet() |>
+    leaflet::addProviderTiles("Esri.WorldImagery") |>
+    ICESat2VegR::addEEImage(
+      stack$select(c("nir", "red", "green")),
+      bands = c("nir", "red", "green"),
+      group = "False Color",
+      min   = 0,
+      max   = 0.3
+    ) |>
+    leaflet::addControl(
+      html     = "<b>False Color</b><br>nir / red / green",
+      position = "bottomleft"
+    ) |>
+    leaflet::setView(lng = centroid_lon, lat = centroid_lat, zoom = 11) |>
+    leaflet::addLayersControl(
+      overlayGroups = "False Color",
+      options = leaflet::layersControlOptions(collapsed = FALSE)
+    )
+
+  # Visualize NDVI
+  leaflet::leaflet() |>
+    leaflet::addProviderTiles("Esri.WorldImagery") |>
+    ICESat2VegR::addEEImage(
+      stack$select("ndvi"),
+      bands = "ndvi",
+      group = "NDVI",
+      min   = 0,
+      max   = 0.8
+    ) |>
+    leaflet::addControl(
+      html     = "<b>NDVI</b>",
+      position = "bottomleft"
+    ) |>
+    leaflet::setView(lng = centroid_lon, lat = centroid_lat, zoom = 11) |>
+    leaflet::addLayersControl(
+      overlayGroups = "NDVI",
+      options = leaflet::layersControlOptions(collapsed = FALSE)
+    )
+
+  # Force Landsat HLS only
+  stack_landsat <- ee_build_hls_s1c_terrain_stack(
+    x                 = aoi,
+    start_date        = "2024-03-01",
+    end_date          = "2024-06-01",
+    hls_collection_id = "NASA/HLS/HLSL30/v002"
+  )
+  names(stack_landsat)
 }
 
 }

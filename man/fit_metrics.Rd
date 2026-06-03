@@ -24,7 +24,7 @@ fit_metrics(
 
 \item{unit}{Character indicating the unit for RMSE/MAE/Bias (e.g., "Mg/ha"). Default: "".}
 
-\item{...}{Additional arguments passed to \code{\link[graphics:plot.default]{graphics::plot()}}.}
+\item{...}{Additional arguments passed to \code{\link[graphics:plot]{graphics::plot()}}.}
 }
 \value{
 A data.frame with rows for \code{rmse}, \code{rmseR} (\%), \code{mae}, \code{maeR} (\%),

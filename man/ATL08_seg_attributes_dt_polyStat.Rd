@@ -8,7 +8,7 @@ ATL08_seg_attributes_dt_polyStat(atl08_seg_att_dt, func, poly_id = NULL)
 }
 \arguments{
 \item{atl08_seg_att_dt}{An S4 object of class
-\code{\linkS4class{icesat2.atl08_dt}} containing
+\code{\link[=icesat2.atl08_dt-class]{icesat2.atl08_dt}} containing
 ATL08 terrain and canopy attributes (output of
 \code{\link[=ATL08_seg_attributes_dt]{ATL08_seg_attributes_dt()}} function).}
 
@@ -17,7 +17,7 @@ ATL08 terrain and canopy attributes (output of
 \item{poly_id}{Polygon id. If defined, statistics will be computed for each polygon}
 }
 \value{
-Returns an S4 object of class \code{\linkS4class{icesat2.atl08_dt}}
+Returns an S4 object of class \code{\link[=icesat2.atl08_dt-class]{icesat2.atl08_dt}}
 Containing Statistics of ATL08 terrain and canopy attributes
 }
 \description{

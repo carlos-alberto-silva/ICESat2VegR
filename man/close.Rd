@@ -10,7 +10,7 @@
 \S4method{close}{icesat2.predict_h5}(con, ...)
 }
 \arguments{
-\item{con}{An object of class \linkS4class{icesat2.predict_h5}}
+\item{con}{An object of class \link[=icesat2.predict_h5-class]{icesat2.predict_h5}}
 
 \item{...}{Inherited from base, not used}
 }

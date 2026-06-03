@@ -2,40 +2,77 @@
 % Please edit documentation in R/ATL03_ATL08_seg_cover_dt_compute.R
 \name{ATL03_ATL08_seg_cover_dt_compute}
 \alias{ATL03_ATL08_seg_cover_dt_compute}
-\title{Compute segments id for a given segment length}
+\title{Compute canopy cover from ATL03/ATL08 classified photons}
 \usage{
 ATL03_ATL08_seg_cover_dt_compute(atl03_atl08_dt, reflectance_ratio = 1)
 }
 \arguments{
-\item{atl03_atl08_dt}{\code{\linkS4class{icesat2.atl03atl08_dt}}.
-The output of the \code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}}.}
+\item{atl03_atl08_dt}{An object of class
+\code{\link[=icesat2.atl03_atl08_seg_dt-class]{icesat2.atl03_atl08_seg_dt}} containing ATL03
+and ATL08 data (output of \code{\link[=ATL03_ATL08_segment_create]{ATL03_ATL08_segment_create()}} function).}
 
-\item{reflectance_ratio}{Numeric. The reflectance ratio to use to compute the coverage metric.
-\eqn{\rho_v / \rho_g}, where \eqn{\rho_v} is the vegetation reflectance
-and \eqn{\rho_v} is the ground reflectance. Default is 1 (same reflectance).}
+\item{reflectance_ratio}{numeric. The reflectance ratio
+\eqn{\rho_v / \rho_g}, where \eqn{\rho_v} is the vegetation
+reflectance and \eqn{\rho_g} is the ground reflectance.
+Default is \code{1} (same reflectance for ground and vegetation).}
 }
 \value{
-Returns an S4 object of class \code{\link[data.table:data.table-class]{data.table::data.table}} containing ICESat-2 ATL08 data.
+Returns the input object with three additional columns:
+\describe{
+\item{cover}{Numeric. Canopy cover fraction per segment (0-1).}
+\item{n_g}{Integer. Number of ground photons per segment
+(\code{classed_pc_flag == 1}).}
+\item{n_v}{Integer. Number of vegetation photons per segment
+(\code{classed_pc_flag > 1}).}
+}
 }
 \description{
-This function reads the ICESat-2 Land and
-Vegetation Along-Track Products (ATL08) as h5 file.
+Computes canopy cover metrics from ATL03 and ATL08 classified photons
+within each segment. Cover is calculated using the ratio of ground
+to vegetation photons, optionally weighted by a reflectance ratio.
+The function adds three new columns (\code{cover}, \code{n_g},
+\code{n_v}) to the input object and returns it.
 }
 \details{
-Coverage is calculated with the formula
-\deqn{\frac{1}{1 + \frac{\rho_v N_g}{\rho_g N_v}}}
+Cover is calculated with the formula:
+\deqn{cover = \frac{1}{1 + \frac{\rho_v \cdot N_g}{\rho_g \cdot N_v}}}
+
+where \eqn{N_g} is the number of ground photons
+(\code{classed_pc_flag == 1}) and \eqn{N_v} is the number of
+vegetation photons (\code{classed_pc_flag > 1}) within each segment.
 }
 \examples{
-# ATL08 file path
-atl08_path <- system.file("extdata",
-  "atl08_clip.h5",
-  package = "ICESat2VegR"
+# Specifying the path to ATL03 and ATL08 files
+atl03_path <- system.file("extdata", "atl03_clip.h5", package = "ICESat2VegR")
+atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
+
+# Reading ATL03 and ATL08 data (h5 files)
+atl03_h5 <- ATL03_read(atl03_path = atl03_path)
+atl08_h5 <- ATL08_read(atl08_path = atl08_path)
+
+# Extracting ATL03 and ATL08 photons and heights
+atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
+
+# Converting to seg_dt class (required input)
+atl03_atl08_seg_dt <- ATL03_ATL08_segment_create(
+  atl03_atl08_dt,
+  segment_length = 30
 )
 
-# Reading ICESat-2 ATL08 data (h5 file)
-atl08 <- ATL08_read(atl08_path = atl08_path)
+# Computing canopy cover metrics per segment
+cover <- ATL03_ATL08_seg_cover_dt_compute(atl03_atl08_seg_dt)
+head(cover[, c("segment_id", "cover", "n_g", "n_v")])
 
-close(atl08)
+# Computing cover with a custom reflectance ratio (rho_v/rho_g = 1.5)
+cover2 <- ATL03_ATL08_seg_cover_dt_compute(
+  atl03_atl08_seg_dt,
+  reflectance_ratio = 1.5
+)
+head(cover2[, c("segment_id", "cover", "n_g", "n_v")])
+
+close(atl03_h5)
+close(atl08_h5)
+
 }
 \seealso{
 \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}

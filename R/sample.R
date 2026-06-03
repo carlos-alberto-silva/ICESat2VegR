@@ -160,7 +160,6 @@ geomSamplingWorker <- function(dt, size, geom, split_id = NULL, chainSampling = 
   if (is.null(split_id)) {
     split_id <- "rowid"
     geom[["rowid"]] <- seq_along(geom)
-    geom[[names(geom)]]
   }
 
   v <- terra::vect(
@@ -170,8 +169,21 @@ geomSamplingWorker <- function(dt, size, geom, split_id = NULL, chainSampling = 
   )
 
   geom_v <- terra::intersect(v, geom)
-  dt[, geom_group := geom_v[[split_id]]]
-  dt[, do.call(chainSampling$fn, c(list(.SD), chainSampling$params)), by = geom_group]
+
+  if (nrow(geom_v) == 0) {
+    warning("No points fall inside the provided geometry.")
+    return(dt[0, ])
+  }
+
+  idx <- as.integer(row.names(as.data.frame(geom_v)))
+  dt_copy <- data.table::copy(dt[idx, ])
+  dt_copy[, geom_group := geom_v[[split_id]]]
+
+  dt_copy[
+    ,
+    do.call(chainSampling$fn, c(list(.SD), chainSampling$params)),
+    by = geom_group
+  ]
 }
 
 rasterSamplingWorker <- function(dt, size, raster, chainSampling = NULL) {
@@ -256,28 +268,76 @@ genericSamplingMethod <- function(fn) {
 ##########################################################
 #' Pure random sampling method
 #'
-#' @param size the sample size. Either an integer of absolute number of samples or
-#' if it is between (0, 1) it will sample a percentage relative to the number of
-#' available observations within the group.
+#' @param size numeric. The sample size. Either an integer for absolute number
+#'   of samples, or a value between \code{(0, 1)} to sample a percentage
+#'   relative to the number of available observations.
 #'
-#' @return A [`ICESat2VegR::icesat2_sampling_method-class`] for defining the method used in [`sample()`]
+#' @return A \code{\link{icesat2_sampling_method-class}} object for use in
+#'   \code{\link{sample}}.
 #'
+#' @seealso \code{\link{sample}}, \code{\link{gridSampling}},
+#'   \code{\link{stratifiedSampling}}, \code{\link{spacedSampling}},
+#'   \code{\link{geomSampling}}, \code{\link{rasterSampling}}
+#'
+#' @examples
+#' atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
+#' atl08_h5   <- ATL08_read(atl08_path = atl08_path)
+#' atl08_dt   <- ATL08_seg_attributes_dt(atl08_h5)
+#'
+#' # Sample 5 random observations
+#' set.seed(1)
+#' sampled <- ICESat2VegR::sample(atl08_dt, method = randomSampling(5))
+#' head(sampled)
+#'
+#' # Sample 50% of observations
+#' set.seed(1)
+#' sampled_pct <- ICESat2VegR::sample(atl08_dt, method = randomSampling(0.5))
+#' nrow(sampled_pct)
+#'
+#' close(atl08_h5)
 #' @export
 randomSampling <- genericSamplingMethod(randomSamplingWorker)
 
 #' Get samples stratified by grid cells of specified size
 #'
-#' @param size the sample size. Either an integer of absolute number of samples or
-#' if it is between (0, 1) it will sample a percentage relative to the number of
-#' available observations within the group.
-#' @param grid_size generic params. The [`gridSampling()`] will take a `grid_size` parameter
-#' defining the grid size for the sampling
-#' @param chainSampling chains different methods of sampling by providing the result
-#' of another samplingMethod [`randomSampling()`], [`spacedSampling()`], [`stratifiedSampling()`].
-
+#' @param size numeric. The sample size per grid cell. Either an integer or
+#'   a value between \code{(0, 1)} for a percentage.
+#' @param grid_size numeric. The grid cell size in decimal degrees.
+#' @param chainSampling optional. Chain with another sampling method such as
+#'   \code{\link{randomSampling}}, \code{\link{spacedSampling}}, or
+#'   \code{\link{stratifiedSampling}}.
 #'
-#' @return A [`ICESat2VegR::icesat2_sampling_method-class`] for defining the method used in [`sample()`]
+#' @return A \code{\link{icesat2_sampling_method-class}} object for use in
+#'   \code{\link{sample}}.
 #'
+#' @seealso \code{\link{sample}}, \code{\link{randomSampling}}
+#'
+#' @examples
+#' atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
+#' atl08_h5   <- ATL08_read(atl08_path = atl08_path)
+#' atl08_dt   <- ATL08_seg_attributes_dt(atl08_h5)
+#'
+#' # Sample 2 observations per 0.01 degree grid cell
+#' set.seed(1)
+#' sampled <- ICESat2VegR::sample(
+#'   atl08_dt,
+#'   method = gridSampling(size = 2, grid_size = 0.01)
+#' )
+#' head(sampled)
+#'
+#' # Chain grid sampling with random sampling within each cell
+#' set.seed(1)
+#' sampled_chain <- ICESat2VegR::sample(
+#'   atl08_dt,
+#'   method = gridSampling(
+#'     size          = 2,
+#'     grid_size     = 0.01,
+#'     chainSampling = randomSampling(2)
+#'   )
+#' )
+#' head(sampled_chain)
+#'
+#' close(atl08_h5)
 #' @export
 gridSampling <- genericSamplingMethod(gridSamplingWorker)
 
@@ -285,65 +345,144 @@ gridSampling <- genericSamplingMethod(gridSamplingWorker)
 
 #' Get samples stratified by a variable binning histogram
 #'
-#' @param size the sample size. Either an integer of absolute number of samples or
-#' if it is between (0, 1) it will sample a percentage relative to the number of
-#' available observations within the group.
-#' @param variable Variable name used for the stratification
-#' @param chainSampling chains different methods of sampling by providing the result
-#' of another samplingMethod [`randomSampling()`], [`spacedSampling()`], [`stratifiedSampling()`].
-#' @param ...
-#' forward to the [`graphics::hist()`], where you can manually define the breaks.
+#' @param size numeric. The sample size per stratum. Either an integer or
+#'   a value between \code{(0, 1)} for a percentage.
+#' @param variable character. Variable name used for the stratification.
+#' @param chainSampling optional. Chain with another sampling method.
+#' @param ... Additional arguments forwarded to \code{\link[graphics]{hist}},
+#'   where you can manually define the breaks.
 #'
-#' @return A [`ICESat2VegR::icesat2_sampling_method-class`] for defining the method used in [`sample()`]
+#' @return A \code{\link{icesat2_sampling_method-class}} object for use in
+#'   \code{\link{sample}}.
 #'
+#' @seealso \code{\link{sample}}, \code{\link{randomSampling}}
+#'
+#' @examples
+#' atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
+#' atl08_h5   <- ATL08_read(atl08_path = atl08_path)
+#' atl08_dt   <- ATL08_seg_attributes_dt(atl08_h5)
+#'
+#' # Sample 2 observations per h_canopy stratum
+#' set.seed(1)
+#' sampled <- ICESat2VegR::sample(
+#'   atl08_dt,
+#'   method = stratifiedSampling(size = 2, variable = "h_canopy")
+#' )
+#' head(sampled)
+#'
+#' close(atl08_h5)
 #' @export
 stratifiedSampling <- genericSamplingMethod(stratifiedSamplingWorker)
 
-#' Get observations given a minimum radius distance between samples
+#' Get observations with a minimum radius distance between samples
 #'
-#' @param size the sample size. Either an integer of absolute number of samples or
-#' if it is between (0, 1) it will sample a percentage relative to the number of
-#' available observations within the group.
-#' @param radius the minimum radius between samples.
-#' @param spatialIndex optional parameter. You can create a spatial index for accelerating
-#' the search space with [`ANNIndex`] and reuse that if needed elsewhere. It will create
-#' one automatically everytime if you don't specify one.
-#' @param chainSampling chains different methods of sampling by providing the result
-#' of another samplingMethod [`randomSampling()`], [`spacedSampling()`], [`stratifiedSampling()`].
+#' @param size numeric. The sample size. Either an integer or a value between
+#'   \code{(0, 1)} for a percentage.
+#' @param radius numeric. The minimum radius in decimal degrees between samples.
+#' @param spatialIndex optional. A pre-built \code{\link{ANNIndex}} spatial
+#'   index for accelerating the search. Created automatically if not provided.
+#' @param chainSampling optional. Chain with another sampling method.
 #'
-#' @return A [`ICESat2VegR::icesat2_sampling_method-class`] for defining the method used in [`sample()`]
+#' @return A \code{\link{icesat2_sampling_method-class}} object for use in
+#'   \code{\link{sample}}.
 #'
+#' @seealso \code{\link{sample}}, \code{\link{randomSampling}}
+#'
+#' @examples
+#' atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
+#' atl08_h5   <- ATL08_read(atl08_path = atl08_path)
+#' atl08_dt   <- ATL08_seg_attributes_dt(atl08_h5)
+#'
+#' # Sample up to 5 observations with minimum 0.01 degree spacing
+#' set.seed(1)
+#' sampled <- ICESat2VegR::sample(
+#'   atl08_dt,
+#'   method = spacedSampling(size = 5, radius = 0.01)
+#' )
+#' head(sampled)
+#'
+#' close(atl08_h5)
 #' @include ANNIndex.R
 #' @export
 spacedSampling <- genericSamplingMethod(spacedSamplingWorker)
 
-#' Get observations given a minimum radius distance between samples
+#' Get observations sampled within polygon features
 #'
-#' @param size the sample size. Either an integer of absolute number of samples or
-#' if it is between (0, 1) it will sample a percentage relative to the number of
-#' available observations within the group.
-#' @param geom a [`terra::SpatVector-class`] object opened with [`terra::vect()`]
-#' @param split_id character. The variable name of the geometry to use as split factor
-#' for sampling
-#' @param chainSampling chains different methods of sampling by providing the result
-#' of another samplingMethod [`randomSampling()`], [`spacedSampling()`], [`stratifiedSampling()`].
+#' @param size numeric. The sample size per polygon feature. Either an integer
+#'   or a value between \code{(0, 1)} for a percentage.
+#' @param geom A \code{\link[terra]{SpatVector}} polygon object opened with
+#'   \code{\link[terra]{vect}}.
+#' @param split_id character. The attribute name in \code{geom} to use as
+#'   the grouping factor for sampling.
+#' @param chainSampling optional. Chain with another sampling method.
 #'
-#' @return A [`ICESat2VegR::icesat2_sampling_method-class`] for defining the method used in [`sample()`]
+#' @return A \code{\link{icesat2_sampling_method-class}} object for use in
+#'   \code{\link{sample}}.
 #'
+#' @seealso \code{\link{sample}}, \code{\link{randomSampling}}
+#'
+#' @examples
+#' atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
+#' atl08_h5   <- ATL08_read(atl08_path = atl08_path)
+#' atl08_dt   <- ATL08_seg_attributes_dt(atl08_h5)
+#'
+#' # Load polygon shapefile
+#' polygon_filepath <- system.file("extdata",
+#'   "clip_geom.shp",
+#'   package = "ICESat2VegR"
+#' )
+#' polygon <- terra::vect(polygon_filepath)
+#'
+#' # Sample 2 observations per polygon feature
+#' set.seed(1)
+#' sampled <- ICESat2VegR::sample(
+#'   atl08_dt,
+#'   method = geomSampling(size = 2, geom = polygon, split_id = "id")
+#' )
+#' head(sampled)
+#'
+#' close(atl08_h5)
 #' @export
 geomSampling <- genericSamplingMethod(geomSamplingWorker)
 
-#' Get observations given a minimum radius distance between samples
+#' Get observations sampled by raster class
 #'
-#' @param size the sample size. Either an integer of absolute number of samples or
-#' if it is between (0, 1) it will sample a percentage relative to the number of
-#' available observations within the group.
-#' @param raster a [`terra::SpatRaster-class`] object opened with [`terra::rast()`]
-#' @param chainSampling chains different methods of sampling by providing the result
-#' of another samplingMethod [`randomSampling()`], [`spacedSampling()`], [`stratifiedSampling()`].
+#' @param size numeric. The sample size per raster class. Either an integer
+#'   or a value between \code{(0, 1)} for a percentage.
+#' @param raster A \code{\link[terra]{SpatRaster}} object opened with
+#'   \code{\link[terra]{rast}}.
+#' @param chainSampling optional. Chain with another sampling method.
 #'
-#' @return A [`ICESat2VegR::icesat2_sampling_method-class`] for defining the method used in [`sample()`]
+#' @return A \code{\link{icesat2_sampling_method-class}} object for use in
+#'   \code{\link{sample}}.
 #'
+#' @seealso \code{\link{sample}}, \code{\link{randomSampling}}
+#'
+#' @examples
+#' atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
+#' atl08_h5   <- ATL08_read(atl08_path = atl08_path)
+#' atl08_dt   <- ATL08_seg_attributes_dt(atl08_h5)
+#'
+#' # Create a raster over the data extent
+#' r <- terra::rast(
+#'   xmin       = min(atl08_dt$longitude),
+#'   xmax       = max(atl08_dt$longitude),
+#'   ymin       = min(atl08_dt$latitude),
+#'   ymax       = max(atl08_dt$latitude),
+#'   resolution = 0.005,
+#'   crs        = "EPSG:4326"
+#' )
+#' terra::values(r) <- sample(1:3, terra::ncell(r), replace = TRUE)
+#'
+#' # Sample 2 observations per raster class
+#' set.seed(1)
+#' sampled <- ICESat2VegR::sample(
+#'   atl08_dt,
+#'   method = rasterSampling(size = 2, raster = r)
+#' )
+#' head(sampled)
+#'
+#' close(atl08_h5)
 #' @export
 rasterSampling <- genericSamplingMethod(rasterSamplingWorker)
 
