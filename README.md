@@ -25,32 +25,36 @@ install.packages('ICESat2VegR', repos = c('https://carlos-alberto-silva.r-univer
 #install.packages("ICESat2VegR")
 
 # Required additional libraries
-need_pkgs <- c(   # Packages required by the workflow
+need_pkgs <- c(
   "reticulate",   # Python <-> R interface
   "leaflet",      # interactive maps
   "sf",           # spatial vectors
   "terra",        # rasters & vectors
   "data.table",   # fast tables
-  "dplyr"         # tidy helpers
+  "dplyr",        # tidy helpers
+  "mapview",      # interactive map viewer
+  "caret"         # modeling / ML
 )
-missing <- need_pkgs[!need_pkgs %in% rownames(installed.packages())]                 # Identify missing packages
-if (length(missing)) {                                                                # If any are missing
-  message("Installing missing R packages: ", paste(missing, collapse = ", "))         # Inform the user
-  install.packages(missing, repos = repos, dependencies = TRUE)                       # Install from repos with dependencies
+missing <- need_pkgs[!need_pkgs %in% rownames(installed.packages())]
+if (length(missing)) {
+  message("Installing missing R packages: ", paste(missing, collapse = ", "))
+  install.packages(missing, repos = repos, dependencies = TRUE)
 }
 ```
 
 ## Load the package
 
 ``` r
-suppressPackageStartupMessages({                                                       # Suppress startup messages for clean logs
-  library(ICESat2VegR)                                                                 # ICESat-2 vegetation tools
-  library(reticulate)                                                                  # Interface to Python
-  library(leaflet)                                                                     # Interactive maps
-  library(sf)                                                                          # Simple Features for vector data
-  library(terra)                                                                       # Raster + vector geospatial ops
-  library(data.table)                                                                  # Fast data tables
-  library(dplyr)                                                                       # Tidy verbs
+suppressPackageStartupMessages({
+  library(ICESat2VegR)
+  library(reticulate)
+  library(leaflet)
+  library(sf)
+  library(terra)
+  library(data.table)
+  library(dplyr)
+  library(mapview)
+  library(caret)
 })
 cat("Loading libraries... done.\n")                                                    # Confirm loading
 
@@ -1125,46 +1129,42 @@ The script includes:
 ``` r
 # The r-universe version (recommended for the latest version)
 install.packages('ICESat2VegR', repos = c('https://carlos-alberto-silva.r-universe.dev', 'https://cloud.r-project.org'))
+
 # The CRAN version
-install.packages("ICESat2VegR")
+#install.packages("ICESat2VegR")
 
 # Required additional libraries
-need_pkgs <- c(                                                                       # Packages required by the workflow
+need_pkgs <- c(
   "reticulate",   # Python <-> R interface
   "leaflet",      # interactive maps
   "sf",           # spatial vectors
   "terra",        # rasters & vectors
   "data.table",   # fast tables
-  "dplyr"         # tidy helpers
+  "dplyr",        # tidy helpers
+  "mapview",      # interactive map viewer
+  "caret"         # modeling / ML
 )
-missing <- need_pkgs[!need_pkgs %in% rownames(installed.packages())]                 # Identify missing packages
-if (length(missing)) {                                                                # If any are missing
-  message("Installing missing R packages: ", paste(missing, collapse = ", "))         # Inform the user
-  install.packages(missing, repos = repos, dependencies = TRUE)                       # Install from repos with dependencies
+missing <- need_pkgs[!need_pkgs %in% rownames(installed.packages())]
+if (length(missing)) {
+  message("Installing missing R packages: ", paste(missing, collapse = ", "))
+  install.packages(missing, repos = repos, dependencies = TRUE)
 }
-if (!requireNamespace("mapview", quietly = TRUE)) {
-  install.packages("mapview", repos = "https://cloud.r-project.org")
-}
+```
 
-library(mapview)
-suppressPackageStartupMessages({                                                       # Suppress startup messages for clean logs
-  library(ICESat2VegR)                                                                 # ICESat-2 vegetation tools
-  library(reticulate)                                                                  # Interface to Python
-  library(leaflet)                                                                     # Interactive maps
-  library(sf)                                                                          # Simple Features for vector data
-  library(terra)                                                                       # Raster + vector geospatial ops
-  library(data.table)                                                                  # Fast data tables
-  library(dplyr) 
-  # Tidy verbs
+## Load the package
+
+``` r
+suppressPackageStartupMessages({
+  library(ICESat2VegR)
+  library(reticulate)
+  library(leaflet)
+  library(sf)
+  library(terra)
+  library(data.table)
+  library(dplyr)
+  library(mapview)
+  library(caret)
 })
-pkgs <- c("mapview", "caret")
-
-for (pkg in pkgs) {
-  if (!requireNamespace(pkg, quietly = TRUE)) {
-    install.packages(pkg, repos = "https://cloud.r-project.org")
-  }
-  library(pkg, character.only = TRUE)
-}
 cat("Loading libraries... done.\n")                                                    # Confirm loading
 
 ```
