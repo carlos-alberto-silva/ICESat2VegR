@@ -10,7 +10,7 @@
 Satellite (ICESat-2) Data Processing and Visualization for Land and
 Vegetation Applications.**
   
-  Authors: Carlos Alberto Silva, Cesar Alvites, Alexander Gaskins  and Caio Hamamura
+  Authors: Carlos Alberto Silva, Caio Hamamura, Cesar Alvites and Alexander J. Gaskins
 
 The ICESat2VegR package provides functions for downloading, reading, visualizing, processing, and exporting NASA’s ICESat-2 ATL03 (Global Geolocated Photon Data) and 
 ATL08 (Land and Vegetation Height) products for land and vegetation applications in the R environment.
