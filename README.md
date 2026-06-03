@@ -1111,11 +1111,12 @@ A Random Forest model is trained on sampled segments and applied wall-to-wall ac
 
 ## Code availability
 
-The complete R workflow used in this example is available as a standalone script:
+A complete end-to-end workflow demonstrating the use of ICESat2VegR for canopy height modeling is available as a standalone R script:
 
- [![R Script](https://img.shields.io/badge/R-Workflow-blue)](inst/scripts/upscaling_alphaearth_workflow.R)
 
-The script includes:
+📢 **Click here to access and download the example workflow script [![R Script](https://img.shields.io/badge/R-Workflow-blue)](inst/scripts/upscaling_alphaearth_workflow.R).**
+
+Users can download, copy, and run this script to test the full workflow, including:
 
 - ICESat-2 data discovery, download, and processing
 - Segment-level canopy height metric extraction
@@ -1125,6 +1126,7 @@ The script includes:
 - Wall-to-wall canopy height prediction
 - GeoTIFF export and visualization
 
+This script serves as a practical example of how to integrate ICESat2VegR functions into a complete forest structure mapping workflow.
 ## Install and load required packages
 
 ``` r
