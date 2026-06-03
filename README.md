@@ -1104,6 +1104,22 @@ In this workflow we model the `rh98` canopy height metric from ICESat-2 ATL03/AT
 (elevation, slope, aspect, lon, lat) retrieved through Google Earth Engine.
 A Random Forest model is trained on sampled segments and applied wall-to-wall across the AOI.
 
+## Code availability
+
+The complete R workflow used in this example is available as a standalone script:
+
+🔵 [![R Script](https://img.shields.io/badge/R-Workflow-blue)](inst/scripts/upscaling_alphaearth_workflow.R)
+
+The script includes:
+
+- ICESat-2 data discovery, download, and processing
+- Segment-level canopy height metric extraction
+- AlphaEarth embedding generation
+- Ancillary terrain predictor extraction
+- Predictor selection and model development
+- Wall-to-wall canopy height prediction
+- GeoTIFF export and visualization
+
 ## Install and load required packages
 
 ``` r
