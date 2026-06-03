@@ -22,7 +22,7 @@ decimal degrees.
 }
 \value{
 Returns an S4 object of class
-\code{\linkS4class{icesat2.atl08_dt}}
+\code{\link[=icesat2.atl08_dt-class]{icesat2.atl08_dt}}
 containing the clipped ATL08 terrain and canopy attributes.
 }
 \description{

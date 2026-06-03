@@ -13,7 +13,7 @@ ATL08_h5_clipBox(
 )
 }
 \arguments{
-\item{atl08}{An \code{\linkS4class{icesat2.atl08_h5}} object obtained via
+\item{atl08}{An \code{\link[=icesat2.atl08_h5-class]{icesat2.atl08_h5}} object obtained via
 \code{\link[=ATL08_read]{ATL08_read()}}, representing the ATL08 HDF5 file to be clipped.}
 
 \item{output}{Character path specifying where the clipped HDF5 file should be
@@ -25,7 +25,7 @@ written.}
 \code{c(ul_lat, ul_lon, lr_lat, lr_lon)}, following the ICESat-2 CMS
 bounding-box convention (upper-left latitude/longitude and
 lower-right latitude/longitude).
-\item A \code{\link[terra:SpatExtent-class]{terra::SpatExtent}} object.
+\item A \code{\link[terra:SpatExtent]{terra::SpatExtent}} object.
 }}
 
 \item{beam}{Character vector specifying which ATL08 beams to include.
@@ -37,7 +37,7 @@ HDF5 groups to copy unchanged into the output file. Defaults to:
 \code{c("orbit_info")}.}
 }
 \value{
-An S4 object of class \code{\linkS4class{icesat2.atl08_h5}} representing
+An S4 object of class \code{\link[=icesat2.atl08_h5-class]{icesat2.atl08_h5}} representing
 the clipped ATL08 HDF5 file.
 }
 \description{

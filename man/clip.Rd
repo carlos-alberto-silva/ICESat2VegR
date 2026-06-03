@@ -10,12 +10,12 @@ clip(x, clip_obj, ...)
 \item{x}{ICESat-2 object (ATL03/ATL08 h5, attributes, or joined table)
 Can be either:
 \itemize{
-\item \code{\linkS4class{icesat2.atl03_h5}}
-\item \code{\linkS4class{icesat2.atl03_dt}}
-\item \code{\linkS4class{icesat2.atl03_seg_dt}}
-\item \code{\linkS4class{icesat2.atl08_h5}}
-\item \code{\linkS4class{icesat2.atl08_dt}}
-\item \code{\linkS4class{icesat2.atl03atl08_dt}}
+\item \code{\link[=icesat2.atl03_h5-class]{icesat2.atl03_h5}}
+\item \code{\link[=icesat2.atl03_dt-class]{icesat2.atl03_dt}}
+\item \code{\link[=icesat2.atl03_seg_dt-class]{icesat2.atl03_seg_dt}}
+\item \code{\link[=icesat2.atl08_h5-class]{icesat2.atl08_h5}}
+\item \code{\link[=icesat2.atl08_dt-class]{icesat2.atl08_dt}}
+\item \code{\link[=icesat2.atl03atl08_dt-class]{icesat2.atl03atl08_dt}}
 }}
 
 \item{clip_obj}{Clipping object. Supported for box-based clipping:

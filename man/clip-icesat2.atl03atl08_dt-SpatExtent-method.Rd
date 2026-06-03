@@ -8,7 +8,7 @@
 }
 \arguments{
 \item{x}{An S4 object of class
-\code{\linkS4class{icesat2.atl03atl08_dt}} containing joined ATL03 and
+\code{\link[=icesat2.atl03atl08_dt-class]{icesat2.atl03atl08_dt}} containing joined ATL03 and
 ATL08 data (output of
 \code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}} function).}
 
@@ -24,7 +24,7 @@ decimal degrees.
 }
 \value{
 Returns an S4 object of class
-\code{\linkS4class{icesat2.atl03atl08_dt}} containing a subset of the
+\code{\link[=icesat2.atl03atl08_dt-class]{icesat2.atl03atl08_dt}} containing a subset of the
 joined ATL03 and ATL08 photon attributes restricted to the clipping extent.
 }
 \description{

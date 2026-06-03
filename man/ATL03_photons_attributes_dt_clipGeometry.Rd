@@ -11,9 +11,9 @@ ATL03_photons_attributes_dt_clipGeometry(
 )
 }
 \arguments{
-\item{atl03_photons_dt}{An ATL03 photon data table. An S4 object of class \code{\linkS4class{icesat2.atl03_dt}}.}
+\item{atl03_photons_dt}{An ATL03 photon data table. An S4 object of class \code{\link[=icesat2.atl03_dt-class]{icesat2.atl03_dt}}.}
 
-\item{clip_obj}{Spatial clip_obj. An object of class \code{\link[terra:SpatVector-class]{terra::SpatVector}},
+\item{clip_obj}{Spatial clip_obj. An object of class \code{\link[terra:SpatVector]{terra::SpatVector}},
 which can be loaded as an ESRI shapefile using the \link[terra:vect]{terra::vect} function in the
 \emph{sf} package.}
 
@@ -21,7 +21,7 @@ which can be loaded as an ESRI shapefile using the \link[terra:vect]{terra::vect
 the clip_obj id from the attribute table defined by the user.}
 }
 \value{
-Returns an S4 object of class \code{\linkS4class{icesat2.atl03_dt}}
+Returns an S4 object of class \code{\link[=icesat2.atl03_dt-class]{icesat2.atl03_dt}}
 containing the ATL03 photon attributes.
 }
 \description{

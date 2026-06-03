@@ -16,35 +16,37 @@ ee_build_AlphaEarth_embedding_terrain_stack(
 }
 \arguments{
 \item{geom}{AOI geometry. Can be:
-- an \code{sf} object (\strong{sf} or \strong{sfc}),
-- a \link[terra:SpatVector-class]{terra::SpatVector} object,
-- or an Earth Engine geometry (Python object) already in geographic
-coordinates.
+\itemize{
+\item an \code{sf} or \code{sfc} object,
+\item a \code{\link[terra]{SpatVector}} object,
+\item or an Earth Engine geometry (Python object) already in
+geographic coordinates.
+}
+The geometry is internally converted to an Earth Engine geometry
+via an internal helper.}
 
-The geometry is internally converted to an Earth Engine geometry via an
-internal helper.}
+\item{start_year, end_year}{Integer (or coercible to integer). Inclusive
+year range used to filter the AlphaEarth annual embedding collection.}
 
-\item{start_year, end_year}{Integer (or coercible to integer). Inclusive year
-range used to filter the AlphaEarth annual embedding collection.}
+\item{mask_outside}{Logical. If \code{TRUE} (default), pixels outside
+the AOI are masked out using a binary mask image clipped to
+\code{geom}.}
 
-\item{mask_outside}{Logical. If \code{TRUE} (default), pixels outside the
-AOI are masked out using a binary mask image clipped to \code{geom}.}
+\item{terrain_scale}{Numeric. Target scale in meters used to reproject
+the terrain data. Default is \code{30}.}
 
-\item{terrain_scale}{Numeric. Target scale (in meters) used to reproject
-the terrain data (default \code{30}).}
+\item{multiply_slope_aspect_by10}{Logical. If \code{TRUE} (default),
+slope and aspect are multiplied by 10 to preserve conventions used
+elsewhere in the package and avoid small floating-point values.}
 
-\item{multiply_slope_aspect_by10}{Logical. If \code{TRUE} (default), slope
-and aspect are multiplied by 10 to preserve conventions used elsewhere in
-the package and avoid small floating-point values.}
-
-\item{add_lonlat}{Logical. If \code{TRUE} (default), add longitude and
-latitude bands named \code{lon} and \code{lat} derived from
-\code{ee$Image$pixelLonLat()}.}
+\item{add_lonlat}{Logical. If \code{TRUE} (default), longitude and
+latitude bands named \code{lon} and \code{lat} are added, derived
+from \code{ee$Image$pixelLonLat()}.}
 }
 \value{
-A Python \code{ee$Image} object that contains:
+A Python \code{ee$Image} object containing:
 \itemize{
-\item The median annual embedding bands.
+\item The median annual AlphaEarth embedding bands.
 \item \code{elevation}, \code{slope}, and \code{aspect} bands.
 \item Optional \code{lon} and \code{lat} bands.
 }
@@ -60,14 +62,25 @@ NASADEM as fallbacks.
 }
 
 The embedding collection is filtered to the specified year range and AOI,
-reduced using a pixel-wise median, and clipped to the AOI. Terrain data are
-reprojected to a target scale (default \code{30}m).
+reduced using a pixel-wise median, and clipped to the AOI. Terrain data
+are reprojected to a target scale (default \code{30} m).
+
+\strong{Geographic coverage limitation:} The primary terrain sources
+(USGS 3DEP 1 m and 10 m) cover only the contiguous United States,
+Alaska, and Hawaii. For areas outside the US, the function falls back
+to NASADEM, which provides global coverage but at coarser resolution
+(~30 m). For best terrain accuracy, this function is recommended for
+use within the United States.
+
+\strong{Authentication:} This function requires an active Google Earth
+Engine session. Authenticate using \code{ICESat2VegR::ee_initialize()}
+before calling this function.
 }
 \details{
 The terrain source is chosen in the following order:
 \enumerate{
-\item USGS 3DEP 1 m (\verb{USGS/3DEP/1m}), if available for the AOI.
-\item USGS 3DEP 10 m (\verb{USGS/3DEP/10m}).
+\item USGS 3DEP 1 m (\code{USGS/3DEP/1m}), if available for the AOI.
+\item USGS 3DEP 10 m (\code{USGS/3DEP/10m}).
 \item NASADEM (\code{NASA/NASADEM_HGT/001}) as a global fallback.
 }
 
@@ -76,109 +89,50 @@ All terrain layers are clipped to the AOI and reprojected to
 }
 \examples{
 \dontrun{
+  # Requires Google Earth Engine authentication
+  # Note: USGS 3DEP terrain data covers the United States only.
+  # Outside the US, NASADEM is used as a global fallback.
+  Sys.setenv(EE_PROJECT = "your-ee-project-id")
+  ICESat2VegR::ee_initialize()
+
   library(sf)
-
-  # -------------------------------------------------------------
-  # Example 1 - Using the function
-  # -------------------------------------------------------------
-
-  # Simple AOI polygon (WGS84)
   aoi <- st_as_sfc(st_bbox(c(
     xmin = -82.4, xmax = -82.2,
     ymin =  29.6, ymax =  29.8
   ), crs = 4326))
 
-  img <- ee_build_AlphaEarth_embedding_terrain_stack(
-    geom       = aoi,
-    start_year = 2018,
-    end_year   = 2020
-  )
-
-
-  # -------------------------------------------------------------
-  # Example 2 - Full standalone script (no function)
-  # -------------------------------------------------------------
-
-  library(reticulate)
-  ee <- import("ee")
-  ee_ping(ee)
-
-  # AOI geometry (sf -> EE geometry)
-  library(sf)
-  aoi <- st_as_sfc(
-    st_bbox(c(
-      xmin = -82.4,
-      xmax = -82.2,
-      ymin = 29.6,
-      ymax = 29.8
-    ), crs = 4326)
-  )
-
   ee_geom <- ICESat2VegR:::.as_ee_geom(aoi)
 
-  # -------------------------------------------------------------
-  # AlphaEarth annual embedding
-  # -------------------------------------------------------------
-  start_year <- 2018
-  end_year   <- 2020
+  # Build the embedding + terrain stack for 2025
+  predictors <- ee_build_AlphaEarth_embedding_terrain_stack(
+    geom       = ee_geom,
+    start_year = 2025,
+    end_year   = 2025
+  )
 
-  emb_ic <- ee$ImageCollection("GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL")$
-    filterDate(
-      sprintf("\%04d-01-01", start_year),
-      sprintf("\%04d-12-31", end_year)
-    )$
-    filterBounds(ee_geom)
+  # Visualize RGB embedding bands using leaflet
+  predictors_rgb <- predictors$select(c("A00", "A20", "A40"))
 
-  embedding <- emb_ic$median()$clip(ee_geom)
+  centroid_lon <- mean(terra::ext(terra::vect(aoi))[c(1, 2)])
+  centroid_lat <- mean(terra::ext(terra::vect(aoi))[c(3, 4)])
 
-
-  # -------------------------------------------------------------
-  # Terrain DEM via ICESat2VegR dataset search (NASA DEM)
-  # -------------------------------------------------------------
-  dem_search   <- search_datasets("nasa", "dem")
-  dem_id       <- get_catalog_id(dem_search)
-  elevation    <- ee$Image(dem_id)$clip(ee_geom)
-
-  # Compute slope and aspect using package helpers
-  terrain_scale <- 30
-
-  # Reproject elevation to target scale (if desired)
-  elev_proj <- elevation$reproject("EPSG:4326", scale = terrain_scale)
-
-  slp <- slope(elev_proj)    # returns ee.Image with band "slope"
-  asp <- aspect(elev_proj)   # returns ee.Image with band "aspect"
-
-  # Optional scaling by 10
-  slp <- slp$multiply(10)
-  asp <- asp$multiply(10)
-
-  slp <- slp$clip(ee_geom)
-  asp <- asp$clip(ee_geom)
-
-
-  # -------------------------------------------------------------
-  # Lon/lat bands
-  # -------------------------------------------------------------
-  lonlat <- ee$Image$pixelLonLat()$clip(ee_geom)
-  lon    <- lonlat$select("longitude")$rename("lon")
-  lat    <- lonlat$select("latitude")$rename("lat")
-
-
-  # -------------------------------------------------------------
-  # Final stack: embeddings + terrain + lon/lat
-  # -------------------------------------------------------------
-  stack <- embedding$
-    addBands(elevation$rename("elevation"))$
-    addBands(slp)$
-    addBands(asp)$
-    addBands(lon)$
-    addBands(lat)
-
-  # Optional mask outside AOI
-  mask  <- ee$Image$constant(1)$clip(ee_geom)
-  stack <- stack$updateMask(mask)
-
-  print(stack)
+  leaflet::leaflet() |>
+    ICESat2VegR::addEEImage(
+      predictors_rgb,
+      bands = c("A00", "A20", "A40"),
+      group = "RGB Embedding",
+      min   = -0.2,
+      max   =  0.2
+    ) |>
+    leaflet::setView(
+      lng  = centroid_lon,
+      lat  = centroid_lat,
+      zoom = 15
+    ) |>
+    leaflet::addLayersControl(
+      overlayGroups = "RGB Embedding",
+      options = leaflet::layersControlOptions(collapsed = FALSE)
+    )
 }
 
 }

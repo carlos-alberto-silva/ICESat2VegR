@@ -7,10 +7,10 @@
 \S4method{clip}{icesat2.atl03_h5,ANY}(x, clip_obj, ...)
 }
 \arguments{
-\item{x}{An \code{\linkS4class{icesat2.atl03_h5}} object obtained using
+\item{x}{An \code{\link[=icesat2.atl03_h5-class]{icesat2.atl03_h5}} object obtained using
 \code{\link[=ATL03_read]{ATL03_read()}}, representing the ATL03 HDF5 file to be clipped.}
 
-\item{clip_obj}{A \code{\link[terra:SpatVector-class]{terra::SpatVector}} object containing the geometric clip
+\item{clip_obj}{A \code{\link[terra:SpatVector]{terra::SpatVector}} object containing the geometric clip
 boundaries. Each feature (row) in the SpatVector defines an independent
 clipping region.}
 
@@ -32,12 +32,12 @@ be copied unchanged into each clipped file. Defaults to:
 }
 \value{
 Returns a list of clipped S4 objects of class
-\code{\linkS4class{icesat2.atl03_h5}}, one for each clipping geometry
+\code{\link[=icesat2.atl03_h5-class]{icesat2.atl03_h5}}, one for each clipping geometry
 contained in \code{vect}.
 }
 \description{
 Clips an ICESat-2 ATL03 HDF5 file using one or more geometry-based clipping
-objects provided as a \code{\link[terra:SpatVector-class]{terra::SpatVector}}. Each geometry in \code{vect}
+objects provided as a \code{\link[terra:SpatVector]{terra::SpatVector}}. Each geometry in \code{vect}
 defines an individual clipping region. The function iteratively clips the
 ATL03 data for each region and writes a separate output HDF5 file for every
 geometry. The name of each output file is automatically appended with the

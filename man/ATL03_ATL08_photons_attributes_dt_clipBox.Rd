@@ -8,7 +8,7 @@ ATL03_ATL08_photons_attributes_dt_clipBox(atl03_atl08_dt, clip_obj)
 }
 \arguments{
 \item{atl03_atl08_dt}{An S4 object of class
-\code{\linkS4class{icesat2.atl03atl08_dt}} containing joined ATL03 and
+\code{\link[=icesat2.atl03atl08_dt-class]{icesat2.atl03atl08_dt}} containing joined ATL03 and
 ATL08 data (output of
 \code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}} function).}
 
@@ -22,7 +22,7 @@ decimal degrees.
 }
 \value{
 Returns an S4 object of class
-\code{\linkS4class{icesat2.atl03atl08_dt}} containing a subset of the
+\code{\link[=icesat2.atl03atl08_dt-class]{icesat2.atl03atl08_dt}} containing a subset of the
 joined ATL03 and ATL08 photon attributes restricted to the clipping extent.
 }
 \description{
@@ -56,7 +56,7 @@ atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
 head(atl03_atl08_dt)
 
 # 1) Using a numeric bounding box: xmin ymin xmax ymax
-bbox <- c(-103.7604, 59.4672, -103.7600, 59.4680)
+bbox <- c(-106.571, 41.531, -106.569, 41.540)
 
 atl03_atl08_dt_clip <- ATL03_ATL08_photons_attributes_dt_clipBox(
   atl03_atl08_dt = atl03_atl08_dt,
@@ -66,7 +66,7 @@ head(atl03_atl08_dt_clip)
 
 # 2) Using a SpatExtent (example)
 # library(terra)
-# ext <- terra::ext(-103.7604, -103.7600, 59.4672, 59.4680)
+# ext <- terra::ext(-106.57, -106.569, 41.531, 41.540)
 # atl03_atl08_dt_clip_ext <- ATL03_ATL08_photons_attributes_dt_clipBox(
 #   atl03_atl08_dt = atl03_atl08_dt,
 #   clip_obj = ext

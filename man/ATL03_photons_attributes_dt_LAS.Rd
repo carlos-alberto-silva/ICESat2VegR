@@ -7,7 +7,7 @@
 ATL03_photons_attributes_dt_LAS(atl03_dt, output)
 }
 \arguments{
-\item{atl03_dt}{An S4 object of class \code{\linkS4class{icesat2.atl03_dt}}
+\item{atl03_dt}{An S4 object of class \code{\link[=icesat2.atl03_dt-class]{icesat2.atl03_dt}}
 (output of \code{\link[=ATL03_photons_attributes_dt]{ATL03_photons_attributes_dt()}} function).}
 
 \item{output}{character. The output path of for the LAS(Z) file(s)
@@ -24,6 +24,9 @@ As the las format expects a metric coordinate reference system (CRS)
 we use helper functions to define UTM zones to which the original
 ICESat-2 data will be converted.
 
+Writing LAS/LAZ files requires the \code{lidR} package; if it is not installed
+the function stops with an informative message.
+
 The function credits go to Chuck Gantz- chuck.gantz@globalstar.com.
 }
 \examples{
@@ -37,14 +40,17 @@ atl03_path <- system.file("extdata",
 # Reading ATL03 data (h5 file)
 atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 
-# Extracting ATL03 and ATL08 photons and heights
+# Extracting ATL03 photons and heights
 atl03_dt <- ATL03_photons_attributes_dt(atl03_h5, beam = "gt1r")
 
-outdir <- tempdir()
-ATL03_photons_attributes_dt_LAS(
-  atl03_dt,
-  file.path(outdir, "output.laz")
-)
+# Writing to LAS/LAZ requires the 'lidR' package
+if (requireNamespace("lidR", quietly = TRUE)) {
+  outdir <- tempdir()
+  ATL03_photons_attributes_dt_LAS(
+    atl03_dt,
+    file.path(outdir, "output.laz")
+  )
+}
 
 close(atl03_h5)
 }

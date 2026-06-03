@@ -7,9 +7,9 @@
 \S4method{clip}{icesat2.atl03_dt,ANY}(x, clip_obj, ...)
 }
 \arguments{
-\item{x}{An ATL03 photon data table. An S4 object of class \code{\linkS4class{icesat2.atl03_dt}}.}
+\item{x}{An ATL03 photon data table. An S4 object of class \code{\link[=icesat2.atl03_dt-class]{icesat2.atl03_dt}}.}
 
-\item{clip_obj}{Spatial clip_obj. An object of class \code{\link[terra:SpatVector-class]{terra::SpatVector}},
+\item{clip_obj}{Spatial clip_obj. An object of class \code{\link[terra:SpatVector]{terra::SpatVector}},
 which can be loaded as an ESRI shapefile using the \link[terra:vect]{terra::vect} function in the
 \emph{sf} package.}
 
@@ -18,7 +18,7 @@ by attribute. If defined, GEDI data will be clipped by each clip_obj using
 the clip_obj id from the attribute table defined by the user.}
 }
 \value{
-Returns an S4 object of class \code{\linkS4class{icesat2.atl03_dt}}
+Returns an S4 object of class \code{\link[=icesat2.atl03_dt-class]{icesat2.atl03_dt}}
 containing the ATL03 photon attributes.
 }
 \description{

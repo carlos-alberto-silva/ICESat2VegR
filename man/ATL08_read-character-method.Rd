@@ -10,7 +10,7 @@
 \item{atl08_path}{Character. File path to ICESat-2 ATL08 data in HDF5 format (.h5).}
 }
 \value{
-An S4 object of class \code{\linkS4class{icesat2.atl08_h5}} containing ICESat-2
+An S4 object of class \code{\link[=icesat2.atl08_h5-class]{icesat2.atl08_h5}} containing ICESat-2
 ATL08 data.
 }
 \description{

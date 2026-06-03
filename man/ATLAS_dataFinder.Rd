@@ -82,7 +82,7 @@ ATLAS02b_list <- ATLAS_dataFinder(
   lower_left_lat,
   upper_right_lon,
   upper_right_lat,
-  version = "006",
+  version = "007",
   daterange = daterange
 )
 }

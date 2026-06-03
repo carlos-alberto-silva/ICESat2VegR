@@ -160,7 +160,6 @@ geomSamplingWorker <- function(dt, size, geom, split_id = NULL, chainSampling = 
   if (is.null(split_id)) {
     split_id <- "rowid"
     geom[["rowid"]] <- seq_along(geom)
-    geom[[names(geom)]]
   }
 
   v <- terra::vect(
@@ -170,8 +169,21 @@ geomSamplingWorker <- function(dt, size, geom, split_id = NULL, chainSampling = 
   )
 
   geom_v <- terra::intersect(v, geom)
-  dt[, geom_group := geom_v[[split_id]]]
-  dt[, do.call(chainSampling$fn, c(list(.SD), chainSampling$params)), by = geom_group]
+
+  if (nrow(geom_v) == 0) {
+    warning("No points fall inside the provided geometry.")
+    return(dt[0, ])
+  }
+
+  idx <- as.integer(row.names(as.data.frame(geom_v)))
+  dt_copy <- data.table::copy(dt[idx, ])
+  dt_copy[, geom_group := geom_v[[split_id]]]
+
+  dt_copy[
+    ,
+    do.call(chainSampling$fn, c(list(.SD), chainSampling$params)),
+    by = geom_group
+  ]
 }
 
 rasterSamplingWorker <- function(dt, size, raster, chainSampling = NULL) {

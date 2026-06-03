@@ -2,7 +2,7 @@
 % Please edit documentation in R/ATL03_ATL08_seg_attributes_dt_clip.R
 \name{ATL03_ATL08_seg_attributes_dt_clipGeometry}
 \alias{ATL03_ATL08_seg_attributes_dt_clipGeometry}
-\title{Clip joined ATL03/ATL08 segment attributes by Geometry (clip_obj)}
+\title{Clip joined ATL03/ATL08 segment attributes by geometry}
 \usage{
 ATL03_ATL08_seg_attributes_dt_clipGeometry(
   atl03_atl08_dt,
@@ -11,20 +11,77 @@ ATL03_ATL08_seg_attributes_dt_clipGeometry(
 )
 }
 \arguments{
-\item{atl03_atl08_dt}{Object of class
-\code{\link[=icesat2.atl03_atl08_seg_dt-class]{icesat2.atl03_atl08_seg_dt}}.}
+\item{atl03_atl08_dt}{An object of class
+\code{\link[=icesat2.atl08_dt-class]{icesat2.atl08_dt}} or
+\code{\link[=icesat2.atl03_atl08_seg_dt-class]{icesat2.atl03_atl08_seg_dt}},
+typically produced by \code{\link[=ATL08_seg_attributes_dt]{ATL08_seg_attributes_dt()}}.}
 
-\item{clip_obj}{A clip_obj as \code{terra::SpatVector} or \code{sf}/\code{sfc}.}
+\item{clip_obj}{A polygon as \code{terra::SpatVector} or \code{sf}/\code{sfc}.}
 
-\item{split_by}{Optional name of a clip_obj attribute to copy into the output
-as column \code{poly_id}.}
+\item{split_by}{character. Optional name of a polygon attribute to copy
+into the output as column \code{poly_id}. Default is \code{NULL}.}
 }
 \value{
-Same-class object containing the clipped segments; includes \code{poly_id}
-if \code{split_by} is provided.
+An object of the same class as \code{atl03_atl08_dt} containing
+only segments that fall inside the polygon. If \code{split_by} is
+provided, an additional \code{poly_id} column is added identifying
+which polygon feature each segment belongs to.
 }
 \description{
-Clips an \code{icesat2.atl03_atl08_seg_dt} object to the features inside a
-clip_obj. Accepts \code{terra::SpatVector} \strong{or} \code{sf}/\code{sfc} clip_objs. Performs a
-fast bbox pre-clip, then precise intersection in the clip_obj CRS.
+Clips an \code{icesat2.atl08_dt} or \code{icesat2.atl03_atl08_seg_dt}
+object to the features inside a polygon. Accepts \code{terra::SpatVector}
+or \code{sf}/\code{sfc} polygons. Performs a fast bounding box pre-clip,
+then a precise intersection in the polygon CRS.
+}
+\details{
+The function performs clipping in two steps for efficiency:
+\enumerate{
+\item A fast bounding box pre-clip using
+\code{\link{ATL03_ATL08_seg_attributes_dt_clipBox}} to reduce
+the number of points before the precise intersection.
+\item A precise point-in-polygon intersection using
+\code{terra::intersect()}, reprojecting the points to the
+polygon CRS if needed.
+}
+}
+\examples{
+# Specifying the path to ATL08 file
+atl08_path <- system.file("extdata",
+  "atl08_clip.h5",
+  package = "ICESat2VegR"
+)
+
+# Reading ATL08 data (h5 file)
+atl08_h5 <- ATL08_read(atl08_path = atl08_path)
+
+# Extracting ATL08 segment attributes
+atl08_seg_dt <- ATL08_seg_attributes_dt(atl08_h5)
+head(atl08_seg_dt)
+
+# Reading polygon from shapefile
+polygon_filepath <- system.file("extdata",
+  "clip_geom.shp",
+  package = "ICESat2VegR"
+)
+polygon <- terra::vect(polygon_filepath)
+
+# Example 1: Clip by polygon geometry
+atl08_seg_clip_geom <- ATL03_ATL08_seg_attributes_dt_clipGeometry(
+  atl08_seg_dt,
+  clip_obj = polygon
+)
+head(atl08_seg_clip_geom)
+nrow(atl08_seg_clip_geom)
+
+# Example 2: Clip by polygon geometry and add polygon id column
+atl08_seg_clip_geom2 <- ATL03_ATL08_seg_attributes_dt_clipGeometry(
+  atl08_seg_dt,
+  clip_obj = polygon,
+  split_by = "id"
+)
+head(atl08_seg_clip_geom2)
+nrow(atl08_seg_clip_geom2)
+
+close(atl08_h5)
+
 }

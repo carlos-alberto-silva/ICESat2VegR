@@ -2,26 +2,51 @@
 % Please edit documentation in R/sample.R
 \name{geomSampling}
 \alias{geomSampling}
-\title{Get observations given a minimum radius distance between samples}
+\title{Get observations sampled within polygon features}
 \usage{
 geomSampling(size, geom, split_id = NULL, chainSampling = NULL)
 }
 \arguments{
-\item{size}{the sample size. Either an integer of absolute number of samples or
-if it is between (0, 1) it will sample a percentage relative to the number of
-available observations within the group.}
+\item{size}{numeric. The sample size per polygon feature. Either an integer
+or a value between \code{(0, 1)} for a percentage.}
 
-\item{geom}{a \code{\link[terra:SpatVector-class]{terra::SpatVector}} object opened with \code{\link[terra:vect]{terra::vect()}}}
+\item{geom}{A \code{\link[terra]{SpatVector}} polygon object opened with
+\code{\link[terra]{vect}}.}
 
-\item{split_id}{character. The variable name of the geometry to use as split factor
-for sampling}
+\item{split_id}{character. The attribute name in \code{geom} to use as
+the grouping factor for sampling.}
 
-\item{chainSampling}{chains different methods of sampling by providing the result
-of another samplingMethod \code{\link[=randomSampling]{randomSampling()}}, \code{\link[=spacedSampling]{spacedSampling()}}, \code{\link[=stratifiedSampling]{stratifiedSampling()}}.}
+\item{chainSampling}{optional. Chain with another sampling method.}
 }
 \value{
-A \code{\linkS4class{icesat2_sampling_method}} for defining the method used in \code{\link[=sample]{sample()}}
+A \code{\link{icesat2_sampling_method}} object for use in
+\code{\link{sample}}.
 }
 \description{
-Get observations given a minimum radius distance between samples
+Get observations sampled within polygon features
+}
+\examples{
+atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
+atl08_h5   <- ATL08_read(atl08_path = atl08_path)
+atl08_dt   <- ATL08_seg_attributes_dt(atl08_h5)
+
+# Load polygon shapefile
+polygon_filepath <- system.file("extdata",
+  "clip_geom.shp",
+  package = "ICESat2VegR"
+)
+polygon <- terra::vect(polygon_filepath)
+
+# Sample 2 observations per polygon feature
+set.seed(1)
+sampled <- ICESat2VegR::sample(
+  atl08_dt,
+  method = geomSampling(size = 2, geom = polygon, split_id = "id")
+)
+head(sampled)
+
+close(atl08_h5)
+}
+\seealso{
+\code{\link{sample}}, \code{\link{randomSampling}}
 }

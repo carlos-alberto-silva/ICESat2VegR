@@ -15,7 +15,7 @@ ATL03_ATL08_photons_attributes_dt_gridStat(
 )
 }
 \arguments{
-\item{atl03_atl08_dt}{An S4 object of class \code{\linkS4class{icesat2.atl03atl08_dt}}
+\item{atl03_atl08_dt}{An S4 object of class \code{\link[=icesat2.atl03atl08_dt-class]{icesat2.atl03atl08_dt}}
 containing ATL03 and ATL08 attributes
 (output of the \code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}} function).}
 

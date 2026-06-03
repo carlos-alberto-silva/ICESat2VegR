@@ -9,7 +9,7 @@ prepend_class(obj, className)
 \arguments{
 \item{obj}{The object to which prepend the class.}
 
-\item{className}{\code{\linkS4class{character}} with the name of the class to prepend.}
+\item{className}{\code{\link[=character-class]{character}} with the name of the class to prepend.}
 }
 \value{
 Nothing, it replaces the class attribute in place
