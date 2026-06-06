@@ -47,8 +47,8 @@ Roxygen: list(markdown = TRUE)
 RdMacros: Rdpack, mathjaxr
 BuildManual: TRUE
 Suggests: chromote,  devtools,  ggplot2, grid, gridExtra, htmlwidgets, knitr, leaflet, leafsync,
-           lidR, lwgeom, mapview,  png, rmarkdown, rstudioapi, signal, stars, testthat (>= 3.0.0),
-           webshot, viridis
+            lidR, lwgeom, mapview,  png, rmarkdown, rstudioapi, signal, stars, testthat (>= 3.0.0),
+            webshot, viridis, withr
 LinkingTo: Rcpp
 SystemRequirements: 
   - GDAL (>= 3.0.0)
