@@ -34,14 +34,13 @@
 #'
 #' @export
 plot_icesat2_orbit_animation <- function(
-    kml_files = NULL,
-    output_dir = tempdir(),
-    output_file = "ICESat2_orbit_animation.html",
-    track_speed = 2,
-    earth_rotation_speed = 2,
-    launch = TRUE
+  kml_files = NULL,
+  output_dir = tempdir(),
+  output_file = "ICESat2_orbit_animation.html",
+  track_speed = 2,
+  earth_rotation_speed = 2,
+  launch = TRUE
 ) {
-
   requireNamespace("sf")
   requireNamespace("dplyr")
   requireNamespace("purrr")
@@ -53,7 +52,6 @@ plot_icesat2_orbit_animation <- function(
   # Internal package assets
   # ------------------------------------------------------------
   earth_texture <- "Stylized_World_Topo_5400x2700.jpeg"
-  satellite_image <- "extdataICESat2_wLasers.png"
 
   extdata_dir <- system.file(
     "extdata",
@@ -69,17 +67,8 @@ plot_icesat2_orbit_animation <- function(
     earth_texture
   )
 
-  satellite_image_path <- file.path(
-    extdata_dir,
-    satellite_image
-  )
-
   if (!file.exists(earth_texture_path)) {
     stop("Earth texture not found in inst/extdata: ", earth_texture)
-  }
-
-  if (!file.exists(satellite_image_path)) {
-    stop("Satellite image not found in inst/extdata: ", satellite_image)
   }
 
   if (!dir.exists(output_dir)) {
@@ -95,18 +84,11 @@ plot_icesat2_orbit_animation <- function(
     overwrite = TRUE
   )
 
-  file.copy(
-    satellite_image_path,
-    file.path(output_dir, satellite_image),
-    overwrite = TRUE
-  )
-
   # ------------------------------------------------------------
   # KML inputs
   # ------------------------------------------------------------
 
   if (is.null(kml_files)) {
-
     kml_files <- list.files(
       extdata_dir,
       pattern = "\\.kml$",
@@ -127,7 +109,6 @@ plot_icesat2_orbit_animation <- function(
   all_tracks <- list()
 
   for (i in seq_along(kml_files)) {
-
     kf <- kml_files[i]
 
     layers <- sf::st_layers(kf)$name
@@ -135,7 +116,6 @@ plot_icesat2_orbit_animation <- function(
     track_pts <- purrr::map_dfr(
       layers,
       function(layer_name) {
-
         x <- sf::st_read(
           kf,
           layer = layer_name,
@@ -181,7 +161,6 @@ plot_icesat2_orbit_animation <- function(
 
     # Remove duplicated closing point if KML returns to its own start
     if (nrow(one_track) > 2) {
-
       first_pt <- one_track[1, ]
       last_pt <- one_track[nrow(one_track), ]
 
@@ -221,9 +200,7 @@ plot_icesat2_orbit_animation <- function(
   ordered_tracks[[1]] <- track_list[[1]]
 
   if (length(track_list) > 1) {
-
     for (i in 2:length(track_list)) {
-
       previous_track <- ordered_tracks[[i - 1]]
       current_track <- track_list[[i]]
 
@@ -246,7 +223,6 @@ plot_icesat2_orbit_animation <- function(
       )
 
       if (dist_to_end < dist_to_start) {
-
         current_track <- current_track |>
           dplyr::arrange(dplyr::desc(step)) |>
           dplyr::mutate(
@@ -366,7 +342,6 @@ Earth rotation speed:<br>
 const trackData = ', track_json, ';
 
 const textureFileName = "', earth_texture, '";
-const satellitePNGFileName = "', satellite_image, '";
 
 // ------------------------------------------------------------
 // Scene
@@ -545,35 +520,84 @@ function latLonToVector3(lat, lon, radius) {
 }
 
 // ------------------------------------------------------------
-// Satellite image
+// ICESat-2 white sphere
 // ------------------------------------------------------------
 
-const satelliteTexture = new THREE.TextureLoader().load(
-  "./" + satellitePNGFileName,
-  function() {
-    document.getElementById("status").innerHTML =
-      "ICESat-2 satellite loaded";
-  }
+const satelliteGeometry = new THREE.SphereGeometry(
+  0.08,
+  48,
+  48
 );
 
-const satelliteMaterial = new THREE.SpriteMaterial({
-  map: satelliteTexture,
+const satelliteMaterial = new THREE.MeshBasicMaterial({
+  color: 0xffffff
+});
+
+const satellite = new THREE.Mesh(
+  satelliteGeometry,
+  satelliteMaterial
+);
+
+earthGroup.add(satellite);
+
+// ------------------------------------------------------------
+// ICESat-2 text label above the sphere
+// ------------------------------------------------------------
+
+const labelCanvas = document.createElement("canvas");
+labelCanvas.width = 1024;
+labelCanvas.height = 256;
+
+const labelContext = labelCanvas.getContext("2d");
+
+labelContext.clearRect(
+  0,
+  0,
+  labelCanvas.width,
+  labelCanvas.height
+);
+
+labelContext.font = "bold 90px Arial";
+labelContext.textAlign = "center";
+labelContext.textBaseline = "middle";
+
+labelContext.lineWidth = 10;
+labelContext.strokeStyle = "black";
+
+labelContext.strokeText(
+  "ICESat-2",
+  labelCanvas.width / 2,
+  labelCanvas.height / 2
+);
+
+labelContext.fillStyle = "white";
+
+labelContext.fillText(
+  "ICESat-2",
+  labelCanvas.width / 2,
+  labelCanvas.height / 2
+);
+
+const labelTexture = new THREE.CanvasTexture(labelCanvas);
+
+const labelMaterial = new THREE.SpriteMaterial({
+  map: labelTexture,
   transparent: true,
   depthWrite: false,
   depthTest: false
 });
 
-const satellite = new THREE.Sprite(
-  satelliteMaterial
+const satelliteLabel = new THREE.Sprite(
+  labelMaterial
 );
 
-satellite.scale.set(
-  0.70,
-  0.36,
+satelliteLabel.scale.set(
+  0.65,
+  0.16,
   1
 );
 
-earthGroup.add(satellite);
+earthGroup.add(satelliteLabel);
 
 // ------------------------------------------------------------
 // Laser beam pointing from satellite to Earth
@@ -665,8 +689,13 @@ function updateSatellitePosition(pos) {
 
   satellite.position.copy(pos);
 
-  // Rotate the flat satellite image so the green side points toward Earth.
-  satellite.material.rotation = Math.PI;
+  const labelOffset = pos.clone()
+    .normalize()
+    .multiplyScalar(0.22);
+
+  satelliteLabel.position.copy(
+    pos.clone().add(labelOffset)
+  );
 
   updateLaserBeam(pos);
 }
@@ -858,7 +887,6 @@ window.addEventListener(
   )
 
   if (launch) {
-
     try(
       servr::daemon_stop(),
       silent = TRUE
