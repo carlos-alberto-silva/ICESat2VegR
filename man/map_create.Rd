@@ -82,21 +82,21 @@ the available bands before training the model.
   library(sf)
   library(randomForest)
 
-  # ── AOI as simple bounding box ───────────────────────────────
+  # -- AOI as simple bounding box --------------------------------
   aoi <- sf::st_as_sfc(sf::st_bbox(c(
     xmin = -82.4, xmax = -82.2,
     ymin =  29.6, ymax =  29.8
   ), crs = 4326))
   ee_geom <- ICESat2VegR:::.as_ee_geom(aoi)
 
-  # ── Build embedding + terrain stack ─────────────────────────
+  # -- Build embedding + terrain stack ---------------------------
   stack <- ee_build_AlphaEarth_embedding_terrain_stack(
     geom       = ee_geom,
     start_year = 2025,
     end_year   = 2025
   )
 
-  # ── Synthetic training data using stack band names ───────────
+  # -- Synthetic training data using stack band names ------------
   # In practice, use real ICESat-2 extracted values
   set.seed(42)
   n              <- 200
@@ -112,11 +112,11 @@ the available bands before training the model.
   # Synthetic canopy height response
   y <- 5 + 2 * X[[1]] + 3 * X[[2]] + rnorm(n, sd = 1)
 
-  # ── Fit Random Forest model ──────────────────────────────────
+  # -- Fit Random Forest model -----------------------------------
   rf_model <- randomForest(x = X, y = y, ntree = 100)
   rf_model
 
-  # ── Create prediction map in GEE ────────────────────────────
+  # -- Create prediction map in GEE ------------------------------
   pred <- map_create(
     model = rf_model,
     stack = stack,
