@@ -22,3 +22,5 @@
 ^docs$
 ^dev$
 ^pkgdown$
+^CRAN-SUBMISSION$
+^cran-comments\.md$
