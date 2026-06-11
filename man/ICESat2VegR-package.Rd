@@ -22,7 +22,6 @@ Useful links:
 
 Authors:
 \itemize{
-  \item Carlos Alberto Silva \email{c.silva@ufl.edu} [copyright holder]
   \item Caio Hamamura \email{caiohamamura@gmail.com} [copyright holder]
   \item Cesar Alvites \email{c.alvitesdiaz@ufl.edu} [contributor]
   \item Alexander J. Gaskins \email{alexandergaskins@ufl.edu} [contributor]

@@ -7,24 +7,25 @@
 \S4method{clip}{icesat2.atl03_dt,ANY}(x, clip_obj, ...)
 }
 \arguments{
-\item{x}{An ATL03 photon data table. An S4 object of class \code{\link[=icesat2.atl03_dt-class]{icesat2.atl03_dt}}.}
+\item{x}{An ATL03 photon data table. An S4 object of class \code{\linkS4class{icesat2.atl03_dt}}.}
 
-\item{clip_obj}{Spatial clip_obj. An object of class \code{\link[terra:SpatVector]{terra::SpatVector}},
+\item{clip_obj}{Spatial clip_obj. An object of class \code{\link[terra:SpatVector-class]{terra::SpatVector}},
 which can be loaded as an ESRI shapefile using the \link[terra:vect]{terra::vect} function in the
 \emph{sf} package.}
 
-\item{...}{. The \code{split_by} parameter can be specified to clip_obj
+\item{...}{The \code{split_by} parameter can be specified to clip_obj
 by attribute. If defined, GEDI data will be clipped by each clip_obj using
 the clip_obj id from the attribute table defined by the user.}
 }
 \value{
-Returns an S4 object of class \code{\link[=icesat2.atl03_dt-class]{icesat2.atl03_dt}}
+Returns an S4 object of class \code{\linkS4class{icesat2.atl03_dt}}
 containing the ATL03 photon attributes.
 }
 \description{
 This function clips ATL03 photon attributes within given bounding coordinates.
 }
 \examples{
+\donttest{
 # ATL03 file path
 atl03_path <- system.file("extdata",
   "atl03_clip.h5",
@@ -55,6 +56,7 @@ atl03_photons_dt_clip <-
 head(atl03_photons_dt_clip)
 
 close(atl03_h5)
+}
 }
 \seealso{
 \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}

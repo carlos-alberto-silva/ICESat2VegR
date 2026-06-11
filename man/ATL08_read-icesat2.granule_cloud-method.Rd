@@ -11,7 +11,7 @@
 a single ICESat-2 ATL08 granule in the cloud.}
 }
 \value{
-An S4 object of class \code{\link[=icesat2.atl08_h5-class]{icesat2.atl08_h5}} containing ICESat-2
+An S4 object of class \code{\linkS4class{icesat2.atl08_h5}} containing ICESat-2
 ATL08 data.
 }
 \description{

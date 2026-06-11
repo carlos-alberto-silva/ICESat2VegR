@@ -47,7 +47,7 @@ Roxygen: list(markdown = TRUE)
 RdMacros: Rdpack, mathjaxr
 BuildManual: TRUE
 Suggests: chromote,  devtools,  ggplot2, grid, gridExtra, htmlwidgets, knitr, leaflet, leafsync,
-            lidR, lwgeom, mapview,  png, rmarkdown, rstudioapi, signal, stars, testthat (>= 3.0.0),
+            lwgeom, mapview,  png, rmarkdown, rstudioapi, signal, stars, testthat (>= 3.0.0),
             webshot, viridis, withr
 LinkingTo: Rcpp
 SystemRequirements: 
@@ -58,6 +58,7 @@ Collate:
     'lazy_applier.R'
     'ATL03_ATL08_compute_seg_attributes_dt_segStat.R'
     'utmTools.R'
+    'lasTools.R'
     'ATL03_ATL08_photons_attributes_dt_LAS.R'
     'ATL03_ATL08_photons_attributes_dt_clipBox.R'
     'ATL03_ATL08_photons_attributes_dt_clipGeometry.R'
@@ -74,7 +75,6 @@ Collate:
     'ATL03_h5_clipBox.R'
     'ATL03_h5_clipGeometry.R'
     'ATL03_photons_attributes_dt.R'
-    'lasTools.R'
     'ATL03_photons_attributes_dt_LAS.R'
     'ATL03_photons_attributes_dt_clipBox.R'
     'ATL03_photons_attributes_dt_clipGeometry.R'
@@ -134,3 +134,4 @@ Collate:
     'vect_as_ee.R'
 License: GPL (>= 3)
 Config/roxygen2/version: 8.0.0
+RoxygenNote: 7.3.3

@@ -1,0 +1,1 @@
+The words ATL, ICESat, and Geolocated are domain-specific terms related to NASA ICESat-2 products.

@@ -8,7 +8,7 @@ ATL08_seg_attributes_dt_gridStat(atl08_seg_att_dt, func, res = 0.5)
 }
 \arguments{
 \item{atl08_seg_att_dt}{An object of class
-\code{\link[=icesat2.atl08_dt-class]{icesat2.atl08_dt}} containing ATL08 data
+\code{\linkS4class{icesat2.atl08_dt}} containing ATL08 data
 (output of \code{\link[=ATL08_seg_attributes_dt]{ATL08_seg_attributes_dt()}} function).}
 
 \item{func}{The function to be applied for computing the defined

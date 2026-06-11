@@ -10,7 +10,7 @@
 Satellite (ICESat-2) Data Processing and Visualization for Land and
 Vegetation Applications.**
   
-  Authors: Carlos Alberto Silva, Caio Hamamura, Cesar Alvites and Alexander J. Gaskins
+Authors: Carlos Alberto Silva, Caio Hamamura, Cesar Alvites and Alexander J. Gaskins
 
 The ICESat2VegR package provides functions for downloading, reading, visualizing, processing, and exporting NASA’s ICESat-2 ATL03 (Global Geolocated Photon Data) and 
 ATL08 (Land and Vegetation Height) products for land and vegetation applications in the R environment.
@@ -19,8 +19,7 @@ ATL08 (Land and Vegetation Height) products for land and vegetation applications
 
 ``` r
 # The r-universe version (recommended for the latest version)
-install.packages("ICESat2VegR", , repos = c("https://caiohamamura.r-universe.dev", "https://cloud.r-project.org"))
-#install.packages('ICESat2VegR', repos = c('https://carlos-alberto-silva.r-universe.dev', 'https://cloud.r-project.org'))
+install.packages('ICESat2VegR', repos = c('https://carlos-alberto-silva.r-universe.dev', 'https://cloud.r-project.org'))
 
 # The CRAN version
 #install.packages("ICESat2VegR")
@@ -287,6 +286,33 @@ atl03_h5_cloud$beams
 close(atl03_h5_cloud)
 ```
 
+
+# Extract the Reference Ground Track from ICESat-2 ATL03 or ATL08 Data
+
+The `rgt_extract()` function extracts the ICESat-2 Reference Ground Track (RGT) 
+from an ATL03 or ATL08 HDF5 object. The extracted RGT can be used to visualize the 
+satellite ground track or create an orbit animation.
+
+```r
+# Extract the Reference Ground Track as a line object
+rgt_line <- rgt_extract(h5 = atl03_h5, line = TRUE)
+
+# Plot the ICESat-2 orbit animation
+plot_icesat2_orbit_animation(
+  rgt = rgt_line,
+  launch = TRUE
+)
+
+# Plot the default ICESat-2 orbit animation
+plot_icesat2_orbit_animation()
+```
+
+<div align="center">
+  
+  <img src="readme//ICESat2_animation.gif" width=500 />
+  
+  </div>
+  
 # Extracting ATL03 photons attributes
 
 ``` r

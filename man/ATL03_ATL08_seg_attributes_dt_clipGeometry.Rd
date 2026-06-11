@@ -12,8 +12,8 @@ ATL03_ATL08_seg_attributes_dt_clipGeometry(
 }
 \arguments{
 \item{atl03_atl08_dt}{An object of class
-\code{\link[=icesat2.atl08_dt-class]{icesat2.atl08_dt}} or
-\code{\link[=icesat2.atl03_atl08_seg_dt-class]{icesat2.atl03_atl08_seg_dt}},
+\code{\linkS4class{icesat2.atl08_dt}} or
+\code{\linkS4class{icesat2.atl03_atl08_seg_dt}},
 typically produced by \code{\link[=ATL08_seg_attributes_dt]{ATL08_seg_attributes_dt()}}.}
 
 \item{clip_obj}{A polygon as \code{terra::SpatVector} or \code{sf}/\code{sfc}.}

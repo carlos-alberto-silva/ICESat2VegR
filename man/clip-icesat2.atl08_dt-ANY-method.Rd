@@ -7,10 +7,10 @@
 \S4method{clip}{icesat2.atl08_dt,ANY}(x, clip_obj, ...)
 }
 \arguments{
-\item{x}{An \link[=icesat2.atl08_dt-class]{icesat2.atl08_dt} object (output of
+\item{x}{An \linkS4class{icesat2.atl08_dt} object (output of
 \code{\link[=ATL08_seg_attributes_dt]{ATL08_seg_attributes_dt()}} function).}
 
-\item{clip_obj}{clip_obj. An object of class \code{\link[terra:SpatVector]{terra::SpatVector}},
+\item{clip_obj}{clip_obj. An object of class \code{\link[terra:SpatVector-class]{terra::SpatVector}},
 which can be loaded as an ESRI shapefile using \link[terra:vect]{terra::vect} function in the
 \emph{sf} package.}
 
@@ -19,13 +19,14 @@ If defined, ATL08 data will be clipped by each clip_obj using
 the clip_obj id from table of attribute defined by the user}
 }
 \value{
-Returns an S4 object of class \code{\link[=icesat2.atl08_dt-class]{icesat2.atl08_dt}}
+Returns an S4 object of class \code{\linkS4class{icesat2.atl08_dt}}
 containing the clipped ATL08 Terrain and Canopy Attributes.
 }
 \description{
 This function clips ATL08 Terrain and Canopy Attributes within a given geometry
 }
 \examples{
+\donttest{
 # Specifying the path to ATL08 file
 atl08_path <- system.file("extdata",
   "atl08_clip.h5",
@@ -72,6 +73,8 @@ if (require(terra)) {
         options = providerTileOptions(minZoom = 3, maxZoom = 17)
       )
   }
+ }
+ close(atl08_h5)
 }
-close(atl08_h5)
+
 }

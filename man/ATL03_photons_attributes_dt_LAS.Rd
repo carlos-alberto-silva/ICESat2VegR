@@ -2,58 +2,56 @@
 % Please edit documentation in R/ATL03_photons_attributes_dt_LAS.R
 \name{ATL03_photons_attributes_dt_LAS}
 \alias{ATL03_photons_attributes_dt_LAS}
-\title{Converts ATL03 photon cloud to LAS}
+\title{Export ICESat-2 ATL03 Photon Data to LAS Files}
 \usage{
 ATL03_photons_attributes_dt_LAS(atl03_dt, output)
 }
 \arguments{
-\item{atl03_dt}{An S4 object of class \code{\link[=icesat2.atl03_dt-class]{icesat2.atl03_dt}}
-(output of \code{\link[=ATL03_photons_attributes_dt]{ATL03_photons_attributes_dt()}} function).}
+\item{atl03_dt}{An S4 object of class
+\code{ICESat2VegR::icesat2.atl03_dt-class}, usually the output of
+\code{ATL03_photons_attributes_dt()}.}
 
-\item{output}{character. The output path of for the LAS(Z) file(s)
-The function will create one LAS file per UTM Zone in WGS84 datum.}
+\item{output}{Character. Output LAS file path. The function creates one LAS
+file per UTM zone in the WGS84 datum.}
 }
 \value{
-Nothing, it just saves outputs as LAS file in disk
+Invisibly returns a character vector with the written LAS file paths.
 }
 \description{
-Converts ATL03 photon cloud to LAS
+Converts ATL03 photon-level data extracted with
+\code{ATL03_photons_attributes_dt()} into one or more LAS files.
 }
 \details{
-As the las format expects a metric coordinate reference system (CRS)
-we use helper functions to define UTM zones to which the original
-ICESat-2 data will be converted.
-
-Writing LAS/LAZ files requires the \code{lidR} package; if it is not installed
-the function stops with an informative message.
-
-The function credits go to Chuck Gantz- chuck.gantz@globalstar.com.
+LAS files require projected coordinates. This function uses internal helper
+functions to identify the appropriate UTM zone for each photon, reproject
+the original ICESat-2 geographic coordinates, and write one LAS file per UTM
+zone using the package internal LAS writer. The internal UTM-zone assignment
+follows helper routines based on the latitude/longitude to UTM conversion
+algorithms developed by Chuck Gantz.
 }
 \examples{
-
-# ATL03 file path
+\dontrun{
 atl03_path <- system.file("extdata",
   "atl03_clip.h5",
   package = "ICESat2VegR"
 )
 
-# Reading ATL03 data (h5 file)
 atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 
-# Extracting ATL03 photons and heights
 atl03_dt <- ATL03_photons_attributes_dt(atl03_h5, beam = "gt1r")
 
-# Writing to LAS/LAZ requires the 'lidR' package
-if (requireNamespace("lidR", quietly = TRUE)) {
-  outdir <- tempdir()
-  ATL03_photons_attributes_dt_LAS(
-    atl03_dt,
-    file.path(outdir, "output.laz")
-  )
-}
+outdir <- tempdir()
+
+ATL03_photons_attributes_dt_LAS(
+  atl03_dt,
+  file.path(outdir, "atl03_photons.las")
+)
 
 close(atl03_h5)
 }
-\seealso{
-https://oceancolor.gsfc.nasa.gov/docs/ocssw/LatLong-UTMconversion_8cpp_source.html
+
+}
+\references{
+Gantz, C. Latitude/Longitude to UTM Conversion Algorithms.
+\url{https://oceancolor.gsfc.nasa.gov/docs/ocssw/LatLong-UTMconversion_8cpp_source.html}
 }

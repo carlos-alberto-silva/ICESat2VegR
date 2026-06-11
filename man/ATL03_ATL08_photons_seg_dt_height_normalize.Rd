@@ -15,7 +15,7 @@ ATL03_ATL08_photons_seg_dt_height_normalize(
 }
 \arguments{
 \item{atl03_atl08_seg_dt}{An S4 object of class
-\code{\link[=icesat2.atl03_atl08_seg_dt-class]{icesat2.atl03_atl08_seg_dt}} containing ATL03
+\code{\linkS4class{icesat2.atl03_atl08_seg_dt}} containing ATL03
 and ATL08 data (output of \code{\link[=ATL03_ATL08_segment_create]{ATL03_ATL08_segment_create()}} function).}
 
 \item{smoothing_window}{numeric. The smoothing window size in meters

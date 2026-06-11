@@ -7,7 +7,7 @@
 \method{close}{icesat2.predict_h5}(con, ...)
 }
 \arguments{
-\item{con}{The HDF5 file pointer of class \code{\link[=icesat2.predict_h5-class]{icesat2.predict_h5}}}
+\item{con}{The HDF5 file pointer of class \code{\linkS4class{icesat2.predict_h5}}}
 
 \item{...}{Additional parameters inherited from generic}
 }

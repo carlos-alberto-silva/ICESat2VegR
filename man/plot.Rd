@@ -19,7 +19,7 @@
 \S4method{plot}{icesat2.atl03_seg_dt,missing}(x, col = "gray", ...)
 }
 \arguments{
-\item{x}{An object of class \code{\link[=icesat2.atl03_dt-class]{icesat2.atl03_dt}}}
+\item{x}{An object of class \code{\linkS4class{icesat2.atl03_dt}}}
 
 \item{y}{The attribute name for y axis}
 

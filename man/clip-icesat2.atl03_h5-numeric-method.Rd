@@ -7,7 +7,7 @@
 \S4method{clip}{icesat2.atl03_h5,numeric}(x, clip_obj, ...)
 }
 \arguments{
-\item{x}{An \code{\link[=icesat2.atl03_h5-class]{icesat2.atl03_h5}} object created by
+\item{x}{An \code{\linkS4class{icesat2.atl03_h5}} object created by
 \code{\link[=ATL03_read]{ATL03_read()}}, representing the ATL03 HDF5 file to be clipped.}
 
 \item{clip_obj}{Bounding extent used for clipping. Supported inputs:
@@ -16,7 +16,7 @@
 \code{c(ul_lat, ul_lon, lr_lat, lr_lon)}, following the ICESat-2 CMS
 bounding-box convention (upper-left latitude/longitude and
 lower-right latitude/longitude).
-\item A \code{\link[terra:SpatExtent]{terra::SpatExtent}} object.
+\item A \code{\link[terra:SpatExtent-class]{terra::SpatExtent}} object.
 }}
 
 \item{...}{Additional arguments:
@@ -32,7 +32,7 @@ to copy unchanged into the output file. Defaults to:
 }}
 }
 \value{
-An S4 object of class \code{\link[=icesat2.atl03_h5-class]{icesat2.atl03_h5}} representing
+An S4 object of class \code{\linkS4class{icesat2.atl03_h5}} representing
 the clipped ATL03 HDF5 file saved at the \code{output} location.
 }
 \description{
@@ -60,33 +60,4 @@ to maintain ATL03 structural integrity.
 This function preserves the full ATL03 metadata, ancillary information, and
 file structure while trimming the spatial domain to the user-specified
 bounding extent.
-}
-\examples{
-# ATL03 file path
-atl03_path <- system.file("extdata",
-  "atl03_clip.h5",
-  package = "ICESat2VegR"
-)
-
-# Read ATL03 data (HDF5)
-atl03_h5 <- ATL03_read(atl03_path)
-
-# Bounding rectangle coordinates (ul_lat, ul_lon, lr_lat, lr_lon)
-xmin <- -106.5723
-xmax <- -106.5693
-ymin <- 41.533
-ymax <- 41.537
-
-bbox <- c(ymax, xmin, ymin, xmax)
-
-# Clip ATL03 using the bounding extent
-output <- tempfile(fileext = ".h5")
-atl03_clip <- ATL03_h5_clipBox(
-  atl03_h5,
-  output = output,
-  clip_obj = bbox
-)
-
-close(atl03_h5)
-
 }

@@ -7,7 +7,7 @@
 \S4method{clip}{icesat2.atl08_h5,numeric}(x, clip_obj, ...)
 }
 \arguments{
-\item{x}{An \code{\link[=icesat2.atl08_h5-class]{icesat2.atl08_h5}} object obtained via
+\item{x}{An \code{\linkS4class{icesat2.atl08_h5}} object obtained via
 \code{\link[=ATL08_read]{ATL08_read()}}, representing the ATL08 HDF5 file to be clipped.}
 
 \item{clip_obj}{Bounding extent used for clipping. Supported inputs:
@@ -16,7 +16,7 @@
 \code{c(ul_lat, ul_lon, lr_lat, lr_lon)}, following the ICESat-2 CMS
 bounding-box convention (upper-left latitude/longitude and
 lower-right latitude/longitude).
-\item A \code{\link[terra:SpatExtent]{terra::SpatExtent}} object.
+\item A \code{\link[terra:SpatExtent-class]{terra::SpatExtent}} object.
 }}
 
 \item{...}{Additional arguments:
@@ -32,7 +32,7 @@ HDF5 groups to copy unchanged into the output file. Defaults to:
 }}
 }
 \value{
-An S4 object of class \code{\link[=icesat2.atl08_h5-class]{icesat2.atl08_h5}} representing
+An S4 object of class \code{\linkS4class{icesat2.atl08_h5}} representing
 the clipped ATL08 HDF5 file.
 }
 \description{
@@ -56,6 +56,7 @@ The resulting HDF5 file remains fully compliant with the ATL08 product
 structure, but contains only data within the specified bounding extent.
 }
 \examples{
+\donttest{
 # ATL08 file path
 atl08_path <- system.file("extdata",
   "atl08_clip.h5",
@@ -80,5 +81,5 @@ atl08_clip <- ATL08_h5_clipBox(
 
 close(atl08_h5)
 close(atl08_clip)
-
+}
 }

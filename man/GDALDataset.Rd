@@ -8,123 +8,112 @@ Wrapping class for GDALDataset C++ API exporting GetRasterBand, GetRasterXSize, 
 }
 \section{Methods}{
 \subsection{Public methods}{
-  \itemize{
-    \item \href{#method-GDALDataset-initialize}{\code{GDALDataset$new()}}
-    \item \href{#method-GDALDataset-GetRasterBand}{\code{GDALDataset$GetRasterBand()}}
-    \item \href{#method-GDALDataset-GetRasterXSize}{\code{GDALDataset$GetRasterXSize()}}
-    \item \href{#method-GDALDataset-GetRasterYSize}{\code{GDALDataset$GetRasterYSize()}}
-    \item \href{#method-GDALDataset-Close}{\code{GDALDataset$Close()}}
-    \item \href{#method-GDALDataset-clone}{\code{GDALDataset$clone()}}
-  }
+\itemize{
+\item \href{#method-GDALDataset-new}{\code{GDALDataset$new()}}
+\item \href{#method-GDALDataset-GetRasterBand}{\code{GDALDataset$GetRasterBand()}}
+\item \href{#method-GDALDataset-GetRasterXSize}{\code{GDALDataset$GetRasterXSize()}}
+\item \href{#method-GDALDataset-GetRasterYSize}{\code{GDALDataset$GetRasterYSize()}}
+\item \href{#method-GDALDataset-Close}{\code{GDALDataset$Close()}}
+\item \href{#method-GDALDataset-clone}{\code{GDALDataset$clone()}}
+}
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-GDALDataset-initialize"></a>}}
-\if{latex}{\out{\hypertarget{method-GDALDataset-initialize}{}}}
-\subsection{\code{GDALDataset$new()}}{
-  Create a new raster file based on specified data. It will output a *.tif file.
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{GDALDataset$new(ds)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{ds}}{GDALDatasetR pointer. Should not be used}
-      \item{\code{datatype}}{GDALDataType. The GDALDataType to use for the raster, use (GDALDataType$)
-to find the options. Default GDALDataType$GDT_Float64}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    An object from GDALDataset R6 class.
-  }
+\if{html}{\out{<a id="method-GDALDataset-new"></a>}}
+\if{latex}{\out{\hypertarget{method-GDALDataset-new}{}}}
+\subsection{Method \code{new()}}{
+Create a new raster file based on specified data. It will output a *.tif file.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GDALDataset$new(ds)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{ds}}{GDALDatasetR pointer. Should not be used}
+
+\item{\code{datatype}}{GDALDataType. The GDALDataType to use for the raster, use (GDALDataType$)
+to find the options. Default GDALDataType$GDT_Float64}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+An object from GDALDataset R6 class.
+}
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GDALDataset-GetRasterBand"></a>}}
 \if{latex}{\out{\hypertarget{method-GDALDataset-GetRasterBand}{}}}
-\subsection{\code{GDALDataset$GetRasterBand()}}{
-  Function to retrieve the GDALRasterBand R6 Object.
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{GDALDataset$GetRasterBand(x)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{x}}{Integer. The band index, starting from 1 to number of bands.}
-    }
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    An object of GDALRasterBand R6 class.
-  }
+\subsection{Method \code{GetRasterBand()}}{
+Function to retrieve the GDALRasterBand R6 Object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GDALDataset$GetRasterBand(x)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{x}}{Integer. The band index, starting from 1 to number of bands.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+An object of GDALRasterBand R6 class.
+}
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GDALDataset-GetRasterXSize"></a>}}
 \if{latex}{\out{\hypertarget{method-GDALDataset-GetRasterXSize}{}}}
-\subsection{\code{GDALDataset$GetRasterXSize()}}{
-  Get the width for the raster
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{GDALDataset$GetRasterXSize()}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    An integer indicating the raster width
-  }
+\subsection{Method \code{GetRasterXSize()}}{
+Get the width for the raster
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GDALDataset$GetRasterXSize()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+An integer indicating the raster width
+}
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GDALDataset-GetRasterYSize"></a>}}
 \if{latex}{\out{\hypertarget{method-GDALDataset-GetRasterYSize}{}}}
-\subsection{\code{GDALDataset$GetRasterYSize()}}{
-  Get the height for the raster
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{GDALDataset$GetRasterYSize()}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    An integer indicating the raster height
-  }
+\subsection{Method \code{GetRasterYSize()}}{
+Get the height for the raster
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GDALDataset$GetRasterYSize()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+An integer indicating the raster height
+}
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GDALDataset-Close"></a>}}
 \if{latex}{\out{\hypertarget{method-GDALDataset-Close}{}}}
-\subsection{\code{GDALDataset$Close()}}{
-  Closes the GDALDataset
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{GDALDataset$Close()}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Returns}{
-    An integer indicating the raster width
-  }
+\subsection{Method \code{Close()}}{
+Closes the GDALDataset
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GDALDataset$Close()}\if{html}{\out{</div>}}
 }
 
+\subsection{Returns}{
+An integer indicating the raster width
+}
+}
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-GDALDataset-clone"></a>}}
 \if{latex}{\out{\hypertarget{method-GDALDataset-clone}{}}}
-\subsection{\code{GDALDataset$clone()}}{
-  The objects of this class are cloneable with this method.
-  \subsection{Usage}{
-    \if{html}{\out{<div class="r">}}
-    \preformatted{GDALDataset$clone(deep = FALSE)}
-    \if{html}{\out{</div>}}
-  }
-  \subsection{Arguments}{
-    \if{html}{\out{<div class="arguments">}}
-    \describe{
-      \item{\code{deep}}{Whether to make a deep clone.}
-    }
-    \if{html}{\out{</div>}}
-  }
+\subsection{Method \code{clone()}}{
+The objects of this class are cloneable with this method.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{GDALDataset$clone(deep = FALSE)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{deep}}{Whether to make a deep clone.}
+}
+\if{html}{\out{</div>}}
+}
+}
 }

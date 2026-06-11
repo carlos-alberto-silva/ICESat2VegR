@@ -8,7 +8,7 @@ ATL03_ATL08_seg_cover_dt_compute(atl03_atl08_dt, reflectance_ratio = 1)
 }
 \arguments{
 \item{atl03_atl08_dt}{An object of class
-\code{\link[=icesat2.atl03_atl08_seg_dt-class]{icesat2.atl03_atl08_seg_dt}} containing ATL03
+\code{\linkS4class{icesat2.atl03_atl08_seg_dt}} containing ATL03
 and ATL08 data (output of \code{\link[=ATL03_ATL08_segment_create]{ATL03_ATL08_segment_create()}} function).}
 
 \item{reflectance_ratio}{numeric. The reflectance ratio

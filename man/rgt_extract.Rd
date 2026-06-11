@@ -2,53 +2,63 @@
 % Please edit documentation in R/rgt_extract.R
 \name{rgt_extract}
 \alias{rgt_extract}
-\title{Extract reference ground track from ATL03 segments}
+\title{Extract Reference Ground Track from ICESat-2 ATL03 or ATL08 Data}
 \usage{
-rgt_extract(h5, line = TRUE)
+rgt_extract(h5, line = TRUE, output = NULL)
 }
 \arguments{
-\item{h5}{A ICESat-2 ATL03 object (output of \code{\link[=ATL03_read]{ATL03_read()}} or \code{\link[=ATL08_read]{ATL08_read()}} function).
-An S4 object of class \code{\link[=icesat2.atl03_dt-class]{icesat2.atl03_dt}} or \code{\link[=icesat2.atl08_dt-class]{icesat2.atl08_dt}}.}
+\item{h5}{An ICESat-2 ATL03 or ATL08 object, usually the output of
+\code{ATL03_read()} or \code{ATL08_read()}.}
 
-\item{line}{Logical; if \code{TRUE}, extract the ground track as a line, default = TRUE.}
+\item{line}{Logical. If \code{TRUE}, returns the reference ground track as a
+line. If \code{FALSE}, returns the bounding polygon. Default is \code{TRUE}.}
+
+\item{output}{Character or \code{NULL}. Optional output vector file path.
+If provided, the extracted ground track is written using
+\code{terra::writeVector()}. Use a file extension supported by GDAL,
+such as \code{.kml}, \code{.gpkg}, or \code{.shp}.}
 }
 \value{
-Returns the ground track boundaries as \code{\link[terra:SpatVector-class]{terra::SpatVector}} extracted from "orbit_info",
-along with other orbit information.
+A \code{terra::SpatVector} containing the extracted reference ground track.
 }
 \description{
-This function extracts reference ground track from ICESat-2 ATL03 data
-and writes it as a GDAL vector format.
+Extracts the reference ground track from ICESat-2 ATL03 or ATL08 data and
+returns it as a \code{terra::SpatVector}. Optionally, the extracted ground
+track can also be written to disk, for example as a KML file.
 }
 \details{
-This function will use the reference photons from the segments as reference
-for deriving the ground tracks. The begining and end of the lines are interpolated from
-the information regarding the position of the reference photon within the segment and the
-segment length.
+This function uses ICESat-2 orbit information stored in the \code{orbit_info}
+group to derive the reference ground track. When \code{line = TRUE}, the
+function estimates the centerline from the bounding polygon coordinates.
+
+The returned object can be passed directly to
+\code{plot_icesat2_orbit_animation()} using the \code{rgt} argument.
 }
 \examples{
-
-# Specifying the path to ATL03 H5 file
+\dontrun{
 atl03_path <- system.file("extdata",
   "atl03_clip.h5",
   package = "ICESat2VegR"
 )
 
-# Reading ATL03 data (h5 file)
 atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 
-# Extracting ATL03 RGT track as polygons
-rgt_polygon <- rgt_extract(h5 = atl03_h5, line = FALSE)
-head(rgt_polygon)
+rgt_line <- rgt_extract(h5 = atl03_h5, line = TRUE)
 
-terra::plet(rgt_polygon)
+plot_icesat2_orbit_animation(
+  rgt = rgt_line,
+  launch = TRUE
+)
 
-# Extracting ATL03 RGT track as lines
-rgt_line <- rgt_extract(h5 = atl03_h5)
-head(rgt_line)
-terra::plet(rgt_line)
+rgt_extract(
+  h5 = atl03_h5,
+  line = TRUE,
+  output = file.path(tempdir(), "atl03_rgt.kml")
+)
 
 close(atl03_h5)
+}
+
 }
 \seealso{
 \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}

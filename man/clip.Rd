@@ -2,7 +2,8 @@
 % Please edit documentation in R/clip.R
 \name{clip}
 \alias{clip}
-\title{Clip ICESat-2 data (h5, attributes, or ATL03-ATL08 join) by box or geometry}
+\title{Clip ICESat-2 ATL03/ATL08 data ( h5, attributes, or ATL03-ATL08 join)
+by box or geometry}
 \usage{
 clip(x, clip_obj, ...)
 }
@@ -10,12 +11,12 @@ clip(x, clip_obj, ...)
 \item{x}{ICESat-2 object (ATL03/ATL08 h5, attributes, or joined table)
 Can be either:
 \itemize{
-\item \code{\link[=icesat2.atl03_h5-class]{icesat2.atl03_h5}}
-\item \code{\link[=icesat2.atl03_dt-class]{icesat2.atl03_dt}}
-\item \code{\link[=icesat2.atl03_seg_dt-class]{icesat2.atl03_seg_dt}}
-\item \code{\link[=icesat2.atl08_h5-class]{icesat2.atl08_h5}}
-\item \code{\link[=icesat2.atl08_dt-class]{icesat2.atl08_dt}}
-\item \code{\link[=icesat2.atl03atl08_dt-class]{icesat2.atl03atl08_dt}}
+\item \code{\linkS4class{icesat2.atl03_h5}}
+\item \code{\linkS4class{icesat2.atl03_dt}}
+\item \code{\linkS4class{icesat2.atl03_seg_dt}}
+\item \code{\linkS4class{icesat2.atl08_h5}}
+\item \code{\linkS4class{icesat2.atl08_dt}}
+\item \code{\linkS4class{icesat2.atl03atl08_dt}}
 }}
 
 \item{clip_obj}{Clipping object. Supported for box-based clipping:
@@ -39,11 +40,11 @@ To clip by a spatial object's extent, extract its bbox first.}
 
 \item{...}{Additional arguments passed to \verb{_clipBox()} or \verb{_clipGeometry()}.
 
-For hdf5 based clip, the additional arguments are:
+For HDF5-based clipping, supported arguments include:
 \itemize{
 \item \code{output} Character. Path to the output HDF5 file that will store the
-clipped ATL03 dataset.
-\item \code{beam} Character vector specifying which ATL03 beams to include.
+clipped dataset.
+\item \code{beam} Character vector specifying which ICESat-2 beams to include.
 Defaults to:
 \code{c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")}.
 \item \code{additional_groups} Character vector of additional non-beam HDF5 groups

@@ -13,7 +13,7 @@ ATL08_seg_attributes_dt(
 }
 \arguments{
 \item{atl08_h5}{A ICESat-2 ATL08 object (output of \code{\link[=ATL08_read]{ATL08_read()}} function).
-An S4 object of class \code{\link[=icesat2.atl08_dt-class]{icesat2.atl08_dt}}.}
+An S4 object of class \code{\linkS4class{icesat2.atl08_dt}}.}
 
 \item{beam}{Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")}
 
@@ -21,7 +21,7 @@ An S4 object of class \code{\link[=icesat2.atl08_dt-class]{icesat2.atl08_dt}}.}
 Default is attribute = c("h_canopy","canopy_h_metrics","canopy_openness","h_te_mean","h_te_median","terrain_slope")}
 }
 \value{
-Returns an S4 object of class \code{\link[=icesat2.atl08_dt-class]{icesat2.atl08_dt}}
+Returns an S4 object of class \code{\linkS4class{icesat2.atl08_dt}}
 containing the ATL08-derived terrain and canopy attributes by segments.
 }
 \description{

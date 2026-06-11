@@ -1,7 +1,8 @@
 # =============================================================================
 # Generic: clip
 # =============================================================================
-#' Clip ICESat-2 data (h5, attributes, or ATL03-ATL08 join) by box or geometry
+#' Clip ICESat-2 ATL03/ATL08 data ( h5, attributes, or ATL03-ATL08 join)
+#' by box or geometry
 #'
 #' @description
 #' Unified clipping interface for ICESat-2 ATL03/ATL08 data. The generic
@@ -41,22 +42,25 @@
 #'   * `sf`, `sfc`, `terra::SpatVector`, etc.
 #'   * Will also accept additional argument `split_by`:
 #'       - `split_by` Character. The SpatVector attribute
-#'   whose values are used to identify and name each clipping
-#'   geometry. Defaults to `id`.
+#'         whose values are used to identify and name each clipping
+#'         geometry. Defaults to `id`.
 #'
 #'   To clip by a spatial object's extent, extract its bbox first.
 #'
 #' @param ... Additional arguments passed to `_clipBox()` or `_clipGeometry()`.
 #'
-#' For hdf5 based clip, the additional arguments are:
-#'   - `output` Character. Path to the output HDF5 file that will store the
-#'   clipped ATL03 dataset.
-#'   - `beam` Character vector specifying which ATL03 beams to include.
-#'   Defaults to:
-#'   `c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")`.
-#'   - `additional_groups` Character vector of additional non-beam HDF5 groups
-#'   to copy unchanged into the output file. Defaults to:
-#'   `c("orbit_info")`.
+#'   For HDF5-based clipping, supported arguments include:
+#'
+#'   * `output` Character. Path to the output HDF5 file that will store the
+#'     clipped dataset.
+#'
+#'   * `beam` Character vector specifying which ICESat-2 beams to include.
+#'     Defaults to:
+#'     `c("gt1l", "gt2l", "gt3l", "gt1r", "gt2r", "gt3r")`.
+#'
+#'   * `additional_groups` Character vector of additional non-beam HDF5 groups
+#'     to copy unchanged into the output file. Defaults to:
+#'     `c("orbit_info")`.
 #'
 #' @export
 setGeneric(
@@ -124,6 +128,7 @@ setGeneric(
 #' bounding extent.
 #'
 #' @examples
+#' \donttest{
 #' # ATL03 file path
 #' atl03_path <- system.file("extdata",
 #'   "atl03_clip.h5",
@@ -153,6 +158,7 @@ setGeneric(
 #'
 #' @import hdf5r
 #' @include clipTools.R
+#' }
 #' @export
 setMethod(
   "clip",
@@ -218,6 +224,7 @@ setMethod(
 #' bounding extent.
 #'
 #' @examples
+#' \donttest{
 #' # ATL03 file path
 #' atl03_path <- system.file("extdata",
 #'   "atl03_clip.h5",
@@ -245,6 +252,7 @@ setMethod(
 #'
 #' close(atl03_h5)
 #'
+#'}
 #' @import hdf5r
 #' @include clipTools.R
 #' @export
@@ -298,6 +306,7 @@ setMethod(
 #' contained in `vect`.
 #'
 #' @examples
+#' \donttest{
 #' # ATL03 file path
 #' atl03_path <- system.file("extdata",
 #'   "atl03_clip.h5",
@@ -325,10 +334,9 @@ setMethod(
 #' )
 #'
 #' close(atl03_h5)
-#'
+#'}
 #' @import hdf5r
 #' @include clipTools.R
-#' @export
 #' @export
 setMethod(
   "clip",
@@ -388,6 +396,7 @@ setMethod(
 #' structure, but contains only data within the specified bounding extent.
 #'
 #' @examples
+#' \donttest{
 #' # ATL08 file path
 #' atl08_path <- system.file("extdata",
 #'   "atl08_clip.h5",
@@ -412,8 +421,9 @@ setMethod(
 #'
 #' close(atl08_h5)
 #' close(atl08_clip)
-#'
+#' }
 #' @import hdf5r
+#'
 #' @export
 setMethod(
   "clip",
@@ -472,6 +482,7 @@ setMethod(
 #' structure, but contains only data within the specified bounding extent.
 #'
 #' @examples
+#' \donttest{
 #' # ATL08 file path
 #' atl08_path <- system.file("extdata",
 #'   "atl08_clip.h5",
@@ -496,9 +507,10 @@ setMethod(
 #'
 #' close(atl08_h5)
 #' close(atl08_clip)
-#'
+#'}
 #' @import hdf5r
-#' @export
+#'
+#'@export
 setMethod(
   "clip",
   signature = c(x = "icesat2.atl08_h5", clip_obj = "SpatExtent"),
@@ -527,6 +539,7 @@ setMethod(
 #' but keeps metada and ancillary data the same.
 #'
 #' @examples
+#' \donttest{
 #' # ATL08 file path
 #' atl08_path <- system.file("extdata",
 #'   "atl08_clip.h5",
@@ -554,6 +567,7 @@ setMethod(
 #' )
 #'
 #' close(atl08_h5)
+#' }
 #' @import hdf5r
 #' @export
 setMethod(
@@ -603,6 +617,7 @@ setMethod(
 #'  \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
 #'
 #' @examples
+#' \donttest{
 #' atl03_path <- system.file("extdata", "atl03_clip.h5",
 #'   package = "ICESat2VegR"
 #' )
@@ -626,8 +641,9 @@ setMethod(
 #' # )
 #'
 #' close(atl03_h5)
-#'
+#'}
 #' @import hdf5r stats
+#'
 #' @export
 setMethod(
   "clip",
@@ -672,6 +688,7 @@ setMethod(
 #'  \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
 #'
 #' @examples
+#' \donttest{
 #' atl03_path <- system.file("extdata", "atl03_clip.h5",
 #'   package = "ICESat2VegR"
 #' )
@@ -695,8 +712,9 @@ setMethod(
 #' # )
 #'
 #' close(atl03_h5)
-#'
+#'}
 #' @import hdf5r stats
+#'
 #' @export
 setMethod(
   "clip",
@@ -714,7 +732,7 @@ setMethod(
 #' @param clip_obj Spatial clip_obj. An object of class [`terra::SpatVector`],
 #'   which can be loaded as an ESRI shapefile using the [terra::vect] function in the
 #'   \emph{sf} package.
-#' @param ... . The `split_by` parameter can be specified to clip_obj
+#' @param ... The `split_by` parameter can be specified to clip_obj
 #' by attribute. If defined, GEDI data will be clipped by each clip_obj using
 #' the clip_obj id from the attribute table defined by the user.
 #'
@@ -724,6 +742,7 @@ setMethod(
 #' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
 #'
 #' @examples
+#' \donttest{
 #' # ATL03 file path
 #' atl03_path <- system.file("extdata",
 #'   "atl03_clip.h5",
@@ -754,6 +773,7 @@ setMethod(
 #' head(atl03_photons_dt_clip)
 #'
 #' close(atl03_h5)
+#' }
 #' @import hdf5r stats
 #' @export
 setMethod(
@@ -802,6 +822,7 @@ setMethod(
 #' installed. If not found, the function stops with an informative message.
 #'
 #' @examples
+#' \donttest{
 #' # Specifying the path to the ATL08 file
 #' atl08_path <- system.file("extdata",
 #'   "atl08_clip.h5",
@@ -831,6 +852,7 @@ setMethod(
 #' # )
 #'
 #' close(atl08_h5)
+#' }
 #'
 #' @import hdf5r stats
 #' @export
@@ -906,6 +928,7 @@ setMethod(
 #' containing the clipped ATL08 Terrain and Canopy Attributes.
 #'
 #' @examples
+#' \donttest{
 #' # Specifying the path to ATL08 file
 #' atl08_path <- system.file("extdata",
 #'   "atl08_clip.h5",
@@ -952,8 +975,10 @@ setMethod(
 #'         options = providerTileOptions(minZoom = 3, maxZoom = 17)
 #'       )
 #'   }
+#'  }
+#'  close(atl08_h5)
 #' }
-#' close(atl08_h5)
+#'
 #' @export
 setMethod(
   "clip",
@@ -1006,6 +1031,7 @@ setMethod(
 #' installed. If not found, the function stops with an informative message.
 #'
 #' @examples
+#' \donttest{
 #' # Specifying the path to ATL03 and ATL08 files
 #' atl03_path <- system.file("extdata", "atl03_clip.h5",
 #'   package = "ICESat2VegR"
@@ -1042,6 +1068,7 @@ setMethod(
 #'
 #' close(atl03_h5)
 #' close(atl08_h5)
+#'}
 #'
 #' @import hdf5r stats
 #' @export
@@ -1096,6 +1123,7 @@ setMethod(
 #' installed. If not found, the function stops with an informative message.
 #'
 #' @examples
+#' \donttest{
 #' # Specifying the path to ATL03 and ATL08 files
 #' atl03_path <- system.file("extdata", "atl03_clip.h5",
 #'   package = "ICESat2VegR"
@@ -1132,7 +1160,7 @@ setMethod(
 #'
 #' close(atl03_h5)
 #' close(atl08_h5)
-#'
+#'}
 #' @import hdf5r stats
 #' @export
 setMethod(
@@ -1164,6 +1192,7 @@ setMethod(
 #' containing the clipped ATL08 attributes.
 #'
 #' @examples
+#' \donttest{
 #' # Specifying the path to ATL03 and ATL08 files
 #' atl03_path <- system.file("extdata", "atl03_clip.h5", package = "ICESat2VegR")
 #' atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
@@ -1192,6 +1221,7 @@ setMethod(
 #'
 #' close(atl03_h5)
 #' close(atl08_h5)
+#' }
 #' @export
 setMethod(
   "clip",

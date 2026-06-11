@@ -8,7 +8,7 @@ ATL03_ATL08_seg_attributes_dt_clipBox(atl03_atl08_dt, clip_obj)
 }
 \arguments{
 \item{atl03_atl08_dt}{An object of class
-\code{\link[=icesat2.atl08_dt-class]{icesat2.atl08_dt}}, typically produced by
+\code{\linkS4class{icesat2.atl08_dt}}, typically produced by
 \code{\link[=ATL08_seg_attributes_dt]{ATL08_seg_attributes_dt()}}.}
 
 \item{clip_obj}{Bounding extent used for clipping. Supported inputs:

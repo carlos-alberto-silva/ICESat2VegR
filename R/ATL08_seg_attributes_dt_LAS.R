@@ -1,47 +1,78 @@
-#' Converts ATL08 segments to LAS
+#' Export ICESat-2 ATL08 Segment Data to LAS Files
 #'
-#' @param atl08_dt  An S4 object of class [`ICESat2VegR::icesat2.atl08_dt-class`] containing ATL03 and ATL08 data
-#' (output of [ATL03_ATL08_photons_attributes_dt_join()] function).
-#' @param output character. The output path of for the LAS(Z) file(s)
-#' The function will create one LAS file per UTM Zone in WGS84 datum.
+#' @description
+#' Converts ATL08 segment-level vegetation attributes extracted with
+#' \code{ATL08_seg_attributes_dt()} into one or more LAS files.
 #'
-#' @return Nothing, it just saves outputs as LAS file in disk
+#' @param atl08_dt An S4 object of class
+#' \code{ICESat2VegR::icesat2.atl08_dt-class}, typically the output of
+#' \code{ATL08_seg_attributes_dt()}.
+#' @param output Character. Output LAS file path. The function creates one LAS
+#' file per UTM zone in the WGS84 datum.
+#'
+#' @return Invisibly returns a character vector with the written LAS file paths.
 #'
 #' @details
-#' As the las format expects a metric coordinate reference system (CRS)
-#' we use helper functions to define UTM zones to which the original
-#' ICESat-2 data will be converted.
+#' This function exports ATL08 segment-level observations as LAS point clouds
+#' using longitude, latitude, and canopy height \code{h_canopy}.
 #'
-#' The function credits go to Chuck Gantz- chuck.gantz@globalstar.com.
+#' Because LAS files require projected coordinates, the input geographic
+#' coordinates are automatically reprojected to the appropriate UTM coordinate
+#' reference system before export. If the data span multiple UTM zones, one LAS
+#' file is generated for each zone.
+#'
+#' The internal UTM-zone assignment follows helper routines based on the
+#' latitude/longitude to UTM conversion algorithms developed by Chuck Gantz.
+#'
+#'
+#' @references
+#' Gantz, C. Latitude/Longitude to UTM Conversion Algorithms.
+#' \url{https://oceancolor.gsfc.nasa.gov/docs/ocssw/LatLong-UTMconversion_8cpp_source.html}
 #'
 #' @seealso
-#' https://oceancolor.gsfc.nasa.gov/docs/ocssw/LatLong-UTMconversion_8cpp_source.html
+#' \code{\link{ATL08_seg_attributes_dt}},
+#' \code{\link{dt_to_las}}
 #'
 #' @examples
-#' # Specifying the path to ATL08 file
+#' \dontrun{
 #' atl08_path <- system.file("extdata",
 #'   "atl08_clip.h5",
 #'   package = "ICESat2VegR"
 #' )
 #'
-#' # Reading ATL08 data (h5 file)
 #' atl08_h5 <- ATL08_read(atl08_path = atl08_path)
 #'
-#' # # Extracting ATL03 and ATL08 photons and heights
 #' atl08_dt <- ATL08_seg_attributes_dt(atl08_h5)
 #'
-#' outputLaz <- tempfile(fileext = ".laz")
+#' outputLas <- tempfile(fileext = ".las")
+#'
 #' ATL08_seg_attributes_dt_LAS(
 #'   atl08_dt,
-#'   outputLaz
+#'   outputLas
 #' )
 #'
 #' close(atl08_h5)
+#' }
+#'
 #' @include lasTools.R
 #' @importFrom data.table as.data.table
+#'
 #' @export
 ATL08_seg_attributes_dt_LAS <- function(atl08_dt, output) {
-  longitude <- latitude <- h_canopy <- NA
+
+  longitude <- latitude <- h_canopy <- NULL
+
+  atl08_dt <- data.table::as.data.table(atl08_dt)
+
+  required_cols <- c("longitude", "latitude", "h_canopy")
+
+  if (!all(required_cols %in% names(atl08_dt))) {
+    stop(
+      "atl08_dt must contain the columns: ",
+      paste(required_cols, collapse = ", "),
+      "."
+    )
+  }
 
   dt <- data.table::as.data.table(atl08_dt[, list(
     X = longitude,

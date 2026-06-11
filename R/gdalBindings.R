@@ -173,10 +173,12 @@ close.GDALDataset <- function(con, ...) {
 #' @return An R6 object of GDALDataset class.
 #'
 #' @examples
+#' \dontrun{
 #' ds_path <- system.file("extdata", "example.tif", package = "ICESat2VegR")
 #'
 #' ds <- GDALOpen(ds_path)
 #' ds$Close()
+#'}
 #' @export
 GDALOpen <- function(filename, readonly = TRUE) {
   ds <- RGDALOpen(filename, readonly)

@@ -38,6 +38,7 @@ When \code{clip_obj} is a \code{SpatExtent}, the package \pkg{terra} must be
 installed. If not found, the function stops with an informative message.
 }
 \examples{
+\donttest{
 atl03_path <- system.file("extdata", "atl03_clip.h5",
   package = "ICESat2VegR"
 )
@@ -61,7 +62,7 @@ atl03_clip_bbox <- ATL03_photons_attributes_dt_clipBox(
 # )
 
 close(atl03_h5)
-
+}
 }
 \seealso{
 \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
