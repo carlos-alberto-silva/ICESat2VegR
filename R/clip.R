@@ -128,7 +128,7 @@ setGeneric(
 #' bounding extent.
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' # ATL03 file path
 #' atl03_path <- system.file("extdata",
 #'   "atl03_clip.h5",
@@ -224,7 +224,7 @@ setMethod(
 #' bounding extent.
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' # ATL03 file path
 #' atl03_path <- system.file("extdata",
 #'   "atl03_clip.h5",
@@ -306,7 +306,7 @@ setMethod(
 #' contained in `vect`.
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' # ATL03 file path
 #' atl03_path <- system.file("extdata",
 #'   "atl03_clip.h5",
@@ -396,7 +396,7 @@ setMethod(
 #' structure, but contains only data within the specified bounding extent.
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' # ATL08 file path
 #' atl08_path <- system.file("extdata",
 #'   "atl08_clip.h5",
@@ -482,7 +482,7 @@ setMethod(
 #' structure, but contains only data within the specified bounding extent.
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' # ATL08 file path
 #' atl08_path <- system.file("extdata",
 #'   "atl08_clip.h5",
@@ -539,7 +539,7 @@ setMethod(
 #' but keeps metada and ancillary data the same.
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' # ATL08 file path
 #' atl08_path <- system.file("extdata",
 #'   "atl08_clip.h5",
@@ -617,7 +617,7 @@ setMethod(
 #'  \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' atl03_path <- system.file("extdata", "atl03_clip.h5",
 #'   package = "ICESat2VegR"
 #' )
@@ -688,7 +688,7 @@ setMethod(
 #'  \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' atl03_path <- system.file("extdata", "atl03_clip.h5",
 #'   package = "ICESat2VegR"
 #' )
@@ -742,7 +742,7 @@ setMethod(
 #' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' # ATL03 file path
 #' atl03_path <- system.file("extdata",
 #'   "atl03_clip.h5",
@@ -822,7 +822,7 @@ setMethod(
 #' installed. If not found, the function stops with an informative message.
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' # Specifying the path to the ATL08 file
 #' atl08_path <- system.file("extdata",
 #'   "atl08_clip.h5",
@@ -928,7 +928,7 @@ setMethod(
 #' containing the clipped ATL08 Terrain and Canopy Attributes.
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' # Specifying the path to ATL08 file
 #' atl08_path <- system.file("extdata",
 #'   "atl08_clip.h5",
@@ -1031,7 +1031,7 @@ setMethod(
 #' installed. If not found, the function stops with an informative message.
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' # Specifying the path to ATL03 and ATL08 files
 #' atl03_path <- system.file("extdata", "atl03_clip.h5",
 #'   package = "ICESat2VegR"
@@ -1123,7 +1123,7 @@ setMethod(
 #' installed. If not found, the function stops with an informative message.
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' # Specifying the path to ATL03 and ATL08 files
 #' atl03_path <- system.file("extdata", "atl03_clip.h5",
 #'   package = "ICESat2VegR"
@@ -1192,7 +1192,7 @@ setMethod(
 #' containing the clipped ATL08 attributes.
 #'
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' # Specifying the path to ATL03 and ATL08 files
 #' atl03_path <- system.file("extdata", "atl03_clip.h5", package = "ICESat2VegR")
 #' atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")

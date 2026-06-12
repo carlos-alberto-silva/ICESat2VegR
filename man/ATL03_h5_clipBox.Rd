@@ -67,6 +67,7 @@ file structure while trimming the spatial domain to the user-specified
 bounding extent.
 }
 \examples{
+\dontrun{
 # ATL03 file path
 atl03_path <- system.file("extdata",
   "atl03_clip.h5",
@@ -93,5 +94,5 @@ atl03_clip <- ATL03_h5_clipBox(
 )
 
 close(atl03_h5)
-
+}
 }

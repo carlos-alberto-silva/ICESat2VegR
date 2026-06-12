@@ -38,7 +38,7 @@ When \code{clip_obj} is a \code{SpatExtent}, the package \pkg{terra} must be
 installed. If not found, the function stops with an informative message.
 }
 \examples{
-\donttest{
+\dontrun{
 atl03_path <- system.file("extdata", "atl03_clip.h5",
   package = "ICESat2VegR"
 )

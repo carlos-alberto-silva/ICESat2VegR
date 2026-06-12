@@ -54,6 +54,7 @@
 #' bounding extent.
 #'
 #' @examples
+#' \dontrun{
 #' # ATL03 file path
 #' atl03_path <- system.file("extdata",
 #'   "atl03_clip.h5",
@@ -80,7 +81,7 @@
 #' )
 #'
 #' close(atl03_h5)
-#'
+#'}
 #' @import hdf5r
 #' @include clipTools.R
 #' @export

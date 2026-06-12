@@ -36,7 +36,7 @@ PAGE_SIZE <- 2000
 # #' \url{https://cmr.earthdata.nasa.gov/search/site/docs/search/api.html}
 # #'
 # #' @examples
-# #' \donttest{
+# #' \dontrun{
 # #' # ICESat-2 data finder is a web service provided by NASA
 # #' # usually the request takes more than 5 seconds
 # #'

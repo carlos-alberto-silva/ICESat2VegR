@@ -25,7 +25,7 @@ containing the ATL03 photon attributes.
 This function clips ATL03 photon attributes within given bounding coordinates.
 }
 \examples{
-\donttest{
+\dontrun{
 # ATL03 file path
 atl03_path <- system.file("extdata",
   "atl03_clip.h5",

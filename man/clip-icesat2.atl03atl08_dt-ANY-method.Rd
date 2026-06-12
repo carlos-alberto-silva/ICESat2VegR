@@ -26,7 +26,7 @@ containing the clipped ATL08 attributes.
 This function clips joined ATL03 and ATL08 photon attributes within a given geometry.
 }
 \examples{
-\donttest{
+\dontrun{
 # Specifying the path to ATL03 and ATL08 files
 atl03_path <- system.file("extdata", "atl03_clip.h5", package = "ICESat2VegR")
 atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")

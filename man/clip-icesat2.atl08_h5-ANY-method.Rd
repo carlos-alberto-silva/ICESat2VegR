@@ -31,7 +31,7 @@ This function clips ATL08 HDF5 file within beam groups,
 but keeps metada and ancillary data the same.
 }
 \examples{
-\donttest{
+\dontrun{
 # ATL08 file path
 atl08_path <- system.file("extdata",
   "atl08_clip.h5",

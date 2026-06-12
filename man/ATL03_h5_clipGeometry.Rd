@@ -54,6 +54,7 @@ Only datasets within the ATL03 beam groups are spatially clipped; metadata
 and ancillary non-beam groups remain unchanged in the resulting files.
 }
 \examples{
+\dontrun{
 # ATL03 file path
 atl03_path <- system.file("extdata",
   "atl03_clip.h5",
@@ -81,5 +82,5 @@ atl03_clipped_list <- ATL03_h5_clipGeometry(
 )
 
 close(atl03_h5)
-
+}
 }
