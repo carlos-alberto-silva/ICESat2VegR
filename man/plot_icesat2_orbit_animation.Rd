@@ -61,8 +61,8 @@ plot_icesat2_orbit_animation(
 )
 
 plot_icesat2_orbit_animation(
-  kml_files = system.file("extdata", "IS2_RGT_1315_cycle33_07-Dec-2026.kml", package="ICESat2VegR"),
-  output_dir = getwd(),
+  kml_files = system.file("extdata", "IS2_RGT_0001_cycle33_12-Sep-2026.kml", package="ICESat2VegR"),
+  output_dir = tempdir(),
   launch = TRUE
 )
 }

@@ -155,10 +155,10 @@ setGeneric(
 #' )
 #'
 #' close(atl03_h5)
-#'
+#'}
 #' @import hdf5r
 #' @include clipTools.R
-#' }
+#'
 #' @export
 setMethod(
   "clip",

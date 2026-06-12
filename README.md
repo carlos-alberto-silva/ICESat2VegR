@@ -64,7 +64,7 @@ cat("Loading libraries... done.\n")                                             
 
 This package uses three Python packages through `reticulate`:
   
-  1.  [earthaccess](https://github.com/nsidc/earthaccess): allows reading
+1.  [earthaccess](https://github.com/earthaccess-dev/earthaccess): allows reading
 directly from the cloud
 2.  [h5py](https://github.com/h5py/h5py): for reading hdf5 content from
 the cloud
@@ -1585,26 +1585,30 @@ lapply(atl08_h5, close)
 
 # Acknowledgements
 
-We gratefully acknowledge funding from NASA’s ICESat-2 (ICESat-2, grant
-                                                        22-ICESat2_22-0006), Carbon Monitoring System (CMS, grant 22-CMS22-0015)
-and Commercial Smallsat Data Scientific Analysis(CSDSA, grant
-                                                 22-CSDSA22_2-0080).
+This work was supported by multiple NASA programs, 
+including the ICESat-2 Science Team (Grant #80NSSC23K0941), 
+the Carbon Monitoring System (CMS) (Grants #80NSSC23K1257 and #NNH24OB24A), 
+and the Commercial Smallsat Data Scientific Analysis (CSDSA) program 
+(Grant #80NSSC24K0055), McIntire-Stennis Program, 
+University of Florida (Accession No. 7005758) as well as 
+by the U.S. National Science Foundation (Grant #2409886).
+
 
 # Reporting Issues
 
-Please report any issue regarding the ICESat2VegR package to Dr. Silva
+Please report any issue regarding the ICESat2VegR package to Dr.Silva
 (<c.silva@ufl.edu>) or Caio Hamamura (<hamamura.caio@ifsp.edu>).
 
 # Citing ICESat2VegR
 
-Silva,C.A; Hamamura,C. ICESat2VegR: An R Package for NASA’s Ice, Cloud,
+Silva,C.A; Hamamura,C.; Alvites, C.; Gaskins, A. ICESat2VegR: An R Package for NASA’s Ice, Cloud,
 and Elevation Satellite (ICESat-2) Data Processing and Visualization for
-Terrestrial Applications.version 0.0.1, accessed on Jun. 13 2024,
+Terrestrial Applications.version 0.0.6, accessed on Jun.13 2025,
 available at: <https://CRAN.R-project.org/package=ICESat2VegR>
   
-  # Disclaimer
+# Disclaimer
   
-  **ICESat2VegR package comes with no guarantee, expressed or implied, and
+**ICESat2VegR package comes with no guarantee, expressed or implied, and
 the authors hold no responsibility for its use or reliability of its
 outputs.**
   

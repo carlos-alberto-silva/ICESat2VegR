@@ -61,3 +61,33 @@ This function preserves the full ATL03 metadata, ancillary information, and
 file structure while trimming the spatial domain to the user-specified
 bounding extent.
 }
+\examples{
+\donttest{
+# ATL03 file path
+atl03_path <- system.file("extdata",
+  "atl03_clip.h5",
+  package = "ICESat2VegR"
+)
+
+# Read ATL03 data (HDF5)
+atl03_h5 <- ATL03_read(atl03_path)
+
+# Bounding rectangle coordinates (ul_lat, ul_lon, lr_lat, lr_lon)
+xmin <- -106.5723
+xmax <- -106.5693
+ymin <- 41.533
+ymax <- 41.537
+
+bbox <- c(ymax, xmin, ymin, xmax)
+
+# Clip ATL03 using the bounding extent
+output <- tempfile(fileext = ".h5")
+atl03_clip <- ATL03_h5_clipBox(
+  atl03_h5,
+  output = output,
+  clip_obj = bbox
+)
+
+close(atl03_h5)
+}
+}
