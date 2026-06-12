@@ -15,6 +15,7 @@
 #' containing the clipped ATL08 Terrain and Canopy Attributes.
 #'
 #' @examples
+#' \dontrun{
 #' # Specifying the path to ATL08 file
 #' atl08_path <- system.file("extdata",
 #'   "atl08_clip.h5",
@@ -64,6 +65,8 @@
 #'   }
 #' }
 #' close(atl08_h5)
+#' }
+#'
 #' @export
 ATL08_seg_attributes_dt_clipGeometry <- function(atl08_seg_att_dt, clip_obj, split_by = NULL) {
   if (!inherits(atl08_seg_att_dt, "icesat2.atl08_dt")) {

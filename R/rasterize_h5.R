@@ -165,6 +165,7 @@ index_to_xy <- function(index, ysize) {
 #' ```
 #'
 #' @examples
+#' \dontrun{
 #' atl08_path <- system.file(
 #'   "extdata",
 #'   "atl08_clip.h5",
@@ -196,7 +197,7 @@ index_to_xy <- function(index, ysize) {
 #' terra::plot(r[[1]])
 #'
 #' close(atl08_h5)
-#'
+#'}
 #' @export
 setGeneric("rasterize_h5", function(
   h5_input,

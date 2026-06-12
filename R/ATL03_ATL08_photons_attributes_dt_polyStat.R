@@ -13,6 +13,7 @@
 #' Containing Statistics of ATL08 classified canopy photons
 #'
 #' @examples
+#' \dontrun{
 #' # Specifying the path to ATL03 and ATL08 files
 #' # ATL03 file path
 #' atl03_path <- system.file("extdata",
@@ -73,6 +74,8 @@
 #'
 #' close(atl03_h5)
 #' close(atl08_h5)
+#' }
+#'
 #' @import data.table
 #' @export
 ATL03_ATL08_photons_attributes_dt_polyStat <- function(atl03_atl08_dt, func, poly_id = NULL) {

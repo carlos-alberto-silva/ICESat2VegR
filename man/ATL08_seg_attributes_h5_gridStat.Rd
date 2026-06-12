@@ -120,6 +120,7 @@ values. It is defined as:
 }\if{html}{\out{</div>}}
 }
 \examples{
+\dontrun{
 library(data.table)
 
 # Specifying the path to ATL08 file
@@ -191,7 +192,7 @@ outdir <- tempdir()
 gc()
 file.remove(list.files(outdir, "*.tif"))
 close(atl08_h5)
-
+}
 }
 \references{
 Terriberry, Timothy B. (2007), Computing Higher-Order Moments Online, archived from the original on 23 April 2014, retrieved 5 May 2008

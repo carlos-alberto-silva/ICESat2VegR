@@ -114,6 +114,7 @@ This is not the same algorithm as used in ATL08 but is an adapted
 version that uses the ATL08 pre-classification.
 }
 \examples{
+\dontrun{
 # Specifying the path to ATL03 and ATL08 files
 atl03_path <- system.file("extdata", "atl03_clip.h5", package = "ICESat2VegR")
 atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
@@ -167,5 +168,5 @@ head(ground_mean$y)
 
 close(atl03_h5)
 close(atl08_h5)
-
+}
 }

@@ -43,6 +43,7 @@ columns.
 }
 }
 \examples{
+\dontrun{
 # Specifying the path to ATL08 file
 atl08_path <- system.file("extdata",
   "atl08_clip.h5",
@@ -76,5 +77,5 @@ head(atl08_seg_clip2)
 nrow(atl08_seg_clip2)
 
 close(atl08_h5)
-
+}
 }

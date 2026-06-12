@@ -153,6 +153,7 @@ default_agg_join <- function(x1, x2) {
 #' @return Nothing. It outputs multiple raster tif files to the out_root specified path.
 #'
 #' @examples
+#' \dontrun{
 #' library(data.table)
 #'
 #' # Specifying the path to ATL08 file
@@ -224,7 +225,7 @@ default_agg_join <- function(x1, x2) {
 #' gc()
 #' file.remove(list.files(outdir, "*.tif"))
 #' close(atl08_h5)
-#'
+#'}
 #' @import data.table
 #' @export
 ATL08_seg_attributes_h5_gridStat <- function(

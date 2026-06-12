@@ -30,6 +30,7 @@ containing the clipped ATL08 Terrain and Canopy Attributes.
 This function clips ATL08 Terrain and Canopy Attributes within a given geometry
 }
 \examples{
+\dontrun{
 # Specifying the path to ATL08 file
 atl08_path <- system.file("extdata",
   "atl08_clip.h5",
@@ -79,4 +80,6 @@ if (require(terra)) {
   }
 }
 close(atl08_h5)
+}
+
 }

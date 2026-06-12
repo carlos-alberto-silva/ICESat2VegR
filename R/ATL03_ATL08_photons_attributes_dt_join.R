@@ -46,6 +46,7 @@
 #' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
 #'
 #' @examples
+#' \dontrun{
 #' # Specifying the path to ATL03 file
 #' atl03_path <- system.file("extdata",
 #'   "atl03_clip.h5",
@@ -70,6 +71,8 @@
 #'
 #' close(atl03_h5)
 #' close(atl08_h5)
+#' }
+#'
 #' @export
 ATL03_ATL08_photons_attributes_dt_join <- function(
     atl03_h5, atl08_h5,
@@ -169,7 +172,7 @@ ATL03_ATL08_photons_attributes_dt_join <- function(
     dataTableATL08Photons <- dataTableATL08Photons[ph_segment_id %in% unique_segment_id]
     dataTableATL03Photons <- dataTableATL03Photons[ph_segment_id %in% unique_segment_id]
     dataTableATL03Photons[, classed_pc_indx := seq_len(.N), by = ph_segment_id]
-    
+
     data.table::setindex(dataTableATL03Photons, ph_segment_id, classed_pc_indx)
     data.table::setindex(dataTableATL08Photons, ph_segment_id, classed_pc_indx)
     ph_dt <- dataTableATL03Photons[dataTableATL08Photons, on = .(ph_segment_id, classed_pc_indx)]

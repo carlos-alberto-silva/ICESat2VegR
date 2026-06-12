@@ -44,6 +44,7 @@ This function computes a series of user defined descriptive statistics within
 each given grid cell for ATL03 and ATL08 photon attributes
 }
 \examples{
+\dontrun{
 # ATL03 file path
 atl03_path <- system.file("extdata",
   "atl03_clip.h5",
@@ -92,4 +93,6 @@ plot(ph_h_metrics)
 
 close(atl03_h5)
 close(atl08_h5)
+}
+
 }

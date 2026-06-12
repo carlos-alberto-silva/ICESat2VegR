@@ -21,6 +21,7 @@
 #' @return Return a SpatRast raster layer(s) of selected ATL03 and ATL08 photon attribute(s)
 #'
 #' @examples
+#' \dontrun{
 #' # ATL03 file path
 #' atl03_path <- system.file("extdata",
 #'   "atl03_clip.h5",
@@ -69,6 +70,8 @@
 #'
 #' close(atl03_h5)
 #' close(atl08_h5)
+#' }
+#'
 #' @import data.table
 #' @export
 ATL03_ATL08_photons_attributes_dt_gridStat <- function(

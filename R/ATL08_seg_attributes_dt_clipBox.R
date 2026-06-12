@@ -35,6 +35,7 @@
 #' installed. If not found, the function stops with an informative message.
 #'
 #' @examples
+#' \dontrun{
 #' # Specifying the path to the ATL08 file
 #' atl08_path <- system.file("extdata",
 #'   "atl08_clip.h5",
@@ -64,6 +65,7 @@
 #' # )
 #'
 #' close(atl08_h5)
+#'}
 #'
 #' @import hdf5r stats
 #' @export

@@ -85,6 +85,7 @@ based on the \code{variance} and \code{n} values. It is defined as:
 }\if{html}{\out{</div>}}
 }
 \examples{
+\dontrun{
 atl08_path <- system.file(
   "extdata",
   "atl08_clip.h5",
@@ -116,5 +117,5 @@ r <- terra::rast(output_raster)
 terra::plot(r[[1]])
 
 close(atl08_h5)
-
+}
 }

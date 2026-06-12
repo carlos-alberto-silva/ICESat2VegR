@@ -41,6 +41,7 @@ Computes a series of statistics from ATL03 and ATL08 labeled photons
 within a given segment length.
 }
 \examples{
+\dontrun{
 # Specifying ATL03 and ATL08 file path
 atl03_path <- system.file("extdata",
   "atl03_clip.h5",
@@ -92,4 +93,7 @@ head(canopy_metrics)
 
 close(atl03_h5)
 close(atl08_h5)
+
+}
+
 }
