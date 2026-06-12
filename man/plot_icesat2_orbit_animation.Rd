@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_icesat2_orbit_animation.R
 \name{plot_icesat2_orbit_animation}
 \alias{plot_icesat2_orbit_animation}
-\title{Plot ICESat-2 Orbital Tracks as a 3D Globe Animation}
+\title{Plot ICESat-2 orbital tracks as a 3D globe animation}
 \usage{
 plot_icesat2_orbit_animation(
   kml_files = NULL,
@@ -15,39 +15,31 @@ plot_icesat2_orbit_animation(
 )
 }
 \arguments{
-\item{kml_files}{Character vector containing paths to one or more KML files.
-If \code{NULL} and \code{rgt = NULL}, example KML files distributed with the
-package are used.}
+\item{kml_files}{Character vector. Path to one or more KML files. If
+\code{NULL} and \code{rgt = NULL}, all example KML files available in
+\code{inst/extdata} are used.}
 
 \item{rgt}{A \code{terra::SpatVector} returned by \code{rgt_extract()}.
 If provided, this object is used instead of \code{kml_files}.}
 
-\item{output_dir}{Character. Directory where the HTML animation and required
+\item{output_dir}{Character. Folder where the HTML animation and required
 assets will be written. Default is \code{tempdir()}.}
 
 \item{output_file}{Character. Name of the output HTML file.}
 
-\item{track_speed}{Numeric. Initial orbital track animation speed.
-Default is \code{2}.}
+\item{track_speed}{Numeric. Initial animation speed. Default is \code{2}.}
 
-\item{earth_rotation_speed}{Numeric. Initial Earth rotation speed.
-Default is \code{2}.}
+\item{earth_rotation_speed}{Numeric. Initial Earth rotation speed. Default is \code{2}.}
 
-\item{launch}{Logical. If \code{TRUE}, launches a local web server and opens
-the animation in the default browser.}
+\item{launch}{Logical. If \code{TRUE}, starts a local server and opens the HTML.}
 }
 \value{
 Invisibly returns the path to the generated HTML file.
 }
 \description{
 Creates an interactive HTML animation of ICESat-2 orbital tracks from one or
-more KML files, or from a \code{terra::SpatVector} returned by
+more KML files or from a \code{terra::SpatVector} returned by
 \code{rgt_extract()}.
-}
-\details{
-The function generates an interactive Three.js 3D visualization of ICESat-2
-orbital tracks on a rotating Earth. Tracks can be supplied either as KML files
-or directly as the \code{terra::SpatVector} output from \code{rgt_extract()}.
 }
 \examples{
 \dontrun{
@@ -59,20 +51,6 @@ plot_icesat2_orbit_animation(
   rgt = rgt_line,
   launch = TRUE
 )
-
-plot_icesat2_orbit_animation(
-  kml_files = system.file("extdata", "IS2_RGT_0001_cycle33_12-Sep-2026.kml", package="ICESat2VegR"),
-  output_dir = tempdir(),
-  launch = TRUE
-)
 }
 
-}
-\references{
-NASA ICESat-2 Reference Ground Tracks:
-\url{https://icesat-2.gsfc.nasa.gov/science/specs}
-}
-\seealso{
-\code{\link{rgt_extract}},
-\url{https://icesat-2.gsfc.nasa.gov}
 }
