@@ -14,7 +14,7 @@
 #' Metadata, ancillary groups, and orbit information are preserved unchanged in
 #' every output file.
 #'
-#' @param ATL08 An [`ICESat2VegR::icesat2.ATL08_h5-class`] object obtained via
+#' @param atl08 An [`ICESat2VegR::icesat2.atl08_h5-class`] object obtained via
 #'   [`ATL08_read()`], representing the ATL08 HDF5 file to be clipped.
 #'
 #' @param output Character string defining the base output filepath. The final
@@ -39,7 +39,7 @@
 #'
 #' @return
 #' A list of clipped S4 objects of class
-#' [`ICESat2VegR::icesat2.ATL08_h5-class`], one for each geometry in
+#' [`ICESat2VegR::icesat2.atl08_h5-class`], one for each geometry in
 #' `clip_obj`.
 #'
 #' @details
@@ -59,6 +59,7 @@
 #' the package.
 #'
 #' @examples
+#' \dontrun{
 #' # ATL08 file path
 #' ATL08_path <- system.file("extdata",
 #'   "ATL08_clip.h5",
@@ -91,8 +92,9 @@
 #' @include clipTools.R
 #' @export
 ATL08_h5_clipGeometry <- function(
-    ATL08, output, clip_obj, split_by = NULL, beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
+    atl08, output, clip_obj, split_by = "id",
+    beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
     additional_groups = c("orbit_info")) {
   geom <- terra::aggregate(clip_obj)
-  ATL08_h5_clip(ATL08, output, geom, ATL08_segments_mask_geometry, beam, additional_groups)
+  ATL08_h5_clip(atl08, output, geom, ATL08_segments_mask_geometry, beam, additional_groups)
 }

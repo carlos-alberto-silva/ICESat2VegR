@@ -5,25 +5,25 @@
 \title{Clips ICESat-2 ATL08 data}
 \usage{
 ATL08_h5_clipGeometry(
-  ATL08,
+  atl08,
   output,
   clip_obj,
-  split_by = NULL,
+  split_by = "id",
   beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
   additional_groups = c("orbit_info")
 )
 
 ATL08_h5_clipGeometry(
-  ATL08,
+  atl08,
   output,
   clip_obj,
-  split_by = NULL,
+  split_by = "id",
   beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
   additional_groups = c("orbit_info")
 )
 }
 \arguments{
-\item{ATL08}{An \code{\linkS4class{icesat2.ATL08_h5}} object obtained via
+\item{atl08}{An \code{\linkS4class{icesat2.atl08_h5}} object obtained via
 \code{\link[=ATL08_read]{ATL08_read()}}, representing the ATL08 HDF5 file to be clipped.}
 
 \item{output}{Character string defining the base output filepath. The final
@@ -45,15 +45,12 @@ Defaults to:
 \item{additional_groups}{Character vector of additional non-beam groups to
 be copied unchanged into each output file. The default is:
 \code{c("orbit_info")}.}
-
-\item{atl08}{\code{\linkS4class{icesat2.atl08_h5}} object, obtained through \code{\link[=ATL08_read]{ATL08_read()}}
-for clipping}
 }
 \value{
 Returns a list of clipped S4 object of class \code{\linkS4class{icesat2.atl08_h5}}
 
 A list of clipped S4 objects of class
-\code{\linkS4class{icesat2.ATL08_h5}}, one for each geometry in
+\code{\linkS4class{icesat2.atl08_h5}}, one for each geometry in
 \code{clip_obj}.
 }
 \description{
@@ -106,15 +103,44 @@ vect_path <- system.file("extdata",
   package = "ICESat2VegR"
 )
 
-vect <- terra::vect(vect_path)
+clip_obj <- terra::vect(vect_path)
 
 # Clipping ATL08 photons by boundary box extent
 atl08_photons_dt_clip <- ATL08_h5_clipGeometry(
   atl08_h5,
   output,
-  vect,
+  clip_obj,
   split_by = "id"
 )
 
 close(atl08_h5)
+\dontrun{
+# ATL08 file path
+ATL08_path <- system.file("extdata",
+  "ATL08_clip.h5",
+  package = "ICESat2VegR"
+)
+
+# Read ATL08 file
+ATL08_h5 <- ATL08_read(ATL08_path)
+
+# Base output name (actual filenames will append split_by values)
+output <- tempfile(fileext = ".h5")
+
+# Load clipping polygons
+clip_obj_path <- system.file("extdata", "clip_geom.shp",
+  package = "ICESat2VegR"
+)
+clip_obj <- terra::vect(vect_path)
+
+# Clip ATL08 using polygon geometries
+ATL08_clipped_list <- ATL08_h5_clipGeometry(
+  ATL08_h5,
+  output,
+  clip_obj,
+  split_by = "id"
+)
+
+close(ATL08_h5)
+}
 }

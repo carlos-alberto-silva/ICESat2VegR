@@ -1,3 +1,7 @@
+# CRAN notes for data.table/dplyr dot usage
+if (getRversion() >= "2.15.1") {
+  utils::globalVariables(c("."))
+}
 #' The pointer to the `earthaccess` python reticulate module
 #'
 #' @useDynLib ICESat2VegR

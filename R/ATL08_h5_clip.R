@@ -1,7 +1,10 @@
 #' @include class.icesat2.R ATL08_read.R
 #' @import data.table hdf5r
 ATL08_h5_clip <- function(
-    atl08, output, clip_obj, landSegmentsMask_fn,
+    atl08,
+    output,
+    clip_obj,
+    landSegmentsMask_fn,
     beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
     additional_groups = c("orbit_info")) {
   dataset.rank <- dataset.dims <- name <- NA
@@ -126,7 +129,7 @@ ATL08_h5_clip <- function(
       close(pb)
       next
     }
-    
+
     # Get the beam to update
     updateBeam <- newFile[[beamName]]
     clipByMask(beam, updateBeam, segmentsCut, landSegmentsMask, pb)

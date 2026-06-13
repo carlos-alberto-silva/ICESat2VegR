@@ -61,6 +61,7 @@ The resulting HDF5 file remains fully compliant with the ATL08 product
 structure, but contains only data within the specified bounding extent.
 }
 \examples{
+\dontrun{
 # ATL08 file path
 atl08_path <- system.file("extdata",
   "atl08_clip.h5",
@@ -85,5 +86,5 @@ atl08_clip <- ATL08_h5_clipBox(
 
 close(atl08_h5)
 close(atl08_clip)
-
+}
 }

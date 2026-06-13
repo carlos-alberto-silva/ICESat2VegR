@@ -57,13 +57,13 @@
 #' vect_path <- system.file("extdata", "clip_geom.shp",
 #'   package = "ICESat2VegR"
 #' )
-#' vect <- terra::vect(vect_path)
+#' clip_obj <- terra::vect(vect_path)
 #'
 #' # Clip ATL03 data using polygon geometries
 #' atl03_clipped_list <- ATL03_h5_clipGeometry(
 #'   atl03_h5,
 #'   output,
-#'   vect,
+#'   clip_obj,
 #'   split_by = "id"
 #' )
 #'

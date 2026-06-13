@@ -48,6 +48,7 @@
 #' structure, but contains only data within the specified bounding extent.
 #'
 #' @examples
+#' \dontrun{
 #' # ATL08 file path
 #' atl08_path <- system.file("extdata",
 #'   "atl08_clip.h5",
@@ -72,7 +73,7 @@
 #'
 #' close(atl08_h5)
 #' close(atl08_clip)
-#'
+#'}
 #' @import hdf5r
 #' @export
 ATL08_h5_clipBox <- function(
@@ -83,7 +84,7 @@ ATL08_h5_clipBox <- function(
     clip_obj <- terra::ext(clip_obj[2], clip_obj[4], clip_obj[3], clip_obj[1])
   }
 
-  ATL08_h5_clip(atl08, output, clip_obj, landsegmentsMask_clip_obj, beam, additional_groups)
+  ATL08_h5_clip(atl08, output, clip_obj, ATL08_segments_mask_bbox, beam, additional_groups)
 }
 
 #' Clips ICESat-2 ATL08 data
@@ -121,13 +122,13 @@ ATL08_h5_clipBox <- function(
 #'   package = "ICESat2VegR"
 #' )
 #'
-#' vect <- terra::vect(vect_path)
+#' clip_obj <- terra::vect(vect_path)
 #'
 #' # Clipping ATL08 photons by boundary box extent
 #' atl08_photons_dt_clip <- ATL08_h5_clipGeometry(
 #'   atl08_h5,
 #'   output,
-#'   vect,
+#'   clip_obj,
 #'   split_by = "id"
 #' )
 #'
@@ -139,44 +140,37 @@ ATL08_h5_clipGeometry <- function(
     beam = c("gt1r", "gt2r", "gt3r", "gt1l", "gt2l", "gt3l"),
     additional_groups = c("orbit_info")) {
   geom <- terra::aggregate(clip_obj)
-  ATL08_h5_clip(atl08, output, clip_obj = geom, landSegmentsMask_fn = landsegmentsMask_geom, beam, additional_groups)
+  ATL08_h5_clip(atl08, output, geom, ATL08_segments_mask_geometry, beam, additional_groups)
 }
 
-landSegments_clip_obj <- function(beam, clip_obj) {
-  latitude <- longitude <- NA
-  .I <- data.table::.I
-
+ATL08_segments_mask <- function(beam, bbox) {
+  latitude <- longitude <- row <- NULL
   land_segments_dt <- data.table::data.table(
     latitude = beam[["land_segments/latitude"]][],
     longitude = beam[["land_segments/longitude"]][]
   )
-
-  landSegmentsDt <- land_segments_dt[, list(latitude, longitude, .I)][
-    longitude >= clip_obj$xmin &
-      longitude <= clip_obj$xmax &
-      latitude >= clip_obj$ymin &
-      latitude <= clip_obj$ymax
+  land_segments_dt[
+    longitude >= bbox$xmin &
+      longitude <= bbox$xmax &
+      latitude >= bbox$ymin &
+      latitude <= bbox$ymax,
+    .(latitude, longitude, row = .I)
   ]
-
-  landSegmentsDt
 }
 
-landsegmentsMask_clip_obj <- function(beam, clip_obj) {
-  landSegmentsclip_obj <- landSegments_clip_obj(beam, clip_obj)
-
-  landSegmentsclip_obj$I
+ATL08_segments_mask_bbox <- function(beam, bbox) {
+  ATL08_segments_mask(beam, bbox)$row
 }
 
-landsegmentsMask_geom <- function(beam, geom) {
-  clip_obj <- terra::ext(geom)
-  landSegmentsclip_obj <- landSegments_clip_obj(beam, clip_obj)
-
+ATL08_segments_mask_geometry <- function(beam, geom) {
+  bbox <- terra::ext(geom)
+  seg <- ATL08_segments_mask(beam, bbox)
+  if (nrow(seg) == 0) return(integer(0))
   pts <- terra::vect(
-    landSegmentsclip_obj,
+    seg,
     geom = c("longitude", "latitude"),
     crs = "epsg:4326"
   )
-
   res <- terra::intersect(pts, geom)
-  res$I
+  res$row
 }

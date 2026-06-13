@@ -44,7 +44,6 @@ plot_icesat2_orbit_animation <- function(
 
   requireNamespace("sf")
   requireNamespace("dplyr")
-  requireNamespace("purrr")
   requireNamespace("stringr")
   requireNamespace("jsonlite")
   requireNamespace("servr")
