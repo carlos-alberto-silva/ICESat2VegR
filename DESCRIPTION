@@ -1,12 +1,16 @@
 Package: ICESat2VegR
 Type: Package
-Title: NASA's Ice, Cloud, and Elevation Satellite (ICESat-2) Data Analysis for Land and Vegetation
-           Applications
-Version: 0.0.6
+Title: ICESat-2 Data Analysis for Land and Vegetation Applications
+Version: 0.0.1
 Authors@R: c( person("Carlos Alberto", "Silva", email = "c.silva@ufl.edu", role = c("aut", "cph", "cre")),
            person("Caio", "Hamamura", email = "caiohamamura@gmail.com", role = c("aut", "cph")),
            person("Cesar", "Alvites", email = "c.alvitesdiaz@ufl.edu", role = c("aut", "ctb")),
-            person("Alexander J.", "Gaskins", email = "alexandergaskins@ufl.edu", role = c("aut", "ctb"))
+            person("Alexander J.", "Gaskins", email = "alexandergaskins@ufl.edu", role = c("aut", "ctb")),
+            person("Sunil", "Arya", role = c("ctb", "cph"), comment = "Author of the bundled ANN library (src/)"),
+            person("David", "Mount", role = c("ctb", "cph"), comment = "Author of the bundled ANN library (src/)"),
+            person(given = "University of Maryland", role = "cph", comment = "Copyright holder of the bundled ANN library (src/)"),
+            person("Chuck", "Gantz", role = "ctb", comment = "Author of the lat/long to UTM conversion algorithm used in R/utmTools.R"),
+            person("Cole", "Krehbiel", role = "ctb", comment = "Author of the NASA data download routine adapted in R/ATLAS_dataDownload.R")
  )
 Description: Set of tools for downloading, reading, visualizing, processing and exporting NASA's
            ICESat-2 ATL03 (Global Geolocated Photon Data) and ATL08 (Land and Vegetation Height)
@@ -35,7 +39,6 @@ Imports:
   reticulate,
   terra,
   dplyr,
-  purrr,
   servr,
   stringr,
   xml2

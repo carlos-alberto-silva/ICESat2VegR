@@ -28,7 +28,6 @@ Computes a series of user-defined descriptive statistics within
 each grid cell for ATL08 terrain and canopy attributes.
 }
 \examples{
-\dontrun{
 # Specifying the path to ATL08 file
 atl08_path <- system.file("extdata",
   "atl08_clip.h5",
@@ -59,7 +58,6 @@ mySetOfMetrics <- function(x) {
     sd = sd(x, na.rm = TRUE)
   )
   return(metrics)
-}
 
 # Computing h_canopy statistics at 0.05 degree grid cell
 h_canopy_metrics <- ATL08_seg_attributes_dt_gridStat(

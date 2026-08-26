@@ -36,7 +36,6 @@
 #' installed. If not found, the function stops with an informative message.
 #'
 #' @examples
-#' \dontrun{
 #' # Specifying the path to ATL03 and ATL08 files
 #' atl03_path <- system.file("extdata", "atl03_clip.h5",
 #'                           package = "ICESat2VegR")
@@ -62,16 +61,14 @@
 #' head(atl03_atl08_dt_clip)
 #'
 #' # 2) Using a SpatExtent (example)
-#' # library(terra)
-#' # ext <- terra::ext(-106.57, -106.569, 41.531, 41.540)
-#' # atl03_atl08_dt_clip_ext <- ATL03_ATL08_photons_attributes_dt_clipBox(
-#' #   atl03_atl08_dt = atl03_atl08_dt,
-#' #   clip_obj = ext
-#' # )
+#' ext <- terra::ext(-106.57, -106.569, 41.531, 41.540)
+#' atl03_atl08_dt_clip_ext <- ATL03_ATL08_photons_attributes_dt_clipBox(
+#'   atl03_atl08_dt = atl03_atl08_dt,
+#'   clip_obj = ext
+#' )
 #'
 #' close(atl03_h5)
 #' close(atl08_h5)
-#'}
 #'
 #' @import hdf5r stats
 #' @export

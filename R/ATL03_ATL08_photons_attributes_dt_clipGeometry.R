@@ -12,7 +12,6 @@
 #' containing the clipped ATL08 attributes.
 #'
 #' @examples
-#' \dontrun{
 #' # Specifying the path to ATL03 and ATL08 files
 #' atl03_path <- system.file("extdata", "atl03_clip.h5", package = "ICESat2VegR")
 #' atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
@@ -41,7 +40,6 @@
 #'
 #' close(atl03_h5)
 #' close(atl08_h5)
-#' }
 #'
 #' @export
 ATL03_ATL08_photons_attributes_dt_clipGeometry <- function(atl03_atl08_dt, clip_obj, split_by = NULL) {

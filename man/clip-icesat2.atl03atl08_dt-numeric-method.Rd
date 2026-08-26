@@ -42,7 +42,6 @@ When \code{clip_obj} is a \code{SpatExtent}, the package \pkg{terra} must be
 installed. If not found, the function stops with an informative message.
 }
 \examples{
-\dontrun{
 # Specifying the path to ATL03 and ATL08 files
 atl03_path <- system.file("extdata", "atl03_clip.h5",
   package = "ICESat2VegR"
@@ -70,16 +69,14 @@ atl03_atl08_dt_clip <- ATL03_ATL08_photons_attributes_dt_clipBox(
 head(atl03_atl08_dt_clip)
 
 # 2) Using a SpatExtent (example)
-# library(terra)
-# ext <- terra::ext(-103.7604, -103.7600, 59.4672, 59.4680)
-# atl03_atl08_dt_clip_ext <- ATL03_ATL08_photons_attributes_dt_clipBox(
-#   atl03_atl08_dt = atl03_atl08_dt,
-#   clip_obj = ext
-# )
+ext <- terra::ext(-103.7604, -103.7600, 59.4672, 59.4680)
+atl03_atl08_dt_clip_ext <- ATL03_ATL08_photons_attributes_dt_clipBox(
+  atl03_atl08_dt = atl03_atl08_dt,
+  clip_obj = ext
+)
 
 close(atl03_h5)
 close(atl08_h5)
-}
 
 }
 \seealso{

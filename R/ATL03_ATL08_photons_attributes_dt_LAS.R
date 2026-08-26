@@ -46,7 +46,6 @@
 #' \url{https://oceancolor.gsfc.nasa.gov/docs/ocssw/LatLong-UTMconversion_8cpp_source.html}
 #'
 #' @examples
-#' \dontrun{
 #' outdir <- tempdir()
 #'
 #' atl03_path <- system.file("extdata", "atl03_clip.h5", package = "ICESat2VegR")
@@ -68,7 +67,6 @@
 #'
 #' close(atl03_h5)
 #' close(atl08_h5)
-#' }
 #'
 #' @include lasTools.R
 #' @importFrom data.table as.data.table

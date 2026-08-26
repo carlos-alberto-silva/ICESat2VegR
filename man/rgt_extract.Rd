@@ -35,7 +35,6 @@ The returned object can be passed directly to
 \code{plot_icesat2_orbit_animation()} using the \code{rgt} argument.
 }
 \examples{
-\dontrun{
 atl03_path <- system.file("extdata",
   "atl03_clip.h5",
   package = "ICESat2VegR"
@@ -45,11 +44,6 @@ atl03_h5 <- ATL03_read(atl03_path = atl03_path)
 
 rgt_line <- rgt_extract(h5 = atl03_h5, line = TRUE)
 
-plot_icesat2_orbit_animation(
-  rgt = rgt_line,
-  launch = TRUE
-)
-
 rgt_extract(
   h5 = atl03_h5,
   line = TRUE,
@@ -57,7 +51,6 @@ rgt_extract(
 )
 
 close(atl03_h5)
-}
 
 }
 \seealso{

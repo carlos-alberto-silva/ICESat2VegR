@@ -27,18 +27,27 @@
 #' \url{https://oceancolor.gsfc.nasa.gov/docs/ocssw/LatLong-UTMconversion_8cpp_source.html}
 
 #' @examples
-#' \dontrun{
-#' atl08_h5 <- ATL08_read(atl08_path)
+#' atl03_path <- system.file("extdata", "atl03_clip.h5", package = "ICESat2VegR")
+#' atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
 #'
-#' atl08_photons <- ATL08_photons_attributes_dt(atl08_h5)
+#' atl03_h5 <- ATL03_read(atl03_path = atl03_path)
+#' atl08_h5 <- ATL08_read(atl08_path = atl08_path)
+#'
+#' # ATL08 photon attributes alone have no geolocation; join with ATL03 first
+#' atl03_atl08_dt <- ATL03_ATL08_photons_attributes_dt_join(atl03_h5, atl08_h5)
+#' atl08_photons <- data.table::data.table(
+#'   longitude = atl03_atl08_dt$lon_ph,
+#'   latitude  = atl03_atl08_dt$lat_ph,
+#'   ph_h      = atl03_atl08_dt$ph_h
+#' )
 #'
 #' ATL08_photons_attributes_dt_LAS(
 #'   atl08_dt = atl08_photons,
-#'   output = "atl08_photons.las"
+#'   output = tempfile(fileext = ".las")
 #' )
 #'
+#' close(atl03_h5)
 #' close(atl08_h5)
-#' }
 #'
 #' @include lasTools.R
 #' @importFrom data.table as.data.table

@@ -40,7 +40,6 @@ When \code{clip_obj} is a \code{SpatExtent}, the package \pkg{terra} must be
 installed. If not found, the function stops with an informative message.
 }
 \examples{
-\dontrun{
 # Specifying the path to the ATL08 file
 atl08_path <- system.file("extdata",
   "atl08_clip.h5",
@@ -62,14 +61,12 @@ atl08_seg_att_dt_clip <- ATL08_seg_attributes_dt_clipBox(
 )
 
 # 2) Using a SpatExtent
-# library(terra)
-# ext <- terra::ext(-103.7604, -103.7600, 59.4672, 59.4680)
-# atl08_seg_att_dt_clip_ext <- ATL08_seg_attributes_dt_clipBox(
-#   atl08_seg_att_dt = atl08_seg_att_dt,
-#   clip_obj = ext
-# )
+ext <- terra::ext(-103.7604, -103.7600, 59.4672, 59.4680)
+atl08_seg_att_dt_clip_ext <- ATL08_seg_attributes_dt_clipBox(
+  atl08_seg_att_dt = atl08_seg_att_dt,
+  clip_obj = ext
+)
 
 close(atl08_h5)
-}
 
 }

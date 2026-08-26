@@ -87,7 +87,7 @@ the available bands before training the model.
     xmin = -82.4, xmax = -82.2,
     ymin =  29.6, ymax =  29.8
   ), crs = 4326))
-  ee_geom <- ICESat2VegR:::.as_ee_geom(aoi)
+  ee_geom <- ICESat2VegR::.as_ee_geom(aoi)
 
   # -- Build embedding + terrain stack ---------------------------
   stack <- ee_build_AlphaEarth_embedding_terrain_stack(

@@ -48,7 +48,7 @@
 #' structure, but contains only data within the specified bounding extent.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # ATL08 file path
 #' atl08_path <- system.file("extdata",
 #'   "atl08_clip.h5",

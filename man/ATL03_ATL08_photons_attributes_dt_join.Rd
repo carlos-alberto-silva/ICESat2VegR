@@ -62,7 +62,6 @@ the metadata at the file level.
 }
 }
 \examples{
-\dontrun{
 # Specifying the path to ATL03 file
 atl03_path <- system.file("extdata",
   "atl03_clip.h5",
@@ -87,7 +86,6 @@ head(atl03_atl08_dt)
 
 close(atl03_h5)
 close(atl08_h5)
-}
 
 }
 \seealso{

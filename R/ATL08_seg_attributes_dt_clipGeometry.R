@@ -15,7 +15,6 @@
 #' containing the clipped ATL08 Terrain and Canopy Attributes.
 #'
 #' @examples
-#' \dontrun{
 #' # Specifying the path to ATL08 file
 #' atl08_path <- system.file("extdata",
 #'   "atl08_clip.h5",
@@ -62,7 +61,6 @@
 #'       addProviderTiles(providers$Esri.WorldImagery,
 #'         options = providerTileOptions(minZoom = 3, maxZoom = 17)
 #'       )
-#'   }
 #' }
 #' close(atl08_h5)
 #' }

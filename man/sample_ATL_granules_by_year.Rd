@@ -50,15 +50,13 @@ The year is extracted using the following heuristics:
 URLs for which no year can be detected are dropped with a warning.
 }
 \examples{
-\dontrun{
-  urls <- c(
-    "https://example.org/ATL03_20200101000000_001.h5",
-    "https://example.org/ATL03_20200102000000_002.h5",
-    "https://example.org/ATL03_20210101000000_003.h5"
-  )
+urls <- c(
+  "https://example.org/ATL03_20200101000000_001.h5",
+  "https://example.org/ATL03_20200102000000_002.h5",
+  "https://example.org/ATL03_20210101000000_003.h5"
+)
 
-  sample_df <- ee_sample_atl_granules_by_year(urls, n_per_year = 1, seed = 42)
-  sample_df
-}
+sample_df <- sample_ATL_granules_by_year(urls, n_per_year = 1, seed = 42)
+sample_df
 
 }

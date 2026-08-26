@@ -28,7 +28,6 @@ Computes a series of statistics ATL03 and ATL08 joined photons
 attributes within area defined by a polygon
 }
 \examples{
-\dontrun{
 # Specifying the path to ATL03 and ATL08 files
 # ATL03 file path
 atl03_path <- system.file("extdata",
@@ -76,7 +75,6 @@ mySetOfMetrics <- function(x) {
     sd = sd(x) # Sd of x
   )
   return(metrics)
-}
 
 # Computing a series of ph_h statistics from customized function
 ph_h_metrics <- ATL03_ATL08_photons_attributes_dt_polyStat(

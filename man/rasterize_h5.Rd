@@ -85,7 +85,7 @@ based on the \code{variance} and \code{n} values. It is defined as:
 }\if{html}{\out{</div>}}
 }
 \examples{
-\dontrun{
+\donttest{
 atl08_path <- system.file(
   "extdata",
   "atl08_clip.h5",

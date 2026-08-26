@@ -120,7 +120,7 @@ values. It is defined as:
 }\if{html}{\out{</div>}}
 }
 \examples{
-\dontrun{
+\donttest{
 library(data.table)
 
 # Specifying the path to ATL08 file
@@ -170,27 +170,27 @@ finalizer <- list(
 
 outdir <- tempdir()
 
-# ATL08_seg_attributes_h5_gridStat(
-#   atl08_dir        = dirname(atl08_path),
-#   metrics          = c("h_canopy"),
-#   out_root         = outdir,
-#   beam             = c("gt1l","gt1r","gt2l","gt2r","gt3l","gt3r"),
-#   clip_obj         = clip_obj,
-#   res              = c(xres, -yres),
-#   creation_options = c(
-#     "COMPRESS=DEFLATE",
-#     "BIGTIFF=IF_SAFER",
-#     "TILED=YES",
-#     "BLOCKXSIZE=512",
-#     "BLOCKYSIZE=512"
-#   ),
-#   agg_function     = agg_function,
-#   agg_join         = agg_join,
-#   finalizer        = finalizer
-# )
+ATL08_seg_attributes_h5_gridStat(
+  atl08_dir        = dirname(atl08_path),
+  metrics          = c("h_canopy"),
+  out_root         = outdir,
+  beam             = c("gt1l","gt1r","gt2l","gt2r","gt3l","gt3r"),
+  clip_obj         = clip_obj,
+  res              = c(xres, -yres),
+  creation_options = c(
+    "COMPRESS=DEFLATE",
+    "BIGTIFF=IF_SAFER",
+    "TILED=YES",
+    "BLOCKXSIZE=512",
+    "BLOCKYSIZE=512"
+  ),
+  agg_function     = agg_function,
+  agg_join         = agg_join,
+  finalizer        = finalizer
+)
 
 gc()
-file.remove(list.files(outdir, "*.tif"))
+file.remove(list.files(outdir, pattern = "\\\\.tif$", full.names = TRUE))
 close(atl08_h5)
 }
 }

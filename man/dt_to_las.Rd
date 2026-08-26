@@ -33,7 +33,6 @@ projects each subset to the corresponding UTM coordinate system, and writes
 one LAS file per UTM zone.
 }
 \examples{
-\dontrun{
 library(data.table)
 
 dt <- data.table(
@@ -42,7 +41,6 @@ dt <- data.table(
   h = runif(1000, 0, 35)
 )
 
-dt_to_las(dt, "icesat2_output.las")
-}
+dt_to_las(dt, tempfile(fileext = ".las"))
 
 }

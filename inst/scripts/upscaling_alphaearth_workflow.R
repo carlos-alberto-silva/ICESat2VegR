@@ -9,31 +9,13 @@
 
 
 # ======================================================================
-# Install and load required packages
+# Load required packages
 # ======================================================================
-
-# The r-universe version (recommended for the latest version)
-install.packages('ICESat2VegR', repos = c('https://carlos-alberto-silva.r-universe.dev', 'https://cloud.r-project.org'))
-# The CRAN version
-install.packages("ICESat2VegR")
-
-# Required additional libraries
-need_pkgs <- c(                                                                       # Packages required by the workflow
-  "reticulate",   # Python <-> R interface
-  "leaflet",      # interactive maps
-  "sf",           # spatial vectors
-  "terra",        # rasters & vectors
-  "data.table",   # fast tables
-  "dplyr"         # tidy helpers
-)
-missing <- need_pkgs[!need_pkgs %in% rownames(installed.packages())]                 # Identify missing packages
-if (length(missing)) {                                                                # If any are missing
-  message("Installing missing R packages: ", paste(missing, collapse = ", "))         # Inform the user
-  install.packages(missing, repos = repos, dependencies = TRUE)                       # Install from repos with dependencies
-}
-if (!requireNamespace("mapview", quietly = TRUE)) {
-  install.packages("mapview", repos = "https://cloud.r-project.org")
-}
+# This workflow requires ICESat2VegR and the following packages to be
+# installed beforehand: reticulate, leaflet, sf, terra, data.table, dplyr,
+# mapview, caret. Install any that are missing, e.g.:
+#   install.packages(c("reticulate", "leaflet", "sf", "terra",
+#                       "data.table", "dplyr", "mapview", "caret"))
 
 library(mapview)
 suppressPackageStartupMessages({                                                       # Suppress startup messages for clean logs
@@ -43,18 +25,10 @@ suppressPackageStartupMessages({                                                
   library(sf)                                                                          # Simple Features for vector data
   library(terra)                                                                       # Raster + vector geospatial ops
   library(data.table)                                                                  # Fast data tables
-  library(dplyr)
-  # Tidy verbs
+  library(dplyr)                                                                       # Tidy verbs
+  library(caret)                                                                       # Model training helpers
 })
-pkgs <- c("mapview", "caret")
-
-for (pkg in pkgs) {
-  if (!requireNamespace(pkg, quietly = TRUE)) {
-    install.packages(pkg, repos = "https://cloud.r-project.org")
-  }
-  library(pkg, character.only = TRUE)
-}
-cat("Loading libraries... done.\n")                                                    # Confirm loading
+message("Loading libraries... done.")                                                  # Confirm loading
 
 
 
@@ -251,7 +225,7 @@ best_imp_rfe <- imp_desc %>%
   dplyr::filter(selected == TRUE) %>%
   dplyr::arrange(importance)
 
-par(mfrow = c(1, 2), mar = c(4, 6, 2, 1))
+oldpar <- par(mfrow = c(1, 2), mar = c(4, 6, 2, 1))
 
 # Left — all RFE evaluated, colored by selection
 barplot(
@@ -279,7 +253,7 @@ barplot(
 )
 abline(v = 0.2, lty = 2, col = "red")
 
-par(mfrow = c(1, 1), mar = c(5, 4, 4, 2))
+par(oldpar)
 
 # ======================================================================
 # [1] "A07"  "A22"  "A24"  "A40"  "A56"  "A62"  "A36"  "A34"  "A38"

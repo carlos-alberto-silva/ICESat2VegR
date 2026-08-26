@@ -316,7 +316,6 @@ writeLAS <- function(x, LASfile, scale = c(0.001, 0.001, 0.001)) {
 #' @return Invisibly returns a character vector with the written LAS file paths.
 #'
 #' @examples
-#' \dontrun{
 #' library(data.table)
 #'
 #' dt <- data.table(
@@ -325,8 +324,7 @@ writeLAS <- function(x, LASfile, scale = c(0.001, 0.001, 0.001)) {
 #'   h = runif(1000, 0, 35)
 #' )
 #'
-#' dt_to_las(dt, "icesat2_output.las")
-#' }
+#' dt_to_las(dt, tempfile(fileext = ".las"))
 #'
 #' @importFrom data.table as.data.table copy setnames
 #' @importFrom terra project

@@ -25,7 +25,6 @@ containing the ATL03 photon attributes.
 This function clips ATL03 photon attributes within given bounding coordinates.
 }
 \examples{
-\dontrun{
 # ATL03 file path
 atl03_path <- system.file("extdata",
   "atl03_clip.h5",
@@ -56,7 +55,6 @@ atl03_photons_dt_clip <-
 head(atl03_photons_dt_clip)
 
 close(atl03_h5)
-}
 }
 \seealso{
 \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}

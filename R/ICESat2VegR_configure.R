@@ -543,22 +543,6 @@ ICESat2VegR_configure <- function(
 #'
 #' @return Logical \code{TRUE} on success; otherwise an error is raised.
 #' @keywords internal
-#'
-#' @examples
-#' \dontrun{
-#'   # Using user OAuth and EE_PROJECT from environment:
-#'   tryInitializeEarthEngine()
-#'
-#'   # Using explicit project id and OAuth
-#'   tryInitializeEarthEngine(project = "my-ee-project")
-#'
-#'   # Using a service account
-#'   tryInitializeEarthEngine(
-#'     project         = "my-ee-project",
-#'     service_account = "my-sa@my-ee-project.iam.gserviceaccount.com",
-#'     keyfile         = "path/to/key.json"
-#'   )
-#' }
 tryInitializeEarthEngine <- function(
     project = Sys.getenv("EE_PROJECT", unset = NA),
     service_account = NULL,

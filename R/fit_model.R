@@ -210,12 +210,12 @@ fit_model <- function(
     if (!enabled || n_steps <= 1L) {
       return(list(tick = function() NULL, close = function() NULL))
     }
-    if (!is.null(label)) cat(sprintf("%s (%d steps)\n", label, n_steps))
+    if (!is.null(label)) message(sprintf("%s (%d steps)", label, n_steps))
     pb <- utils::txtProgressBar(min = 0, max = n_steps, style = 3)
     i  <- 0L
     list(
       tick  = function() { i <<- i + 1L; utils::setTxtProgressBar(pb, i) },
-      close = function() { close(pb); cat("\n") }
+      close = function() { close(pb); message("") }
     )
   }
 

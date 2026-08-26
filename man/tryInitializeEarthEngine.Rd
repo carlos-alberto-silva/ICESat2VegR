@@ -45,20 +45,4 @@ It validates and normalizes the Google Cloud project ID, initializes the
 Earth Engine client, and sets \code{EE_PROJECT} in the environment for
 downstream use (e.g., in Python code).
 }
-\examples{
-\dontrun{
-  # Using user OAuth and EE_PROJECT from environment:
-  tryInitializeEarthEngine()
-
-  # Using explicit project id and OAuth
-  tryInitializeEarthEngine(project = "my-ee-project")
-
-  # Using a service account
-  tryInitializeEarthEngine(
-    project         = "my-ee-project",
-    service_account = "my-sa@my-ee-project.iam.gserviceaccount.com",
-    keyfile         = "path/to/key.json"
-  )
-}
-}
 \keyword{internal}

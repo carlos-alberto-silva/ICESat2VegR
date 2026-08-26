@@ -44,7 +44,6 @@ This function computes a series of user defined descriptive statistics within
 each given grid cell for ATL03 and ATL08 photon attributes
 }
 \examples{
-\dontrun{
 # ATL03 file path
 atl03_path <- system.file("extdata",
   "atl03_clip.h5",
@@ -82,7 +81,6 @@ mySetOfMetrics <- function(x) {
     sd = sd(x) # Sd of x
   )
   return(metrics)
-}
 
 # Computing a series of ph_h stats at 0.0002 degree grid cell from customized function
 ph_h_metrics <- ATL03_ATL08_photons_attributes_dt_gridStat(atl03_atl08_dt,

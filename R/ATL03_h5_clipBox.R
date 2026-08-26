@@ -54,7 +54,7 @@
 #' bounding extent.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # ATL03 file path
 #' atl03_path <- system.file("extdata",
 #'   "atl03_clip.h5",

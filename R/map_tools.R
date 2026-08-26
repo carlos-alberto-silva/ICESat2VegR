@@ -164,7 +164,7 @@ fit_map_to_aoi <- function(m, aoi) {
 #'     xmin = -82.4, xmax = -82.2,
 #'     ymin =  29.6, ymax =  29.8
 #'   ), crs = 4326))
-#'   ee_geom <- ICESat2VegR:::.as_ee_geom(aoi)
+#'   ee_geom <- ICESat2VegR::.as_ee_geom(aoi)
 #'
 #'   # -- Build embedding + terrain stack ---------------------------
 #'   stack <- ee_build_AlphaEarth_embedding_terrain_stack(
@@ -1160,16 +1160,14 @@ map_download <- function(ee_image,
 #' Rows are ordered by `year` and then `url`.
 #'
 #' @examples
-#' \dontrun{
-#'   urls <- c(
-#'     "https://example.org/ATL03_20200101000000_001.h5",
-#'     "https://example.org/ATL03_20200102000000_002.h5",
-#'     "https://example.org/ATL03_20210101000000_003.h5"
-#'   )
+#' urls <- c(
+#'   "https://example.org/ATL03_20200101000000_001.h5",
+#'   "https://example.org/ATL03_20200102000000_002.h5",
+#'   "https://example.org/ATL03_20210101000000_003.h5"
+#' )
 #'
-#'   sample_df <- ee_sample_atl_granules_by_year(urls, n_per_year = 1, seed = 42)
-#'   sample_df
-#' }
+#' sample_df <- sample_ATL_granules_by_year(urls, n_per_year = 1, seed = 42)
+#' sample_df
 #'
 #' @export
 sample_ATL_granules_by_year <- function(
@@ -1270,15 +1268,13 @@ sample_ATL_granules_by_year <- function(
 #' \pkg{terra}-based and \pkg{sf}-based write attempts fail.
 #'
 #' @examples
-#' \dontrun{
-#'   pts <- data.frame(
-#'     id  = 1:3,
-#'     lon = c(-82.35, -82.34, -82.33),
-#'     lat = c( 29.65,  29.66,  29.67)
-#'   )
+#' pts <- data.frame(
+#'   id  = 1:3,
+#'   lon = c(-82.35, -82.34, -82.33),
+#'   lat = c( 29.65,  29.66,  29.67)
+#' )
 #'
-#'   write_geojson_safe(pts, "points.geojson")
-#' }
+#' write_geojson(pts, tempfile(fileext = ".geojson"))
 #'
 #' @export
 write_geojson <- function(
@@ -1332,21 +1328,6 @@ write_geojson <- function(
 #' A character vector of the same length as `file_path`, where each
 #' element is either the extracted 14-digit timestamp (`YYYYMMDDHHMMSS`)
 #' or, if no match is found, the original string (due to the use of `sub()`).
-#'
-#' @examples
-#' \dontrun{
-#'
-#' # Example ATL03 granule from NSIDC Earthdata Cloud
-#' url <- "https://data.nsidc.earthdatacloud.nasa.gov/
-#' nsidc-cumulus-prod-protected/ATLAS/ATL03/006/2021/10/02/
-#' ATL03_20211002001658_01461302_006_01.h5"
-#'
-#' # Extract timestamp from filename
-#' ts <- atl_extract_timestamp(url)
-#' ts
-#' # [1] "20211002001658"
-#'
-#' }
 #'
 #' @keywords internal
 atl_extract_timestamp <- function(file_path) {

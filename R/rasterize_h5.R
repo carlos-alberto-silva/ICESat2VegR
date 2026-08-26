@@ -165,7 +165,7 @@ index_to_xy <- function(index, ysize) {
 #' ```
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' atl08_path <- system.file(
 #'   "extdata",
 #'   "atl08_clip.h5",

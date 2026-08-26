@@ -23,9 +23,9 @@
 #' close(atl03_h5)
 #'
 #' # Plain data.frame / data.table usage:
-#' # df <- data.frame(longitude = c(-84, -84.1), latitude = c(29.6, 29.7), z = 1:2)
-#' # v  <- to_vect(df)
-#' # v2 <- to_vect(df, lon = "longitude", lat = "latitude", crs = "EPSG:4326")
+#' df <- data.frame(longitude = c(-84, -84.1), latitude = c(29.6, 29.7), z = 1:2)
+#' v  <- to_vect(df)
+#' v2 <- to_vect(df, lon = "longitude", lat = "latitude", crs = "EPSG:4326")
 #'
 #' @include class.icesat2.R
 #' @export

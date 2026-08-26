@@ -80,7 +80,7 @@ underlying geometry via \verb{$geometry()}.
 
   # 2) From terra::SpatVector
   library(terra)
-  v <- vect(system.file("extdata", "all_boundary.shp", package = "ICESat2VegR"))
+  v <- vect(system.file("extdata", "clip_geom.shp", package = "ICESat2VegR"))
   ee_geom2 <- .as_ee_geom(v, buffer_m = 30)
 
 

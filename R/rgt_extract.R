@@ -29,7 +29,6 @@
 #' \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
 #'
 #' @examples
-#' \dontrun{
 #' atl03_path <- system.file("extdata",
 #'   "atl03_clip.h5",
 #'   package = "ICESat2VegR"
@@ -39,11 +38,6 @@
 #'
 #' rgt_line <- rgt_extract(h5 = atl03_h5, line = TRUE)
 #'
-#' plot_icesat2_orbit_animation(
-#'   rgt = rgt_line,
-#'   launch = TRUE
-#' )
-#'
 #' rgt_extract(
 #'   h5 = atl03_h5,
 #'   line = TRUE,
@@ -51,7 +45,6 @@
 #' )
 #'
 #' close(atl03_h5)
-#' }
 #'
 #' @include class.icesat2.R
 #' @importFrom terra vect writeVector

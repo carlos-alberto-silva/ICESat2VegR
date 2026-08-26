@@ -39,14 +39,12 @@ The function first attempts to use \pkg{terra} via
 \code{ICESat2VegR::to_vect()}, and falls back to \pkg{sf} if available.
 }
 \examples{
-\dontrun{
-  pts <- data.frame(
-    id  = 1:3,
-    lon = c(-82.35, -82.34, -82.33),
-    lat = c( 29.65,  29.66,  29.67)
-  )
+pts <- data.frame(
+  id  = 1:3,
+  lon = c(-82.35, -82.34, -82.33),
+  lat = c( 29.65,  29.66,  29.67)
+)
 
-  write_geojson_safe(pts, "points.geojson")
-}
+write_geojson(pts, tempfile(fileext = ".geojson"))
 
 }

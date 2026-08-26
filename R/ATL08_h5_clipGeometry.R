@@ -59,10 +59,10 @@
 #' the package.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # ATL08 file path
 #' ATL08_path <- system.file("extdata",
-#'   "ATL08_clip.h5",
+#'   "atl08_clip.h5",
 #'   package = "ICESat2VegR"
 #' )
 #'
@@ -76,7 +76,7 @@
 #' clip_obj_path <- system.file("extdata", "clip_geom.shp",
 #'   package = "ICESat2VegR"
 #' )
-#' clip_obj <- terra::vect(vect_path)
+#' clip_obj <- terra::vect(clip_obj_path)
 #'
 #' # Clip ATL08 using polygon geometries
 #' ATL08_clipped_list <- ATL08_h5_clipGeometry(

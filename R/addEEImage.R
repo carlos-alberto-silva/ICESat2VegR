@@ -46,6 +46,7 @@
 #'     setView(lng = -82.2345, lat = 29.6552, zoom = 10)
 #' }
 #' }
+#' @export
 addEEImage <- function(map,
                        img,
                        bands = NULL,

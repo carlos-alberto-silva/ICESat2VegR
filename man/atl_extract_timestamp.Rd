@@ -21,20 +21,4 @@ granule filename or path. Many ATL03/ATL08 filenames include a timestamp
 segment such as \code{ATL03_20200101000000_...}; this helper retrieves
 that substring.
 }
-\examples{
-\dontrun{
-
-# Example ATL03 granule from NSIDC Earthdata Cloud
-url <- "https://data.nsidc.earthdatacloud.nasa.gov/
-nsidc-cumulus-prod-protected/ATLAS/ATL03/006/2021/10/02/
-ATL03_20211002001658_01461302_006_01.h5"
-
-# Extract timestamp from filename
-ts <- atl_extract_timestamp(url)
-ts
-# [1] "20211002001658"
-
-}
-
-}
 \keyword{internal}

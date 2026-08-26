@@ -101,7 +101,7 @@ All terrain layers are clipped to the AOI and reprojected to
     ymin =  29.6, ymax =  29.8
   ), crs = 4326))
 
-  ee_geom <- ICESat2VegR:::.as_ee_geom(aoi)
+  ee_geom <- ICESat2VegR::.as_ee_geom(aoi)
 
   # Build the embedding + terrain stack for 2025
   predictors <- ee_build_AlphaEarth_embedding_terrain_stack(

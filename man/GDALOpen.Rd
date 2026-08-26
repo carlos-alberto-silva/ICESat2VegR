@@ -18,10 +18,20 @@ An R6 object of GDALDataset class.
 Function to open GDAL Dataset
 }
 \examples{
-\dontrun{
-ds_path <- system.file("extdata", "example.tif", package = "ICESat2VegR")
-
-ds <- GDALOpen(ds_path)
+# Create a small raster to open
+ds_path <- tempfile(fileext = ".tif")
+ds <- createDataset(
+  raster_path = ds_path,
+  nbands = 1,
+  datatype = GDALDataType$GDT_Int32,
+  projstring = "EPSG:4326",
+  ul_lat = -15, ul_lon = -45, lr_lat = -25, lr_lon = -35,
+  res = c(0.01, -0.01),
+  nodata = -1
+)
 ds$Close()
-}
+
+# Reopen the raster read-only
+ds2 <- GDALOpen(ds_path)
+ds2$Close()
 }

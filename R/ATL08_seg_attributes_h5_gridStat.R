@@ -153,7 +153,7 @@ default_agg_join <- function(x1, x2) {
 #' @return Nothing. It outputs multiple raster tif files to the out_root specified path.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(data.table)
 #'
 #' # Specifying the path to ATL08 file
@@ -201,29 +201,31 @@ default_agg_join <- function(x1, x2) {
 #'   range = "max-min"
 #' )
 #'
-#' outdir <- tempdir()
+#' outdir <- file.path(tempdir(), "gridstat_out")
+#' dir.create(outdir)
+#' out_root <- file.path(outdir, "h_canopy")
 #'
-#' # ATL08_seg_attributes_h5_gridStat(
-#' #   atl08_dir        = dirname(atl08_path),
-#' #   metrics          = c("h_canopy"),
-#' #   out_root         = outdir,
-#' #   beam             = c("gt1l","gt1r","gt2l","gt2r","gt3l","gt3r"),
-#' #   clip_obj         = clip_obj,
-#' #   res              = c(xres, -yres),
-#' #   creation_options = c(
-#' #     "COMPRESS=DEFLATE",
-#' #     "BIGTIFF=IF_SAFER",
-#' #     "TILED=YES",
-#' #     "BLOCKXSIZE=512",
-#' #     "BLOCKYSIZE=512"
-#' #   ),
-#' #   agg_function     = agg_function,
-#' #   agg_join         = agg_join,
-#' #   finalizer        = finalizer
-#' # )
+#' ATL08_seg_attributes_h5_gridStat(
+#'   atl08_dir        = dirname(atl08_path),
+#'   metrics          = c("h_canopy"),
+#'   out_root         = out_root,
+#'   beam             = c("gt1l","gt1r","gt2l","gt2r","gt3l","gt3r"),
+#'   clip_obj         = clip_obj,
+#'   res              = c(xres, -yres),
+#'   creation_options = c(
+#'     "COMPRESS=DEFLATE",
+#'     "BIGTIFF=IF_SAFER",
+#'     "TILED=YES",
+#'     "BLOCKXSIZE=512",
+#'     "BLOCKYSIZE=512"
+#'   ),
+#'   agg_function     = agg_function,
+#'   agg_join         = agg_join,
+#'   finalizer        = finalizer
+#' )
 #'
 #' gc()
-#' file.remove(list.files(outdir, "*.tif"))
+#' unlink(outdir, recursive = TRUE)
 #' close(atl08_h5)
 #'}
 #' @import data.table

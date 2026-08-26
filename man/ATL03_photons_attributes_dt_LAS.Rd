@@ -30,7 +30,6 @@ follows helper routines based on the latitude/longitude to UTM conversion
 algorithms developed by Chuck Gantz.
 }
 \examples{
-\dontrun{
 atl03_path <- system.file("extdata",
   "atl03_clip.h5",
   package = "ICESat2VegR"
@@ -48,7 +47,6 @@ ATL03_photons_attributes_dt_LAS(
 )
 
 close(atl03_h5)
-}
 
 }
 \references{

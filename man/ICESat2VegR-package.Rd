@@ -27,4 +27,13 @@ Authors:
   \item Alexander J. Gaskins \email{alexandergaskins@ufl.edu} [contributor]
 }
 
+Other contributors:
+\itemize{
+  \item Sunil Arya (Author of the bundled ANN library (src/)) [contributor, copyright holder]
+  \item David Mount (Author of the bundled ANN library (src/)) [contributor, copyright holder]
+  \item University of Maryland (Copyright holder of the bundled ANN library (src/)) [copyright holder]
+  \item Chuck Gantz (Author of the lat/long to UTM conversion algorithm used in R/utmTools.R) [contributor]
+  \item Cole Krehbiel (Author of the NASA data download routine adapted in R/ATLAS_dataDownload.R) [contributor]
+}
+
 }
