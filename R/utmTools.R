@@ -1,6 +1,6 @@
 # Function to convert Lat/Long to UTM Zone
 # Credits to Chuck Gantz- chuck.gantz@globalstar.com
-# https://oceancolor.gsfc.nasa.gov/docs/ocssw/LatLong-UTMconversion_8cpp_source.html
+# https://www.gpsy.com/gpsinfo/geotoutm/
 latLongToUtmZone <- function(Lat, Long) {
   ZoneNumber <- as.integer((floor((Long + 180) / 6) %% 60) + 1)
 

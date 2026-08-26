@@ -43,7 +43,7 @@
 #'
 #' @references
 #' Gantz, C. Latitude/Longitude to UTM Conversion Algorithms.
-#' \url{https://oceancolor.gsfc.nasa.gov/docs/ocssw/LatLong-UTMconversion_8cpp_source.html}
+#' \url{https://www.gpsy.com/gpsinfo/geotoutm/}
 #'
 #' @examples
 #' outdir <- tempdir()

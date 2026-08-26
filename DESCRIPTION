@@ -53,9 +53,10 @@ Suggests: chromote,  devtools,  ggplot2, grid, gridExtra, htmlwidgets, knitr, le
             lwgeom, mapview,  png, rmarkdown, rstudioapi, signal, stars, testthat (>= 3.0.0),
             webshot, viridis, withr
 LinkingTo: Rcpp
-SystemRequirements: 
+SystemRequirements:
   - GDAL (>= 3.0.0)
   - PROJ (>= 6.0.0)
+  - HDF5 (>= 1.8.13)
 Collate: 
     'ANNIndex.R'
     'lazy_applier.R'

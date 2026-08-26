@@ -24,7 +24,7 @@
 #'
 #' @references
 #' Gantz, C. Latitude/Longitude to UTM Conversion Algorithms.
-#' \url{https://oceancolor.gsfc.nasa.gov/docs/ocssw/LatLong-UTMconversion_8cpp_source.html}
+#' \url{https://www.gpsy.com/gpsinfo/geotoutm/}
 
 #' @examples
 #' atl03_path <- system.file("extdata", "atl03_clip.h5", package = "ICESat2VegR")
