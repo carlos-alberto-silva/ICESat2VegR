@@ -25,6 +25,7 @@
 #' \url{https://www.gpsy.com/gpsinfo/geotoutm/}
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' atl03_path <- system.file("extdata",
 #'   "atl03_clip.h5",
 #'   package = "ICESat2VegR"
@@ -43,6 +44,7 @@
 #'
 #' close(atl03_h5)
 #'
+#' }
 #' @include utmTools.R lasTools.R
 #' @importFrom data.table as.data.table
 #'

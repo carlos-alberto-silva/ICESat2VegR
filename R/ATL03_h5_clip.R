@@ -1,4 +1,3 @@
-#' @import hdf5r
 ATL03_h5_clip <- function(
   atl03,
   output,

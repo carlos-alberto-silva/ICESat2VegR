@@ -19,7 +19,7 @@
 \S4method{plot}{icesat2.atl03_seg_dt,missing}(x, col = "gray", ...)
 }
 \arguments{
-\item{x}{An object of class \code{\linkS4class{icesat2.atl03_dt}}}
+\item{x}{An object of class \code{\link[=icesat2.atl03_dt-class]{icesat2.atl03_dt}}}
 
 \item{y}{The attribute name for y axis}
 
@@ -46,6 +46,7 @@ This function plots ATL08 attributes along track
 This function plots ATL03 photons along track
 }
 \examples{
+if (requireNamespace("hdf5r", quietly = TRUE)) {
 # Specifying the path to ATL03 file
 atl03_path <- system.file("extdata",
   "atl03_clip.h5",
@@ -77,6 +78,8 @@ plot(
 
 close(atl03_h5)
 close(atl08_h5)
+}
+if (requireNamespace("hdf5r", quietly = TRUE)) {
 # Specifying the path to ATL03 file
 atl03_path <- system.file("extdata",
   "atl03_clip.h5",
@@ -107,6 +110,8 @@ plot(
 
 close(atl03_h5)
 close(atl08_h5)
+}
+if (requireNamespace("hdf5r", quietly = TRUE)) {
 # Specifying the path to ATL03 file
 atl03_path <- system.file("extdata",
   "atl03_clip.h5",
@@ -135,4 +140,5 @@ plot(
 )
 
 close(atl03_h5)
+}
 }

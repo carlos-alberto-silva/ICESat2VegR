@@ -32,6 +32,7 @@ ATL08_photon.var.map[["delta_time"]] <- "delta_time"
 #' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' # Specifying the path to ATL08 file
 #' atl08_path <- system.file("extdata",
 #'   "atl08_clip.h5",
@@ -46,6 +47,7 @@ ATL08_photon.var.map[["delta_time"]] <- "delta_time"
 #'
 #' head(atl08_photons)
 #' close(atl08_h5)
+#' }
 #' @export
 ATL08_photons_attributes_dt <- function(
     atl08_h5,

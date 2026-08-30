@@ -132,6 +132,7 @@ geolocation.
 }
 }
 \examples{
+if (requireNamespace("hdf5r", quietly = TRUE)) {
 atl03_path <- system.file(
   "extdata", "atl03_clip.h5",
   package = "ICESat2VegR"
@@ -145,6 +146,7 @@ atl03_segment_dt <- ATL03_seg_metadata_dt(atl03_h5)
 head(atl03_segment_dt)
 close(atl03_h5)
 
+}
 }
 \seealso{
 \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}

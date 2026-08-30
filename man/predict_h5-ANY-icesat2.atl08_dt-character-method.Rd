@@ -14,7 +14,7 @@
 \item{output}{The output file path}
 }
 \value{
-An \code{\linkS4class{icesat2.predict_h5}}, which is an
+An \code{\link[=icesat2.predict_h5-class]{icesat2.predict_h5}}, which is an
 h5 file with latitude, longitude and prediction datasets.
 }
 \description{
@@ -26,6 +26,7 @@ This method is used to predict using a trained model and
 save the results in an HDF5 file.
 }
 \examples{
+if (requireNamespace("hdf5r", quietly = TRUE)) {
 atl08_path <- system.file(
   "extdata",
   "atl08_clip.h5",
@@ -46,4 +47,5 @@ head(predicted_h5[["prediction"]][])
 # Close the file
 close(predicted_h5)
 
+}
 }

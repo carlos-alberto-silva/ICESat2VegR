@@ -1,5 +1,5 @@
 #' @include class.icesat2.R ATL08_read.R
-#' @import data.table hdf5r
+#' @import data.table
 ATL08_h5_clip <- function(
     atl08,
     output,

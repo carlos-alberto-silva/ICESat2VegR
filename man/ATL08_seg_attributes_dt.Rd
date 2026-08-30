@@ -13,7 +13,7 @@ ATL08_seg_attributes_dt(
 }
 \arguments{
 \item{atl08_h5}{A ICESat-2 ATL08 object (output of \code{\link[=ATL08_read]{ATL08_read()}} function).
-An S4 object of class \code{\linkS4class{icesat2.atl08_dt}}.}
+An S4 object of class \code{\link[=icesat2.atl08_dt-class]{icesat2.atl08_dt}}.}
 
 \item{beam}{Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")}
 
@@ -21,7 +21,7 @@ An S4 object of class \code{\linkS4class{icesat2.atl08_dt}}.}
 Default is attribute = c("h_canopy","canopy_h_metrics","canopy_openness","h_te_mean","h_te_median","terrain_slope")}
 }
 \value{
-Returns an S4 object of class \code{\linkS4class{icesat2.atl08_dt}}
+Returns an S4 object of class \code{\link[=icesat2.atl08_dt-class]{icesat2.atl08_dt}}
 containing the ATL08-derived terrain and canopy attributes by segments.
 }
 \description{
@@ -133,6 +133,7 @@ This function extracts terrain and canopy attributes by segments from ICESat-2 A
 }
 }
 \examples{
+if (requireNamespace("hdf5r", quietly = TRUE)) {
 # Specifying the path to ATL08 file
 atl08_path <- system.file("extdata",
   "atl08_clip.h5",
@@ -147,6 +148,7 @@ atl08_seg_att_dt <- ATL08_seg_attributes_dt(atl08_h5 = atl08_h5)
 head(atl08_seg_att_dt)
 
 close(atl08_h5)
+}
 }
 \seealso{
 \url{https://nsidc.org/sites/default/files/documents/technical-reference/icesat2_atl08_atbd_v007.pdf}

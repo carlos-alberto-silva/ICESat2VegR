@@ -15,7 +15,7 @@ ATL03_ATL08_photons_attributes_dt_gridStat(
 )
 }
 \arguments{
-\item{atl03_atl08_dt}{An S4 object of class \code{\linkS4class{icesat2.atl03atl08_dt}}
+\item{atl03_atl08_dt}{An S4 object of class \code{\link[=icesat2.atl03atl08_dt-class]{icesat2.atl03atl08_dt}}
 containing ATL03 and ATL08 attributes
 (output of the \code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}} function).}
 
@@ -44,6 +44,7 @@ This function computes a series of user defined descriptive statistics within
 each given grid cell for ATL03 and ATL08 photon attributes
 }
 \examples{
+if (requireNamespace("hdf5r", quietly = TRUE)) {
 # ATL03 file path
 atl03_path <- system.file("extdata",
   "atl03_clip.h5",
@@ -93,4 +94,5 @@ close(atl03_h5)
 close(atl08_h5)
 }
 
+}
 }

@@ -156,6 +156,7 @@ ATL03.seg.map[["yaw"]]                    <- "geolocation/yaw"
 #' \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' atl03_path <- system.file(
 #'   "extdata", "atl03_clip.h5",
 #'   package = "ICESat2VegR"
@@ -169,6 +170,7 @@ ATL03.seg.map[["yaw"]]                    <- "geolocation/yaw"
 #' head(atl03_segment_dt)
 #' close(atl03_h5)
 #'
+#' }
 #' @export
 ATL03_seg_metadata_dt <- function(
   atl03_h5,

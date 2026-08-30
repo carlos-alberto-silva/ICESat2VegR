@@ -33,7 +33,8 @@ need_pkgs <- c(
   "data.table",   # fast tables
   "dplyr",        # tidy helpers
   "mapview",      # interactive map viewer
-  "caret"         # modeling / ML
+  "caret",        # modeling / ML
+  "hdf5r"         # reading/writing local HDF5 (.h5) files
 )
 missing <- need_pkgs[!need_pkgs %in% rownames(installed.packages())]
 if (length(missing)) {
@@ -1172,7 +1173,8 @@ need_pkgs <- c(
   "data.table",   # fast tables
   "dplyr",        # tidy helpers
   "mapview",      # interactive map viewer
-  "caret"         # modeling / ML
+  "caret",        # modeling / ML
+  "hdf5r"         # reading/writing local HDF5 (.h5) files
 )
 missing <- need_pkgs[!need_pkgs %in% rownames(installed.packages())]
 if (length(missing)) {

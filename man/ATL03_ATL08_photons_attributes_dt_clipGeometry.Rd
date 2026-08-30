@@ -12,22 +12,23 @@ ATL03_ATL08_photons_attributes_dt_clipGeometry(
 )
 }
 \arguments{
-\item{atl03_atl08_dt}{An S4 object of class \code{\linkS4class{icesat2.atl03atl08_dt}} containing ATL03 and ATL08 data
+\item{atl03_atl08_dt}{An S4 object of class \code{\link[=icesat2.atl03atl08_dt-class]{icesat2.atl03atl08_dt}} containing ATL03 and ATL08 data
 (output of \code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}} function).}
 
-\item{clip_obj}{An object of class \code{\link[terra:SpatVector-class]{terra::SpatVector}}, which can be loaded as an ESRI shapefile using \link[terra:vect]{terra::vect} function.}
+\item{clip_obj}{An object of class \code{\link[terra:SpatVector]{terra::SpatVector}}, which can be loaded as an ESRI shapefile using \link[terra:vect]{terra::vect} function.}
 
 \item{split_by}{Optional. clip_obj ID. If defined, the data will be clipped by each clip_obj using
 the clip_obj ID from the attribute table.}
 }
 \value{
-Returns an S4 object of class \code{\linkS4class{icesat2.atl03atl08_dt}}
+Returns an S4 object of class \code{\link[=icesat2.atl03atl08_dt-class]{icesat2.atl03atl08_dt}}
 containing the clipped ATL08 attributes.
 }
 \description{
 This function clips joined ATL03 and ATL08 photon attributes within a given geometry.
 }
 \examples{
+if (requireNamespace("hdf5r", quietly = TRUE)) {
 # Specifying the path to ATL03 and ATL08 files
 atl03_path <- system.file("extdata", "atl03_clip.h5", package = "ICESat2VegR")
 atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
@@ -57,4 +58,5 @@ head(atl03_atl08_dt_clip)
 close(atl03_h5)
 close(atl08_h5)
 
+}
 }

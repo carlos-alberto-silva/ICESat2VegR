@@ -59,6 +59,7 @@
 #' the package.
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' \donttest{
 #' # ATL08 file path
 #' ATL08_path <- system.file("extdata",
@@ -88,7 +89,7 @@
 #'
 #' close(ATL08_h5)
 #'}
-#' @import hdf5r
+#' }
 #' @include clipTools.R
 #' @export
 ATL08_h5_clipGeometry <- function(

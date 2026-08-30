@@ -90,9 +90,6 @@ setMethod(
 )
 
 
-#' @importFrom hdf5r H5File
-setRefClass("icesat2.hdf5r")
-
 #' Base class for all ICESat2VegR package's H5 files for generic functions
 #' that can be run on any H5
 #' @export
@@ -214,6 +211,7 @@ setMethod("close", signature = c("icesat2.h5"), h5closeall)
 #' @return No return value
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' # Specifying the path to ATL03 file
 #' atl03_path <- system.file("extdata",
 #'   "atl03_clip.h5",
@@ -245,6 +243,7 @@ setMethod("close", signature = c("icesat2.h5"), h5closeall)
 #'
 #' close(atl03_h5)
 #' close(atl08_h5)
+#' }
 #' @rdname plot
 #' @export
 setMethod(
@@ -334,6 +333,7 @@ plot_atl03_atl08_join_dt <- function(x, y, beam, col, xlim = NULL, ylim = NULL, 
 #' @return No return value
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' # Specifying the path to ATL03 file
 #' atl03_path <- system.file("extdata",
 #'   "atl03_clip.h5",
@@ -364,6 +364,7 @@ plot_atl03_atl08_join_dt <- function(x, y, beam, col, xlim = NULL, ylim = NULL, 
 #'
 #' close(atl03_h5)
 #' close(atl08_h5)
+#' }
 #' @rdname plot
 #' @export
 setMethod(
@@ -398,6 +399,7 @@ It should be an object of class 'icesat2.atl03atl08_dt'"
 #' @return No return value
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' # Specifying the path to ATL03 file
 #' atl03_path <- system.file("extdata",
 #'   "atl03_clip.h5",
@@ -426,6 +428,7 @@ It should be an object of class 'icesat2.atl03atl08_dt'"
 #' )
 #'
 #' close(atl03_h5)
+#' }
 #' @export
 #' @rdname plot
 setMethod(

@@ -8,7 +8,7 @@ ATL08_seg_attributes_dt_gridStat(atl08_seg_att_dt, func, res = 0.5)
 }
 \arguments{
 \item{atl08_seg_att_dt}{An object of class
-\code{\linkS4class{icesat2.atl08_dt}} containing ATL08 data
+\code{\link[=icesat2.atl08_dt-class]{icesat2.atl08_dt}} containing ATL08 data
 (output of \code{\link[=ATL08_seg_attributes_dt]{ATL08_seg_attributes_dt()}} function).}
 
 \item{func}{The function to be applied for computing the defined
@@ -28,6 +28,7 @@ Computes a series of user-defined descriptive statistics within
 each grid cell for ATL08 terrain and canopy attributes.
 }
 \examples{
+if (requireNamespace("hdf5r", quietly = TRUE)) {
 # Specifying the path to ATL08 file
 atl08_path <- system.file("extdata",
   "atl08_clip.h5",
@@ -68,5 +69,6 @@ h_canopy_metrics <- ATL08_seg_attributes_dt_gridStat(
 terra::plot(h_canopy_metrics)
 
 close(atl08_h5)
+}
 }
 }

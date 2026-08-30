@@ -165,6 +165,7 @@ index_to_xy <- function(index, ysize) {
 #' ```
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' \donttest{
 #' atl08_path <- system.file(
 #'   "extdata",
@@ -198,6 +199,7 @@ index_to_xy <- function(index, ysize) {
 #'
 #' close(atl08_h5)
 #'}
+#' }
 #' @export
 setGeneric("rasterize_h5", function(
   h5_input,

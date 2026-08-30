@@ -13,9 +13,9 @@ ATL08_seg_attributes_dt_clipGeometry(
 \arguments{
 \item{atl08_seg_att_dt}{A atl08_seg_att_dt object (output of
 \code{\link[=ATL08_seg_attributes_dt]{ATL08_seg_attributes_dt()}} function). An S4 object of class
-\code{\linkS4class{icesat2.atl08_dt}}}
+\code{\link[=icesat2.atl08_dt-class]{icesat2.atl08_dt}}}
 
-\item{clip_obj}{clip_obj. An object of class \code{\link[terra:SpatVector-class]{terra::SpatVector}},
+\item{clip_obj}{clip_obj. An object of class \code{\link[terra:SpatVector]{terra::SpatVector}},
 which can be loaded as an ESRI shapefile using \link[terra:vect]{terra::vect} function in the
 \emph{sf} package.}
 
@@ -23,13 +23,14 @@ which can be loaded as an ESRI shapefile using \link[terra:vect]{terra::vect} fu
 the clip_obj id from table of attribute defined by the user}
 }
 \value{
-Returns an S4 object of class \code{\linkS4class{icesat2.atl08_dt}}
+Returns an S4 object of class \code{\link[=icesat2.atl08_dt-class]{icesat2.atl08_dt}}
 containing the clipped ATL08 Terrain and Canopy Attributes.
 }
 \description{
 This function clips ATL08 Terrain and Canopy Attributes within a given geometry
 }
 \examples{
+if (requireNamespace("hdf5r", quietly = TRUE)) {
 # Specifying the path to ATL08 file
 atl08_path <- system.file("extdata",
   "atl08_clip.h5",
@@ -80,4 +81,5 @@ if (require(terra)) {
 close(atl08_h5)
 }
 
+}
 }

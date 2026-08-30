@@ -83,6 +83,7 @@ ATL03.photon.map[["weight_ph"]]       <- "heights/weight_ph"
 #' \url{https://nsidc.org/sites/default/files/documents/technical-reference/icesat2_atl03_data_dict_v007.pdf}
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' atl03_path <- system.file(
 #'   "extdata", "atl03_clip.h5",
 #'   package = "ICESat2VegR"
@@ -100,6 +101,7 @@ ATL03.photon.map[["weight_ph"]]       <- "heights/weight_ph"
 #' close(atl03_h5)
 #'
 #'
+#' }
 #' @export
 ATL03_photons_attributes_dt <- function(
   atl03_h5,

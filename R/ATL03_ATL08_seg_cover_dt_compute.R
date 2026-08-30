@@ -35,6 +35,7 @@
 #' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' # Specifying the path to ATL03 and ATL08 files
 #' atl03_path <- system.file("extdata", "atl03_clip.h5", package = "ICESat2VegR")
 #' atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
@@ -66,6 +67,7 @@
 #' close(atl03_h5)
 #' close(atl08_h5)
 #'
+#' }
 #' @import data.table
 #' @export
 ATL03_ATL08_seg_cover_dt_compute <- function(

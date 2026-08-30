@@ -27,7 +27,6 @@ Imports:
   googleCloudStorageR,
   grDevices,
   jsonlite,
-  hdf5r,
   httr2,
   magrittr,
   mathjaxr,
@@ -49,7 +48,7 @@ NeedsCompilation: yes
 Roxygen: list(markdown = TRUE)
 RdMacros: Rdpack, mathjaxr
 BuildManual: TRUE
-Suggests: chromote,  devtools,  ggplot2, grid, gridExtra, htmlwidgets, knitr, leaflet, leafsync,
+Suggests: chromote,  devtools,  ggplot2, grid, gridExtra, hdf5r, htmlwidgets, knitr, leaflet, leafsync,
             lwgeom, mapview,  png, rmarkdown, rstudioapi, signal, stars, testthat (>= 3.0.0),
             webshot, viridis, withr
 LinkingTo: Rcpp
@@ -137,5 +136,4 @@ Collate:
     'varSel.R'
     'vect_as_ee.R'
 License: GPL (>= 3)
-Config/roxygen2/version: 8.0.0
-RoxygenNote: 7.3.3
+Config/roxygen2/version: 8.1.0

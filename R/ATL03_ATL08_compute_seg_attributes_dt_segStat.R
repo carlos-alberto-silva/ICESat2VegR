@@ -20,6 +20,7 @@
 #' Containing Statistics of ATL03 and ATL08 labeled photons
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' # Specifying ATL03 and ATL08 file path
 #' atl03_path <- system.file("extdata",
 #'   "atl03_clip.h5",
@@ -72,6 +73,7 @@
 #' close(atl03_h5)
 #' close(atl08_h5)
 #'
+#' }
 #' @include lazy_applier.R
 #' @import data.table
 #' @export

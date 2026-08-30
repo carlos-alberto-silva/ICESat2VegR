@@ -820,6 +820,15 @@ ee_task_start_safe <- function(task) {
 #' @keywords internal
 ee_monitoring <- function(task, task_time = 5, quiet = FALSE, max_attempts = Inf) {
   if (missing(task)) stop("Provide a task (ee$batch$Task).")
+  if (!inherits(task, "ee.batch.Task")) {
+    stop(
+      "'task' must be a live EE Task object (e.g. the value returned by ",
+      "ee$batch$Export$image$toDrive(...)$start() or map_create()/map_download() ",
+      "internals), not a task id string or other value.\n",
+      "Got an object of class: ", paste(class(task), collapse = ", "),
+      call. = FALSE
+    )
+  }
   attempts <- 0L
   repeat {
     st <- .ee_status_to_list(task)

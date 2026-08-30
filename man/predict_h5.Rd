@@ -14,7 +14,7 @@ predict_h5(model, dt, output)
 \item{output}{The output HDF5 file path}
 }
 \value{
-An \code{\linkS4class{icesat2.predict_h5}}, which is an
+An \code{\link[=icesat2.predict_h5-class]{icesat2.predict_h5}}, which is an
 h5 file with latitude, longitude and prediction datasets.
 }
 \description{
@@ -25,6 +25,7 @@ create a new file, allowing to incrementally add predictions
 to the file to avoid memory issues.
 }
 \examples{
+if (requireNamespace("hdf5r", quietly = TRUE)) {
 atl03_path <- system.file(
   "extdata",
   "atl03_clip.h5",
@@ -47,4 +48,5 @@ head(predicted_h5[["prediction"]][])
 # Close the file
 close(predicted_h5)
 
+}
 }

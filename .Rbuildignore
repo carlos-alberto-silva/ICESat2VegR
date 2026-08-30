@@ -25,3 +25,5 @@
 ^pkgdown$
 ^CRAN-SUBMISSION$
 ^cran-comments\.md$
+^\.git$
+^Rplots\.pdf$

@@ -120,6 +120,7 @@ values. It is defined as:
 }\if{html}{\out{</div>}}
 }
 \examples{
+if (requireNamespace("hdf5r", quietly = TRUE)) {
 \donttest{
 library(data.table)
 
@@ -168,12 +169,14 @@ finalizer <- list(
   range = "max-min"
 )
 
-outdir <- tempdir()
+outdir <- file.path(tempdir(), "gridstat_out")
+dir.create(outdir)
+out_root <- file.path(outdir, "h_canopy")
 
 ATL08_seg_attributes_h5_gridStat(
   atl08_dir        = dirname(atl08_path),
   metrics          = c("h_canopy"),
-  out_root         = outdir,
+  out_root         = out_root,
   beam             = c("gt1l","gt1r","gt2l","gt2r","gt3l","gt3r"),
   clip_obj         = clip_obj,
   res              = c(xres, -yres),
@@ -190,8 +193,9 @@ ATL08_seg_attributes_h5_gridStat(
 )
 
 gc()
-file.remove(list.files(outdir, pattern = "\\\\.tif$", full.names = TRUE))
+unlink(outdir, recursive = TRUE)
 close(atl08_h5)
+}
 }
 }
 \references{

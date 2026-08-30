@@ -35,7 +35,7 @@ full-model importance (all predictors).}
 - a function \code{f(n)} returning \code{n} colors
 (e.g., \code{viridis::inferno}),
 - or a character vector of colors used to build a gradient via
-\link[grDevices:colorRamp]{grDevices::colorRampPalette}.
+\link[grDevices:colorRampPalette]{grDevices::colorRampPalette}.
 
 The palette is applied to all bars and then the color of selected variables
 is overridden by \code{col.selected} when \code{which = "importance"}.}

@@ -13,11 +13,11 @@ ATL08_photons_attributes_dt(
 }
 \arguments{
 \item{atl08_h5}{A ICESat-2 ATL08 object (output of \code{\link[=ATL08_read]{ATL08_read()}} function).
-An S4 object of class \code{\linkS4class{icesat2.atl08_dt}}.}
+An S4 object of class \code{\link[=icesat2.atl08_dt-class]{icesat2.atl08_dt}}.}
 
 \item{beam}{Character vector indicating beams to process (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r")}
 
-\item{photon_attributes}{\linkS4class{character} vector indicating the attributes to extract from the ATL08 photons.
+\item{photon_attributes}{\link[=character-class]{character} vector indicating the attributes to extract from the ATL08 photons.
 Default all \code{c("ph_segment_id", "classed_pc_indx", "classed_pc_flag", "ph_h", "d_flag", "delta_time")}.}
 }
 \value{
@@ -40,6 +40,7 @@ software identified and used within the creation of the data products.
 }
 }
 \examples{
+if (requireNamespace("hdf5r", quietly = TRUE)) {
 # Specifying the path to ATL08 file
 atl08_path <- system.file("extdata",
   "atl08_clip.h5",
@@ -54,6 +55,7 @@ atl08_photons <- ATL08_photons_attributes_dt(atl08_h5 = atl08_h5)
 
 head(atl08_photons)
 close(atl08_h5)
+}
 }
 \seealso{
 \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}

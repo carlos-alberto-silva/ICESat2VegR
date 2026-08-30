@@ -40,6 +40,7 @@
 #' contained in `vect`.
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' \donttest{
 #' # ATL03 file path
 #' atl03_path <- system.file("extdata",
@@ -69,7 +70,7 @@
 #'
 #' close(atl03_h5)
 #'}
-#' @import hdf5r
+#' }
 #' @include clipTools.R
 #' @export
 #' @export

@@ -14,6 +14,7 @@
 #' Containing Statistics of ATL08 terrain and canopy attributes
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' # Specifying the path to ATL08 file
 #' atl08_path <- system.file(
 #'   "extdata",
@@ -73,6 +74,7 @@
 #' head(h_canopy_metrics)
 #'
 #' close(atl08_h5)
+#' }
 #' @import data.table
 #' @export
 ATL08_seg_attributes_dt_polyStat <- function(atl08_seg_att_dt, func, poly_id = NULL) {
