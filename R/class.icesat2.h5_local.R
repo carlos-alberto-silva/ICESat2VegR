@@ -32,7 +32,8 @@ ICESat2.h5_local <- R6::R6Class("ICESat2.h5_local", list(
   #'
   #' @return The class object
   initialize = function(h5) {
-    if (inherits(h5, "character")) {
+    owns_file <- inherits(h5, "character")
+    if (owns_file) {
       check_hdf5r()
       self$h5 <- hdf5r::H5File$new(h5, mode = "r")
       groups <- self$ls()
@@ -59,11 +60,26 @@ ICESat2.h5_local <- R6::R6Class("ICESat2.h5_local", list(
       self$h5 <- h5
     }
     prepend_class(self, "icesat2.h5")
-    reg.finalizer(self, function(e) {
-      if (!is.null(e$h5)) {
-        try(e$h5$close_all(), silent = TRUE)
-      }
-    }, onexit = TRUE)
+    # Only the wrapper that actually opened the file should be allowed to
+    # close_all() it: close_all() closes every open object in the whole
+    # file, not just this object. A wrapper created by navigating into a
+    # sub-group/dataset (e.g. via `[[`) does not own the file, so its
+    # finalizer must only close its own identifier -- otherwise, garbage
+    # collecting a transient sub-group wrapper silently closes the file
+    # out from under any other still-live wrapper referencing it.
+    if (owns_file) {
+      reg.finalizer(self, function(e) {
+        if (!is.null(e$h5)) {
+          try(e$h5$close_all(), silent = TRUE)
+        }
+      }, onexit = TRUE)
+    } else {
+      reg.finalizer(self, function(e) {
+        if (!is.null(e$h5)) {
+          try(e$h5$close(), silent = TRUE)
+        }
+      }, onexit = TRUE)
+    }
   },
   #' @description Lists the groups and datasets that are within current group
   #'
