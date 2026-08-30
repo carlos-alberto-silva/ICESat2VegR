@@ -41,7 +41,21 @@ we instead removed the hard dependency:
 This resubmission was additionally verified against real data: real NASA
 Earthdata downloads and cloud-streamed reads, and a full live Google Earth
 Engine workflow (AlphaEarth embeddings -> Random Forest -> wall-to-wall
-canopy-height prediction), not only the bundled example fixtures.
+canopy-height prediction), not only the bundled example fixtures. That
+process turned up and fixed two more small, unrelated bugs:
+
+* `ee_check_task_status()` (and the shared `ee_monitoring()` helper) now
+  validates that `task` is a live `ee.batch.Task` object, raising a clean
+  R-level error instead of a raw Python `AttributeError` when given
+  something else (e.g. a bare task-id string).
+* `ICESat2.h5_local`'s exit finalizer used to call `close_all()`
+  unconditionally, even for transient wrappers created by navigating into
+  a sub-group/dataset. Since `close_all()` closes every open object in the
+  whole file, garbage-collecting one of those short-lived wrappers at an
+  unpredictable time could silently invalidate a *different*, still-live
+  handle to the same file. Only the wrapper that actually opened the file
+  now calls `close_all()`; sub-group/dataset wrappers only close their own
+  identifier.
 
 ## Earlier resubmission (version 0.0.6 comments, already addressed)
 
