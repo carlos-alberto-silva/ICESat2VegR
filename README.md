@@ -296,7 +296,8 @@ satellite ground track or create an orbit animation.
 
 ```r
 # Extract the Reference Ground Track as a line object
-rgt_line <- rgt_extract(h5 = atl03_h5, line = TRUE)
+# (rgt_extract() takes a single ATL03_read/ATL08_read product, not the list)
+rgt_line <- rgt_extract(h5 = atl03_h5[[1]], line = TRUE)
 
 # Plot the ICESat-2 orbit animation
 plot_icesat2_orbit_animation(
@@ -1079,6 +1080,11 @@ Sys.setenv(PROJ_LIB  = system.file("proj", package = "ICESat2VegR"))
 
 # Verify
 system.file("proj", package = "ICESat2VegR")  # should return a path
+
+# Get the longitude/latitude of the predicted points
+x <- predicted_h5[["longitude"]][]
+y <- predicted_h5[["latitude"]][]
+
 # Use only your AOI coordinates
 x_clip <- x[x >= -84.72 & x <= -84.64]
 y_clip <- y[y >= 30.12  & y <= 30.18]
@@ -1089,13 +1095,12 @@ bbox <- terra::ext(
 )
 bbox
 
-# Rasterize
+# Rasterize using the clipped AOI
 output_raster <- tempfile(fileext = ".tif")
 rasterize_h5(predicted_h5, output_raster, bbox = bbox, res = 0.005)
 
+# Or rasterize the full extent of the predicted points instead
 output_raster <- tempfile(fileext = ".tif")
-x <- predicted_h5[["longitude"]][]
-y <- predicted_h5[["latitude"]][]
 bbox <- terra::ext(min(x), max(x), min(y), max(y))
 
 # Creates the raster with statistics
