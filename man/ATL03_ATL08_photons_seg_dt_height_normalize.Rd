@@ -15,7 +15,7 @@ ATL03_ATL08_photons_seg_dt_height_normalize(
 }
 \arguments{
 \item{atl03_atl08_seg_dt}{An S4 object of class
-\code{\linkS4class{icesat2.atl03_atl08_seg_dt}} containing ATL03
+\code{\link[=icesat2.atl03_atl08_seg_dt-class]{icesat2.atl03_atl08_seg_dt}} containing ATL03
 and ATL08 data (output of \code{\link[=ATL03_ATL08_segment_create]{ATL03_ATL08_segment_create()}} function).}
 
 \item{smoothing_window}{numeric. The smoothing window size in meters
@@ -67,6 +67,7 @@ interpolation function behaviour, see
 \code{\link{ATL03_ATL08_photons_seg_dt_fitground}}.
 }
 \examples{
+if (requireNamespace("hdf5r", quietly = TRUE)) {
 # Specifying the path to ATL03 and ATL08 files
 atl03_path <- system.file("extdata", "atl03_clip.h5", package = "ICESat2VegR")
 atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
@@ -109,4 +110,5 @@ head(atl03_atl08_seg_dt_norm2)
 
 close(atl03_h5)
 close(atl08_h5)
+}
 }

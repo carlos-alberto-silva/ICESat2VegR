@@ -16,3 +16,20 @@ prepend_class <- function(obj, className) {
 
   attr(parent[[call]], "class") <- c(className, attr(parent[[call]], "class"))
 }
+
+#' Stop with an informative message if 'hdf5r' is not installed
+#'
+#' `hdf5r` is an optional (Suggests) dependency used only for reading and
+#' writing local HDF5 (.h5) files.
+#'
+#' @return Nothing, called for the side effect of stopping if missing
+#' @keywords internal
+check_hdf5r <- function() {
+  if (!requireNamespace("hdf5r", quietly = TRUE)) {
+    stop(
+      "Package 'hdf5r' is required to read/write local HDF5 (.h5) files but is not installed.\n",
+      "Please install it with: install.packages(\"hdf5r\")",
+      call. = FALSE
+    )
+  }
+}

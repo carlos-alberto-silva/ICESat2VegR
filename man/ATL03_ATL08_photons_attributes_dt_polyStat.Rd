@@ -11,7 +11,7 @@ ATL03_ATL08_photons_attributes_dt_polyStat(
 )
 }
 \arguments{
-\item{atl03_atl08_dt}{An S4 object of class \code{\linkS4class{icesat2.atl08_dt}}
+\item{atl03_atl08_dt}{An S4 object of class \code{\link[=icesat2.atl08_dt-class]{icesat2.atl08_dt}}
 containing ATL03 and ATL08 data (output of \code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}}
 function).}
 
@@ -20,7 +20,7 @@ function).}
 \item{poly_id}{Polygon id. If defined, statistics will be computed for each polygon}
 }
 \value{
-Returns an S4 object of class \code{\linkS4class{icesat2.atl08_dt}}
+Returns an S4 object of class \code{\link[=icesat2.atl08_dt-class]{icesat2.atl08_dt}}
 Containing Statistics of ATL08 classified canopy photons
 }
 \description{
@@ -28,6 +28,7 @@ Computes a series of statistics ATL03 and ATL08 joined photons
 attributes within area defined by a polygon
 }
 \examples{
+if (requireNamespace("hdf5r", quietly = TRUE)) {
 # Specifying the path to ATL03 and ATL08 files
 # ATL03 file path
 atl03_path <- system.file("extdata",
@@ -89,4 +90,5 @@ close(atl03_h5)
 close(atl08_h5)
 }
 
+}
 }

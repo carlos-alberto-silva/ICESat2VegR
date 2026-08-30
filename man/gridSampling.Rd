@@ -24,6 +24,7 @@ A \code{\link{icesat2_sampling_method-class}} object for use in
 Get samples stratified by grid cells of specified size
 }
 \examples{
+if (requireNamespace("hdf5r", quietly = TRUE)) {
 atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
 atl08_h5   <- ATL08_read(atl08_path = atl08_path)
 atl08_dt   <- ATL08_seg_attributes_dt(atl08_h5)
@@ -49,6 +50,7 @@ sampled_chain <- ICESat2VegR::sample(
 head(sampled_chain)
 
 close(atl08_h5)
+}
 }
 \seealso{
 \code{\link{sample}}, \code{\link{randomSampling}}

@@ -85,6 +85,7 @@ based on the \code{variance} and \code{n} values. It is defined as:
 }\if{html}{\out{</div>}}
 }
 \examples{
+if (requireNamespace("hdf5r", quietly = TRUE)) {
 \donttest{
 atl08_path <- system.file(
   "extdata",
@@ -117,5 +118,6 @@ r <- terra::rast(output_raster)
 terra::plot(r[[1]])
 
 close(atl08_h5)
+}
 }
 }

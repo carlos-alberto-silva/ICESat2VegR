@@ -1,6 +1,7 @@
 test_that("README local workflow runs end-to-end with bundled fixtures", {
   skip_if_not_installed("sf")
   skip_if_not_installed("terra")
+  skip_if_not_installed("hdf5r")
 
   outdir <- withr::local_tempdir()
   atl03_path <- system.file("extdata", "atl03_clip.h5", package = "ICESat2VegR")

@@ -8,7 +8,7 @@ ATL03_ATL08_photons_attributes_dt_clipBox(atl03_atl08_dt, clip_obj)
 }
 \arguments{
 \item{atl03_atl08_dt}{An S4 object of class
-\code{\linkS4class{icesat2.atl03atl08_dt}} containing joined ATL03 and
+\code{\link[=icesat2.atl03atl08_dt-class]{icesat2.atl03atl08_dt}} containing joined ATL03 and
 ATL08 data (output of
 \code{\link[=ATL03_ATL08_photons_attributes_dt_join]{ATL03_ATL08_photons_attributes_dt_join()}} function).}
 
@@ -22,7 +22,7 @@ decimal degrees.
 }
 \value{
 Returns an S4 object of class
-\code{\linkS4class{icesat2.atl03atl08_dt}} containing a subset of the
+\code{\link[=icesat2.atl03atl08_dt-class]{icesat2.atl03atl08_dt}} containing a subset of the
 joined ATL03 and ATL08 photon attributes restricted to the clipping extent.
 }
 \description{
@@ -40,6 +40,7 @@ When \code{clip_obj} is a \code{SpatExtent}, the package \pkg{terra} must be
 installed. If not found, the function stops with an informative message.
 }
 \examples{
+if (requireNamespace("hdf5r", quietly = TRUE)) {
 # Specifying the path to ATL03 and ATL08 files
 atl03_path <- system.file("extdata", "atl03_clip.h5",
                           package = "ICESat2VegR")
@@ -74,6 +75,7 @@ atl03_atl08_dt_clip_ext <- ATL03_ATL08_photons_attributes_dt_clipBox(
 close(atl03_h5)
 close(atl08_h5)
 
+}
 }
 \seealso{
 \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}

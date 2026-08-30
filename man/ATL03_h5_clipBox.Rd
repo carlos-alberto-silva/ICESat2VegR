@@ -13,7 +13,7 @@ ATL03_h5_clipBox(
 )
 }
 \arguments{
-\item{atl03}{An \code{\linkS4class{icesat2.atl03_h5}} object created by
+\item{atl03}{An \code{\link[=icesat2.atl03_h5-class]{icesat2.atl03_h5}} object created by
 \code{\link[=ATL03_read]{ATL03_read()}}, representing the ATL03 HDF5 file to be clipped.}
 
 \item{output}{Character. Path to the output HDF5 file that will store the
@@ -25,7 +25,7 @@ clipped ATL03 dataset.}
 \code{c(ul_lat, ul_lon, lr_lat, lr_lon)}, following the ICESat-2 CMS
 bounding-box convention (upper-left latitude/longitude and
 lower-right latitude/longitude).
-\item A \code{\link[terra:SpatExtent-class]{terra::SpatExtent}} object.
+\item A \code{\link[terra:SpatExtent]{terra::SpatExtent}} object.
 }}
 
 \item{beam}{Character vector specifying which ATL03 beams to include.
@@ -37,7 +37,7 @@ to copy unchanged into the output file. Defaults to:
 \code{c("orbit_info")}.}
 }
 \value{
-An S4 object of class \code{\linkS4class{icesat2.atl03_h5}} representing
+An S4 object of class \code{\link[=icesat2.atl03_h5-class]{icesat2.atl03_h5}} representing
 the clipped ATL03 HDF5 file saved at the \code{output} location.
 }
 \description{
@@ -67,6 +67,7 @@ file structure while trimming the spatial domain to the user-specified
 bounding extent.
 }
 \examples{
+if (requireNamespace("hdf5r", quietly = TRUE)) {
 \donttest{
 # ATL03 file path
 atl03_path <- system.file("extdata",
@@ -94,5 +95,6 @@ atl03_clip <- ATL03_h5_clipBox(
 )
 
 close(atl03_h5)
+}
 }
 }

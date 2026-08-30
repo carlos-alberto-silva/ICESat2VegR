@@ -219,7 +219,6 @@ import(Rdpack)
 import(curl)
 import(data.table)
 import(grDevices)
-import(hdf5r)
 import(jsonlite)
 import(magrittr)
 import(mathjaxr)
@@ -228,35 +227,46 @@ import(reticulate)
 import(stats)
 importClassesFrom(data.table,data.table)
 importFrom(R6,R6Class)
-importFrom(Rcpp,Module)
-importFrom(Rcpp,loadModule)
+importFrom(Rcpp,
+  Module,
+  loadModule
+)
 importFrom(Rdpack,reprompt)
-importFrom(data.table,as.data.table)
-importFrom(data.table,copy)
-importFrom(data.table,is.data.table)
-importFrom(data.table,setnames)
+importFrom(data.table,
+  as.data.table,
+  copy,
+  is.data.table,
+  setnames
+)
 importFrom(grDevices,palette)
 importFrom(graphics,plot)
-importFrom(hdf5r,H5File)
 importFrom(jsonlite,fromJSON)
-importFrom(sf,st_as_sf)
-importFrom(sf,st_crs)
-importFrom(sf,st_make_valid)
-importFrom(sf,st_sf)
-importFrom(sf,st_sfc)
-importFrom(sf,st_transform)
-importFrom(sf,st_write)
-importFrom(stats,as.formula)
-importFrom(stats,cor)
-importFrom(stats,lm)
-importFrom(stats,model.frame)
-importFrom(stats,na.pass)
-importFrom(terra,makeValid)
-importFrom(terra,project)
-importFrom(terra,vect)
-importFrom(terra,writeVector)
-importFrom(utils,read.table)
-importFrom(utils,setTxtProgressBar)
-importFrom(utils,txtProgressBar)
+importFrom(sf,
+  st_as_sf,
+  st_crs,
+  st_make_valid,
+  st_sf,
+  st_sfc,
+  st_transform,
+  st_write
+)
+importFrom(stats,
+  as.formula,
+  cor,
+  lm,
+  model.frame,
+  na.pass
+)
+importFrom(terra,
+  makeValid,
+  project,
+  vect,
+  writeVector
+)
+importFrom(utils,
+  read.table,
+  setTxtProgressBar,
+  txtProgressBar
+)
 useDynLib(ICESat2VegR)
 useDynLib(ICESat2VegR, .registration = TRUE)

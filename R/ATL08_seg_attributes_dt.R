@@ -212,6 +212,7 @@ ATL08.var.map[["permafrost_prob"]] <- "/land_segments/permafrost_prob"
 #' @seealso \url{https://nsidc.org/sites/default/files/documents/technical-reference/icesat2_atl08_atbd_v007.pdf}
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' # Specifying the path to ATL08 file
 #' atl08_path <- system.file("extdata",
 #'   "atl08_clip.h5",
@@ -226,6 +227,7 @@ ATL08.var.map[["permafrost_prob"]] <- "/land_segments/permafrost_prob"
 #' head(atl08_seg_att_dt)
 #'
 #' close(atl08_h5)
+#' }
 #' @export
 ATL08_seg_attributes_dt <- function(atl08_h5,
                                     beam = c("gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r"),

@@ -34,6 +34,7 @@
 #' \code{\link{dt_to_las}}
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' atl08_path <- system.file("extdata",
 #'   "atl08_clip.h5",
 #'   package = "ICESat2VegR"
@@ -52,6 +53,7 @@
 #'
 #' close(atl08_h5)
 #'
+#' }
 #' @include lasTools.R
 #' @importFrom data.table as.data.table
 #'

@@ -20,7 +20,7 @@ decimal degrees.
 }
 \value{
 Returns an S4 object of class
-\code{\linkS4class{icesat2.atl08_dt}}
+\code{\link[=icesat2.atl08_dt-class]{icesat2.atl08_dt}}
 containing the clipped ATL08 terrain and canopy attributes.
 }
 \description{
@@ -38,6 +38,7 @@ When \code{clip_obj} is a \code{SpatExtent}, the package \pkg{terra} must be
 installed. If not found, the function stops with an informative message.
 }
 \examples{
+if (requireNamespace("hdf5r", quietly = TRUE)) {
 # Specifying the path to the ATL08 file
 atl08_path <- system.file("extdata",
   "atl08_clip.h5",
@@ -67,4 +68,5 @@ atl08_seg_att_dt_clip_ext <- ATL08_seg_attributes_dt_clipBox(
 
 close(atl08_h5)
 
+}
 }

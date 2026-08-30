@@ -56,6 +56,7 @@ follows helper routines based on the latitude/longitude to UTM conversion
 algorithms developed by Chuck Gantz.
 }
 \examples{
+if (requireNamespace("hdf5r", quietly = TRUE)) {
 outdir <- tempdir()
 
 atl03_path <- system.file("extdata", "atl03_clip.h5", package = "ICESat2VegR")
@@ -79,7 +80,8 @@ close(atl03_h5)
 close(atl08_h5)
 
 }
+}
 \references{
 Gantz, C. Latitude/Longitude to UTM Conversion Algorithms.
-\url{https://oceancolor.gsfc.nasa.gov/docs/ocssw/LatLong-UTMconversion_8cpp_source.html}
+\url{https://www.gpsy.com/gpsinfo/geotoutm/}
 }

@@ -15,6 +15,7 @@
 #'   \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r007.pdf}
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' # Specify the path to an example ATL08 file
 #' atl08_path <- system.file(
 #'   "extdata",
@@ -26,7 +27,7 @@
 #' atl08 <- ATL08_read(atl08_path = atl08_path)
 #' close(atl08)
 #'
-#' @import hdf5r
+#' }
 #' @include class.icesat2.R zzz.R
 #' @export
 setGeneric("ATL08_read", function(atl08_path) {
@@ -48,6 +49,7 @@ setGeneric("ATL08_read", function(atl08_path) {
 #'   ATL08 data.
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' # Specify the path to an example ATL08 file
 #' atl08_path <- system.file(
 #'   "extdata",
@@ -59,7 +61,7 @@ setGeneric("ATL08_read", function(atl08_path) {
 #' atl08 <- ATL08_read(atl08_path = atl08_path)
 #' close(atl08)
 #'
-#' @import hdf5r
+#' }
 #' @export
 setMethod(
   "ATL08_read",

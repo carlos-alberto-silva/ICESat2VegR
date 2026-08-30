@@ -153,6 +153,7 @@ default_agg_join <- function(x1, x2) {
 #' @return Nothing. It outputs multiple raster tif files to the out_root specified path.
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' \donttest{
 #' library(data.table)
 #'
@@ -228,6 +229,7 @@ default_agg_join <- function(x1, x2) {
 #' unlink(outdir, recursive = TRUE)
 #' close(atl08_h5)
 #'}
+#' }
 #' @import data.table
 #' @export
 ATL08_seg_attributes_h5_gridStat <- function(

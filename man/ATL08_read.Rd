@@ -10,7 +10,7 @@ ATL08_read(atl08_path)
 \item{atl08_path}{File path to an ICESat-2 ATL08 dataset in HDF5 format (.h5).}
 }
 \value{
-An S4 object of class \code{\linkS4class{icesat2.atl08_h5}} containing ICESat-2
+An S4 object of class \code{\link[=icesat2.atl08_h5-class]{icesat2.atl08_h5}} containing ICESat-2
 ATL08 data.
 }
 \description{
@@ -18,6 +18,7 @@ Read the ICESat-2 Land and Vegetation Along-Track Product (ATL08)
 from an HDF5 (.h5) file.
 }
 \examples{
+if (requireNamespace("hdf5r", quietly = TRUE)) {
 # Specify the path to an example ATL08 file
 atl08_path <- system.file(
   "extdata",
@@ -29,6 +30,7 @@ atl08_path <- system.file(
 atl08 <- ATL08_read(atl08_path = atl08_path)
 close(atl08)
 
+}
 }
 \seealso{
 \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r007.pdf}

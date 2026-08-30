@@ -35,6 +35,7 @@ setRefClass("icesat2.atl03_atl08_seg_dt")
 #' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' # Specifying the path to ICESat-2 ATL03 and ATL08 data
 #' atl03_path <- system.file("extdata",
 #'   "atl03_clip.h5",
@@ -63,7 +64,7 @@ setRefClass("icesat2.atl03_atl08_seg_dt")
 #'
 #' close(atl03_h5)
 #' close(atl08_h5)
-#' @import hdf5r
+#' }
 #' @export
 ATL03_ATL08_segment_create <- function(
     atl03_atl08_dt,

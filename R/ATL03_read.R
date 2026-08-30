@@ -16,6 +16,7 @@
 #'   \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r007.pdf}
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' # Specify the path to an ATL03 file
 #' atl03_path <- system.file(
 #'   "extdata",
@@ -27,7 +28,7 @@
 #' ATL03 <- ATL03_read(atl03_path = atl03_path)
 #' close(ATL03)
 #'
-#' @import hdf5r
+#' }
 #' @export
 setGeneric("ATL03_read", function(atl03_path) {
   standardGeneric("ATL03_read")

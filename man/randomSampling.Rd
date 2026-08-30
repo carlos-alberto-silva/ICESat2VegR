@@ -19,6 +19,7 @@ A \code{\link{icesat2_sampling_method-class}} object for use in
 Pure random sampling method
 }
 \examples{
+if (requireNamespace("hdf5r", quietly = TRUE)) {
 atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
 atl08_h5   <- ATL08_read(atl08_path = atl08_path)
 atl08_dt   <- ATL08_seg_attributes_dt(atl08_h5)
@@ -34,6 +35,7 @@ sampled_pct <- ICESat2VegR::sample(atl08_dt, method = randomSampling(0.5))
 nrow(sampled_pct)
 
 close(atl08_h5)
+}
 }
 \seealso{
 \code{\link{sample}}, \code{\link{gridSampling}},

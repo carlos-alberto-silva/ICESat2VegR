@@ -35,6 +35,7 @@
 #' installed. If not found, the function stops with an informative message.
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' # Specifying the path to the ATL08 file
 #' atl08_path <- system.file("extdata",
 #'   "atl08_clip.h5",
@@ -64,7 +65,8 @@
 #'
 #' close(atl08_h5)
 #'
-#' @import hdf5r stats
+#' }
+#' @import stats
 #' @export
 ATL08_seg_attributes_dt_clipBox <- function(atl08_seg_att_dt,
                                             clip_obj) {

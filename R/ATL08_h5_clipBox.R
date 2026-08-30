@@ -48,6 +48,7 @@
 #' structure, but contains only data within the specified bounding extent.
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' \donttest{
 #' # ATL08 file path
 #' atl08_path <- system.file("extdata",
@@ -74,7 +75,7 @@
 #' close(atl08_h5)
 #' close(atl08_clip)
 #'}
-#' @import hdf5r
+#' }
 #' @export
 ATL08_h5_clipBox <- function(
     atl08, output, clip_obj,
@@ -106,6 +107,7 @@ ATL08_h5_clipBox <- function(
 #' but keeps metada and ancillary data the same.
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' # ATL08 file path
 #' atl08_path <- system.file("extdata",
 #'   "atl08_clip.h5",
@@ -133,7 +135,7 @@ ATL08_h5_clipBox <- function(
 #' )
 #'
 #' close(atl08_h5)
-#' @import hdf5r
+#' }
 #' @export
 ATL08_h5_clipGeometry <- function(
     atl08, output, clip_obj, split_by = "id",

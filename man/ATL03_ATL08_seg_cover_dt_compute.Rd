@@ -8,7 +8,7 @@ ATL03_ATL08_seg_cover_dt_compute(atl03_atl08_dt, reflectance_ratio = 1)
 }
 \arguments{
 \item{atl03_atl08_dt}{An object of class
-\code{\linkS4class{icesat2.atl03_atl08_seg_dt}} containing ATL03
+\code{\link[=icesat2.atl03_atl08_seg_dt-class]{icesat2.atl03_atl08_seg_dt}} containing ATL03
 and ATL08 data (output of \code{\link[=ATL03_ATL08_segment_create]{ATL03_ATL08_segment_create()}} function).}
 
 \item{reflectance_ratio}{numeric. The reflectance ratio
@@ -42,6 +42,7 @@ where \eqn{N_g} is the number of ground photons
 vegetation photons (\code{classed_pc_flag > 1}) within each segment.
 }
 \examples{
+if (requireNamespace("hdf5r", quietly = TRUE)) {
 # Specifying the path to ATL03 and ATL08 files
 atl03_path <- system.file("extdata", "atl03_clip.h5", package = "ICESat2VegR")
 atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
@@ -73,6 +74,7 @@ head(cover2[, c("segment_id", "cover", "n_g", "n_v")])
 close(atl03_h5)
 close(atl08_h5)
 
+}
 }
 \seealso{
 \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}

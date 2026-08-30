@@ -18,6 +18,7 @@
 #'   attribute(s).
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' # Specifying the path to ATL08 file
 #' atl08_path <- system.file("extdata",
 #'   "atl08_clip.h5",
@@ -59,6 +60,7 @@
 #'
 #' close(atl08_h5)
 #'}
+#' }
 #' @import data.table
 #' @export
 ATL08_seg_attributes_dt_gridStat <- function(atl08_seg_att_dt, func, res = 0.5) {

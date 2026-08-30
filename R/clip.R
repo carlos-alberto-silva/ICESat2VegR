@@ -128,6 +128,7 @@ setGeneric(
 #' bounding extent.
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' \donttest{
 #' # ATL03 file path
 #' atl03_path <- system.file("extdata",
@@ -156,7 +157,7 @@ setGeneric(
 #'
 #' close(atl03_h5)
 #'}
-#' @import hdf5r
+#' }
 #' @include clipTools.R
 #'
 #' @export
@@ -224,6 +225,7 @@ setMethod(
 #' bounding extent.
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' \donttest{
 #' # ATL03 file path
 #' atl03_path <- system.file("extdata",
@@ -253,7 +255,7 @@ setMethod(
 #' close(atl03_h5)
 #'
 #'}
-#' @import hdf5r
+#' }
 #' @include clipTools.R
 #' @export
 setMethod(
@@ -306,6 +308,7 @@ setMethod(
 #' contained in `vect`.
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' \donttest{
 #' # ATL03 file path
 #' atl03_path <- system.file("extdata",
@@ -335,7 +338,7 @@ setMethod(
 #'
 #' close(atl03_h5)
 #'}
-#' @import hdf5r
+#' }
 #' @include clipTools.R
 #' @export
 setMethod(
@@ -396,6 +399,7 @@ setMethod(
 #' structure, but contains only data within the specified bounding extent.
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' \donttest{
 #' # ATL08 file path
 #' atl08_path <- system.file("extdata",
@@ -422,8 +426,8 @@ setMethod(
 #' close(atl08_h5)
 #' close(atl08_clip)
 #' }
-#' @import hdf5r
 #'
+#' }
 #' @export
 setMethod(
   "clip",
@@ -482,6 +486,7 @@ setMethod(
 #' structure, but contains only data within the specified bounding extent.
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' \donttest{
 #' # ATL08 file path
 #' atl08_path <- system.file("extdata",
@@ -508,8 +513,8 @@ setMethod(
 #' close(atl08_h5)
 #' close(atl08_clip)
 #'}
-#' @import hdf5r
 #'
+#' }
 #'@export
 setMethod(
   "clip",
@@ -539,6 +544,7 @@ setMethod(
 #' but keeps metada and ancillary data the same.
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' \donttest{
 #' # ATL08 file path
 #' atl08_path <- system.file("extdata",
@@ -568,7 +574,7 @@ setMethod(
 #'
 #' close(atl08_h5)
 #' }
-#' @import hdf5r
+#' }
 #' @export
 setMethod(
   "clip",
@@ -617,6 +623,7 @@ setMethod(
 #'  \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' atl03_path <- system.file("extdata", "atl03_clip.h5",
 #'   package = "ICESat2VegR"
 #' )
@@ -639,7 +646,8 @@ setMethod(
 #' )
 #'
 #' close(atl03_h5)
-#' @import hdf5r stats
+#' }
+#' @import stats
 #'
 #' @export
 setMethod(
@@ -685,6 +693,7 @@ setMethod(
 #'  \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' atl03_path <- system.file("extdata", "atl03_clip.h5",
 #'   package = "ICESat2VegR"
 #' )
@@ -707,7 +716,8 @@ setMethod(
 #' )
 #'
 #' close(atl03_h5)
-#' @import hdf5r stats
+#' }
+#' @import stats
 #'
 #' @export
 setMethod(
@@ -736,6 +746,7 @@ setMethod(
 #' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' # ATL03 file path
 #' atl03_path <- system.file("extdata",
 #'   "atl03_clip.h5",
@@ -766,7 +777,8 @@ setMethod(
 #' head(atl03_photons_dt_clip)
 #'
 #' close(atl03_h5)
-#' @import hdf5r stats
+#' }
+#' @import stats
 #' @export
 setMethod(
   "clip",
@@ -814,6 +826,7 @@ setMethod(
 #' installed. If not found, the function stops with an informative message.
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' # Specifying the path to the ATL08 file
 #' atl08_path <- system.file("extdata",
 #'   "atl08_clip.h5",
@@ -843,7 +856,8 @@ setMethod(
 #'
 #' close(atl08_h5)
 #'
-#' @import hdf5r stats
+#' }
+#' @import stats
 #' @export
 setMethod(
   "clip",
@@ -890,7 +904,7 @@ setMethod(
 #' When `clip_obj` is a `SpatExtent`, the package \pkg{terra} must be
 #' installed. If not found, the function stops with an informative message.
 #'
-#' @import hdf5r stats
+#' @import stats
 #' @export
 setMethod(
   "clip",
@@ -917,6 +931,7 @@ setMethod(
 #' containing the clipped ATL08 Terrain and Canopy Attributes.
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' # Specifying the path to ATL08 file
 #' atl08_path <- system.file("extdata",
 #'   "atl08_clip.h5",
@@ -966,6 +981,7 @@ setMethod(
 #'  }
 #'  close(atl08_h5)
 #'
+#' }
 #' @export
 setMethod(
   "clip",
@@ -1018,6 +1034,7 @@ setMethod(
 #' installed. If not found, the function stops with an informative message.
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' # Specifying the path to ATL03 and ATL08 files
 #' atl03_path <- system.file("extdata", "atl03_clip.h5",
 #'   package = "ICESat2VegR"
@@ -1054,7 +1071,8 @@ setMethod(
 #' close(atl03_h5)
 #' close(atl08_h5)
 #'
-#' @import hdf5r stats
+#' }
+#' @import stats
 #' @export
 setMethod(
   "clip",
@@ -1107,6 +1125,7 @@ setMethod(
 #' installed. If not found, the function stops with an informative message.
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' # Specifying the path to ATL03 and ATL08 files
 #' atl03_path <- system.file("extdata", "atl03_clip.h5",
 #'   package = "ICESat2VegR"
@@ -1142,7 +1161,8 @@ setMethod(
 #'
 #' close(atl03_h5)
 #' close(atl08_h5)
-#' @import hdf5r stats
+#' }
+#' @import stats
 #' @export
 setMethod(
   "clip",
@@ -1173,6 +1193,7 @@ setMethod(
 #' containing the clipped ATL08 attributes.
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' # Specifying the path to ATL03 and ATL08 files
 #' atl03_path <- system.file("extdata", "atl03_clip.h5", package = "ICESat2VegR")
 #' atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
@@ -1201,6 +1222,7 @@ setMethod(
 #'
 #' close(atl03_h5)
 #' close(atl08_h5)
+#' }
 #' @export
 setMethod(
   "clip",

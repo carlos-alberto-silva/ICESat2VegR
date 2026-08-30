@@ -18,7 +18,7 @@
 #
 #'
 #' @include class.icesat2.R class.icesat2.h5ds_local.R
-#' @import R6 reticulate hdf5r
+#' @import R6 reticulate
 #' @export
 ICESat2.h5_local <- R6::R6Class("ICESat2.h5_local", list(
   h5 = NULL,
@@ -33,7 +33,8 @@ ICESat2.h5_local <- R6::R6Class("ICESat2.h5_local", list(
   #' @return The class object
   initialize = function(h5) {
     if (inherits(h5, "character")) {
-      self$h5 <- H5File$new(h5, mode = "r")
+      check_hdf5r()
+      self$h5 <- hdf5r::H5File$new(h5, mode = "r")
       groups <- self$ls()
       self$beams <- grep("gt[1-3][lr]", groups, value = TRUE)
       separated_beams <- list(

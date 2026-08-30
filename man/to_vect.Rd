@@ -59,6 +59,7 @@ For plain tables, you can either:
 }
 }
 \examples{
+if (requireNamespace("hdf5r", quietly = TRUE)) {
 # ICESat2VegR examples (package objects keep their classes):
 atl03_path <- system.file("extdata", "atl03_clip.h5", package = "ICESat2VegR")
 atl03_h5 <- ATL03_read(atl03_path = atl03_path)
@@ -72,4 +73,5 @@ df <- data.frame(longitude = c(-84, -84.1), latitude = c(29.6, 29.7), z = 1:2)
 v  <- to_vect(df)
 v2 <- to_vect(df, lon = "longitude", lat = "latitude", crs = "EPSG:4326")
 
+}
 }

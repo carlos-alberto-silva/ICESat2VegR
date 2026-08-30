@@ -11,7 +11,7 @@ ATL03_read(atl03_path)
 returned by \code{\link[=ATLAS_dataFinder]{ATLAS_dataFinder()}} when \code{cloud_computing = TRUE}.}
 }
 \value{
-An S4 object of class \code{\linkS4class{icesat2.atl03_dt}} containing ICESat-2
+An S4 object of class \code{\link[=icesat2.atl03_dt-class]{icesat2.atl03_dt}} containing ICESat-2
 ATL03 data.
 }
 \description{
@@ -19,6 +19,7 @@ This function reads the ICESat-2 Global Geolocated Photons Product (ATL03)
 from an HDF5 (.h5) file.
 }
 \examples{
+if (requireNamespace("hdf5r", quietly = TRUE)) {
 # Specify the path to an ATL03 file
 atl03_path <- system.file(
   "extdata",
@@ -30,6 +31,7 @@ atl03_path <- system.file(
 ATL03 <- ATL03_read(atl03_path = atl03_path)
 close(ATL03)
 
+}
 }
 \seealso{
 \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r007.pdf}

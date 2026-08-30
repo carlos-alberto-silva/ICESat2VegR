@@ -34,6 +34,7 @@ The internal UTM-zone assignment follows helper routines based on the
 latitude/longitude to UTM conversion algorithms developed by Chuck Gantz.
 }
 \examples{
+if (requireNamespace("hdf5r", quietly = TRUE)) {
 atl08_path <- system.file("extdata",
   "atl08_clip.h5",
   package = "ICESat2VegR"
@@ -53,9 +54,10 @@ ATL08_seg_attributes_dt_LAS(
 close(atl08_h5)
 
 }
+}
 \references{
 Gantz, C. Latitude/Longitude to UTM Conversion Algorithms.
-\url{https://oceancolor.gsfc.nasa.gov/docs/ocssw/LatLong-UTMconversion_8cpp_source.html}
+\url{https://www.gpsy.com/gpsinfo/geotoutm/}
 }
 \seealso{
 \code{\link{ATL08_seg_attributes_dt}},

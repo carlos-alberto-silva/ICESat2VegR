@@ -280,6 +280,7 @@ genericSamplingMethod <- function(fn) {
 #'   \code{\link{geomSampling}}, \code{\link{rasterSampling}}
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
 #' atl08_h5   <- ATL08_read(atl08_path = atl08_path)
 #' atl08_dt   <- ATL08_seg_attributes_dt(atl08_h5)
@@ -295,6 +296,7 @@ genericSamplingMethod <- function(fn) {
 #' nrow(sampled_pct)
 #'
 #' close(atl08_h5)
+#' }
 #' @export
 randomSampling <- genericSamplingMethod(randomSamplingWorker)
 
@@ -313,6 +315,7 @@ randomSampling <- genericSamplingMethod(randomSamplingWorker)
 #' @seealso \code{\link{sample}}, \code{\link{randomSampling}}
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
 #' atl08_h5   <- ATL08_read(atl08_path = atl08_path)
 #' atl08_dt   <- ATL08_seg_attributes_dt(atl08_h5)
@@ -338,6 +341,7 @@ randomSampling <- genericSamplingMethod(randomSamplingWorker)
 #' head(sampled_chain)
 #'
 #' close(atl08_h5)
+#' }
 #' @export
 gridSampling <- genericSamplingMethod(gridSamplingWorker)
 
@@ -358,6 +362,7 @@ gridSampling <- genericSamplingMethod(gridSamplingWorker)
 #' @seealso \code{\link{sample}}, \code{\link{randomSampling}}
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
 #' atl08_h5   <- ATL08_read(atl08_path = atl08_path)
 #' atl08_dt   <- ATL08_seg_attributes_dt(atl08_h5)
@@ -371,6 +376,7 @@ gridSampling <- genericSamplingMethod(gridSamplingWorker)
 #' head(sampled)
 #'
 #' close(atl08_h5)
+#' }
 #' @export
 stratifiedSampling <- genericSamplingMethod(stratifiedSamplingWorker)
 
@@ -389,6 +395,7 @@ stratifiedSampling <- genericSamplingMethod(stratifiedSamplingWorker)
 #' @seealso \code{\link{sample}}, \code{\link{randomSampling}}
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
 #' atl08_h5   <- ATL08_read(atl08_path = atl08_path)
 #' atl08_dt   <- ATL08_seg_attributes_dt(atl08_h5)
@@ -402,6 +409,7 @@ stratifiedSampling <- genericSamplingMethod(stratifiedSamplingWorker)
 #' head(sampled)
 #'
 #' close(atl08_h5)
+#' }
 #' @include ANNIndex.R
 #' @export
 spacedSampling <- genericSamplingMethod(spacedSamplingWorker)
@@ -422,6 +430,7 @@ spacedSampling <- genericSamplingMethod(spacedSamplingWorker)
 #' @seealso \code{\link{sample}}, \code{\link{randomSampling}}
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
 #' atl08_h5   <- ATL08_read(atl08_path = atl08_path)
 #' atl08_dt   <- ATL08_seg_attributes_dt(atl08_h5)
@@ -442,6 +451,7 @@ spacedSampling <- genericSamplingMethod(spacedSamplingWorker)
 #' head(sampled)
 #'
 #' close(atl08_h5)
+#' }
 #' @export
 geomSampling <- genericSamplingMethod(geomSamplingWorker)
 
@@ -459,6 +469,7 @@ geomSampling <- genericSamplingMethod(geomSamplingWorker)
 #' @seealso \code{\link{sample}}, \code{\link{randomSampling}}
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
 #' atl08_h5   <- ATL08_read(atl08_path = atl08_path)
 #' atl08_dt   <- ATL08_seg_attributes_dt(atl08_h5)
@@ -483,6 +494,7 @@ geomSampling <- genericSamplingMethod(geomSamplingWorker)
 #' head(sampled)
 #'
 #' close(atl08_h5)
+#' }
 #' @export
 rasterSampling <- genericSamplingMethod(rasterSamplingWorker)
 

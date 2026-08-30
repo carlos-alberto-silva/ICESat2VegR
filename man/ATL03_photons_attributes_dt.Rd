@@ -73,6 +73,7 @@ If a requested attribute is not present in a given beam, the
 corresponding column is filled with \code{NA}.
 }
 \examples{
+if (requireNamespace("hdf5r", quietly = TRUE)) {
 atl03_path <- system.file(
   "extdata", "atl03_clip.h5",
   package = "ICESat2VegR"
@@ -90,6 +91,7 @@ head(atl03_photons_dt)
 close(atl03_h5)
 
 
+}
 }
 \seealso{
 \url{https://nsidc.org/sites/default/files/documents/technical-reference/icesat2_atl03_data_dict_v007.pdf}

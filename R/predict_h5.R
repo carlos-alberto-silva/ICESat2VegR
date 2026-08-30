@@ -39,6 +39,7 @@ setMethod("close", signature = c("icesat2.predict_h5"), h5closeall)
 #' h5 file with latitude, longitude and prediction datasets.
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' atl03_path <- system.file(
 #'   "extdata",
 #'   "atl03_clip.h5",
@@ -61,6 +62,7 @@ setMethod("close", signature = c("icesat2.predict_h5"), h5closeall)
 #' # Close the file
 #' close(predicted_h5)
 #'
+#' }
 #' @export
 setGeneric("predict_h5", function(model, dt, output) {
   standardGeneric("predict_h5")
@@ -79,6 +81,7 @@ setGeneric("predict_h5", function(model, dt, output) {
 #' h5 file with latitude, longitude and prediction
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' atl03_path <- system.file(
 #'   "extdata",
 #'   "atl03_clip.h5",
@@ -101,11 +104,13 @@ setGeneric("predict_h5", function(model, dt, output) {
 #'
 #' # Close the file
 #' close(predicted_h5)
+#' }
 #' @export
 setMethod(
   "predict_h5",
   signature(model = "ANY", dt = "icesat2.atl03_seg_dt", output = "character"),
   function(model, dt, output) {
+    check_hdf5r()
     h5 <- hdf5r::H5File$new(output, "w")
 
     h5[["prediction"]] <- predict(model, dt)
@@ -138,6 +143,7 @@ setMethod(
 #' h5 file with latitude, longitude and prediction datasets.
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' atl08_path <- system.file(
 #'   "extdata",
 #'   "atl08_clip.h5",
@@ -158,11 +164,13 @@ setMethod(
 #' # Close the file
 #' close(predicted_h5)
 #'
+#' }
 #' @export
 setMethod(
   "predict_h5",
   signature(model = "ANY", dt = "icesat2.atl08_dt", output = "character"),
   function(model, dt, output) {
+    check_hdf5r()
     if (internal_predict_h5$path == output) {
       h5 <- internal_predict_h5$h5$close_all()
     }

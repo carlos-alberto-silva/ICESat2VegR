@@ -73,6 +73,7 @@
 #' }
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' # Specifying the path to ATL08 file
 #' atl08_path <- system.file("extdata",
 #'   "atl08_clip.h5",
@@ -106,6 +107,7 @@
 #' nrow(atl08_seg_clip2)
 #'
 #' close(atl08_h5)
+#' }
 #' @import data.table
 #' @export
 ATL03_ATL08_seg_attributes_dt_clipBox <- function(atl03_atl08_dt,
@@ -222,6 +224,7 @@ ATL03_ATL08_seg_attributes_dt_clipBox <- function(atl03_atl08_dt,
 #' }
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' # Specifying the path to ATL08 file
 #' atl08_path <- system.file("extdata",
 #'   "atl08_clip.h5",
@@ -261,6 +264,7 @@ ATL03_ATL08_seg_attributes_dt_clipBox <- function(atl03_atl08_dt,
 #'
 #' close(atl08_h5)
 #'
+#' }
 #' @import data.table
 #' @export
 ATL03_ATL08_seg_attributes_dt_clipGeometry <- function(atl03_atl08_dt,

@@ -15,6 +15,7 @@
 #' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' # ATL03 file path
 #' atl03_path <- system.file("extdata",
 #'   "atl03_clip.h5",
@@ -45,7 +46,8 @@
 #' head(atl03_photons_dt_clip)
 #'
 #' close(atl03_h5)
-#' @import hdf5r stats
+#' }
+#' @import stats
 #' @export
 ATL03_photons_attributes_dt_clipGeometry <- function(atl03_photons_dt, clip_obj, split_by = "id") {
   # Check if atl03_photons_dt is of the correct class

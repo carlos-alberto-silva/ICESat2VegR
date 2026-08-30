@@ -36,6 +36,7 @@
 #' installed. If not found, the function stops with an informative message.
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' # Specifying the path to ATL03 and ATL08 files
 #' atl03_path <- system.file("extdata", "atl03_clip.h5",
 #'                           package = "ICESat2VegR")
@@ -70,7 +71,8 @@
 #' close(atl03_h5)
 #' close(atl08_h5)
 #'
-#' @import hdf5r stats
+#' }
+#' @import stats
 #' @export
 ATL03_ATL08_photons_attributes_dt_clipBox <- function(atl03_atl08_dt,
                                                       clip_obj) {

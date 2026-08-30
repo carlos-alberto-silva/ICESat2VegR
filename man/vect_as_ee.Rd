@@ -122,7 +122,7 @@ fc <- vect_as_ee(pts, via = "getInfo")
 \seealso{
 \itemize{
 \item Earth Engine Python API docs: \code{ee$FeatureCollection}
-\item Geometry repair: \code{\link[sf:valid]{sf::st_make_valid()}}, \code{\link[terra:is.valid]{terra::makeValid()}}
+\item Geometry repair: \code{\link[sf:st_make_valid]{sf::st_make_valid()}}, \code{\link[terra:makeValid]{terra::makeValid()}}
 \item GeoJSON helpers: \strong{geojsonsf}, \code{\link[sf:st_write]{sf::st_write()}}
 }
 }

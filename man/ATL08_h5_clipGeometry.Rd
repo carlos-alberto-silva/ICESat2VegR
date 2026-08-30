@@ -23,14 +23,14 @@ ATL08_h5_clipGeometry(
 )
 }
 \arguments{
-\item{atl08}{An \code{\linkS4class{icesat2.atl08_h5}} object obtained via
+\item{atl08}{An \code{\link[=icesat2.atl08_h5-class]{icesat2.atl08_h5}} object obtained via
 \code{\link[=ATL08_read]{ATL08_read()}}, representing the ATL08 HDF5 file to be clipped.}
 
 \item{output}{Character string defining the base output filepath. The final
 output files will be named using:
 \verb{paste0(output, "_", <split_by_value>, ".h5")}.}
 
-\item{clip_obj}{A \code{\link[terra:SpatVector-class]{terra::SpatVector}} containing the polygon or multipolygon
+\item{clip_obj}{A \code{\link[terra:SpatVector]{terra::SpatVector}} containing the polygon or multipolygon
 geometries used as clipping regions. Each feature corresponds to one
 clipping output.}
 
@@ -47,10 +47,10 @@ be copied unchanged into each output file. The default is:
 \code{c("orbit_info")}.}
 }
 \value{
-Returns a list of clipped S4 object of class \code{\linkS4class{icesat2.atl08_h5}}
+Returns a list of clipped S4 object of class \code{\link[=icesat2.atl08_h5-class]{icesat2.atl08_h5}}
 
 A list of clipped S4 objects of class
-\code{\linkS4class{icesat2.atl08_h5}}, one for each geometry in
+\code{\link[=icesat2.atl08_h5-class]{icesat2.atl08_h5}}, one for each geometry in
 \code{clip_obj}.
 }
 \description{
@@ -58,7 +58,7 @@ This function clips ATL08 HDF5 file within beam groups,
 but keeps metada and ancillary data the same.
 
 Clips an ICESat-2 ATL08 HDF5 file using one or more geometry-based clipping
-regions provided as a \code{\link[terra:SpatVector-class]{terra::SpatVector}}. Each feature (row) in
+regions provided as a \code{\link[terra:SpatVector]{terra::SpatVector}}. Each feature (row) in
 \code{clip_obj} defines a separate clipping boundary. For every geometry, a new
 clipped ATL08 HDF5 file is created with the beam-level datasets spatially
 filtered to include only segments within the clipping region.
@@ -87,6 +87,7 @@ This is the geometry-based companion to bounding-box clipping functions in
 the package.
 }
 \examples{
+if (requireNamespace("hdf5r", quietly = TRUE)) {
 # ATL08 file path
 atl08_path <- system.file("extdata",
   "atl08_clip.h5",
@@ -114,6 +115,8 @@ atl08_photons_dt_clip <- ATL08_h5_clipGeometry(
 )
 
 close(atl08_h5)
+}
+if (requireNamespace("hdf5r", quietly = TRUE)) {
 \donttest{
 # ATL08 file path
 ATL08_path <- system.file("extdata",
@@ -142,5 +145,6 @@ ATL08_clipped_list <- ATL08_h5_clipGeometry(
 )
 
 close(ATL08_h5)
+}
 }
 }

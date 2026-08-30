@@ -1,5 +1,6 @@
 test_that("bundled ATL03/ATL08 fixtures support the local README workflow primitives", {
   skip_if_not_installed("terra")
+  skip_if_not_installed("hdf5r")
 
   atl03_path <- system.file("extdata", "atl03_clip.h5", package = "ICESat2VegR")
   atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
@@ -52,6 +53,7 @@ test_that("bundled ATL03/ATL08 fixtures support the local README workflow primit
 test_that("joined ATL03/ATL08 photons can be segmented and summarized", {
   skip_if_not_installed("sf")
   skip_if_not_installed("terra")
+  skip_if_not_installed("hdf5r")
 
   atl03_path <- system.file("extdata", "atl03_clip.h5", package = "ICESat2VegR")
   atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")

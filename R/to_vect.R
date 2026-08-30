@@ -14,6 +14,7 @@
 #' @return A [`terra::SpatVector-class`] object.
 #'
 #' @examples
+#' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' # ICESat2VegR examples (package objects keep their classes):
 #' atl03_path <- system.file("extdata", "atl03_clip.h5", package = "ICESat2VegR")
 #' atl03_h5 <- ATL03_read(atl03_path = atl03_path)
@@ -27,6 +28,7 @@
 #' v  <- to_vect(df)
 #' v2 <- to_vect(df, lon = "longitude", lat = "latitude", crs = "EPSG:4326")
 #'
+#' }
 #' @include class.icesat2.R
 #' @export
 setGeneric(
