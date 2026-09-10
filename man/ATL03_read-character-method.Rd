@@ -10,7 +10,7 @@
 \item{atl03_path}{A character string specifying the path to the ICESat-2 ATL03 HDF5 file.}
 }
 \value{
-An S4 object of class \code{\link{icesat2.atl03_h5}} containing ICESat-2 ATL03 data.
+An S4 object of class \code{\link[=icesat2.atl03_h5-class]{icesat2.atl03_h5}} containing ICESat-2 ATL03 data.
 }
 \description{
 Method for reading ICESat-2 ATL03 data from a local HDF5 (.h5) file.

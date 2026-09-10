@@ -21,7 +21,7 @@ ATL03_seg_metadata_dt(
 \arguments{
 \item{atl03_h5}{An ICESat-2 ATL03 object (output of \code{\link[=ATL03_read]{ATL03_read()}}),
 i.e. an S4 object of class
-\code{\link{icesat2.atl03_h5}}.}
+\code{\link[=icesat2.atl03_h5-class]{icesat2.atl03_h5}}.}
 
 \item{beam}{Character vector indicating beams to process
 (e.g. \code{gt1l}, \code{gt1r}, \code{gt2l}, \code{gt2r}, \code{gt3l}, \code{gt3r}).

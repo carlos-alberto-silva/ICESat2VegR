@@ -4,11 +4,13 @@
 \alias{earthdata_login}
 \title{Get or Create a \code{.netrc} File for NASA Earthdata Login}
 \usage{
-earthdata_login(output_dir = "~")
+earthdata_login(output_dir = tempdir())
 }
 \arguments{
 \item{output_dir}{Character. Directory where the \code{.netrc} file should be
-created.}
+created. Defaults to \code{\link[=tempdir]{tempdir()}} so credentials are not written to
+the user's home filespace unless explicitly requested; pass e.g.
+\code{"~"} yourself if you want the credentials to persist across sessions.}
 }
 \value{
 Character string. The normalized path to the \code{.netrc} file

@@ -12,7 +12,7 @@ ATL03_photons_attributes_dt(
 }
 \arguments{
 \item{atl03_h5}{An ICESat-2 ATL03 object (output of \code{\link[=ATL03_read]{ATL03_read()}}), i.e.
-an S4 object of class \code{\link{icesat2.atl03_h5}}.}
+an S4 object of class \code{\link[=icesat2.atl03_h5-class]{icesat2.atl03_h5}}.}
 
 \item{beam}{Character vector indicating beams to process
 (e.g. "gt1l", "gt1r", "gt2l", "gt2r", "gt3l", "gt3r").}

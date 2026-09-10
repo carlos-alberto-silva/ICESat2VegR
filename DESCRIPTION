@@ -1,6 +1,6 @@
 Package: ICESat2VegR
 Type: Package
-Title: ICESat-2 Data Analysis for Land and Vegetation Applications
+Title: ICESat-2 Data Analysis for Land and Vegetation
 Version: 0.0.1
 Authors@R: c( person("Carlos Alberto", "Silva", email = "c.silva@ufl.edu", role = c("aut", "cph", "cre")),
            person("Caio", "Hamamura", email = "caiohamamura@gmail.com", role = c("aut", "cph")),
@@ -12,9 +12,14 @@ Authors@R: c( person("Carlos Alberto", "Silva", email = "c.silva@ufl.edu", role 
             person("Chuck", "Gantz", role = "ctb", comment = "Author of the lat/long to UTM conversion algorithm used in R/utmTools.R"),
             person("Cole", "Krehbiel", role = "ctb", comment = "Author of the NASA data download routine adapted in R/ATLAS_dataDownload.R")
  )
-Description: Set of tools for downloading, reading, visualizing, processing and exporting NASA's
-           ICESat-2 ATL03 (Global Geolocated Photon Data) and ATL08 (Land and Vegetation Height)
-           products for Land and Vegetation Applications.
+Description: Provides tools for downloading, reading, processing, visualizing,
+           and exporting NASA's ICESat-2 ATL03 (Global Geolocated Photon
+           Data) and ATL08 (Land and Vegetation Height) products. Supports
+           photon- and segment-level analysis, spatial sampling, gridding,
+           statistical and machine-learning modeling, and integration with
+           'Google Earth Engine' (<https://earthengine.google.com/>) for
+           wall-to-wall mapping of vegetation structure and other land
+           attributes.
 Depends: R (>= 4.1.0)
 Imports:
   curl,

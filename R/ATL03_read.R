@@ -44,7 +44,7 @@ setGeneric("ATL03_read", function(atl03_path) {
 #'   A character string specifying the path to the ICESat-2 ATL03 HDF5 file.
 #'
 #' @return
-#'   An S4 object of class [`icesat2.atl03_h5`] containing ICESat-2 ATL03 data.
+#'   An S4 object of class [`icesat2.atl03_h5-class`] containing ICESat-2 ATL03 data.
 #'
 #' @include zzz.R
 #' @include class.icesat2.R
@@ -74,7 +74,7 @@ setMethod(
 #'   ATL03 data stored in the cloud.
 #'
 #' @return
-#'   An S4 object of class [`icesat2.atl03_h5`] containing ICESat-2 ATL03 data.
+#'   An S4 object of class [`icesat2.atl03_h5-class`] containing ICESat-2 ATL03 data.
 #'
 #' @export
 setMethod(

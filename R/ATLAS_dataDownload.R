@@ -463,7 +463,9 @@ icesat2DownloadFile <- function(url, outdir, overwrite, buffer_size, netrc, time
 #' ```
 #'
 #' @param output_dir Character. Directory where the `.netrc` file should be
-#'   created.
+#'   created. Defaults to [`tempdir()`] so credentials are not written to
+#'   the user's home filespace unless explicitly requested; pass e.g.
+#'   `"~"` yourself if you want the credentials to persist across sessions.
 #'
 #' @return Character string. The normalized path to the `.netrc` file
 #'   being used.
@@ -481,7 +483,7 @@ icesat2DownloadFile <- function(url, outdir, overwrite, buffer_size, netrc, time
 #' \href{https://urs.earthdata.nasa.gov}{NASA Earthdata Login}
 #'
 #' @export
-earthdata_login <- function(output_dir = "~") {
+earthdata_login <- function(output_dir = tempdir()) {
   netrc    <- normalizePath(file.path(output_dir, ".netrc"))
   
   if (!file.exists(netrc) ||

@@ -3,7 +3,6 @@
 \docType{class}
 \name{icesat2.atl08_h5-class}
 \alias{icesat2.atl08_h5-class}
-\alias{icesat2.atl08_h5}
 \title{Class for ICESat-2 ATL08}
 \description{
 Class for ICESat-2 ATL08

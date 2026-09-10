@@ -11,7 +11,7 @@
 ATL03 data stored in the cloud.}
 }
 \value{
-An S4 object of class \code{\link{icesat2.atl03_h5}} containing ICESat-2 ATL03 data.
+An S4 object of class \code{\link[=icesat2.atl03_h5-class]{icesat2.atl03_h5}} containing ICESat-2 ATL03 data.
 }
 \description{
 Method for reading ICESat-2 ATL03 data from a cloud-based granule.

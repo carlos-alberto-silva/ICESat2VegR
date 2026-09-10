@@ -53,7 +53,7 @@ ATL03.seg.map[["yaw"]]                    <- "geolocation/yaw"
 #' @param atl03_h5
 #'   An ICESat-2 ATL03 object (output of [ATL03_read()]),
 #'   i.e. an S4 object of class
-#'   [`ICESat2VegR::icesat2.atl03_h5`].
+#'   [`ICESat2VegR::icesat2.atl03_h5-class`].
 #' @param beam
 #'   Character vector indicating beams to process
 #'   (e.g. `gt1l`, `gt1r`, `gt2l`, `gt2r`, `gt3l`, `gt3r`).

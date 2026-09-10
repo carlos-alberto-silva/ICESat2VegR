@@ -1,4 +1,44 @@
-## Resubmission (hdf5r dependency decoupled)
+## Resubmission (manual review comments)
+
+This is a resubmission addressing the manual review comments from Leonore
+Hochhauser (2026-08-30):
+
+* Removed single quotes from `Title`/`Description` around domain-specific
+  product/mission names (`ICESat-2`, `ATL03`, `ATL08`, `Geolocated`) --
+  these are NASA data product names, not software/package/API names, so
+  per the quoting convention they should not be quoted. `'Google Earth
+  Engine'` remains quoted, since that is a genuine third-party software
+  name, and its `<https://earthengine.google.com/>` URL has been added to
+  the `Description` field.
+* `R/class.icesat2.R`: the `plot()` method for `icesat2.atl03atl08_dt`
+  used `print()` to report an invalid input class -- an unsuppressable
+  console message for what is actually an error condition. Replaced with
+  `stop()`.
+* `earthdata_login()` (`R/ATLAS_dataDownload.R`) defaulted `output_dir` to
+  `"~"`, writing a `.netrc` credentials file to the user's home filespace
+  by default. The default is now `tempdir()`; users who want the
+  credentials to persist across sessions can still pass `"~"` (or any
+  other path) explicitly. No example, vignette, or test relied on the old
+  default -- the one internal caller that used the default
+  (`earthaccess_login()`) works unchanged with the new one.
+
+## Earlier resubmission (incoming pretest notes)
+
+This is a resubmission following the 2026-08-30 incoming pretests. The
+DESCRIPTION wording has been adjusted so the domain-specific product names
+and terminology are quoted. The two S4 class-generator functions accidentally
+exported by assigning the result of `setClass()` are no longer exported as
+ordinary functions; the
+S4 classes themselves remain exported. This resolves the Debian INFO about
+exported functions without usage information.
+
+The Windows-only overall check-time NOTE (24 minutes) is environmental rather
+than a package check failure. Individual timed stages in that log total well
+under 10 minutes; the unreported remainder is primarily installation/linking
+of the package's bundled ANN C++ sources and loading its large compiled DLL.
+The same source completed the Debian pretest without an overall-time NOTE.
+
+## Earlier resubmission (hdf5r dependency decoupled)
 
 This is a resubmission. The previous submission (version 0.0.1, submitted
 2026-08-26) failed the incoming pretest on the Debian flavor with:

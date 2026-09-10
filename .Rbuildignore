@@ -27,3 +27,5 @@
 ^cran-comments\.md$
 ^\.git$
 ^Rplots\.pdf$
+^\.claude$
+^\.Rlib$

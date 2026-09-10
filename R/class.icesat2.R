@@ -109,8 +109,7 @@ icesat2.h5 <- new("icesat2.h5")
 #' \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL03_ATBD_r006.pdf}
 #'
 #' @import methods
-#' @export
-icesat2.atl03_h5 <- setClass(
+setClass(
   Class = "icesat2.atl03_h5",
   contains = "icesat2.h5"
 )
@@ -126,8 +125,7 @@ icesat2.atl03_h5 <- setClass(
 #' \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
 #'
 #' @import methods
-#' @export
-icesat2.atl08_h5 <- setClass(
+setClass(
   Class = "icesat2.atl08_h5",
   contains = "icesat2.h5"
 )
@@ -373,10 +371,7 @@ setMethod(
   function(x, y, beam = NULL,
            col = c("gray", "#bd8421", "forestgreen", "green"), ...) {
     if (!is(x, "icesat2.atl03atl08_dt")) {
-      print(
-        "Invalid input file.
-It should be an object of class 'icesat2.atl03atl08_dt'"
-      )
+      stop("Invalid input file. It should be an object of class 'icesat2.atl03atl08_dt'")
     } else {
       plot_atl03_atl08_join_dt(x, y, beam, col, ...)
     }
