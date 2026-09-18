@@ -27,29 +27,14 @@ ee_cache <- new.env(parent = emptyenv())
 ee_cache$search <- NULL
 
 .onLoad <- function(libname, pkgname) {
-  try(
-    suppressWarnings(
-      suppressMessages(
-        reticulate::py_require(c(
-          "earthaccess",
-          "earthengine-api",
-          "h5py"
-        ))
-      )
-    ),
-    silent = TRUE
+  # Create lazy module proxies without selecting or starting Python. Cloud
+  # dependencies are resolved only when a cloud or Earth Engine feature is
+  # actually used; ordinary package loading must remain Python-independent.
+  earthaccess <<- reticulate::import(
+    "earthaccess", convert = FALSE, delay_load = TRUE
   )
-
-  # Python modules ..
-  if (reticulate::py_module_available("earthaccess")) {
-    earthaccess <<- reticulate::import("earthaccess", convert = FALSE)
-  }
-  if (reticulate::py_module_available("ee")) {
-    ee <<- reticulate::import("ee", convert = TRUE)
-  }
-  if (reticulate::py_module_available("h5py")) {
-    h5py <<- reticulate::import("h5py", convert = TRUE)
-  }
+  ee <<- reticulate::import("ee", convert = TRUE, delay_load = TRUE)
+  h5py <<- reticulate::import("h5py", convert = TRUE, delay_load = TRUE)
 
   # GDAL module load
   loadGdal(pkgname)

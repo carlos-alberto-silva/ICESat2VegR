@@ -475,9 +475,9 @@ icesat2DownloadFile <- function(url, outdir, overwrite, buffer_size, netrc, time
 #' package **getPass** is available, the user is prompted securely.
 #' Otherwise, an error is thrown.
 #'
-#' The function also updates the `NETRC` environment variable inside
-#' the active Python session via **reticulate**, ensuring compatibility
-#' with Python libraries such as `earthaccess`.
+#' The function also sets the `NETRC` environment variable for the current
+#' R process. Python libraries such as `earthaccess` inherit this setting
+#' when they are initialized.
 #'
 #' @seealso
 #' \href{https://urs.earthdata.nasa.gov}{NASA Earthdata Login}
@@ -519,7 +519,6 @@ earthdata_login <- function(output_dir = tempdir()) {
     message("A .netrc file with your Earthdata Login credentials was stored at: ", netrc)
   }
   
-  os <- reticulate::import("os")
-  os$environ$update(NETRC = netrc)
+  Sys.setenv(NETRC = netrc)
   netrc
 }

@@ -46,6 +46,7 @@
 #' @seealso \url{https://icesat-2.gsfc.nasa.gov/sites/default/files/page_files/ICESat2_ATL08_ATBD_r006.pdf}
 #'
 #' @examples
+#' \donttest{
 #' if (requireNamespace("hdf5r", quietly = TRUE)) {
 #' # Specifying the path to ATL03 file
 #' atl03_path <- system.file("extdata",
@@ -72,6 +73,7 @@
 #' close(atl03_h5)
 #' close(atl08_h5)
 #'
+#' }
 #' }
 #' @export
 ATL03_ATL08_photons_attributes_dt_join <- function(

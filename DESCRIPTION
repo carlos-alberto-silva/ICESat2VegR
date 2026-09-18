@@ -1,7 +1,7 @@
 Package: ICESat2VegR
 Type: Package
 Title: ICESat-2 Data Analysis for Land and Vegetation
-Version: 0.0.1
+Version: 0.0.2
 Authors@R: c( person("Carlos Alberto", "Silva", email = "c.silva@ufl.edu", role = c("aut", "cph", "cre")),
            person("Caio", "Hamamura", email = "caiohamamura@gmail.com", role = c("aut", "cph")),
            person("Cesar", "Alvites", email = "c.alvitesdiaz@ufl.edu", role = c("aut", "ctb")),

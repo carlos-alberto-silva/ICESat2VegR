@@ -97,3 +97,53 @@ test_that("joined ATL03/ATL08 photons can be segmented and summarized", {
   expect_true(inherits(clipped, "icesat2.atl03_atl08_seg_dt"))
   expect_true(nrow(clipped) <= nrow(stats20))
 })
+
+test_that("local HDF5 navigation remains valid across garbage collection", {
+  skip_if_not_installed("hdf5r")
+
+  atl03_path <- system.file("extdata", "atl03_clip.h5", package = "ICESat2VegR")
+  atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
+  skip_if(atl03_path == "" || atl08_path == "", "Bundled HDF5 fixtures are unavailable.")
+
+  atl03 <- ATL03_read(atl03_path)
+  gc()
+  atl08 <- ATL08_read(atl08_path)
+  on.exit({ close(atl03); close(atl08) }, add = TRUE)
+
+  for (i in seq_len(5)) {
+    expect_true(length(atl03[["orbit_info/orbit_number"]][]) > 0)
+    gc()
+    expect_true(length(atl08[["orbit_info/orbit_number"]][]) > 0)
+    gc()
+  }
+
+  expect_no_error(ATL03_ATL08_photons_attributes_dt_join(atl03, atl08))
+})
+
+test_that("closed file wrappers cannot invalidate identifiers reused later", {
+  skip_if_not_installed("hdf5r")
+
+  atl03_path <- system.file("extdata", "atl03_clip.h5", package = "ICESat2VegR")
+  atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
+  skip_if(atl03_path == "" || atl08_path == "", "Bundled HDF5 fixtures are unavailable.")
+
+  # Match a full examples run: explicitly close earlier files, leave their R6
+  # wrappers for a later collection, then open new files whose HDF5 identifiers
+  # may reuse the released numeric IDs.
+  old_files <- lapply(seq_len(4), function(i) {
+    old_atl03 <- ATL03_read(atl03_path)
+    old_atl08 <- ATL08_read(atl08_path)
+    close(old_atl03)
+    close(old_atl08)
+    list(old_atl03, old_atl08)
+  })
+
+  atl03 <- ATL03_read(atl03_path)
+  atl08 <- ATL08_read(atl08_path)
+  on.exit({ close(atl03); close(atl08) }, add = TRUE)
+
+  rm(old_files)
+  gc()
+
+  expect_no_error(ATL03_ATL08_photons_attributes_dt_join(atl03, atl08))
+})
