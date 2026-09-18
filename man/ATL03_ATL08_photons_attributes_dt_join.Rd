@@ -62,7 +62,6 @@ the metadata at the file level.
 }
 }
 \examples{
-\donttest{
 if (requireNamespace("hdf5r", quietly = TRUE)) {
 # Specifying the path to ATL03 file
 atl03_path <- system.file("extdata",
@@ -89,7 +88,6 @@ head(atl03_atl08_dt)
 close(atl03_h5)
 close(atl08_h5)
 
-}
 }
 }
 \seealso{
