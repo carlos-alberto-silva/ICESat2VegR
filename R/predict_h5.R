@@ -62,6 +62,9 @@ setMethod("close", signature = c("icesat2.predict_h5"), h5closeall)
 #' # Close the file
 #' close(predicted_h5)
 #'
+#' # Close the input ICESat-2 file as well
+#' close(atl03_h5)
+#'
 #' }
 #' @export
 setGeneric("predict_h5", function(model, dt, output) {
@@ -104,6 +107,7 @@ setGeneric("predict_h5", function(model, dt, output) {
 #'
 #' # Close the file
 #' close(predicted_h5)
+#' close(atl03_h5)
 #' }
 #' @export
 setMethod(
@@ -163,6 +167,9 @@ setMethod(
 #'
 #' # Close the file
 #' close(predicted_h5)
+#'
+#' # Close the input ICESat-2 file as well
+#' close(atl08_h5)
 #'
 #' }
 #' @export

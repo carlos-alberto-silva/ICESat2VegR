@@ -45,5 +45,6 @@ head(predicted_h5[["prediction"]][])
 
 # Close the file
 close(predicted_h5)
+close(atl03_h5)
 }
 }

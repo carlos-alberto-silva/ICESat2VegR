@@ -147,3 +147,37 @@ test_that("closed file wrappers cannot invalidate identifiers reused later", {
 
   expect_no_error(ATL03_ATL08_photons_attributes_dt_join(atl03, atl08))
 })
+
+test_that("abandoned wrappers cannot invalidate a file opened later", {
+  skip_if_not_installed("hdf5r")
+
+  atl03_path <- system.file("extdata", "atl03_clip.h5", package = "ICESat2VegR")
+  atl08_path <- system.file("extdata", "atl08_clip.h5", package = "ICESat2VegR")
+  skip_if(atl03_path == "" || atl08_path == "", "Bundled HDF5 fixtures are unavailable.")
+
+  # Abandon file wrappers the way an interrupted example or an overwritten
+  # variable does: close() is never called, so only garbage collection can
+  # reclaim them. hdf5r owns those handles; a package-side wrapper finalizer
+  # that called close_all() used to sweep identifiers of files opened later,
+  # which is the `id is invalid` failure reported for the join example.
+  for (i in seq_len(4)) {
+    abandoned <- list(ATL03_read(atl03_path), ATL08_read(atl08_path))
+    rm(abandoned)
+  }
+  gc(full = TRUE)
+
+  atl03 <- ATL03_read(atl03_path)
+  atl08 <- ATL08_read(atl08_path)
+  on.exit({
+    close(atl03)
+    close(atl08)
+  }, add = TRUE)
+  gc(full = TRUE)
+
+  gctorture2(step = 10000)
+  on.exit(gctorture2(step = 0), add = TRUE)
+
+  expect_no_error(ATL03_ATL08_photons_attributes_dt_join(atl03, atl08))
+  beam <- atl03$beams[[1]]
+  expect_gt(length(atl03[[beam]][["geolocation/segment_id"]][]), 0)
+})
