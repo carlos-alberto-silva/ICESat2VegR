@@ -19,10 +19,10 @@ ANNIndex::ANNIndex(NumericVector x, NumericVector y, int dimensions)
 
 ANNIndex::~ANNIndex()
 {
-  delete nn_idx;
-  delete dists;
-  annDeallocPts(dataPts);
+  delete [] nn_idx;
+  delete [] dists;
   delete tree;
+  annDeallocPts(dataPts);
   annClose();
 }
 
@@ -32,7 +32,8 @@ IntegerVector ANNIndex::searchFixedRadius(const double x, const double y, const 
   
   pt_query[0] = x;
   pt_query[1] = y;
-  int count = tree->annkFRSearch(pt_query, radius, nPoints, nn_idx, dists);
+  // ANN expects the squared search radius; callers provide a distance.
+  int count = tree->annkFRSearch(pt_query, radius * radius, nPoints, nn_idx, dists);
   
   annDeallocPt(pt_query);
   int *idxx = (int*)nn_idx;

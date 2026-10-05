@@ -20,26 +20,31 @@ please run ICESat2Veg_configure().")
   }
 
 
-  earthdata_login()
-  auth <- list(authenticated = FALSE)
-  os <- reticulate::import("os")
-  if (
-    (file.exists(".netrc") || is.character(os$environ$get("NETRC")))
-  ) {
-    auth <- earthaccess$login(strategy = "netrc")
+  configured_netrc <- Sys.getenv("NETRC", unset = "")
+  has_netrc <- nzchar(configured_netrc) && file.exists(configured_netrc)
+  has_environment_credentials <- nzchar(Sys.getenv("EARTHDATA_TOKEN", unset = "")) ||
+    (nzchar(Sys.getenv("EARTHDATA_USERNAME", unset = "")) &&
+      nzchar(Sys.getenv("EARTHDATA_PASSWORD", unset = "")))
+
+  if (has_environment_credentials) {
+    auth <- earthaccess$login(strategy = "environment")
+  } else {
+    if (!has_netrc) {
+      configured_netrc <- earthdata_login()
+      has_netrc <- file.exists(configured_netrc)
+    }
+    auth <- if (has_netrc) earthaccess$login(strategy = "netrc") else NULL
   }
-  if (!py_to_r(auth$authenticated)) {
+
+  authenticated <- !is.null(auth) && isTRUE(reticulate::py_to_r(auth$authenticated))
+  if (!authenticated && interactive()) {
     auth <- earthaccess$login(strategy = "interactive", persist = persist)
+    authenticated <- isTRUE(reticulate::py_to_r(auth$authenticated))
   }
-  if (!py_to_r(auth$authenticated)) {
+  if (!authenticated) {
     stop("Could not authenticate in NASA earthaccess,
     please verify your credentials.")
   }
 
-  if (py_to_r(auth$authenticated)) {
-    message("Successfully logged in NASA earthaccess.")
-  } else {
-    stop("Could not authenticate in NASA earthaccess,
-    please verify your credentials.")
-  }
+  message("Successfully logged in NASA earthaccess.")
 }

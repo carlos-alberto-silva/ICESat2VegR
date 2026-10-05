@@ -29,3 +29,4 @@
 ^Rplots\.pdf$
 ^\.claude$
 ^\.Rlib$
+^workshop$

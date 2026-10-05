@@ -1,13 +1,15 @@
-## ICESat2VegR 0.0.3 - resubmission
+## ICESat2VegR 0.0.4 - memory-safety correction
 
-The example failures on the Linux and macOS flavours are fixed. Version 0.0.2
-registered an R finalizer on the object wrapping an opened HDF5 file, and that
-finalizer called `hdf5r`'s `H5File$close_all()`, which closes every identifier
-of the file. When the garbage collector ran it while another wrapper was still
-reading from the same file, the check stopped with `id is invalid`. No wrapper
-finalizer is registered any more; only an explicit `close()` releases a file.
-No new features and no new dependencies.
+The gcc-ASAN check of version 0.0.3 reported an allocation/deallocation
+mismatch in `ANNIndex::~ANNIndex()` while running the `spacedSampling` example.
+Both index and distance arrays were allocated with `new[]` and released with
+`delete`. They are now released with `delete[]`. The Valgrind example log
+reported the same two mismatches. The ANN fixed-radius search also expected a
+squared radius but was given the requested distance; it now receives the square
+of that distance. Regression tests cover index creation, search, finalization,
+and spaced-sampling distance behavior. No new features or dependencies are
+included.
 
-Verified with the complete example set and the test suite (Windows, R 4.6.1),
-including runs with forced garbage collection, and with R-hub checks on Fedora
-Linux (gcc 16), Ubuntu Linux and Windows (R-devel), all `Status: OK`.
+Version 0.0.3 was otherwise `Status: OK` in CRAN's regular checks on Linux,
+Windows, and macOS. The Valgrind check itself was also `Status: OK`; its
+detailed example output exposed the mismatched frees addressed here.

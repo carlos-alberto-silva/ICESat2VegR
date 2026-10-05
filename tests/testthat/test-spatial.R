@@ -69,3 +69,37 @@ test_that("sampling methods return stable data.table-compatible subsets", {
   expect_true(nrow(sampled_strata) >= 1)
   expect_true("breaks" %in% names(sampled_strata))
 })
+
+test_that("geometry and raster sampling select from each spatial group", {
+  skip_if_not_installed("terra")
+
+  raster <- terra::rast(
+    nrows = 1, ncols = 2, xmin = 0, xmax = 2,
+    ymin = 0, ymax = 1, crs = "EPSG:4326"
+  )
+  terra::values(raster) <- c(1, 2)
+  polygons <- terra::as.polygons(raster)
+
+  dt <- data.table::data.table(
+    longitude = c(0.25, 0.75, 1.25, 1.75),
+    latitude = rep(0.5, 4),
+    h_canopy = 1:4
+  )
+  data.table::setattr(dt, "class", c("icesat2.atl08_dt", "data.table", "data.frame"))
+
+  set.seed(1)
+  sampled_geom <- ICESat2VegR::sample(
+    data.table::copy(dt),
+    method = geomSampling(size = 1, geom = polygons, split_id = names(polygons)[1])
+  )
+  set.seed(1)
+  sampled_raster <- ICESat2VegR::sample(
+    data.table::copy(dt),
+    method = rasterSampling(size = 1, raster = raster)
+  )
+
+  expect_equal(nrow(sampled_geom), 2L)
+  expect_equal(length(unique(sampled_geom$geom_group)), 2L)
+  expect_equal(nrow(sampled_raster), 2L)
+  expect_equal(length(unique(sampled_raster$raster_group)), 2L)
+})

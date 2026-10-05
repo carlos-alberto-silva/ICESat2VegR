@@ -23,7 +23,13 @@ seg_ancillary_extract <- function(stack, geom, scale = 10, chunk_size = 1000) {
 
     sampled <- extract(stack, geom[ii:tail], scale)
 
-    sz <- tryCatch(sampled$size()$getInfo(), error = function(e) 0L)
+    sz <- tryCatch(
+      sampled$size()$getInfo(),
+      error = function(e) {
+        stop(sprintf("Earth Engine sampling failed for rows %d-%d: %s",
+                     ii, tail, conditionMessage(e)), call. = FALSE)
+      }
+    )
     if (is.null(sz) || sz == 0L) next
 
     k <- k + 1L

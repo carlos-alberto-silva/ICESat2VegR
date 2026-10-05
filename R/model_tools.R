@@ -16,7 +16,7 @@ build_fc <- function(x, y = NULL) {
 ee_to_dt <- function(sampled) {
   # Get size safely
   idx <- `system:index` <- NA
-  sz <- tryCatch(sampled$size()$getInfo(), error = function(e) 0L)
+  sz <- sampled$size()$getInfo()
   if (is.null(sz) || sz == 0L) return(data.table::data.table())
 
   # Bring features to R without using ee module
