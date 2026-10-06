@@ -1,15 +1,17 @@
-## ICESat2VegR 0.0.4 - memory-safety correction
+ICESat2VegR 0.0.4 corrects the allocation/deallocation mismatch reported by
+gcc-ASAN and Valgrind for version 0.0.3. ANNIndex arrays allocated with new[]
+are now released with delete[]. The fixed-radius search now receives the square
+of the requested distance, as required by ANN. Regression tests cover index
+creation, search, finalization, and spaced-sampling distance behavior.
 
-The gcc-ASAN check of version 0.0.3 reported an allocation/deallocation
-mismatch in `ANNIndex::~ANNIndex()` while running the `spacedSampling` example.
-Both index and distance arrays were allocated with `new[]` and released with
-`delete`. They are now released with `delete[]`. The Valgrind example log
-reported the same two mismatches. The ANN fixed-radius search also expected a
-squared radius but was given the requested distance; it now receives the square
-of that distance. Regression tests cover index creation, search, finalization,
-and spaced-sampling distance behavior. No new features or dependencies are
-included.
+The PROJ configure test now skips execution when cross-compiling; native builds
+continue to run the test, and the package still links to PROJ. There are no new
+features or dependencies.
 
-Version 0.0.3 was otherwise `Status: OK` in CRAN's regular checks on Linux,
-Windows, and macOS. The Valgrind check itself was also `Status: OK`; its
-detailed example output exposed the mismatched frees addressed here.
+Checks for this source:
+- R 4.6.1 on Windows: R CMD check --as-cran --no-manual, Status: OK, including
+  regular examples, --run-donttest examples, and tests.
+- R-hub R-devel: Ubuntu GCC 12, Ubuntu Clang, GCC 16, GCC-ASAN, macOS Intel,
+  and macOS arm64 all passed.
+- The preceding 0.0.4 archive, before the configure-only change, passed
+  WinBuilder R-devel and MacBuilder arm64.
