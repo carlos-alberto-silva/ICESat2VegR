@@ -63,9 +63,27 @@ jobs:
         with:
           token: ${{ secrets.RHUB_TOKEN }}
           job-config: ${{ matrix.config.job-config }}
-      - name: Rebuild reticulate without ASAN instrumentation for Valgrind
+      - name: Rebuild ASAN-instrumented dependencies for Valgrind
         if: matrix.config.label == 'valgrind'
-        run: Rscript -e 'install.packages("reticulate", lib = .libPaths()[1], repos = "https://cloud.r-project.org", type = "source")'
+        shell: bash
+        run: |
+          Rscript -e '
+            lib <- .libPaths()[1]
+            asan_packages <- function() {
+              shared <- list.files(lib, pattern = "\\.so$", recursive = TRUE, full.names = TRUE)
+              linked <- vapply(shared, function(file) {
+                needed <- suppressWarnings(system2("readelf", c("-d", shQuote(file)), stdout = TRUE, stderr = FALSE))
+                any(grepl("libasan.so", needed, fixed = TRUE))
+              }, logical(1))
+              unique(basename(dirname(dirname(shared[linked]))))
+            }
+            packages <- asan_packages()
+            message("Rebuilding from source: ", paste(packages, collapse = ", "))
+            if (length(packages)) install.packages(packages, lib = lib,
+              repos = "https://cloud.r-project.org", type = "source", Ncpus = 2)
+            remaining <- asan_packages()
+            if (length(remaining)) stop("ASAN-linked packages remain: ", paste(remaining, collapse = ", "))
+          '
       - uses: r-hub/actions/run-check@v1
         with:
           token: ${{ secrets.RHUB_TOKEN }}
