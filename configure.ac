@@ -221,6 +221,8 @@ AC_RUN_IFELSE([
 ], [
   AC_MSG_RESULT([no])
   AC_MSG_ERROR([PROJ test program failed to run])
+], [
+  AC_MSG_RESULT([skipped: cross-compiling; PROJ link checked during package build])
 ])
 AC_LANG_POP([C++])
 
