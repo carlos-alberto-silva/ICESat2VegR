@@ -56,6 +56,9 @@ jobs:
         with:
           token: ${{ secrets.RHUB_TOKEN }}
           job-config: ${{ matrix.config.job-config }}
+      - name: Install ASAN runtime needed by cached dependencies
+        if: matrix.config.label == 'valgrind'
+        run: dnf install -y libasan
       - uses: r-hub/actions/setup-deps@v1
         with:
           token: ${{ secrets.RHUB_TOKEN }}
