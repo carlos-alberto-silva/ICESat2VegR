@@ -30,3 +30,4 @@
 ^\.claude$
 ^\.Rlib$
 ^workshop$
+^inst/proj$

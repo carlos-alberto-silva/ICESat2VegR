@@ -299,18 +299,8 @@ void GDALDatasetFinalizer(GDALDatasetR *ds)
 }
 
 
-void InitializeGDAL(std::vector<std::string> paths)
+void InitializeGDAL()
 {
-  std::vector<const char*> cstrings;
-  cstrings.reserve(paths.size());
-
-  for (auto &str : paths)
-  {
-    cstrings.push_back(str.c_str());
-  }
-
-  proj_context_set_search_paths(NULL, cstrings.size(), cstrings.data());
-
   GDALAllRegister();
   CPLSetErrorHandler(CPLQuietErrorHandler);
 }

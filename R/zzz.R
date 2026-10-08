@@ -37,33 +37,17 @@ ee_cache$search <- NULL
   h5py <<- reticulate::import("h5py", convert = TRUE, delay_load = TRUE)
 
   # GDAL module load
-  loadGdal(pkgname)
+  loadGdal()
 
   # Rcpp module load
   pkg_module <<- Rcpp::Module("icesat2_module")
 }
 
 
-loadGdal <- function(pkg_name) {
+loadGdal <- function() {
   Rcpp::loadModule("gdal_module", TRUE, TRUE)
-  proj_path <- ""
-  proj_version <- GetProjVersion()
-
-  major <- proj_version[1]
-  minor <- proj_version[2]
-
-  # Since PROJ 9.1, the data files are in PROJ_DATA instead of PROJ_LIB
-  if (major > 9 || (major == 9 && minor >= 1)) {
-    proj_path <- Sys.getenv("PROJ_DATA")
-  } else {
-    proj_path <- Sys.getenv("PROJ_LIB")
-  }
-
-  if (proj_path == "") {
-    proj_path <- system.file("proj", package = pkg_name)[1]
-  }
-
-  InitializeGDAL(proj_path)
+  # Let the installed GDAL/PROJ libraries locate their matching data files.
+  InitializeGDAL()
 }
 
 .onUnload <- function(libpath) {
@@ -92,7 +76,6 @@ loadGdal <- function(pkg_name) {
       "and Commercial Smallsat Data Scientific Analysis (CSDSA) under \n",
       "grants No. 80NSSC23K0941, 80NSSC23K1257, and 80NSSC24K0055. \n",
       "\n",
-      "Have a fantastic day filled with positivity and productivity! :) \n",
       "##----------------------------------------------------------------##",
       sep = ""
     )
