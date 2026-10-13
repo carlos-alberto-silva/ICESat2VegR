@@ -36,10 +36,26 @@ need_pkgs <- c(
   "caret",        # modeling / ML
   "hdf5r"         # reading/writing local HDF5 (.h5) files
 )
-missing <- need_pkgs[!need_pkgs %in% rownames(installed.packages())]
+
+# Check which packages are missing
+missing <- need_pkgs[
+  !need_pkgs %in% rownames(installed.packages())
+]
+
+# Install only missing packages
 if (length(missing)) {
-  message("Installing missing R packages: ", paste(missing, collapse = ", "))
-  install.packages(missing, repos = repos, dependencies = TRUE)
+  message(
+    "Installing missing R packages: ",
+    paste(missing, collapse = ", ")
+  )
+  
+  install.packages(
+    missing,
+    repos = "https://cloud.r-project.org",
+    dependencies = TRUE
+  )
+} else {
+  message("All required R packages are already installed.")
 }
 ```
 
@@ -1163,7 +1179,6 @@ This script serves as a practical example of how to integrate ICESat2VegR functi
 
 ``` r
 # The r-universe version (recommended for the latest version)
-install.packages("ICESat2VegR", , repos = c("https://caiohamamura.r-universe.dev", "https://cloud.r-project.org"))
 #install.packages('ICESat2VegR', repos = c('https://carlos-alberto-silva.r-universe.dev', 'https://cloud.r-project.org'))
 
 # The CRAN version
@@ -1181,10 +1196,26 @@ need_pkgs <- c(
   "caret",        # modeling / ML
   "hdf5r"         # reading/writing local HDF5 (.h5) files
 )
-missing <- need_pkgs[!need_pkgs %in% rownames(installed.packages())]
+
+# Check which packages are missing
+missing <- need_pkgs[
+  !need_pkgs %in% rownames(installed.packages())
+]
+
+# Install only missing packages
 if (length(missing)) {
-  message("Installing missing R packages: ", paste(missing, collapse = ", "))
-  install.packages(missing, repos = repos, dependencies = TRUE)
+  message(
+    "Installing missing R packages: ",
+    paste(missing, collapse = ", ")
+  )
+  
+  install.packages(
+    missing,
+    repos = "https://cloud.r-project.org",
+    dependencies = TRUE
+  )
+} else {
+  message("All required R packages are already installed.")
 }
 ```
 
