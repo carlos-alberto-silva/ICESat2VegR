@@ -20,10 +20,17 @@
 #'   \item If everything is already available, it returns immediately.
 #'   \item Otherwise, it:
 #'     \itemize{
-#'       \item Ensures Miniconda is installed (if \code{prefer_conda = TRUE}).
-#'       \item Creates or reuses a conda environment (default: \code{"icesat2-env"}).
-#'       \item Installs required Python modules using conda-forge (and pip fallback).
-#'       \item Optionally tries in-session installs if Python is already initialized.
+#'       \item Reuses the interpreter reticulate already selected when it has
+#'             every required module.
+#'       \item Declares the required modules with \code{reticulate::py_require()}.
+#'             With reticulate >= 1.41 this provisions reticulate's own managed
+#'             environment, so no conda and no Miniconda are involved.
+#'       \item Falls back to a \code{pip} install into the active interpreter.
+#'       \item Falls back to a persistent conda environment (or a virtualenv
+#'             when \code{prefer_conda = FALSE}), installing Miniconda
+#'             automatically when conda is missing or cannot create environments.
+#'       \item Prints the command and the output of anything that fails, so a
+#'             failure can be understood from this call alone.
 #'       \item Optionally resolves common \code{aiobotocore}/\code{botocore} conflicts.
 #'       \item Optionally restarts the R session in RStudio to bind the new env.
 #'     }
@@ -64,30 +71,40 @@
 #'   create. Default is \code{"icesat2-env"}. If this is the default value and
 #'   the environment variable \code{CONDA_DEFAULT_ENV} is set, that value is
 #'   used instead (useful when running inside an existing conda environment).
-#' @param py_ver Character. Python version to request when creating a new env
-#'   (default \code{"3.10"}).
-#' @param prefer_conda Logical. If \code{TRUE} (default), use conda/Miniconda.
-#'   If \code{FALSE}, a \code{virtualenv} is used instead.
-#' @param force_conda_forge Logical. If \code{TRUE} (default), configure conda
-#'   to use \code{conda-forge} with strict channel priority (recommended).
-#' @param allow_session_installs Logical. If \code{TRUE} (default) and Python
-#'   is already initialized in the current R session, attempt session-only
-#'   installs first via \code{reticulate::py_require()} and, if needed, a
-#'   pip call from the active interpreter. If that fails, a persistent env
-#'   is prepared instead.
+#' @param py_ver Character. Python version to request when creating a new
+#'   persistent (conda/virtualenv) environment (default \code{"3.10"}).
+#' @param prefer_conda Logical. If \code{TRUE} (default), conda/Miniconda is
+#'   used for a persistent environment. If \code{FALSE}, a \code{virtualenv} is
+#'   used instead.
+#' @param force_conda_forge Logical. If \code{TRUE} (default), conda is run with
+#'   \code{--override-channels -c conda-forge}. The machine's global conda
+#'   channel configuration is never modified.
+#' @param allow_session_installs Logical. If \code{TRUE} (default), missing
+#'   modules are installed into the Python that is already active first, through
+#'   \code{reticulate::py_require()} and, if needed, a \code{pip} call from the
+#'   active interpreter, before any persistent environment is created.
+#' @param allow_managed_env Logical. If \code{TRUE} (default), the required
+#'   modules are declared with \code{reticulate::py_require()}. With
+#'   reticulate >= 1.41 this lets reticulate build and reuse its own managed
+#'   environment, which needs neither conda nor Miniconda.
+#' @param auto_install_miniconda Logical. If \code{TRUE} (default) and no usable
+#'   conda is found, Miniconda is installed for the current user (about a 100 MB
+#'   download). Set to \code{FALSE} to forbid that download.
 #' @param manage_aiobotocore Logical. If \code{TRUE} (default), attempt to
 #'   detect and resolve common \code{aiobotocore}/\code{botocore}/\code{boto3}
 #'   version conflicts by pinning compatible versions and optionally
 #'   uninstalling \code{aiobotocore} (which is not required for ICESat2VegR).
 #' @param auto_restart Logical. If \code{TRUE} (default), attempts to restart
 #'   the R session in RStudio via \code{rstudioapi::restartSession()} after
-#'   preparing the conda environment, so that the new Python binding is cleanly
-#'   established.
+#'   preparing a persistent environment, so that the new Python binding is
+#'   cleanly established.
 #' @param verbose Logical. If \code{TRUE} (default), print progress messages.
 #' @param quick_probe Character vector of Python import names to test for a
 #'   fast early exit (default: \code{c("h5py", "earthaccess", "ee")}).
 #'
-#' @return Logical \code{TRUE} on success, \code{FALSE} otherwise.
+#' @return Logical \code{TRUE} when every required module is available in the
+#'   current R session, \code{FALSE} otherwise. Failures print the command that
+#'   failed together with its output.
 #' @export
 #'
 #' @examples
@@ -104,6 +121,8 @@ ICESat2VegR_configure <- function(
     prefer_conda = TRUE,
     force_conda_forge = TRUE,
     allow_session_installs = TRUE,
+    allow_managed_env = TRUE,
+    auto_install_miniconda = TRUE,
     manage_aiobotocore = TRUE,
     auto_restart = TRUE,
     verbose = TRUE,
@@ -111,98 +130,39 @@ ICESat2VegR_configure <- function(
 ) {
 
   # ---------------------------------------------------------------------------
-  # Internal helper: conditional message
+  # Messaging. Anything that fails is printed together with the command that
+  # produced it, so a failure can be understood from this call alone.
   # ---------------------------------------------------------------------------
-  say <- function(...) if (isTRUE(verbose)) message("[ICESat2VegR] ", ...)
+  say  <- function(...) if (isTRUE(verbose)) message("[ICESat2VegR] ", ...)
+  say0 <- function(...) message("[ICESat2VegR] ", ...)
 
-  # ---------------------------------------------------------------------------
-  # Internal helper: quick probe to see if environment is already OK
-  # ---------------------------------------------------------------------------
-  .quick_probe <- function(mods = quick_probe) {
-    if (!requireNamespace("reticulate", quietly = TRUE))
-      return(FALSE)
-
-    cfg_ok <- !inherits(try(reticulate::py_config(), silent = TRUE), "try-error")
-    if (!cfg_ok) return(FALSE)
-
-    all(vapply(mods, reticulate::py_module_available, logical(1)))
+  print_command_output <- function(out) {
+    out <- as.character(out)
+    if (!length(out)) return(invisible(FALSE))
+    if (length(out) > 40L) {
+      out <- c(utils::head(out, 20L), "... (output truncated) ...", utils::tail(out, 20L))
+    }
+    say0("--- output of the command above ---")
+    for (line in out) message("    ", line)
+    say0("-----------------------------------")
+    invisible(TRUE)
   }
 
-  # ---------------------------------------------------------------------------
-  # FAST PATH: If everything is already configured, exit early and quietly
-  # ---------------------------------------------------------------------------
-  if (.quick_probe()) {
-    say("Python environment already has required modules (quick probe).")
-    return(TRUE)
-  }
-
-  # ---------------------------------------------------------------------------
-  # Local helpers for the full configuration flow
-  # ---------------------------------------------------------------------------
-
-  # Detect whether Python is initialized in the current session
-  py_initialized <- function() {
-    out <- FALSE
-    try({ reticulate::py_config(); out <- TRUE }, silent = TRUE)
-    out
-  }
-
-  # Check if conda is available
-  has_conda <- function() {
-    tryCatch(!is.null(reticulate::conda_version()), error = function(e) FALSE)
-  }
-
-  # Locate conda binary
-  conda_bin <- function() {
-    tryCatch(reticulate::conda_binary(), error = function(e) NULL)
-  }
-
-  # Run a conda command, returning status code (0 = success)
-  conda_run <- function(args) {
-    cb <- conda_bin()
-    if (is.null(cb)) return(invisible(1L))
-    res <- suppressWarnings(system2(cb, args, stdout = TRUE, stderr = TRUE))
-    status <- attr(res, "status")
-    if (is.null(status)) status <- 0L
-    invisible(status)
-  }
-
-  # Missing Python imports checker
-  missing_imports <- function(import_names) {
-    import_names[!vapply(import_names, reticulate::py_module_available, logical(1))]
-  }
-
-  # pip check: look for dependency inconsistencies
-  pip_check <- function() {
-    tryCatch(
-      reticulate::py_run_string(
-        "import sys, subprocess; subprocess.check_call([sys.executable,'-m','pip','check'])"
-      ),
-      error = function(e) e
+  # Run an external command and keep what it printed instead of discarding it.
+  run_cmd <- function(command, args) {
+    say("Running: ", command, " ", paste(args, collapse = " "))
+    out <- tryCatch(
+      suppressWarnings(system2(command, args, stdout = TRUE, stderr = TRUE)),
+      error = function(e) structure(conditionMessage(e), status = 126L)
     )
-  }
-
-  # Summarize Python binding
-  print_summary <- function(bound_env = NULL) {
-    cfg <- tryCatch(reticulate::py_config(), error = function(e) NULL)
-    if (is.null(cfg)) {
-      say("Python not initialized.")
-      return(invisible())
+    status <- attr(out, "status")
+    if (is.null(status)) status <- 0L
+    status <- as.integer(status)
+    if (status != 0L) {
+      say0("Command failed with exit code ", status, ".")
+      print_command_output(out)
     }
-    say(sprintf("Python:  %s", cfg$python))
-    if (!is.null(bound_env)) say(sprintf("Env:     %s", bound_env))
-    say(sprintf("Version: %s", cfg$version))
-  }
-
-  # Attempt to restart R session in RStudio
-  try_restart <- function() {
-    if (!isTRUE(auto_restart)) return(invisible(FALSE))
-    if (requireNamespace("rstudioapi", quietly = TRUE)) {
-      say("Restarting R session to bind the new environment...")
-      try(rstudioapi::restartSession(), silent = TRUE)
-      return(invisible(TRUE))
-    }
-    FALSE
+    invisible(status)
   }
 
   # Map Python import names -> install names
@@ -225,195 +185,375 @@ ICESat2VegR_configure <- function(
     envname <- Sys.getenv("CONDA_DEFAULT_ENV")
   }
 
-  # ---------------------------------------------------------------------------
-  # MAIN FLOW
-  # ---------------------------------------------------------------------------
-  is_init <- py_initialized()
+  # An environment was requested by name: honour that request.
+  named_env <- !identical(envname, "icesat2-env")
 
-  # ----------------------------- FRESH SESSION --------------------------------
-  if (!is_init) {
-    # ---- Path 1: use conda/Miniconda ----------------------------------------
-    if (prefer_conda) {
+  # Is a Python interpreter already running in this session?
+  py_started <- function() {
+    isTRUE(tryCatch(reticulate::py_available(initialize = FALSE), error = function(e) FALSE))
+  }
 
-      # Ensure Miniconda is available
-      if (!has_conda()) {
-        say("Miniconda not found; installing Miniconda...")
-        reticulate::install_miniconda()
-        if (!has_conda()) {
-          warning("Miniconda installation failed.")
-          return(FALSE)
-        }
-      }
+  # Does the installed reticulate provide `fn`? (py_require() needs >= 1.41)
+  ret_has <- function(fn) {
+    is.function(get0(fn, envir = asNamespace("reticulate"), inherits = FALSE))
+  }
 
-      # Configure conda-forge as the only/primary channel (strict priority)
-      if (isTRUE(force_conda_forge)) {
-        suppressWarnings(conda_run(c("config", "--remove-key", "default_channels")))
-        suppressWarnings(conda_run(c("config", "--remove-key", "channels")))
-        conda_run(c("config", "--add", "channels", "conda-forge"))
-        conda_run(c("config", "--set", "channel_priority", "strict"))
-      }
+  python_info <- function() {
+    cfg <- tryCatch(reticulate::py_config(), error = function(e) NULL)
+    if (is.null(cfg) || is.null(cfg$python)) return("no Python interpreter available")
+    sprintf("%s (%s)", cfg$python, cfg$version)
+  }
 
-      # Create env if needed
-      envs <- tryCatch(reticulate::conda_list()$name, error = function(e) character())
-      if (!(envname %in% envs)) {
-        say(sprintf("Creating conda env '%s' (Python %s)...", envname, py_ver))
-        st <- conda_run(c("create", "--yes", "--name", envname, paste0("python=", py_ver)))
-        if (!identical(st, 0L)) {
-          warning(sprintf("Failed to create env '%s'.", envname))
-          return(FALSE)
-        }
-      }
-
-      # Bind to this environment
-      reticulate::use_condaenv(envname, required = TRUE)
-      say(sprintf("Bound to '%s'. Checking and installing missing dependencies...", envname))
-
-      # Install missing imports via conda (pip fallback)
-      miss <- missing_imports(py_imports)
-      if (length(miss)) {
-        pkgs <- unname(install_name[miss])
-        ok <- TRUE
-        tryCatch(
-          reticulate::conda_install(envname = envname, packages = pkgs, channel = "conda-forge"),
-          error = function(e) { ok <<- FALSE }
-        )
-        if (!ok) {
-          say("conda solver failed; falling back to pip for missing packages...")
-          reticulate::py_install(pkgs, method = "pip", pip = TRUE)
-        }
-      }
-
-    } else {
-      # ---- Path 2: virtualenv route -----------------------------------------
-      if (!reticulate::virtualenv_exists(envname)) {
-        say(sprintf("Creating virtualenv '%s'...", envname))
-        reticulate::virtualenv_create(envname)
-      }
-      reticulate::use_virtualenv(envname, required = TRUE)
-      say("Checking and installing missing dependencies into virtualenv via pip...")
-      miss <- missing_imports(py_imports)
-      if (length(miss)) {
-        pkgs <- unname(install_name[miss])
-        reticulate::virtualenv_install(envname, packages = pkgs, ignore_installed = FALSE)
-      }
+  # Which required modules can be imported right now? Never throws.
+  inspect_python <- function() {
+    up <- isTRUE(tryCatch(reticulate::py_available(initialize = TRUE), error = function(e) FALSE))
+    have <- rep(FALSE, length(py_imports))
+    names(have) <- py_imports
+    if (up) {
+      have <- vapply(
+        py_imports,
+        function(m) isTRUE(tryCatch(reticulate::py_module_available(m), error = function(e) FALSE)),
+        logical(1)
+      )
+      have <- as.logical(have)
+      names(have) <- py_imports
     }
+    list(have = have, missing = py_imports[!have])
+  }
 
-    # ----------------------- PYTHON ALREADY INITIALIZED -----------------------
-  } else {
-    miss <- missing_imports(py_imports)
-    if (length(miss) == 0) {
-      say("Active Python already has all required modules.")
-      print_summary()
+  # Declare the requirements, so that reticulate installs them while it starts
+  # its own (uv managed) environment, before any Python is running.
+  declare_requirements <- function(missing = py_imports) {
+    if (!isTRUE(allow_managed_env) || !ret_has("py_require") || !length(missing)) return(FALSE)
+    say("Declaring Python requirements: ", paste(unname(install_name[missing]), collapse = ", "))
+    tryCatch(
+      reticulate::py_require(unname(install_name[missing])),
+      error   = function(e) say("py_require() reported: ", conditionMessage(e)),
+      warning = function(w) say("py_require() reported: ", conditionMessage(w))
+    )
+    invisible(TRUE)
+  }
+
+  # pip check: look for dependency inconsistencies
+  pip_check <- function() {
+    tryCatch(
+      reticulate::py_run_string(
+        "import sys, subprocess; subprocess.check_call([sys.executable,'-m','pip','check'])"
+      ),
+      error = function(e) e
+    )
+  }
+
+  # Attempt to restart R session in RStudio
+  try_restart <- function() {
+    if (!isTRUE(auto_restart)) return(invisible(FALSE))
+    if (requireNamespace("rstudioapi", quietly = TRUE)) {
+      say("Restarting the R session to bind the newly prepared environment...")
+      try(rstudioapi::restartSession(), silent = TRUE)
+      return(invisible(TRUE))
+    }
+    FALSE
+  }
+
+
+  # ---------------------------------------------------------------------------
+  # Session level repair: needs neither conda nor Miniconda.
+  # ---------------------------------------------------------------------------
+  session_install <- function(missing) {
+    if (!length(missing) || !isTRUE(allow_session_installs)) return(FALSE)
+
+    # 1) reticulate's own environment (reticulate >= 1.41, backed by uv).
+    declare_requirements(missing)
+    missing <- inspect_python()$missing
+    if (!length(missing)) {
+      say("The running Python now provides every required module.")
       return(TRUE)
     }
 
-    pkgs <- unname(install_name[miss])
-
-    # 1) Try session-only install
-    if (isTRUE(allow_session_installs)) {
-      say(paste0(
-        "Active Python is initialized (possibly ephemeral). Missing modules: ",
-        paste(miss, collapse = ", "),
-        "\nTrying py_require() for this session..."
-      ))
-
-      req_ok <- TRUE
-      tryCatch(
-        { reticulate::py_require(pkgs) },
-        error = function(e) { req_ok <<- FALSE }
-      )
-
-      if (!req_ok) {
-        say("py_require() failed; attempting in-session pip install via py_run_string()...")
-        pip_ok <- TRUE
-        pip_cmd <- sprintf(
-          "import sys, subprocess; subprocess.check_call([sys.executable,'-m','pip','install','-U',%s])",
-          paste(sprintf("'%s'", pkgs), collapse = ",")
-        )
-        tryCatch(
-          { reticulate::py_run_string(pip_cmd) },
-          error = function(e) {
-            pip_ok <<- FALSE
-            warning("Session pip install failed: ", conditionMessage(e))
-          }
-        )
-        if (pip_ok) miss <- missing_imports(py_imports)
-      }
-    }
-
-    # 2) If still missing, prepare persistent conda env
-    if (length(miss)) {
-      say("Preparing a persistent conda environment with required packages...")
-
-      if (!has_conda()) {
-        say("Miniconda not found; installing Miniconda...")
-        reticulate::install_miniconda()
-        if (!has_conda()) {
-          warning("Miniconda installation failed; cannot prepare persistent environment.")
-          return(FALSE)
-        }
-      }
-
-      if (isTRUE(force_conda_forge)) {
-        suppressWarnings(conda_run(c("config", "--remove-key", "default_channels")))
-        suppressWarnings(conda_run(c("config", "--remove-key", "channels")))
-        conda_run(c("config", "--add", "channels", "conda-forge"))
-        conda_run(c("config", "--set", "channel_priority", "strict"))
-      }
-
-      envs <- tryCatch(reticulate::conda_list()$name, error = function(e) character())
-      if (!(envname %in% envs)) {
-        say(sprintf("Creating conda env '%s' (Python %s)...", envname, py_ver))
-        st <- conda_run(c("create", "--yes", "--name", envname, paste0("python=", py_ver)))
-        if (!identical(st, 0L)) {
-          warning(sprintf("Failed to create env '%s'.", envname))
-          return(FALSE)
-        }
-      }
-
-      # Pre-install all required packages into the new env
-      need_pkgs <- unname(install_name[names(install_name)])
-      ok <- TRUE
-      tryCatch(
-        reticulate::conda_install(envname = envname, packages = need_pkgs, channel = "conda-forge"),
-        error = function(e) { ok <<- FALSE }
-      )
-      if (!ok) {
-        say("conda solver failed; falling back to pip for required packages...")
-        # Let reticulate handle pip into target env
-        try(
-          reticulate::py_install(need_pkgs, envname = envname, method = "pip", pip = TRUE),
-          silent = TRUE
-        )
-      }
-
-      # Try to auto-restart to bind the new env
-      if (try_restart()) return(invisible(TRUE))
-
-      # Otherwise, guide the user
-      say(paste0(
-        "A persistent environment '", envname, "' is now prepared with required packages.\n",
-        "Please restart R and bind it with:\n",
-        "  reticulate::use_condaenv('", envname, "', required = TRUE)\n",
-        "Optionally, add to ~/.Renviron for persistence, e.g.:\n",
-        "  RETICULATE_PYTHON=", normalizePath(
-          file.path(Sys.getenv("LOCALAPPDATA"), "r-miniconda", "envs", envname, "python.exe"),
-          winslash = "/"
-        ),
-        "\nThen re-run ICESat2VegR_configure()."
-      ))
-      return(FALSE)
-    }
+    # 2) pip into the interpreter that is active right now.
+    say("Trying pip into the active interpreter: ",
+        paste(unname(install_name[missing]), collapse = ", "))
+    pip_cmd <- sprintf(
+      "import sys, subprocess; subprocess.check_call([sys.executable,'-m','pip','install','-U',%s])",
+      paste(sprintf("'%s'", unname(install_name[missing])), collapse = ",")
+    )
+    tryCatch(
+      reticulate::py_run_string(pip_cmd),
+      error = function(e) say0("pip reported: ", conditionMessage(e))
+    )
+    !length(inspect_python()$missing)
   }
 
   # ---------------------------------------------------------------------------
-  # Verify critical imports
+  # Persistent environment (conda, or virtualenv when prefer_conda = FALSE)
   # ---------------------------------------------------------------------------
-  core <- c("packaging", "h5py", "earthaccess", "ee")
-  miss_core <- missing_imports(core)
-  if (length(miss_core)) {
-    warning("Missing required Python modules after installation: ",
-            paste(miss_core, collapse = ", "))
+  channel_args <- function() {
+    if (isTRUE(force_conda_forge)) c("--override-channels", "-c", "conda-forge") else character()
+  }
+
+  conda_bin <- function() {
+    tryCatch(reticulate::conda_binary(), error = function(e) NULL)
+  }
+
+  # `--name` for a named environment, `--prefix` for a path.
+  conda_target <- function(env) {
+    if (grepl("[/\\\\]", env)) c("--prefix", env) else c("--name", env)
+  }
+
+  reticulate_miniconda_root <- function() {
+    tryCatch(reticulate::miniconda_path(), error = function(e) NULL)
+  }
+
+  is_reticulate_conda <- function(cb) {
+    root <- reticulate_miniconda_root()
+    if (is.null(root)) return(FALSE)
+    norm <- function(p) tryCatch(
+      normalizePath(p, winslash = "/", mustWork = FALSE),
+      error = function(e) p
+    )
+    startsWith(norm(cb), norm(root))
+  }
+
+  # A prefix inside the user's data directory, which is always writable.
+  private_env_prefix <- function() {
+    root <- tryCatch(
+      tools::R_user_dir("ICESat2VegR", which = "data"),
+      error = function(e) file.path(tempdir(), "ICESat2VegR")
+    )
+    file.path(root, "envs", gsub("[^A-Za-z0-9._-]", "_", envname))
+  }
+
+  # Make sure a conda is available, installing Miniconda when allowed.
+  ensure_conda <- function() {
+    if (!is.null(conda_bin())) return(TRUE)
+    if (!isTRUE(auto_install_miniconda)) {
+      say0("No conda found and auto_install_miniconda = FALSE.")
+      return(FALSE)
+    }
+    say0("No conda found; installing Miniconda for the current user ",
+         "(about 100 MB, one time)...")
+    ok <- tryCatch(
+      { reticulate::install_miniconda(update = FALSE); TRUE },
+      error = function(e) { say0("install_miniconda() reported: ", conditionMessage(e)); FALSE }
+    )
+    if (!ok || is.null(conda_bin())) {
+      root <- reticulate_miniconda_root()
+      say0("Miniconda was not installed (expected under ",
+           if (is.null(root)) "the reticulate cache" else root, ").")
+      return(FALSE)
+    }
+    TRUE
+  }
+
+  # Create the conda environment, trying progressively harder.
+  conda_prepare_env <- function() {
+    cb <- conda_bin()
+    if (is.null(cb)) return(NULL)
+
+    envs <- tryCatch(as.character(reticulate::conda_list()$name), error = function(e) character())
+    if (envname %in% envs) {
+      say("Reusing the existing conda environment '", envname, "'.")
+      return(envname)
+    }
+
+    python_arg <- paste0("python=", py_ver)
+
+    say("Creating conda environment '", envname, "' (Python ", py_ver, ")...")
+    if (run_cmd(cb, c("create", "--yes", "--name", envname, python_arg, channel_args())) == 0L) {
+      return(envname)
+    }
+
+    # A named environment fails when the environments directory is not
+    # writable, or when an earlier attempt left a directory behind. A private
+    # prefix avoids both.
+    prefix <- private_env_prefix()
+    say("Retrying with a private prefix: ", prefix)
+    dir.create(dirname(prefix), recursive = TRUE, showWarnings = FALSE)
+    if (run_cmd(cb, c("create", "--yes", "--prefix", prefix, python_arg, channel_args())) == 0L) {
+      envname <<- prefix
+      return(prefix)
+    }
+
+    # The conda that was found may itself be unusable: reticulate can install
+    # its own Miniconda next to the R library.
+    if (isTRUE(auto_install_miniconda) && !is_reticulate_conda(cb)) {
+      say0("The conda at '", cb, "' cannot create environments; trying reticulate's Miniconda...")
+      installed <- tryCatch(
+        { reticulate::install_miniconda(update = FALSE); TRUE },
+        error = function(e) { say0("install_miniconda() reported: ", conditionMessage(e)); FALSE }
+      )
+      cb2 <- if (installed) conda_bin() else NULL
+      if (!is.null(cb2) && !identical(cb2, cb) &&
+          run_cmd(cb2, c("create", "--yes", "--name", envname, python_arg, channel_args())) == 0L) {
+        return(envname)
+      }
+    }
+
+    NULL
+  }
+
+  venv_prepare <- function(env) {
+    if (reticulate::virtualenv_exists(env)) {
+      say("Reusing the existing virtualenv '", env, "'.")
+      return(TRUE)
+    }
+    say("Creating virtualenv '", env, "'...")
+    tryCatch(
+      { reticulate::virtualenv_create(env); TRUE },
+      error = function(e) { say0("virtualenv_create() reported: ", conditionMessage(e)); FALSE }
+    )
+  }
+
+  # Returns list(env = <identifier or character()>, bound = <TRUE/FALSE>).
+  persistent_install <- function(missing) {
+    if (!length(missing)) return(list(env = character(), bound = FALSE))
+
+    target <- envname
+
+    if (isTRUE(prefer_conda)) {
+      if (!ensure_conda()) return(list(env = character(), bound = FALSE))
+      cb <- conda_bin()
+      target <- conda_prepare_env()
+      if (is.null(target) || is.null(cb)) return(list(env = character(), bound = FALSE))
+      say("Installing required modules into '", target, "' with conda...")
+      status <- run_cmd(conda_bin(), c("install", "--yes", conda_target(target),
+                                       unname(install_name[missing]), channel_args()))
+      if (status != 0L) {
+        say("conda install failed; falling back to pip inside '", target, "'...")
+        try(
+          reticulate::py_install(unname(install_name[missing]), envname = target,
+                                 method = "pip", pip = TRUE),
+          silent = TRUE
+        )
+      }
+    } else {
+      if (!venv_prepare(target)) return(list(env = character(), bound = FALSE))
+      tryCatch(
+        reticulate::virtualenv_install(target, packages = unname(install_name[missing]),
+                                       ignore_installed = FALSE),
+        error = function(e) say0("virtualenv_install() reported: ", conditionMessage(e))
+      )
+    }
+
+    # A running interpreter cannot be replaced mid session: in that case the
+    # environment becomes effective in the next session.
+    if (py_started()) return(list(env = target, bound = FALSE))
+
+    bound <- tryCatch({
+      if (isTRUE(prefer_conda)) reticulate::use_condaenv(target, required = TRUE)
+      else reticulate::use_virtualenv(target, required = TRUE)
+      TRUE
+    }, error = function(e) { say0("Could not bind '", target, "': ", conditionMessage(e)); FALSE })
+
+    list(env = target, bound = isTRUE(bound) && !length(inspect_python()$missing))
+  }
+
+  # ---------------------------------------------------------------------------
+  # MAIN FLOW
+  # ---------------------------------------------------------------------------
+  if (!requireNamespace("reticulate", quietly = TRUE)) {
+    say0("The 'reticulate' package is required: install.packages('reticulate').")
+    return(FALSE)
+  }
+
+  say("Checking the Python environment (requested envname: '", envname, "')...")
+
+  # 0) Reuse an environment that already exists, before starting anything.
+  bound_early <- FALSE
+  if (!py_started()) {
+    if (isTRUE(prefer_conda)) {
+      envs <- tryCatch(as.character(reticulate::conda_list()$name), error = function(e) character())
+      if (envname %in% envs) {
+        say("Binding the existing conda environment '", envname, "'...")
+        bound_early <- isTRUE(tryCatch(
+          { reticulate::use_condaenv(envname, required = TRUE); TRUE },
+          error = function(e) { say("Could not bind it: ", conditionMessage(e)); FALSE }
+        ))
+      }
+    } else if (reticulate::virtualenv_exists(envname)) {
+      say("Binding the existing virtualenv '", envname, "'...")
+      bound_early <- isTRUE(tryCatch(
+        { reticulate::use_virtualenv(envname, required = TRUE); TRUE },
+        error = function(e) { say("Could not bind it: ", conditionMessage(e)); FALSE }
+      ))
+    }
+  }
+
+  # 1) Start from what this session already has. When Python is still down and
+  #    no specific environment was requested, the requirements are declared
+  #    first, so reticulate provisions them while starting its own environment
+  #    (reticulate >= 1.41; no conda involved).
+  if (!py_started() && !named_env && !bound_early) declare_requirements()
+
+  state <- inspect_python()
+  say("Active Python: ", python_info())
+  say("Modules: ", paste(sprintf("%s=%s", py_imports, ifelse(state$have, "ok", "missing")),
+                         collapse = "  "))
+
+  if (!length(state$missing)) {
+    say("Nothing to do: every required module is already available.")
+    return(TRUE)
+  }
+
+  if (!named_env && length(quick_probe) && all(state$have[quick_probe])) {
+    say("Core modules (", paste(quick_probe, collapse = ", "),
+        ") are available; skipping installation.")
+    return(TRUE)
+  }
+
+  # 2) Repair the Python that is already active. This needs no installation
+  #    infrastructure at all.
+  if (!named_env) {
+    session_install(state$missing)
+    state <- inspect_python()
+  }
+
+  # 3) Build a persistent environment when the session route was not enough.
+  prepared <- list(env = character(), bound = FALSE)
+  if (length(state$missing)) {
+    say("Preparing a persistent environment for the missing modules...")
+    prepared <- persistent_install(state$missing)
+    if (length(prepared$env)) {
+      say("Environment prepared: ", prepared$env,
+          if (isTRUE(prepared$bound)) " (active in this session)" else " (for the next session)")
+    }
+    state <- inspect_python()
+  }
+
+  # 4) A named environment cannot replace a running interpreter: make sure the
+  #    current session works anyway.
+  if (length(state$missing) && named_env && isTRUE(allow_session_installs)) {
+    session_install(state$missing)
+    state <- inspect_python()
+  }
+
+  # 5) A prepared environment cannot replace an interpreter that is already
+  #    running: it becomes active in the next session.
+  if (length(prepared$env) && !isTRUE(prepared$bound)) {
+    say0("The environment '", prepared$env, "' is ready. This R session keeps using ",
+         "the previous Python: restart R (or set RETICULATE_PYTHON) to bind it.")
+    if (try_restart()) return(invisible(TRUE))
+  }
+
+  # 6) Nothing left to try: report exactly what failed and how to finish by hand.
+  if (length(state$missing)) {
+    say0(
+      "\nICESat2VegR could not provide every required Python module automatically.",
+      "\n  Python:  ", python_info(),
+      "\n  Missing: ", paste(state$missing, collapse = ", "),
+      "\n\nSteps that reproduce what this function tried:",
+      "\n  * reticulate's own environment, no conda needed:",
+      "\n      reticulate::py_require(c(",
+      paste(sprintf("'%s'", unname(install_name)), collapse = ", "), "))",
+      "\n  * conda environment, with the conda errors visible:",
+      "\n      reticulate::conda_create('", envname, "', python_version = '", py_ver,
+      "', channel = 'conda-forge')",
+      "\n      reticulate::conda_install('", envname, "', channel = 'conda-forge', packages = c(",
+      paste(sprintf("'%s'", unname(install_name)), collapse = ", "), "))",
+      "\n  * when there is no conda at all: reticulate::install_miniconda()",
+      "\n  * or point R at a Python you prepared yourself, in .Renviron:",
+      "\n      RETICULATE_PYTHON=<path to python executable>"
+    )
     return(FALSE)
   }
 
@@ -444,7 +584,10 @@ ICESat2VegR_configure <- function(
     }
   }
 
-  print_summary(bound_env = if (!is_init) envname else NULL)
+  # Every module is present: state it plainly, with the interpreter in use.
+  say0("Python:  ", python_info())
+  say0("Modules: ", paste(sprintf("%s=%s", py_imports, ifelse(state$have, "ok", "MISSING")),
+                          collapse = "  "))
   say("Configuration complete.")
   TRUE
 }

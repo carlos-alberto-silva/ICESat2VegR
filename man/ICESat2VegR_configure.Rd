@@ -10,6 +10,8 @@ ICESat2VegR_configure(
   prefer_conda = TRUE,
   force_conda_forge = TRUE,
   allow_session_installs = TRUE,
+  allow_managed_env = TRUE,
+  auto_install_miniconda = TRUE,
   manage_aiobotocore = TRUE,
   auto_restart = TRUE,
   verbose = TRUE,
@@ -22,20 +24,30 @@ create. Default is \code{"icesat2-env"}. If this is the default value and
 the environment variable \code{CONDA_DEFAULT_ENV} is set, that value is
 used instead (useful when running inside an existing conda environment).}
 
-\item{py_ver}{Character. Python version to request when creating a new env
-(default \code{"3.10"}).}
+\item{py_ver}{Character. Python version to request when creating a new
+persistent (conda/virtualenv) environment (default \code{"3.10"}).}
 
-\item{prefer_conda}{Logical. If \code{TRUE} (default), use conda/Miniconda.
-If \code{FALSE}, a \code{virtualenv} is used instead.}
+\item{prefer_conda}{Logical. If \code{TRUE} (default), conda/Miniconda is
+used for a persistent environment. If \code{FALSE}, a \code{virtualenv} is
+used instead.}
 
-\item{force_conda_forge}{Logical. If \code{TRUE} (default), configure conda
-to use \code{conda-forge} with strict channel priority (recommended).}
+\item{force_conda_forge}{Logical. If \code{TRUE} (default), conda is run with
+\code{--override-channels -c conda-forge}. The machine's global conda
+channel configuration is never modified.}
 
-\item{allow_session_installs}{Logical. If \code{TRUE} (default) and Python
-is already initialized in the current R session, attempt session-only
-installs first via \code{reticulate::py_require()} and, if needed, a
-pip call from the active interpreter. If that fails, a persistent env
-is prepared instead.}
+\item{allow_session_installs}{Logical. If \code{TRUE} (default), missing
+modules are installed into the Python that is already active first, through
+\code{reticulate::py_require()} and, if needed, a \code{pip} call from the
+active interpreter, before any persistent environment is created.}
+
+\item{allow_managed_env}{Logical. If \code{TRUE} (default), the required
+modules are declared with \code{reticulate::py_require()}. With
+reticulate >= 1.41 this lets reticulate build and reuse its own managed
+environment, which needs neither conda nor Miniconda.}
+
+\item{auto_install_miniconda}{Logical. If \code{TRUE} (default) and no usable
+conda is found, Miniconda is installed for the current user (about a 100 MB
+download). Set to \code{FALSE} to forbid that download.}
 
 \item{manage_aiobotocore}{Logical. If \code{TRUE} (default), attempt to
 detect and resolve common \code{aiobotocore}/\code{botocore}/\code{boto3}
@@ -44,8 +56,8 @@ uninstalling \code{aiobotocore} (which is not required for ICESat2VegR).}
 
 \item{auto_restart}{Logical. If \code{TRUE} (default), attempts to restart
 the R session in RStudio via \code{rstudioapi::restartSession()} after
-preparing the conda environment, so that the new Python binding is cleanly
-established.}
+preparing a persistent environment, so that the new Python binding is
+cleanly established.}
 
 \item{verbose}{Logical. If \code{TRUE} (default), print progress messages.}
 
@@ -53,7 +65,9 @@ established.}
 fast early exit (default: \code{c("h5py", "earthaccess", "ee")}).}
 }
 \value{
-Logical \code{TRUE} on success, \code{FALSE} otherwise.
+Logical \code{TRUE} when every required module is available in the
+current R session, \code{FALSE} otherwise. Failures print the command that
+failed together with its output.
 }
 \description{
 This function sets up a robust, persistent Python environment for the
@@ -75,10 +89,17 @@ The function:
 \item If everything is already available, it returns immediately.
 \item Otherwise, it:
 \itemize{
-\item Ensures Miniconda is installed (if \code{prefer_conda = TRUE}).
-\item Creates or reuses a conda environment (default: \code{"icesat2-env"}).
-\item Installs required Python modules using conda-forge (and pip fallback).
-\item Optionally tries in-session installs if Python is already initialized.
+\item Reuses the interpreter reticulate already selected when it has
+every required module.
+\item Declares the required modules with \code{reticulate::py_require()}.
+With reticulate >= 1.41 this provisions reticulate's own managed
+environment, so no conda and no Miniconda are involved.
+\item Falls back to a \code{pip} install into the active interpreter.
+\item Falls back to a persistent conda environment (or a virtualenv
+when \code{prefer_conda = FALSE}), installing Miniconda
+automatically when conda is missing or cannot create environments.
+\item Prints the command and the output of anything that fails, so a
+failure can be understood from this call alone.
 \item Optionally resolves common \code{aiobotocore}/\code{botocore} conflicts.
 \item Optionally restarts the R session in RStudio to bind the new env.
 }
