@@ -38,6 +38,8 @@ jobs:
           use-public-rspm: true
       - uses: r-lib/actions/setup-pandoc@v2
       - uses: r-lib/actions/setup-tinytex@v2
+      - name: Install PDF manual font metrics
+        run: tlmgr install courier
       - name: Install Linux system libraries
         if: runner.os == 'Linux'
         run: |
