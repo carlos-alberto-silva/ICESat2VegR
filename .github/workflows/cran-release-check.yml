@@ -2,6 +2,7 @@ name: CRAN 0.0.7 exact archive checks
 on:
   push:
     branches: ['cran/0.0.7-checks-20261019']
+    paths: ['.cran-release/ICESat2VegR_0.0.7.tar.gz']
   workflow_dispatch:
 permissions:
   contents: read
@@ -44,7 +45,10 @@ jobs:
           sudo apt-get install -y libgdal-dev libproj-dev libhdf5-dev libgeos-dev libudunits2-dev pkg-config
       - name: Install macOS system libraries
         if: runner.os == 'macOS'
-        run: brew install gdal proj hdf5 pkg-config autoconf automake libtool
+        run: |
+          brew install gdal proj hdf5 gettext pkg-config autoconf automake libtool
+          echo "CPATH=$(brew --prefix proj)/include:$(brew --prefix hdf5)/include:$(brew --prefix gettext)/include" >> "$GITHUB_ENV"
+          echo "LIBRARY_PATH=$(brew --prefix proj)/lib:$(brew --prefix hdf5)/lib:$(brew --prefix gettext)/lib" >> "$GITHUB_ENV"
       - name: Verify and extract the exact release archive
         shell: Rscript {0}
         run: |
@@ -65,7 +69,6 @@ jobs:
             args = c('--as-cran', '--run-donttest'),
             check_dir = 'checks', error_on = 'warning')
       - name: Configure a fresh managed Python and test HDF5
-        if: success() || failure()
         shell: Rscript {0}
         run: |
           source('.cran-release/python-smoke.R')
