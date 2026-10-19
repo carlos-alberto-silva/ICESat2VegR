@@ -2,7 +2,7 @@ name: CRAN 0.0.7 macOS recheck
 on:
   push:
     branches: ['cran/0.0.7-checks-20261019']
-    paths: ['.github/workflows/cran-macos-recheck.yml']
+    paths: ['.cran-release/ICESat2VegR_0.0.7.tar.gz']
   workflow_dispatch:
 permissions:
   contents: read
@@ -42,9 +42,11 @@ jobs:
       - name: Install macOS system libraries
         if: runner.os == 'macOS'
         run: |
-          brew install gdal proj hdf5 gettext pkg-config autoconf automake libtool
-          echo "CPATH=$(brew --prefix proj)/include:$(brew --prefix hdf5)/include:$(brew --prefix gettext)/include" >> "$GITHUB_ENV"
-          echo "LIBRARY_PATH=$(brew --prefix proj)/lib:$(brew --prefix hdf5)/lib:$(brew --prefix gettext)/lib" >> "$GITHUB_ENV"
+          brew install gdal proj hdf5 gettext udunits libomp pkg-config autoconf automake libtool
+          echo "CPATH=$(brew --prefix proj)/include:$(brew --prefix hdf5)/include:$(brew --prefix gettext)/include:$(brew --prefix udunits)/include" >> "$GITHUB_ENV"
+          echo "LIBRARY_PATH=$(brew --prefix proj)/lib:$(brew --prefix hdf5)/lib:$(brew --prefix gettext)/lib:$(brew --prefix udunits)/lib:$(brew --prefix libomp)/lib" >> "$GITHUB_ENV"
+          mkdir -p ~/.R
+          printf 'LDFLAGS = -L%s/lib %s\n' "$(brew --prefix libomp)" "$(R CMD config LDFLAGS)" >> ~/.R/Makevars
       - name: Verify and extract the exact release archive
         shell: Rscript {0}
         run: |
